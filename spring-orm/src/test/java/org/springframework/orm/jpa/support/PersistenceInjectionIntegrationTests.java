@@ -16,21 +16,21 @@
 
 package org.springframework.orm.jpa.support;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.AbstractEntityManagerFactoryIntegrationTests;
 import org.springframework.orm.jpa.support.PersistenceInjectionTests.DefaultPublicPersistenceContextSetter;
 import org.springframework.orm.jpa.support.PersistenceInjectionTests.DefaultPublicPersistenceUnitSetterNamedPerson;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @author Sam Brannen
  */
-public class PersistenceInjectionIntegrationTests extends AbstractEntityManagerFactoryIntegrationTests {
+public class PersistenceInjectionIntegrationTests extends AbstractEntityManagerFactoryIntegrationTests
+{
 
 	@Autowired
 	private DefaultPublicPersistenceContextSetter defaultSetterInjected;
@@ -38,14 +38,15 @@ public class PersistenceInjectionIntegrationTests extends AbstractEntityManagerF
 	@Autowired
 	private DefaultPublicPersistenceUnitSetterNamedPerson namedSetterInjected;
 
-
 	@Test
-	public void testDefaultPersistenceContextSetterInjection() {
+	public void testDefaultPersistenceContextSetterInjection()
+	{
 		assertThat(defaultSetterInjected.getEntityManager()).isNotNull();
 	}
 
 	@Test
-	public void testSetterInjectionOfNamedPersistenceContext() {
+	public void testSetterInjectionOfNamedPersistenceContext()
+	{
 		assertThat(namedSetterInjected.getEntityManagerFactory()).isNotNull();
 	}
 

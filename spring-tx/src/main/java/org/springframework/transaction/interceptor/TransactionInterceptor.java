@@ -24,7 +24,6 @@ import java.util.Properties;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.lang.Nullable;
@@ -37,12 +36,14 @@ import org.springframework.transaction.TransactionManager;
  * ({@link org.springframework.transaction.PlatformTransactionManager}/
  * {@link org.springframework.transaction.ReactiveTransactionManager}).
  *
- * <p>Derives from the {@link TransactionAspectSupport} class which
+ * <p>
+ * Derives from the {@link TransactionAspectSupport} class which
  * contains the integration with Spring's underlying transaction API.
  * TransactionInterceptor simply calls the relevant superclass methods
  * such as {@link #invokeWithinTransaction} in the correct order.
  *
- * <p>TransactionInterceptors are thread-safe.
+ * <p>
+ * TransactionInterceptors are thread-safe.
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -51,79 +52,98 @@ import org.springframework.transaction.TransactionManager;
  * @see org.springframework.aop.framework.ProxyFactory
  */
 @SuppressWarnings("serial")
-public class TransactionInterceptor extends TransactionAspectSupport implements MethodInterceptor, Serializable {
+public class TransactionInterceptor extends TransactionAspectSupport
+		implements MethodInterceptor, Serializable
+{
 
 	/**
 	 * Create a new TransactionInterceptor.
-	 * <p>Transaction manager and transaction attributes still need to be set.
+	 * <p>
+	 * Transaction manager and transaction attributes still need to be set.
+	 * 
 	 * @see #setTransactionManager
 	 * @see #setTransactionAttributes(java.util.Properties)
 	 * @see #setTransactionAttributeSource(TransactionAttributeSource)
 	 */
-	public TransactionInterceptor() {
+	public TransactionInterceptor()
+	{
 	}
 
 	/**
 	 * Create a new TransactionInterceptor.
-	 * @param ptm the default transaction manager to perform the actual transaction management
-	 * @param tas the attribute source to be used to find transaction attributes
+	 * 
+	 * @param ptm
+	 *            the default transaction manager to perform the actual transaction management
+	 * @param tas
+	 *            the attribute source to be used to find transaction attributes
 	 * @since 5.2.5
 	 * @see #setTransactionManager
 	 * @see #setTransactionAttributeSource
 	 */
-	public TransactionInterceptor(TransactionManager ptm, TransactionAttributeSource tas) {
+	public TransactionInterceptor(TransactionManager ptm, TransactionAttributeSource tas)
+	{
 		setTransactionManager(ptm);
 		setTransactionAttributeSource(tas);
 	}
 
 	/**
 	 * Create a new TransactionInterceptor.
-	 * @param ptm the default transaction manager to perform the actual transaction management
-	 * @param tas the attribute source to be used to find transaction attributes
+	 * 
+	 * @param ptm
+	 *            the default transaction manager to perform the actual transaction management
+	 * @param tas
+	 *            the attribute source to be used to find transaction attributes
 	 * @see #setTransactionManager
 	 * @see #setTransactionAttributeSource
 	 * @deprecated as of 5.2.5, in favor of
-	 * {@link #TransactionInterceptor(TransactionManager, TransactionAttributeSource)}
+	 *             {@link #TransactionInterceptor(TransactionManager, TransactionAttributeSource)}
 	 */
 	@Deprecated
-	public TransactionInterceptor(PlatformTransactionManager ptm, TransactionAttributeSource tas) {
+	public TransactionInterceptor(PlatformTransactionManager ptm, TransactionAttributeSource tas)
+	{
 		setTransactionManager(ptm);
 		setTransactionAttributeSource(tas);
 	}
 
 	/**
 	 * Create a new TransactionInterceptor.
-	 * @param ptm the default transaction manager to perform the actual transaction management
-	 * @param attributes the transaction attributes in properties format
+	 * 
+	 * @param ptm
+	 *            the default transaction manager to perform the actual transaction management
+	 * @param attributes
+	 *            the transaction attributes in properties format
 	 * @see #setTransactionManager
 	 * @see #setTransactionAttributes(java.util.Properties)
 	 * @deprecated as of 5.2.5, in favor of {@link #setTransactionAttributes(Properties)}
 	 */
 	@Deprecated
-	public TransactionInterceptor(PlatformTransactionManager ptm, Properties attributes) {
+	public TransactionInterceptor(PlatformTransactionManager ptm, Properties attributes)
+	{
 		setTransactionManager(ptm);
 		setTransactionAttributes(attributes);
 	}
 
-
 	@Override
 	@Nullable
-	public Object invoke(MethodInvocation invocation) throws Throwable {
+	public Object invoke(MethodInvocation invocation) throws Throwable
+	{
 		// Work out the target class: may be {@code null}.
 		// The TransactionAttributeSource should be passed the target class
 		// as well as the method, which may be from an interface.
-		Class<?> targetClass = (invocation.getThis() != null ? AopUtils.getTargetClass(invocation.getThis()) : null);
+		Class<?> targetClass = (invocation.getThis() != null
+				? AopUtils.getTargetClass(invocation.getThis())
+				: null);
 
 		// Adapt to TransactionAspectSupport's invokeWithinTransaction...
 		return invokeWithinTransaction(invocation.getMethod(), targetClass, invocation::proceed);
 	}
 
-
 	//---------------------------------------------------------------------
 	// Serialization support
 	//---------------------------------------------------------------------
 
-	private void writeObject(ObjectOutputStream oos) throws IOException {
+	private void writeObject(ObjectOutputStream oos) throws IOException
+	{
 		// Rely on default serialization, although this class itself doesn't carry state anyway...
 		oos.defaultWriteObject();
 
@@ -134,7 +154,8 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 		oos.writeObject(getBeanFactory());
 	}
 
-	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException
+	{
 		// Rely on default serialization, although this class itself doesn't carry state anyway...
 		ois.defaultReadObject();
 

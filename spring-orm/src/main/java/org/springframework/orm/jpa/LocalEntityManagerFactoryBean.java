@@ -31,14 +31,16 @@ import javax.persistence.spi.PersistenceProvider;
  * {@link LocalContainerEntityManagerFactoryBean}
  * definition is just a matter of configuration!
  *
- * <p>Configuration settings are usually read from a {@code META-INF/persistence.xml}
+ * <p>
+ * Configuration settings are usually read from a {@code META-INF/persistence.xml}
  * config file, residing in the class path, according to the JPA standalone bootstrap
  * contract. Additionally, most JPA providers will require a special VM agent
  * (specified on JVM startup) that allows them to instrument application classes.
  * See the Java Persistence API specification and your provider documentation
  * for setup details.
  *
- * <p>This EntityManagerFactory bootstrap is appropriate for standalone applications
+ * <p>
+ * This EntityManagerFactory bootstrap is appropriate for standalone applications
  * which solely use JPA for data access. If you want to set up your persistence
  * provider for an external DataSource and/or for global transactions which span
  * multiple resources, you will need to either deploy it into a full Java EE
@@ -46,13 +48,15 @@ import javax.persistence.spi.PersistenceProvider;
  * or use Spring's {@link LocalContainerEntityManagerFactoryBean} with appropriate
  * configuration for local setup according to JPA's container contract.
  *
- * <p><b>Note:</b> This FactoryBean has limited configuration power in terms of
+ * <p>
+ * <b>Note:</b> This FactoryBean has limited configuration power in terms of
  * what configuration it is able to pass to the JPA provider. If you need more
  * flexible configuration, for example passing a Spring-managed JDBC DataSource
  * to the JPA provider, consider using Spring's more powerful
  * {@link LocalContainerEntityManagerFactoryBean} instead.
  *
- * <p><b>NOTE: Spring's JPA support requires JPA 2.1 or higher, as of Spring 5.0.</b>
+ * <p>
+ * <b>NOTE: Spring's JPA support requires JPA 2.1 or higher, as of Spring 5.0.</b>
  * JPA 1.0/2.0 based applications are still supported; however, a JPA 2.1 compliant
  * persistence provider is needed at runtime.
  *
@@ -69,29 +73,39 @@ import javax.persistence.spi.PersistenceProvider;
  * @see javax.persistence.spi.PersistenceProvider#createEntityManagerFactory
  */
 @SuppressWarnings("serial")
-public class LocalEntityManagerFactoryBean extends AbstractEntityManagerFactoryBean {
+public class LocalEntityManagerFactoryBean extends AbstractEntityManagerFactoryBean
+{
 
 	/**
 	 * Initialize the EntityManagerFactory for the given configuration.
-	 * @throws javax.persistence.PersistenceException in case of JPA initialization errors
+	 * 
+	 * @throws javax.persistence.PersistenceException
+	 *             in case of JPA initialization errors
 	 */
 	@Override
-	protected EntityManagerFactory createNativeEntityManagerFactory() throws PersistenceException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Building JPA EntityManagerFactory for persistence unit '" + getPersistenceUnitName() + "'");
+	protected EntityManagerFactory createNativeEntityManagerFactory() throws PersistenceException
+	{
+		if (logger.isDebugEnabled())
+		{
+			logger.debug("Building JPA EntityManagerFactory for persistence unit '"
+					+ getPersistenceUnitName() + "'");
 		}
 		PersistenceProvider provider = getPersistenceProvider();
-		if (provider != null) {
+		if (provider != null)
+		{
 			// Create EntityManagerFactory directly through PersistenceProvider.
-			EntityManagerFactory emf = provider.createEntityManagerFactory(getPersistenceUnitName(), getJpaPropertyMap());
-			if (emf == null) {
-				throw new IllegalStateException(
-						"PersistenceProvider [" + provider + "] did not return an EntityManagerFactory for name '" +
-						getPersistenceUnitName() + "'");
+			EntityManagerFactory emf = provider.createEntityManagerFactory(getPersistenceUnitName(),
+					getJpaPropertyMap());
+			if (emf == null)
+			{
+				throw new IllegalStateException("PersistenceProvider [" + provider
+						+ "] did not return an EntityManagerFactory for name '" + getPersistenceUnitName()
+						+ "'");
 			}
 			return emf;
 		}
-		else {
+		else
+		{
 			// Let JPA perform its standard PersistenceProvider autodetection.
 			return Persistence.createEntityManagerFactory(getPersistenceUnitName(), getJpaPropertyMap());
 		}

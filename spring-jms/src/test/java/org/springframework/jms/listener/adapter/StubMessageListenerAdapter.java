@@ -21,22 +21,24 @@ package org.springframework.jms.listener.adapter;
  *
  * @author Rick Evans
  */
-public class StubMessageListenerAdapter extends MessageListenerAdapter {
+public class StubMessageListenerAdapter extends MessageListenerAdapter
+{
 
 	private boolean wasCalled;
 
-
-	public boolean wasCalled() {
+	public boolean wasCalled()
+	{
 		return this.wasCalled;
 	}
 
-
-	public void handleMessage(String message) {
+	public void handleMessage(String message)
+	{
 		this.wasCalled = true;
 	}
 
 	@Override
-	protected void handleListenerException(Throwable ex) {
+	protected void handleListenerException(Throwable ex)
+	{
 		System.out.println(ex);
 	}
 

@@ -32,11 +32,13 @@ import org.springframework.util.Assert;
  * on the target. All other methods simply delegate to the corresponding methods
  * of the target ConnectionFactory.
  *
- * <p>Can be used to proxy a target JNDI ConnectionFactory that does not have a
+ * <p>
+ * Can be used to proxy a target JNDI ConnectionFactory that does not have a
  * ConnectionSpec configured. Client code can work with the ConnectionFactory
  * without passing in a ConnectionSpec on every {@code getConnection()} call.
  *
- * <p>In the following example, client code can simply transparently work with
+ * <p>
+ * In the following example, client code can simply transparently work with
  * the preconfigured "myConnectionFactory", implicitly accessing
  * "myTargetConnectionFactory" with the specified user credentials.
  *
@@ -53,9 +55,11 @@ import org.springframework.util.Assert;
  *       &lt;property name="password" value="mypassword"/&gt;
  *     &lt;/bean&gt;
  *   &lt;/property&gt;
- * &lt;/bean&gt;</pre>
+ * &lt;/bean&gt;
+ * </pre>
  *
- * <p>If the "connectionSpec" is empty, this proxy will simply delegate to the
+ * <p>
+ * If the "connectionSpec" is empty, this proxy will simply delegate to the
  * standard {@code getConnection()} method of the target ConnectionFactory.
  * This can be used to keep a UserCredentialsConnectionFactoryAdapter bean definition
  * just for the <i>option</i> of implicitly passing in a ConnectionSpec if the
@@ -66,20 +70,21 @@ import org.springframework.util.Assert;
  * @see #getConnection
  */
 @SuppressWarnings("serial")
-public class ConnectionSpecConnectionFactoryAdapter extends DelegatingConnectionFactory {
+public class ConnectionSpecConnectionFactoryAdapter extends DelegatingConnectionFactory
+{
 
 	@Nullable
 	private ConnectionSpec connectionSpec;
 
-	private final ThreadLocal<ConnectionSpec> threadBoundSpec =
-			new NamedThreadLocal<>("Current CCI ConnectionSpec");
-
+	private final ThreadLocal<ConnectionSpec> threadBoundSpec = new NamedThreadLocal<>(
+			"Current CCI ConnectionSpec");
 
 	/**
 	 * Set the ConnectionSpec that this adapter should use for retrieving Connections.
 	 * Default is none.
 	 */
-	public void setConnectionSpec(ConnectionSpec connectionSpec) {
+	public void setConnectionSpec(ConnectionSpec connectionSpec)
+	{
 		this.connectionSpec = connectionSpec;
 	}
 
@@ -87,37 +92,46 @@ public class ConnectionSpecConnectionFactoryAdapter extends DelegatingConnection
 	 * Set a ConnectionSpec for this proxy and the current thread.
 	 * The given ConnectionSpec will be applied to all subsequent
 	 * {@code getConnection()} calls on this ConnectionFactory proxy.
-	 * <p>This will override any statically specified "connectionSpec" property.
-	 * @param spec the ConnectionSpec to apply
+	 * <p>
+	 * This will override any statically specified "connectionSpec" property.
+	 * 
+	 * @param spec
+	 *            the ConnectionSpec to apply
 	 * @see #removeConnectionSpecFromCurrentThread
 	 */
-	public void setConnectionSpecForCurrentThread(ConnectionSpec spec) {
+	public void setConnectionSpecForCurrentThread(ConnectionSpec spec)
+	{
 		this.threadBoundSpec.set(spec);
 	}
 
 	/**
 	 * Remove any ConnectionSpec for this proxy from the current thread.
 	 * A statically specified ConnectionSpec applies again afterwards.
+	 * 
 	 * @see #setConnectionSpecForCurrentThread
 	 */
-	public void removeConnectionSpecFromCurrentThread() {
+	public void removeConnectionSpecFromCurrentThread()
+	{
 		this.threadBoundSpec.remove();
 	}
-
 
 	/**
 	 * Determine whether there is currently a thread-bound ConnectionSpec,
 	 * using it if available, falling back to the statically specified
 	 * "connectionSpec" property else.
+	 * 
 	 * @see #doGetConnection
 	 */
 	@Override
-	public final Connection getConnection() throws ResourceException {
+	public final Connection getConnection() throws ResourceException
+	{
 		ConnectionSpec threadSpec = this.threadBoundSpec.get();
-		if (threadSpec != null) {
+		if (threadSpec != null)
+		{
 			return doGetConnection(threadSpec);
 		}
-		else {
+		else
+		{
 			return doGetConnection(this.connectionSpec);
 		}
 	}
@@ -127,12 +141,15 @@ public class ConnectionSpecConnectionFactoryAdapter extends DelegatingConnection
 	 * method of the target ConnectionFactory, passing in the specified user credentials.
 	 * If the specified username is empty, it will simply delegate to the standard
 	 * {@code getConnection()} method of the target ConnectionFactory.
-	 * @param spec the ConnectionSpec to apply
+	 * 
+	 * @param spec
+	 *            the ConnectionSpec to apply
 	 * @return the Connection
 	 * @see javax.resource.cci.ConnectionFactory#getConnection(javax.resource.cci.ConnectionSpec)
 	 * @see javax.resource.cci.ConnectionFactory#getConnection()
 	 */
-	protected Connection doGetConnection(@Nullable ConnectionSpec spec) throws ResourceException {
+	protected Connection doGetConnection(@Nullable ConnectionSpec spec) throws ResourceException
+	{
 		ConnectionFactory connectionFactory = getTargetConnectionFactory();
 		Assert.state(connectionFactory != null, "No 'targetConnectionFactory' set");
 		return (spec != null ? connectionFactory.getConnection(spec) : connectionFactory.getConnection());

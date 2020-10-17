@@ -24,9 +24,11 @@ package org.springframework.jms;
  * @see javax.jms.MessageNotWriteableException
  */
 @SuppressWarnings("serial")
-public class MessageNotWriteableException extends JmsException {
+public class MessageNotWriteableException extends JmsException
+{
 
-	public MessageNotWriteableException(javax.jms.MessageNotWriteableException cause) {
+	public MessageNotWriteableException(javax.jms.MessageNotWriteableException cause)
+	{
 		super(cause);
 	}
 

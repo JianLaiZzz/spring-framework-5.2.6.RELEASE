@@ -22,18 +22,22 @@ import java.lang.reflect.Method;
  * Description of an invocation to a method, given to an interceptor
  * upon method-call.
  *
- * <p>A method invocation is a joinpoint and can be intercepted by a
+ * <p>
+ * A method invocation is a joinpoint and can be intercepted by a
  * method interceptor.
  *
  * @author Rod Johnson
  * @see MethodInterceptor
  */
-public interface MethodInvocation extends Invocation {
+public interface MethodInvocation extends Invocation
+{
 
 	/**
 	 * Get the method being called.
-	 * <p>This method is a friendly implementation of the
+	 * <p>
+	 * This method is a friendly implementation of the
 	 * {@link Joinpoint#getStaticPart()} method (same result).
+	 * 
 	 * @return the method being called
 	 */
 	Method getMethod();

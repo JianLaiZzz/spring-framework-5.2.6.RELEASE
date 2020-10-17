@@ -16,11 +16,10 @@
 
 package org.springframework.aop.aspectj;
 
-import org.junit.jupiter.api.Test;
-
-import org.springframework.beans.testfixture.beans.TestBean;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.testfixture.beans.TestBean;
 
 /**
  * Tests for matching of bean() pointcut designator.
@@ -28,10 +27,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Ramnivas Laddad
  * @author Chris Beams
  */
-public class BeanNamePointcutMatchingTests {
+public class BeanNamePointcutMatchingTests
+{
 
 	@Test
-	public void testMatchingPointcuts() {
+	public void testMatchingPointcuts()
+	{
 		assertMatch("someName", "bean(someName)");
 
 		// Spring bean names are less restrictive compared to AspectJ names (methods, types etc.)
@@ -66,7 +67,8 @@ public class BeanNamePointcutMatchingTests {
 	}
 
 	@Test
-	public void testNonMatchingPointcuts() {
+	public void testNonMatchingPointcuts()
+	{
 		assertMisMatch("someName", "bean(someNamex)");
 		assertMisMatch("someName", "bean(someX*Name)");
 
@@ -77,20 +79,26 @@ public class BeanNamePointcutMatchingTests {
 		assertMisMatch("someName", "!bean(someName) || bean(someOtherName)");
 	}
 
-
-	private void assertMatch(String beanName, String pcExpression) {
-		assertThat(matches(beanName, pcExpression)).as("Unexpected mismatch for bean \"" + beanName + "\" for pcExpression \"" + pcExpression + "\"").isTrue();
+	private void assertMatch(String beanName, String pcExpression)
+	{
+		assertThat(matches(beanName, pcExpression)).as("Unexpected mismatch for bean \"" + beanName
+				+ "\" for pcExpression \"" + pcExpression + "\"").isTrue();
 	}
 
-	private void assertMisMatch(String beanName, String pcExpression) {
-		assertThat(matches(beanName, pcExpression)).as("Unexpected match for bean \"" + beanName + "\" for pcExpression \"" + pcExpression + "\"").isFalse();
+	private void assertMisMatch(String beanName, String pcExpression)
+	{
+		assertThat(matches(beanName, pcExpression)).as("Unexpected match for bean \"" + beanName
+				+ "\" for pcExpression \"" + pcExpression + "\"").isFalse();
 	}
 
-	private static boolean matches(final String beanName, String pcExpression) {
+	private static boolean matches(final String beanName, String pcExpression)
+	{
 		@SuppressWarnings("serial")
-		AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut() {
+		AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut()
+		{
 			@Override
-			protected String getCurrentProxiedBeanName() {
+			protected String getCurrentProxiedBeanName()
+			{
 				return beanName;
 			}
 		};

@@ -28,26 +28,28 @@ import org.aopalliance.aop.Advice;
  * @see DefaultPointcutAdvisor
  */
 @SuppressWarnings("serial")
-public abstract class AbstractGenericPointcutAdvisor extends AbstractPointcutAdvisor {
+public abstract class AbstractGenericPointcutAdvisor extends AbstractPointcutAdvisor
+{
 
 	private Advice advice = EMPTY_ADVICE;
-
 
 	/**
 	 * Specify the advice that this advisor should apply.
 	 */
-	public void setAdvice(Advice advice) {
+	public void setAdvice(Advice advice)
+	{
 		this.advice = advice;
 	}
 
 	@Override
-	public Advice getAdvice() {
+	public Advice getAdvice()
+	{
 		return this.advice;
 	}
 
-
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return getClass().getName() + ": advice [" + getAdvice() + "]";
 	}
 

@@ -23,22 +23,30 @@ package org.springframework.dao;
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
-public class CannotAcquireLockException extends PessimisticLockingFailureException {
+public class CannotAcquireLockException extends PessimisticLockingFailureException
+{
 
 	/**
 	 * Constructor for CannotAcquireLockException.
-	 * @param msg the detail message
+	 * 
+	 * @param msg
+	 *            the detail message
 	 */
-	public CannotAcquireLockException(String msg) {
+	public CannotAcquireLockException(String msg)
+	{
 		super(msg);
 	}
 
 	/**
 	 * Constructor for CannotAcquireLockException.
-	 * @param msg the detail message
-	 * @param cause the root cause from the data access API in use
+	 * 
+	 * @param msg
+	 *            the detail message
+	 * @param cause
+	 *            the root cause from the data access API in use
 	 */
-	public CannotAcquireLockException(String msg, Throwable cause) {
+	public CannotAcquireLockException(String msg, Throwable cause)
+	{
 		super(msg, cause);
 	}
 

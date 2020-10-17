@@ -16,21 +16,22 @@
 
 package org.springframework.orm.jpa;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.util.Map;
 import java.util.Properties;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.OptimisticLockException;
-import javax.persistence.PersistenceException;
+import javax.persistence.*;
 import javax.persistence.spi.PersistenceProvider;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.persistence.spi.ProviderUtil;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.testfixture.io.SerializationTestUtils;
 import org.springframework.dao.DataAccessException;
@@ -40,21 +41,14 @@ import org.springframework.orm.jpa.persistenceunit.MutablePersistenceUnitInfo;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 /**
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @author Phillip Webb
  */
 @SuppressWarnings("rawtypes")
-public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityManagerFactoryBeanTests {
+public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityManagerFactoryBeanTests
+{
 
 	// Static fields set by inner class DummyPersistenceProvider
 
@@ -62,14 +56,15 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 
 	private static PersistenceUnitInfo actualPui;
 
-
 	@Test
-	public void testValidPersistenceUnit() throws Exception {
+	public void testValidPersistenceUnit() throws Exception
+	{
 		parseValidPersistenceUnit();
 	}
 
 	@Test
-	public void testExceptionTranslationWithNoDialect() throws Exception {
+	public void testExceptionTranslationWithNoDialect() throws Exception
+	{
 		LocalContainerEntityManagerFactoryBean cefb = parseValidPersistenceUnit();
 		cefb.getObject();
 		assertThat(cefb.getJpaDialect()).as("No dialect set").isNull();
@@ -83,10 +78,12 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 	}
 
 	@Test
-	public void testEntityManagerFactoryIsProxied() throws Exception {
+	public void testEntityManagerFactoryIsProxied() throws Exception
+	{
 		LocalContainerEntityManagerFactoryBean cefb = parseValidPersistenceUnit();
 		EntityManagerFactory emf = cefb.getObject();
-		assertThat(cefb.getObject()).as("EntityManagerFactory reference must be cached after init").isSameAs(emf);
+		assertThat(cefb.getObject()).as("EntityManagerFactory reference must be cached after init")
+				.isSameAs(emf);
 
 		assertThat(emf).as("EMF must be proxied").isNotSameAs(mockEmf);
 		assertThat(emf.equals(emf)).isTrue();
@@ -100,7 +97,8 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 	}
 
 	@Test
-	public void testApplicationManagedEntityManagerWithoutTransaction() throws Exception {
+	public void testApplicationManagedEntityManagerWithoutTransaction() throws Exception
+	{
 		Object testEntity = new Object();
 		EntityManager mockEm = mock(EntityManager.class);
 
@@ -108,7 +106,8 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 
 		LocalContainerEntityManagerFactoryBean cefb = parseValidPersistenceUnit();
 		EntityManagerFactory emf = cefb.getObject();
-		assertThat(cefb.getObject()).as("EntityManagerFactory reference must be cached after init").isSameAs(emf);
+		assertThat(cefb.getObject()).as("EntityManagerFactory reference must be cached after init")
+				.isSameAs(emf);
 
 		assertThat(emf).as("EMF must be proxied").isNotSameAs(mockEmf);
 		EntityManager em = emf.createEntityManager();
@@ -120,7 +119,8 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 	}
 
 	@Test
-	public void testApplicationManagedEntityManagerWithTransaction() throws Exception {
+	public void testApplicationManagedEntityManagerWithTransaction() throws Exception
+	{
 		Object testEntity = new Object();
 
 		EntityTransaction mockTx = mock(EntityTransaction.class);
@@ -143,7 +143,8 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 		TransactionStatus txStatus = jpatm.getTransaction(new DefaultTransactionAttribute());
 
 		EntityManagerFactory emf = cefb.getObject();
-		assertThat(cefb.getObject()).as("EntityManagerFactory reference must be cached after init").isSameAs(emf);
+		assertThat(cefb.getObject()).as("EntityManagerFactory reference must be cached after init")
+				.isSameAs(emf);
 
 		assertThat(emf).as("EMF must be proxied").isNotSameAs(mockEmf);
 		EntityManager em = emf.createEntityManager();
@@ -161,7 +162,8 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 	}
 
 	@Test
-	public void testApplicationManagedEntityManagerWithTransactionAndCommitException() throws Exception {
+	public void testApplicationManagedEntityManagerWithTransactionAndCommitException() throws Exception
+	{
 		Object testEntity = new Object();
 
 		EntityTransaction mockTx = mock(EntityTransaction.class);
@@ -185,15 +187,16 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 		TransactionStatus txStatus = jpatm.getTransaction(new DefaultTransactionAttribute());
 
 		EntityManagerFactory emf = cefb.getObject();
-		assertThat(cefb.getObject()).as("EntityManagerFactory reference must be cached after init").isSameAs(emf);
+		assertThat(cefb.getObject()).as("EntityManagerFactory reference must be cached after init")
+				.isSameAs(emf);
 
 		assertThat(emf).as("EMF must be proxied").isNotSameAs(mockEmf);
 		EntityManager em = emf.createEntityManager();
 		em.joinTransaction();
 		assertThat(em.contains(testEntity)).isFalse();
 
-		assertThatExceptionOfType(OptimisticLockingFailureException.class).isThrownBy(() ->
-				jpatm.commit(txStatus));
+		assertThatExceptionOfType(OptimisticLockingFailureException.class)
+				.isThrownBy(() -> jpatm.commit(txStatus));
 
 		cefb.destroy();
 
@@ -203,7 +206,8 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 	}
 
 	@Test
-	public void testApplicationManagedEntityManagerWithJtaTransaction() throws Exception {
+	public void testApplicationManagedEntityManagerWithJtaTransaction() throws Exception
+	{
 		Object testEntity = new Object();
 
 		// This one's for the tx (shared)
@@ -225,7 +229,8 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 		TransactionStatus txStatus = jpatm.getTransaction(new DefaultTransactionAttribute());
 
 		EntityManagerFactory emf = cefb.getObject();
-		assertThat(cefb.getObject()).as("EntityManagerFactory reference must be cached after init").isSameAs(emf);
+		assertThat(cefb.getObject()).as("EntityManagerFactory reference must be cached after init")
+				.isSameAs(emf);
 
 		assertThat(emf).as("EMF must be proxied").isNotSameAs(mockEmf);
 		EntityManager em = emf.createEntityManager();
@@ -241,21 +246,23 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 		verify(mockEmf).close();
 	}
 
-	public LocalContainerEntityManagerFactoryBean parseValidPersistenceUnit() throws Exception {
+	public LocalContainerEntityManagerFactoryBean parseValidPersistenceUnit() throws Exception
+	{
 		LocalContainerEntityManagerFactoryBean emfb = createEntityManagerFactoryBean(
-				"org/springframework/orm/jpa/domain/persistence.xml", null,
-				"Person");
+				"org/springframework/orm/jpa/domain/persistence.xml", null, "Person");
 		return emfb;
 	}
 
 	@Test
-	public void testInvalidPersistenceUnitName() throws Exception {
-		assertThatIllegalArgumentException().isThrownBy(() ->
-				createEntityManagerFactoryBean("org/springframework/orm/jpa/domain/persistence.xml", null, "call me Bob"));
+	public void testInvalidPersistenceUnitName() throws Exception
+	{
+		assertThatIllegalArgumentException().isThrownBy(() -> createEntityManagerFactoryBean(
+				"org/springframework/orm/jpa/domain/persistence.xml", null, "call me Bob"));
 	}
 
-	protected LocalContainerEntityManagerFactoryBean createEntityManagerFactoryBean(
-			String persistenceXml, Properties props, String entityManagerName) throws Exception {
+	protected LocalContainerEntityManagerFactoryBean createEntityManagerFactoryBean(String persistenceXml,
+			Properties props, String entityManagerName) throws Exception
+	{
 
 		// This will be set by DummyPersistenceProvider
 		actualPui = null;
@@ -265,7 +272,8 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 
 		containerEmfb.setPersistenceUnitName(entityManagerName);
 		containerEmfb.setPersistenceProviderClass(DummyContainerPersistenceProvider.class);
-		if (props != null) {
+		if (props != null)
+		{
 			containerEmfb.setJpaProperties(props);
 		}
 		containerEmfb.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
@@ -273,7 +281,8 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 		containerEmfb.afterPropertiesSet();
 
 		assertThat(actualPui.getPersistenceUnitName()).isEqualTo(entityManagerName);
-		if (props != null) {
+		if (props != null)
+		{
 			assertThat((Object) actualProps).isEqualTo(props);
 		}
 		//checkInvariants(containerEmfb);
@@ -285,77 +294,88 @@ public class LocalContainerEntityManagerFactoryBeanTests extends AbstractEntityM
 	}
 
 	@Test
-	public void testRejectsMissingPersistenceUnitInfo() throws Exception {
+	public void testRejectsMissingPersistenceUnitInfo() throws Exception
+	{
 		LocalContainerEntityManagerFactoryBean containerEmfb = new LocalContainerEntityManagerFactoryBean();
 		String entityManagerName = "call me Bob";
 
 		containerEmfb.setPersistenceUnitName(entityManagerName);
 		containerEmfb.setPersistenceProviderClass(DummyContainerPersistenceProvider.class);
 
-		assertThatIllegalArgumentException().isThrownBy(
-				containerEmfb::afterPropertiesSet);
+		assertThatIllegalArgumentException().isThrownBy(containerEmfb::afterPropertiesSet);
 	}
 
-
-	private static class DummyContainerPersistenceProvider implements PersistenceProvider {
+	private static class DummyContainerPersistenceProvider implements PersistenceProvider
+	{
 
 		@Override
-		public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo pui, Map map) {
+		public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo pui, Map map)
+		{
 			actualPui = pui;
 			actualProps = map;
 			return mockEmf;
 		}
 
 		@Override
-		public EntityManagerFactory createEntityManagerFactory(String emfName, Map properties) {
+		public EntityManagerFactory createEntityManagerFactory(String emfName, Map properties)
+		{
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public ProviderUtil getProviderUtil() {
-			throw new UnsupportedOperationException();
-		}
-
-		// JPA 2.1 method
-		@Override
-		public void generateSchema(PersistenceUnitInfo persistenceUnitInfo, Map map) {
+		public ProviderUtil getProviderUtil()
+		{
 			throw new UnsupportedOperationException();
 		}
 
 		// JPA 2.1 method
 		@Override
-		public boolean generateSchema(String persistenceUnitName, Map map) {
+		public void generateSchema(PersistenceUnitInfo persistenceUnitInfo, Map map)
+		{
+			throw new UnsupportedOperationException();
+		}
+
+		// JPA 2.1 method
+		@Override
+		public boolean generateSchema(String persistenceUnitName, Map map)
+		{
 			throw new UnsupportedOperationException();
 		}
 	}
 
-
-	private static class NoOpEntityTransaction implements EntityTransaction {
+	private static class NoOpEntityTransaction implements EntityTransaction
+	{
 
 		@Override
-		public void begin() {
+		public void begin()
+		{
 		}
 
 		@Override
-		public void commit() {
+		public void commit()
+		{
 		}
 
 		@Override
-		public void rollback() {
+		public void rollback()
+		{
 		}
 
 		@Override
-		public void setRollbackOnly() {
+		public void setRollbackOnly()
+		{
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public boolean getRollbackOnly() {
+		public boolean getRollbackOnly()
+		{
 			return false;
 		}
 
 		@Override
-		public boolean isActive() {
+		public boolean isActive()
+		{
 			return false;
 		}
 	}

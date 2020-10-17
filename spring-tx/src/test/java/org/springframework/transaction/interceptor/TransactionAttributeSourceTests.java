@@ -16,14 +16,13 @@
 
 package org.springframework.transaction.interceptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.transaction.TransactionDefinition;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests for the various {@link TransactionAttributeSource} implementations.
@@ -35,23 +34,27 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 15.10.2003
  * @see org.springframework.transaction.interceptor.TransactionProxyFactoryBean
  */
-public class TransactionAttributeSourceTests {
+public class TransactionAttributeSourceTests
+{
 
 	@Test
-	public void matchAlwaysTransactionAttributeSource() throws Exception {
+	public void matchAlwaysTransactionAttributeSource() throws Exception
+	{
 		MatchAlwaysTransactionAttributeSource tas = new MatchAlwaysTransactionAttributeSource();
 		TransactionAttribute ta = tas.getTransactionAttribute(Object.class.getMethod("hashCode"), null);
 		assertThat(ta).isNotNull();
 		assertThat(TransactionDefinition.PROPAGATION_REQUIRED == ta.getPropagationBehavior()).isTrue();
 
-		tas.setTransactionAttribute(new DefaultTransactionAttribute(TransactionDefinition.PROPAGATION_SUPPORTS));
+		tas.setTransactionAttribute(
+				new DefaultTransactionAttribute(TransactionDefinition.PROPAGATION_SUPPORTS));
 		ta = tas.getTransactionAttribute(IOException.class.getMethod("getMessage"), IOException.class);
 		assertThat(ta).isNotNull();
 		assertThat(TransactionDefinition.PROPAGATION_SUPPORTS == ta.getPropagationBehavior()).isTrue();
 	}
 
 	@Test
-	public void nameMatchTransactionAttributeSourceWithStarAtStartOfMethodName() throws Exception {
+	public void nameMatchTransactionAttributeSourceWithStarAtStartOfMethodName() throws Exception
+	{
 		NameMatchTransactionAttributeSource tas = new NameMatchTransactionAttributeSource();
 		Properties attributes = new Properties();
 		attributes.put("*ashCode", "PROPAGATION_REQUIRED");
@@ -62,7 +65,8 @@ public class TransactionAttributeSourceTests {
 	}
 
 	@Test
-	public void nameMatchTransactionAttributeSourceWithStarAtEndOfMethodName() throws Exception {
+	public void nameMatchTransactionAttributeSourceWithStarAtEndOfMethodName() throws Exception
+	{
 		NameMatchTransactionAttributeSource tas = new NameMatchTransactionAttributeSource();
 		Properties attributes = new Properties();
 		attributes.put("hashCod*", "PROPAGATION_REQUIRED");
@@ -73,7 +77,9 @@ public class TransactionAttributeSourceTests {
 	}
 
 	@Test
-	public void nameMatchTransactionAttributeSourceMostSpecificMethodNameIsDefinitelyMatched() throws Exception {
+	public void nameMatchTransactionAttributeSourceMostSpecificMethodNameIsDefinitelyMatched()
+			throws Exception
+	{
 		NameMatchTransactionAttributeSource tas = new NameMatchTransactionAttributeSource();
 		Properties attributes = new Properties();
 		attributes.put("*", "PROPAGATION_REQUIRED");
@@ -85,7 +91,8 @@ public class TransactionAttributeSourceTests {
 	}
 
 	@Test
-	public void nameMatchTransactionAttributeSourceWithEmptyMethodName() throws Exception {
+	public void nameMatchTransactionAttributeSourceWithEmptyMethodName() throws Exception
+	{
 		NameMatchTransactionAttributeSource tas = new NameMatchTransactionAttributeSource();
 		Properties attributes = new Properties();
 		attributes.put("", "PROPAGATION_MANDATORY");

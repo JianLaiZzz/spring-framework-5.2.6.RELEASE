@@ -35,7 +35,8 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
  * @author Rod Johnson
  * @since 2.0
  */
-public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter {
+public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter
+{
 
 	private Database database = Database.DEFAULT;
 
@@ -46,23 +47,25 @@ public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter {
 
 	private boolean showSql = false;
 
-
 	/**
 	 * Specify the target database to operate on, as a value of the {@code Database} enum:
 	 * DB2, DERBY, H2, HANA, HSQL, INFORMIX, MYSQL, ORACLE, POSTGRESQL, SQL_SERVER, SYBASE
-	 * <p><b>NOTE:</b> This setting will override your JPA provider's default algorithm.
+	 * <p>
+	 * <b>NOTE:</b> This setting will override your JPA provider's default algorithm.
 	 * Custom vendor properties may still fine-tune the database dialect. However,
 	 * there may nevertheless be conflicts: For example, specify either this setting
 	 * or Hibernate's "hibernate.dialect_resolvers" property, not both.
 	 */
-	public void setDatabase(Database database) {
+	public void setDatabase(Database database)
+	{
 		this.database = database;
 	}
 
 	/**
 	 * Return the target database to operate on.
 	 */
-	protected Database getDatabase() {
+	protected Database getDatabase()
+	{
 		return this.database;
 	}
 
@@ -70,7 +73,8 @@ public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter {
 	 * Specify the name of the target database to operate on.
 	 * The supported values are vendor-dependent platform identifiers.
 	 */
-	public void setDatabasePlatform(@Nullable String databasePlatform) {
+	public void setDatabasePlatform(@Nullable String databasePlatform)
+	{
 		this.databasePlatform = databasePlatform;
 	}
 
@@ -78,23 +82,28 @@ public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter {
 	 * Return the name of the target database to operate on.
 	 */
 	@Nullable
-	protected String getDatabasePlatform() {
+	protected String getDatabasePlatform()
+	{
 		return this.databasePlatform;
 	}
 
 	/**
 	 * Set whether to generate DDL after the EntityManagerFactory has been initialized,
 	 * creating/updating all relevant tables.
-	 * <p>Note that the exact semantics of this flag depend on the underlying
+	 * <p>
+	 * Note that the exact semantics of this flag depend on the underlying
 	 * persistence provider. For any more advanced needs, specify the appropriate
 	 * vendor-specific settings as "jpaProperties".
-	 * <p><b>NOTE: Do not set this flag to 'true' while also setting JPA 2.1's
+	 * <p>
+	 * <b>NOTE: Do not set this flag to 'true' while also setting JPA 2.1's
 	 * {@code javax.persistence.schema-generation.database.action} property.</b>
 	 * These two schema generation mechanisms - standard JPA versus provider-native -
 	 * are mutually exclusive, e.g. with Hibernate 5.
+	 * 
 	 * @see org.springframework.orm.jpa.AbstractEntityManagerFactoryBean#setJpaProperties
 	 */
-	public void setGenerateDdl(boolean generateDdl) {
+	public void setGenerateDdl(boolean generateDdl)
+	{
 		this.generateDdl = generateDdl;
 	}
 
@@ -102,62 +111,73 @@ public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter {
 	 * Return whether to generate DDL after the EntityManagerFactory has been initialized
 	 * creating/updating all relevant tables.
 	 */
-	protected boolean isGenerateDdl() {
+	protected boolean isGenerateDdl()
+	{
 		return this.generateDdl;
 	}
 
 	/**
 	 * Set whether to show SQL in the log (or in the console).
-	 * <p>For more specific logging configuration, specify the appropriate
+	 * <p>
+	 * For more specific logging configuration, specify the appropriate
 	 * vendor-specific settings as "jpaProperties".
+	 * 
 	 * @see org.springframework.orm.jpa.AbstractEntityManagerFactoryBean#setJpaProperties
 	 */
-	public void setShowSql(boolean showSql) {
+	public void setShowSql(boolean showSql)
+	{
 		this.showSql = showSql;
 	}
 
 	/**
 	 * Return whether to show SQL in the log (or in the console).
 	 */
-	protected boolean isShowSql() {
+	protected boolean isShowSql()
+	{
 		return this.showSql;
 	}
 
-
 	@Override
 	@Nullable
-	public String getPersistenceProviderRootPackage() {
+	public String getPersistenceProviderRootPackage()
+	{
 		return null;
 	}
 
 	@Override
-	public Map<String, ?> getJpaPropertyMap(PersistenceUnitInfo pui) {
+	public Map<String, ?> getJpaPropertyMap(PersistenceUnitInfo pui)
+	{
 		return getJpaPropertyMap();
 	}
 
 	@Override
-	public Map<String, ?> getJpaPropertyMap() {
+	public Map<String, ?> getJpaPropertyMap()
+	{
 		return Collections.emptyMap();
 	}
 
 	@Override
 	@Nullable
-	public JpaDialect getJpaDialect() {
+	public JpaDialect getJpaDialect()
+	{
 		return null;
 	}
 
 	@Override
-	public Class<? extends EntityManagerFactory> getEntityManagerFactoryInterface() {
+	public Class<? extends EntityManagerFactory> getEntityManagerFactoryInterface()
+	{
 		return EntityManagerFactory.class;
 	}
 
 	@Override
-	public Class<? extends EntityManager> getEntityManagerInterface() {
+	public Class<? extends EntityManager> getEntityManagerInterface()
+	{
 		return EntityManager.class;
 	}
 
 	@Override
-	public void postProcessEntityManagerFactory(EntityManagerFactory emf) {
+	public void postProcessEntityManagerFactory(EntityManagerFactory emf)
+	{
 	}
 
 }

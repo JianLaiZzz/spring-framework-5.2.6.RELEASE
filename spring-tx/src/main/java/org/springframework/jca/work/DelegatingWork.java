@@ -28,16 +28,19 @@ import org.springframework.util.Assert;
  * @see javax.resource.spi.work.Work
  * @see Runnable
  */
-public class DelegatingWork implements Work {
+public class DelegatingWork implements Work
+{
 
 	private final Runnable delegate;
 
-
 	/**
 	 * Create a new DelegatingWork.
-	 * @param delegate the Runnable implementation to delegate to
+	 * 
+	 * @param delegate
+	 *            the Runnable implementation to delegate to
 	 */
-	public DelegatingWork(Runnable delegate) {
+	public DelegatingWork(Runnable delegate)
+	{
 		Assert.notNull(delegate, "Delegate must not be null");
 		this.delegate = delegate;
 	}
@@ -45,16 +48,17 @@ public class DelegatingWork implements Work {
 	/**
 	 * Return the wrapped Runnable implementation.
 	 */
-	public final Runnable getDelegate() {
+	public final Runnable getDelegate()
+	{
 		return this.delegate;
 	}
-
 
 	/**
 	 * Delegates execution to the underlying Runnable.
 	 */
 	@Override
-	public void run() {
+	public void run()
+	{
 		this.delegate.run();
 	}
 
@@ -63,7 +67,8 @@ public class DelegatingWork implements Work {
 	 * to terminate based on some specific shutdown signal.
 	 */
 	@Override
-	public void release() {
+	public void release()
+	{
 	}
 
 }

@@ -23,24 +23,25 @@ import javax.jms.Queue;
  *
  * @author Rick Evans
  */
-public class StubQueue implements Queue {
+public class StubQueue implements Queue
+{
 
 	public static final String DEFAULT_QUEUE_NAME = "banjo";
 
-
 	private String queueName = DEFAULT_QUEUE_NAME;
 
-
-	public StubQueue() {
+	public StubQueue()
+	{
 	}
 
-	public StubQueue(String queueName) {
+	public StubQueue(String queueName)
+	{
 		this.queueName = queueName;
 	}
 
-
 	@Override
-	public String getQueueName() {
+	public String getQueueName()
+	{
 		return this.queueName;
 	}
 

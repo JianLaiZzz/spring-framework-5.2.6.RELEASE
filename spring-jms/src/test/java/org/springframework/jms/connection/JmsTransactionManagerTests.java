@@ -16,17 +16,15 @@
 
 package org.springframework.jms.connection;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+
+import javax.jms.*;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.jms.StubQueue;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.SessionCallback;
@@ -38,28 +36,23 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 /**
  * @author Juergen Hoeller
  * @since 26.07.2004
  */
-public class JmsTransactionManagerTests {
+public class JmsTransactionManagerTests
+{
 
 	@AfterEach
-	public void verifyTransactionSynchronizationManagerState() {
+	public void verifyTransactionSynchronizationManagerState()
+	{
 		assertThat(TransactionSynchronizationManager.getResourceMap().isEmpty()).isTrue();
 		assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isFalse();
 	}
 
-
 	@Test
-	public void testTransactionCommit() throws JMSException {
+	public void testTransactionCommit() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		Connection con = mock(Connection.class);
 		final Session session = mock(Session.class);
@@ -70,7 +63,8 @@ public class JmsTransactionManagerTests {
 		JmsTransactionManager tm = new JmsTransactionManager(cf);
 		TransactionStatus ts = tm.getTransaction(new DefaultTransactionDefinition());
 		JmsTemplate jt = new JmsTemplate(cf);
-		jt.execute((SessionCallback<Void>) sess -> {
+		jt.execute((SessionCallback<Void>) sess ->
+		{
 			assertThat(session).isSameAs(sess);
 			return null;
 		});
@@ -82,7 +76,8 @@ public class JmsTransactionManagerTests {
 	}
 
 	@Test
-	public void testTransactionRollback() throws JMSException {
+	public void testTransactionRollback() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		Connection con = mock(Connection.class);
 		final Session session = mock(Session.class);
@@ -93,7 +88,8 @@ public class JmsTransactionManagerTests {
 		JmsTransactionManager tm = new JmsTransactionManager(cf);
 		TransactionStatus ts = tm.getTransaction(new DefaultTransactionDefinition());
 		JmsTemplate jt = new JmsTemplate(cf);
-		jt.execute((SessionCallback<Void>) sess -> {
+		jt.execute((SessionCallback<Void>) sess ->
+		{
 			assertThat(session).isSameAs(sess);
 			return null;
 		});
@@ -105,7 +101,8 @@ public class JmsTransactionManagerTests {
 	}
 
 	@Test
-	public void testParticipatingTransactionWithCommit() throws JMSException {
+	public void testParticipatingTransactionWithCommit() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		Connection con = mock(Connection.class);
 		final Session session = mock(Session.class);
@@ -116,15 +113,19 @@ public class JmsTransactionManagerTests {
 		JmsTransactionManager tm = new JmsTransactionManager(cf);
 		TransactionStatus ts = tm.getTransaction(new DefaultTransactionDefinition());
 		final JmsTemplate jt = new JmsTemplate(cf);
-		jt.execute((SessionCallback<Void>) sess -> {
+		jt.execute((SessionCallback<Void>) sess ->
+		{
 			assertThat(session).isSameAs(sess);
 			return null;
 		});
 		TransactionTemplate tt = new TransactionTemplate(tm);
-		tt.execute(new TransactionCallbackWithoutResult() {
+		tt.execute(new TransactionCallbackWithoutResult()
+		{
 			@Override
-			protected void doInTransactionWithoutResult(TransactionStatus status) {
-				jt.execute((SessionCallback<Void>) sess -> {
+			protected void doInTransactionWithoutResult(TransactionStatus status)
+			{
+				jt.execute((SessionCallback<Void>) sess ->
+				{
 					assertThat(session).isSameAs(sess);
 					return null;
 				});
@@ -138,7 +139,8 @@ public class JmsTransactionManagerTests {
 	}
 
 	@Test
-	public void testParticipatingTransactionWithRollbackOnly() throws JMSException {
+	public void testParticipatingTransactionWithRollbackOnly() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		Connection con = mock(Connection.class);
 		final Session session = mock(Session.class);
@@ -149,23 +151,26 @@ public class JmsTransactionManagerTests {
 		JmsTransactionManager tm = new JmsTransactionManager(cf);
 		TransactionStatus ts = tm.getTransaction(new DefaultTransactionDefinition());
 		final JmsTemplate jt = new JmsTemplate(cf);
-		jt.execute((SessionCallback<Void>) sess -> {
+		jt.execute((SessionCallback<Void>) sess ->
+		{
 			assertThat(session).isSameAs(sess);
 			return null;
 		});
 		TransactionTemplate tt = new TransactionTemplate(tm);
-		tt.execute(new TransactionCallbackWithoutResult() {
+		tt.execute(new TransactionCallbackWithoutResult()
+		{
 			@Override
-			protected void doInTransactionWithoutResult(TransactionStatus status) {
-				jt.execute((SessionCallback<Void>) sess -> {
+			protected void doInTransactionWithoutResult(TransactionStatus status)
+			{
+				jt.execute((SessionCallback<Void>) sess ->
+				{
 					assertThat(session).isSameAs(sess);
 					return null;
 				});
 				status.setRollbackOnly();
 			}
 		});
-		assertThatExceptionOfType(UnexpectedRollbackException.class).isThrownBy(() ->
-				tm.commit(ts));
+		assertThatExceptionOfType(UnexpectedRollbackException.class).isThrownBy(() -> tm.commit(ts));
 
 		verify(session).rollback();
 		verify(session).close();
@@ -173,7 +178,8 @@ public class JmsTransactionManagerTests {
 	}
 
 	@Test
-	public void testSuspendedTransaction() throws JMSException {
+	public void testSuspendedTransaction() throws JMSException
+	{
 		final ConnectionFactory cf = mock(ConnectionFactory.class);
 		Connection con = mock(Connection.class);
 		final Session session = mock(Session.class);
@@ -186,22 +192,27 @@ public class JmsTransactionManagerTests {
 		JmsTransactionManager tm = new JmsTransactionManager(cf);
 		TransactionStatus ts = tm.getTransaction(new DefaultTransactionDefinition());
 		final JmsTemplate jt = new JmsTemplate(cf);
-		jt.execute((SessionCallback<Void>) sess -> {
+		jt.execute((SessionCallback<Void>) sess ->
+		{
 			assertThat(session).isSameAs(sess);
 			return null;
 		});
 		TransactionTemplate tt = new TransactionTemplate(tm);
 		tt.setPropagationBehavior(TransactionDefinition.PROPAGATION_NOT_SUPPORTED);
-		tt.execute(new TransactionCallbackWithoutResult() {
+		tt.execute(new TransactionCallbackWithoutResult()
+		{
 			@Override
-			protected void doInTransactionWithoutResult(TransactionStatus status) {
-				jt.execute((SessionCallback<Void>) sess -> {
+			protected void doInTransactionWithoutResult(TransactionStatus status)
+			{
+				jt.execute((SessionCallback<Void>) sess ->
+				{
 					assertThat(session).isNotSameAs(sess);
 					return null;
 				});
 			}
 		});
-		jt.execute((SessionCallback<Void>) sess -> {
+		jt.execute((SessionCallback<Void>) sess ->
+		{
 			assertThat(session).isSameAs(sess);
 			return null;
 		});
@@ -214,7 +225,8 @@ public class JmsTransactionManagerTests {
 	}
 
 	@Test
-	public void testTransactionSuspension() throws JMSException {
+	public void testTransactionSuspension() throws JMSException
+	{
 		final ConnectionFactory cf = mock(ConnectionFactory.class);
 		Connection con = mock(Connection.class);
 		final Session session = mock(Session.class);
@@ -226,22 +238,27 @@ public class JmsTransactionManagerTests {
 		JmsTransactionManager tm = new JmsTransactionManager(cf);
 		TransactionStatus ts = tm.getTransaction(new DefaultTransactionDefinition());
 		final JmsTemplate jt = new JmsTemplate(cf);
-		jt.execute((SessionCallback<Void>) sess -> {
+		jt.execute((SessionCallback<Void>) sess ->
+		{
 			assertThat(session).isSameAs(sess);
 			return null;
 		});
 		TransactionTemplate tt = new TransactionTemplate(tm);
 		tt.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-		tt.execute(new TransactionCallbackWithoutResult() {
+		tt.execute(new TransactionCallbackWithoutResult()
+		{
 			@Override
-			protected void doInTransactionWithoutResult(TransactionStatus status) {
-				jt.execute((SessionCallback<Void>) sess -> {
+			protected void doInTransactionWithoutResult(TransactionStatus status)
+			{
+				jt.execute((SessionCallback<Void>) sess ->
+				{
 					assertThat(session).isNotSameAs(sess);
 					return null;
 				});
 			}
 		});
-		jt.execute((SessionCallback<Void>) sess -> {
+		jt.execute((SessionCallback<Void>) sess ->
+		{
 			assertThat(session).isSameAs(sess);
 			return null;
 		});
@@ -255,7 +272,8 @@ public class JmsTransactionManagerTests {
 	}
 
 	@Test
-	public void testTransactionCommitWithMessageProducer() throws JMSException {
+	public void testTransactionCommitWithMessageProducer() throws JMSException
+	{
 		Destination dest = new StubQueue();
 
 		ConnectionFactory cf = mock(ConnectionFactory.class);
@@ -283,7 +301,8 @@ public class JmsTransactionManagerTests {
 	}
 
 	@Test
-	public void testLazyTransactionalSession() throws JMSException {
+	public void testLazyTransactionalSession() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		Connection con = mock(Connection.class);
 		final Session session = mock(Session.class);
@@ -296,7 +315,8 @@ public class JmsTransactionManagerTests {
 		given(con.createSession(true, Session.AUTO_ACKNOWLEDGE)).willReturn(session);
 
 		JmsTemplate jt = new JmsTemplate(cf);
-		jt.execute((SessionCallback<Void>) sess -> {
+		jt.execute((SessionCallback<Void>) sess ->
+		{
 			assertThat(session).isSameAs(sess);
 			return null;
 		});
@@ -308,7 +328,8 @@ public class JmsTransactionManagerTests {
 	}
 
 	@Test
-	public void testLazyWithoutSessionAccess() {
+	public void testLazyWithoutSessionAccess()
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 
 		JmsTransactionManager tm = new JmsTransactionManager(cf);

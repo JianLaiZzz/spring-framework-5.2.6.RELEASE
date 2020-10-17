@@ -16,24 +16,22 @@
 
 package org.springframework.transaction.annotation;
 
-import io.vavr.control.Try;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.*;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.testfixture.CallCountingTransactionManager;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import io.vavr.control.Try;
 
 /**
  * @author Rob Harrop
  * @author Juergen Hoeller
  */
-public class AnnotationTransactionInterceptorTests {
+public class AnnotationTransactionInterceptorTests
+{
 
 	private final CallCountingTransactionManager ptm = new CallCountingTransactionManager();
 
@@ -41,9 +39,9 @@ public class AnnotationTransactionInterceptorTests {
 
 	private final TransactionInterceptor ti = new TransactionInterceptor(this.ptm, this.source);
 
-
 	@Test
-	public void classLevelOnly() {
+	public void classLevelOnly()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new TestClassLevelOnly());
 		proxyFactory.addAdvice(this.ti);
@@ -64,7 +62,8 @@ public class AnnotationTransactionInterceptorTests {
 	}
 
 	@Test
-	public void withSingleMethodOverride() {
+	public void withSingleMethodOverride()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new TestWithSingleMethodOverride());
 		proxyFactory.addAdvice(this.ti);
@@ -85,12 +84,14 @@ public class AnnotationTransactionInterceptorTests {
 	}
 
 	@Test
-	public void withSingleMethodOverrideInverted() {
+	public void withSingleMethodOverrideInverted()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new TestWithSingleMethodOverrideInverted());
 		proxyFactory.addAdvice(this.ti);
 
-		TestWithSingleMethodOverrideInverted proxy = (TestWithSingleMethodOverrideInverted) proxyFactory.getProxy();
+		TestWithSingleMethodOverrideInverted proxy = (TestWithSingleMethodOverrideInverted) proxyFactory
+				.getProxy();
 
 		proxy.doSomething();
 		assertGetTransactionAndCommitCount(1);
@@ -106,7 +107,8 @@ public class AnnotationTransactionInterceptorTests {
 	}
 
 	@Test
-	public void withMultiMethodOverride() {
+	public void withMultiMethodOverride()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new TestWithMultiMethodOverride());
 		proxyFactory.addAdvice(this.ti);
@@ -127,50 +129,51 @@ public class AnnotationTransactionInterceptorTests {
 	}
 
 	@Test
-	public void withRollbackOnRuntimeException() {
+	public void withRollbackOnRuntimeException()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new TestWithExceptions());
 		proxyFactory.addAdvice(this.ti);
 
 		TestWithExceptions proxy = (TestWithExceptions) proxyFactory.getProxy();
 
-		assertThatIllegalStateException().isThrownBy(
-				proxy::doSomethingErroneous)
-			.satisfies(ex -> assertGetTransactionAndRollbackCount(1));
+		assertThatIllegalStateException().isThrownBy(proxy::doSomethingErroneous)
+				.satisfies(ex -> assertGetTransactionAndRollbackCount(1));
 
-		assertThatIllegalArgumentException().isThrownBy(
-				proxy::doSomethingElseErroneous)
-			.satisfies(ex -> assertGetTransactionAndRollbackCount(2));
+		assertThatIllegalArgumentException().isThrownBy(proxy::doSomethingElseErroneous)
+				.satisfies(ex -> assertGetTransactionAndRollbackCount(2));
 	}
 
 	@Test
-	public void withCommitOnCheckedException() {
+	public void withCommitOnCheckedException()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new TestWithExceptions());
 		proxyFactory.addAdvice(this.ti);
 
 		TestWithExceptions proxy = (TestWithExceptions) proxyFactory.getProxy();
 
-		assertThatExceptionOfType(Exception.class).isThrownBy(
-				proxy::doSomethingElseWithCheckedException)
-			.satisfies(ex -> assertGetTransactionAndCommitCount(1));
+		assertThatExceptionOfType(Exception.class).isThrownBy(proxy::doSomethingElseWithCheckedException)
+				.satisfies(ex -> assertGetTransactionAndCommitCount(1));
 	}
 
 	@Test
-	public void withRollbackOnCheckedExceptionAndRollbackRule() {
+	public void withRollbackOnCheckedExceptionAndRollbackRule()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new TestWithExceptions());
 		proxyFactory.addAdvice(this.ti);
 
 		TestWithExceptions proxy = (TestWithExceptions) proxyFactory.getProxy();
 
-		assertThatExceptionOfType(Exception.class).isThrownBy(
-				proxy::doSomethingElseWithCheckedExceptionAndRollbackRule)
-			.satisfies(ex -> assertGetTransactionAndRollbackCount(1));
+		assertThatExceptionOfType(Exception.class)
+				.isThrownBy(proxy::doSomethingElseWithCheckedExceptionAndRollbackRule)
+				.satisfies(ex -> assertGetTransactionAndRollbackCount(1));
 	}
 
 	@Test
-	public void withVavrTrySuccess() {
+	public void withVavrTrySuccess()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new TestWithVavrTry());
 		proxyFactory.addAdvice(this.ti);
@@ -182,7 +185,8 @@ public class AnnotationTransactionInterceptorTests {
 	}
 
 	@Test
-	public void withVavrTryRuntimeException() {
+	public void withVavrTryRuntimeException()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new TestWithVavrTry());
 		proxyFactory.addAdvice(this.ti);
@@ -194,7 +198,8 @@ public class AnnotationTransactionInterceptorTests {
 	}
 
 	@Test
-	public void withVavrTryCheckedException() {
+	public void withVavrTryCheckedException()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new TestWithVavrTry());
 		proxyFactory.addAdvice(this.ti);
@@ -206,7 +211,8 @@ public class AnnotationTransactionInterceptorTests {
 	}
 
 	@Test
-	public void withVavrTryCheckedExceptionAndRollbackRule() {
+	public void withVavrTryCheckedExceptionAndRollbackRule()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new TestWithVavrTry());
 		proxyFactory.addAdvice(this.ti);
@@ -218,7 +224,8 @@ public class AnnotationTransactionInterceptorTests {
 	}
 
 	@Test
-	public void withInterface() {
+	public void withInterface()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new TestWithInterfaceImpl());
 		proxyFactory.addInterface(TestWithInterface.class);
@@ -243,7 +250,8 @@ public class AnnotationTransactionInterceptorTests {
 	}
 
 	@Test
-	public void crossClassInterfaceMethodLevelOnJdkProxy() {
+	public void crossClassInterfaceMethodLevelOnJdkProxy()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new SomeServiceImpl());
 		proxyFactory.addInterface(SomeService.class);
@@ -262,7 +270,8 @@ public class AnnotationTransactionInterceptorTests {
 	}
 
 	@Test
-	public void crossClassInterfaceOnJdkProxy() {
+	public void crossClassInterfaceOnJdkProxy()
+	{
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.setTarget(new OtherServiceImpl());
 		proxyFactory.addInterface(OtherService.class);
@@ -275,7 +284,8 @@ public class AnnotationTransactionInterceptorTests {
 	}
 
 	@Test
-	public void withInterfaceOnTargetJdkProxy() {
+	public void withInterfaceOnTargetJdkProxy()
+	{
 		ProxyFactory targetFactory = new ProxyFactory();
 		targetFactory.setTarget(new TestWithInterfaceImpl());
 		targetFactory.addInterface(TestWithInterface.class);
@@ -304,7 +314,8 @@ public class AnnotationTransactionInterceptorTests {
 	}
 
 	@Test
-	public void withInterfaceOnTargetCglibProxy() {
+	public void withInterfaceOnTargetCglibProxy()
+	{
 		ProxyFactory targetFactory = new ProxyFactory();
 		targetFactory.setTarget(new TestWithInterfaceImpl());
 		targetFactory.setProxyTargetClass(true);
@@ -332,193 +343,217 @@ public class AnnotationTransactionInterceptorTests {
 		assertGetTransactionAndCommitCount(5);
 	}
 
-	private void assertGetTransactionAndCommitCount(int expectedCount) {
+	private void assertGetTransactionAndCommitCount(int expectedCount)
+	{
 		assertThat(this.ptm.begun).isEqualTo(expectedCount);
 		assertThat(this.ptm.commits).isEqualTo(expectedCount);
 	}
 
-	private void assertGetTransactionAndRollbackCount(int expectedCount) {
+	private void assertGetTransactionAndRollbackCount(int expectedCount)
+	{
 		assertThat(this.ptm.begun).isEqualTo(expectedCount);
 		assertThat(this.ptm.rollbacks).isEqualTo(expectedCount);
 	}
 
-
 	@Transactional
-	public static class TestClassLevelOnly {
+	public static class TestClassLevelOnly
+	{
 
-		public void doSomething() {
+		public void doSomething()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 		}
 
-		public void doSomethingElse() {
+		public void doSomethingElse()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 		}
 	}
 
-
 	@Transactional
-	public static class TestWithSingleMethodOverride {
+	public static class TestWithSingleMethodOverride
+	{
 
-		public void doSomething() {
+		public void doSomething()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 		}
 
 		@Transactional(readOnly = true)
-		public void doSomethingElse() {
+		public void doSomethingElse()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isTrue();
 		}
 
-		public void doSomethingCompletelyElse() {
+		public void doSomethingCompletelyElse()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 		}
 	}
-
 
 	@Transactional(readOnly = true)
-	public static class TestWithSingleMethodOverrideInverted {
+	public static class TestWithSingleMethodOverrideInverted
+	{
 
 		@Transactional
-		public void doSomething() {
+		public void doSomething()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 		}
 
-		public void doSomethingElse() {
+		public void doSomethingElse()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isTrue();
 		}
 
-		public void doSomethingCompletelyElse() {
+		public void doSomethingCompletelyElse()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isTrue();
 		}
 	}
 
-
 	@Transactional
-	public static class TestWithMultiMethodOverride {
+	public static class TestWithMultiMethodOverride
+	{
 
 		@Transactional(readOnly = true)
-		public void doSomething() {
+		public void doSomething()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isTrue();
 		}
 
 		@Transactional(readOnly = true)
-		public void doSomethingElse() {
+		public void doSomethingElse()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isTrue();
 		}
 
-		public void doSomethingCompletelyElse() {
+		public void doSomethingCompletelyElse()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 		}
 	}
 
-
 	@Transactional
-	public static class TestWithExceptions {
+	public static class TestWithExceptions
+	{
 
-		public void doSomethingErroneous() {
+		public void doSomethingErroneous()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 			throw new IllegalStateException();
 		}
 
-		public void doSomethingElseErroneous() {
+		public void doSomethingElseErroneous()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 			throw new IllegalArgumentException();
 		}
 
 		@Transactional
-		public void doSomethingElseWithCheckedException() throws Exception {
+		public void doSomethingElseWithCheckedException() throws Exception
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 			throw new Exception();
 		}
 
 		@Transactional(rollbackFor = Exception.class)
-		public void doSomethingElseWithCheckedExceptionAndRollbackRule() throws Exception {
+		public void doSomethingElseWithCheckedExceptionAndRollbackRule() throws Exception
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 			throw new Exception();
 		}
 	}
 
-
 	@Transactional
-	public static class TestWithVavrTry {
+	public static class TestWithVavrTry
+	{
 
-		public Try<String> doSomething() {
+		public Try<String> doSomething()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 			return Try.success("ok");
 		}
 
-		public Try<String> doSomethingErroneous() {
+		public Try<String> doSomethingErroneous()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 			return Try.failure(new IllegalStateException());
 		}
 
-		public Try<String> doSomethingErroneousWithCheckedException() {
+		public Try<String> doSomethingErroneousWithCheckedException()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 			return Try.failure(new Exception());
 		}
 
 		@Transactional(rollbackFor = Exception.class)
-		public Try<String> doSomethingErroneousWithCheckedExceptionAndRollbackRule() {
+		public Try<String> doSomethingErroneousWithCheckedExceptionAndRollbackRule()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 			return Try.failure(new Exception());
 		}
 	}
 
-
-	public interface BaseInterface {
+	public interface BaseInterface
+	{
 
 		void doSomething();
 	}
 
-
 	@Transactional
-	public interface TestWithInterface extends BaseInterface {
+	public interface TestWithInterface extends BaseInterface
+	{
 
 		@Transactional(readOnly = true)
 		void doSomethingElse();
 
-		default void doSomethingDefault() {
+		default void doSomethingDefault()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 		}
 	}
 
-
-	public static class TestWithInterfaceImpl implements TestWithInterface {
+	public static class TestWithInterfaceImpl implements TestWithInterface
+	{
 
 		@Override
-		public void doSomething() {
+		public void doSomething()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 		}
 
 		@Override
-		public void doSomethingElse() {
+		public void doSomethingElse()
+		{
 			assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 			assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isTrue();
 		}
 	}
 
-
-	public interface SomeService {
+	public interface SomeService
+	{
 
 		void foo();
 
@@ -529,36 +564,40 @@ public class AnnotationTransactionInterceptorTests {
 		void fooBar();
 	}
 
-
-	public static class SomeServiceImpl implements SomeService {
+	public static class SomeServiceImpl implements SomeService
+	{
 
 		@Override
-		public void bar() {
+		public void bar()
+		{
 		}
 
 		@Override
 		@Transactional
-		public void foo() {
+		public void foo()
+		{
 		}
 
 		@Override
 		@Transactional(readOnly = false)
-		public void fooBar() {
+		public void fooBar()
+		{
 		}
 	}
 
-
-	public interface OtherService {
+	public interface OtherService
+	{
 
 		void foo();
 	}
 
-
 	@Transactional
-	public static class OtherServiceImpl implements OtherService {
+	public static class OtherServiceImpl implements OtherService
+	{
 
 		@Override
-		public void foo() {
+		public void foo()
+		{
 		}
 	}
 

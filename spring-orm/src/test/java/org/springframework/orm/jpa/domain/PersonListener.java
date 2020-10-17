@@ -24,13 +24,15 @@ import org.springframework.context.ApplicationContext;
 /**
  * @author Juergen Hoeller
  */
-public class PersonListener {
+public class PersonListener
+{
 
 	@Autowired
 	ApplicationContext context;
 
 	@PostLoad
-	public void postLoad(Person person) {
+	public void postLoad(Person person)
+	{
 		person.postLoaded = this.context;
 	}
 

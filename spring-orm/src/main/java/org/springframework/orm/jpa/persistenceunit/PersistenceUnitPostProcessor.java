@@ -26,13 +26,16 @@ package org.springframework.orm.jpa.persistenceunit;
  * @see DefaultPersistenceUnitManager#setPersistenceUnitPostProcessors
  * @see org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean#setPersistenceUnitPostProcessors
  */
-public interface PersistenceUnitPostProcessor {
+public interface PersistenceUnitPostProcessor
+{
 
 	/**
 	 * Post-process the given PersistenceUnitInfo, for example registering
 	 * further entity classes and jar files.
-	 * @param pui the chosen PersistenceUnitInfo, as read from {@code persistence.xml}.
-	 * Passed in as MutablePersistenceUnitInfo.
+	 * 
+	 * @param pui
+	 *            the chosen PersistenceUnitInfo, as read from {@code persistence.xml}.
+	 *            Passed in as MutablePersistenceUnitInfo.
 	 */
 	void postProcessPersistenceUnitInfo(MutablePersistenceUnitInfo pui);
 

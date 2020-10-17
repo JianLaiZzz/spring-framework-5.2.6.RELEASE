@@ -25,13 +25,15 @@ import org.springframework.transaction.TransactionStatus;
  * Used for testing only (for example, when we must replace the
  * behavior of a PlatformTransactionManager bean we don't have access to).
  *
- * <p>Allows behavior of an entire class to change with static delegate change.
+ * <p>
+ * Allows behavior of an entire class to change with static delegate change.
  * Not multi-threaded.
  *
  * @author Rod Johnson
  * @since 26.04.2003
  */
-public class PlatformTransactionManagerFacade implements PlatformTransactionManager {
+public class PlatformTransactionManagerFacade implements PlatformTransactionManager
+{
 
 	/**
 	 * This member can be changed to change behavior class-wide.
@@ -39,17 +41,20 @@ public class PlatformTransactionManagerFacade implements PlatformTransactionMana
 	public static PlatformTransactionManager delegate;
 
 	@Override
-	public TransactionStatus getTransaction(@Nullable TransactionDefinition definition) {
+	public TransactionStatus getTransaction(@Nullable TransactionDefinition definition)
+	{
 		return delegate.getTransaction(definition);
 	}
 
 	@Override
-	public void commit(TransactionStatus status) {
+	public void commit(TransactionStatus status)
+	{
 		delegate.commit(status);
 	}
 
 	@Override
-	public void rollback(TransactionStatus status) {
+	public void rollback(TransactionStatus status)
+	{
 		delegate.rollback(status);
 	}
 

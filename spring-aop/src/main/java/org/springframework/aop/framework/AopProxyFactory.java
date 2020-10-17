@@ -20,7 +20,8 @@ package org.springframework.aop.framework;
  * Interface to be implemented by factories that are able to create
  * AOP proxies based on {@link AdvisedSupport} configuration objects.
  *
- * <p>Proxies should observe the following contract:
+ * <p>
+ * Proxies should observe the following contract:
  * <ul>
  * <li>They should implement all interfaces that the configuration
  * indicates should be proxied.
@@ -33,7 +34,8 @@ package org.springframework.aop.framework;
  * are thread-safe.
  * </ul>
  *
- * <p>Proxies may or may not allow advice changes to be made.
+ * <p>
+ * Proxies may or may not allow advice changes to be made.
  * If they do not permit advice changes (for example, because
  * the configuration was frozen) a proxy should throw an
  * {@link AopConfigException} on an attempted advice change.
@@ -41,14 +43,18 @@ package org.springframework.aop.framework;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
-public interface AopProxyFactory {
+public interface AopProxyFactory
+{
 
 	/**
 	 * Create an {@link AopProxy} for the given AOP configuration.
-	 * @param config the AOP configuration in the form of an
-	 * AdvisedSupport object
+	 * 
+	 * @param config
+	 *            the AOP configuration in the form of an
+	 *            AdvisedSupport object
 	 * @return the corresponding AOP proxy
-	 * @throws AopConfigException if the configuration is invalid
+	 * @throws AopConfigException
+	 *             if the configuration is invalid
 	 */
 	AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException;
 

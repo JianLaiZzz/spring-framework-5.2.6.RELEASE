@@ -24,7 +24,8 @@ import org.springframework.transaction.TransactionTimedOutException;
 /**
  * Convenient base class for resource holders.
  *
- * <p>Features rollback-only support for participating transactions.
+ * <p>
+ * Features rollback-only support for participating transactions.
  * Can expire after a certain number of seconds or milliseconds
  * in order to determine a transactional timeout.
  *
@@ -33,7 +34,8 @@ import org.springframework.transaction.TransactionTimedOutException;
  * @see org.springframework.jdbc.datasource.DataSourceTransactionManager#doBegin
  * @see org.springframework.jdbc.datasource.DataSourceUtils#applyTransactionTimeout
  */
-public abstract class ResourceHolderSupport implements ResourceHolder {
+public abstract class ResourceHolderSupport implements ResourceHolder
+{
 
 	private boolean synchronizedWithTransaction = false;
 
@@ -46,85 +48,103 @@ public abstract class ResourceHolderSupport implements ResourceHolder {
 
 	private boolean isVoid = false;
 
-
 	/**
 	 * Mark the resource as synchronized with a transaction.
 	 */
-	public void setSynchronizedWithTransaction(boolean synchronizedWithTransaction) {
+	public void setSynchronizedWithTransaction(boolean synchronizedWithTransaction)
+	{
 		this.synchronizedWithTransaction = synchronizedWithTransaction;
 	}
 
 	/**
 	 * Return whether the resource is synchronized with a transaction.
 	 */
-	public boolean isSynchronizedWithTransaction() {
+	public boolean isSynchronizedWithTransaction()
+	{
 		return this.synchronizedWithTransaction;
 	}
 
 	/**
 	 * Mark the resource transaction as rollback-only.
 	 */
-	public void setRollbackOnly() {
+	public void setRollbackOnly()
+	{
 		this.rollbackOnly = true;
 	}
 
 	/**
 	 * Reset the rollback-only status for this resource transaction.
-	 * <p>Only really intended to be called after custom rollback steps which
+	 * <p>
+	 * Only really intended to be called after custom rollback steps which
 	 * keep the original resource in action, e.g. in case of a savepoint.
+	 * 
 	 * @since 5.0
 	 * @see org.springframework.transaction.SavepointManager#rollbackToSavepoint
 	 */
-	public void resetRollbackOnly() {
+	public void resetRollbackOnly()
+	{
 		this.rollbackOnly = false;
 	}
 
 	/**
 	 * Return whether the resource transaction is marked as rollback-only.
 	 */
-	public boolean isRollbackOnly() {
+	public boolean isRollbackOnly()
+	{
 		return this.rollbackOnly;
 	}
 
 	/**
 	 * Set the timeout for this object in seconds.
-	 * @param seconds number of seconds until expiration
+	 * 
+	 * @param seconds
+	 *            number of seconds until expiration
 	 */
-	public void setTimeoutInSeconds(int seconds) {
+	public void setTimeoutInSeconds(int seconds)
+	{
 		setTimeoutInMillis(seconds * 1000L);
 	}
 
 	/**
 	 * Set the timeout for this object in milliseconds.
-	 * @param millis number of milliseconds until expiration
+	 * 
+	 * @param millis
+	 *            number of milliseconds until expiration
 	 */
-	public void setTimeoutInMillis(long millis) {
+	public void setTimeoutInMillis(long millis)
+	{
 		this.deadline = new Date(System.currentTimeMillis() + millis);
 	}
 
 	/**
 	 * Return whether this object has an associated timeout.
 	 */
-	public boolean hasTimeout() {
+	public boolean hasTimeout()
+	{
 		return (this.deadline != null);
 	}
 
 	/**
 	 * Return the expiration deadline of this object.
+	 * 
 	 * @return the deadline as Date object
 	 */
 	@Nullable
-	public Date getDeadline() {
+	public Date getDeadline()
+	{
 		return this.deadline;
 	}
 
 	/**
 	 * Return the time to live for this object in seconds.
 	 * Rounds up eagerly, e.g. 9.00001 still to 10.
+	 * 
 	 * @return number of seconds until expiration
-	 * @throws TransactionTimedOutException if the deadline has already been reached
+	 * @throws TransactionTimedOutException
+	 *             if the deadline has already been reached
 	 */
-	public int getTimeToLiveInSeconds() {
+	public int getTimeToLiveInSeconds()
+	{
 		double diff = ((double) getTimeToLiveInMillis()) / 1000;
 		int secs = (int) Math.ceil(diff);
 		checkTransactionTimeout(secs <= 0);
@@ -133,11 +153,15 @@ public abstract class ResourceHolderSupport implements ResourceHolder {
 
 	/**
 	 * Return the time to live for this object in milliseconds.
+	 * 
 	 * @return number of milliseconds until expiration
-	 * @throws TransactionTimedOutException if the deadline has already been reached
+	 * @throws TransactionTimedOutException
+	 *             if the deadline has already been reached
 	 */
-	public long getTimeToLiveInMillis() throws TransactionTimedOutException{
-		if (this.deadline == null) {
+	public long getTimeToLiveInMillis() throws TransactionTimedOutException
+	{
+		if (this.deadline == null)
+		{
 			throw new IllegalStateException("No timeout specified for this resource holder");
 		}
 		long timeToLive = this.deadline.getTime() - System.currentTimeMillis();
@@ -149,10 +173,13 @@ public abstract class ResourceHolderSupport implements ResourceHolder {
 	 * Set the transaction rollback-only if the deadline has been reached,
 	 * and throw a TransactionTimedOutException.
 	 */
-	private void checkTransactionTimeout(boolean deadlineReached) throws TransactionTimedOutException {
-		if (deadlineReached) {
+	private void checkTransactionTimeout(boolean deadlineReached) throws TransactionTimedOutException
+	{
+		if (deadlineReached)
+		{
 			setRollbackOnly();
-			throw new TransactionTimedOutException("Transaction timed out: deadline was " + this.deadline);
+			throw new TransactionTimedOutException(
+					"Transaction timed out: deadline was " + this.deadline);
 		}
 	}
 
@@ -160,7 +187,8 @@ public abstract class ResourceHolderSupport implements ResourceHolder {
 	 * Increase the reference count by one because the holder has been requested
 	 * (i.e. someone requested the resource held by it).
 	 */
-	public void requested() {
+	public void requested()
+	{
 		this.referenceCount++;
 	}
 
@@ -168,21 +196,24 @@ public abstract class ResourceHolderSupport implements ResourceHolder {
 	 * Decrease the reference count by one because the holder has been released
 	 * (i.e. someone released the resource held by it).
 	 */
-	public void released() {
+	public void released()
+	{
 		this.referenceCount--;
 	}
 
 	/**
 	 * Return whether there are still open references to this holder.
 	 */
-	public boolean isOpen() {
+	public boolean isOpen()
+	{
 		return (this.referenceCount > 0);
 	}
 
 	/**
 	 * Clear the transactional state of this resource holder.
 	 */
-	public void clear() {
+	public void clear()
+	{
 		this.synchronizedWithTransaction = false;
 		this.rollbackOnly = false;
 		this.deadline = null;
@@ -192,18 +223,21 @@ public abstract class ResourceHolderSupport implements ResourceHolder {
 	 * Reset this resource holder - transactional state as well as reference count.
 	 */
 	@Override
-	public void reset() {
+	public void reset()
+	{
 		clear();
 		this.referenceCount = 0;
 	}
 
 	@Override
-	public void unbound() {
+	public void unbound()
+	{
 		this.isVoid = true;
 	}
 
 	@Override
-	public boolean isVoid() {
+	public boolean isVoid()
+	{
 		return this.isVoid;
 	}
 

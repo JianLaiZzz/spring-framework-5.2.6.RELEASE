@@ -16,13 +16,16 @@
 
 package org.springframework.aop.framework;
 
-public class ClassWithConstructor {
+public class ClassWithConstructor
+{
 
-	public ClassWithConstructor(Object object) {
+	public ClassWithConstructor(Object object)
+	{
 
 	}
 
-	public void method() {
+	public void method()
+	{
 
 	}
 }

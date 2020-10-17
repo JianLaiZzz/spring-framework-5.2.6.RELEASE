@@ -23,11 +23,13 @@ package org.springframework.transaction;
  * @since 5.2
  * @see TransactionDefinition#withDefaults()
  */
-final class StaticTransactionDefinition implements TransactionDefinition {
+final class StaticTransactionDefinition implements TransactionDefinition
+{
 
 	static final StaticTransactionDefinition INSTANCE = new StaticTransactionDefinition();
 
-	private StaticTransactionDefinition() {
+	private StaticTransactionDefinition()
+	{
 	}
 
 }

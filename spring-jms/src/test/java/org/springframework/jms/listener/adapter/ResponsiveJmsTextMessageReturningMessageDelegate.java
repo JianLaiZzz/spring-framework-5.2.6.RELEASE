@@ -23,7 +23,8 @@ import javax.jms.TextMessage;
  *
  * @author Rick Evans
  */
-public interface ResponsiveJmsTextMessageReturningMessageDelegate {
+public interface ResponsiveJmsTextMessageReturningMessageDelegate
+{
 
 	TextMessage handleMessage(TextMessage message);
 

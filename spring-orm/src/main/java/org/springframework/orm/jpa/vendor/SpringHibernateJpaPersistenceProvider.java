@@ -27,7 +27,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl;
 import org.hibernate.jpa.boot.internal.PersistenceUnitInfoDescriptor;
-
 import org.springframework.orm.jpa.persistenceunit.SmartPersistenceUnitInfo;
 
 /**
@@ -40,22 +39,27 @@ import org.springframework.orm.jpa.persistenceunit.SmartPersistenceUnitInfo;
  * @since 4.1
  * @see Configuration#addPackage
  */
-class SpringHibernateJpaPersistenceProvider extends HibernatePersistenceProvider {
+class SpringHibernateJpaPersistenceProvider extends HibernatePersistenceProvider
+{
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map properties) {
+	public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info,
+			Map properties)
+	{
 		final List<String> mergedClassesAndPackages = new ArrayList<>(info.getManagedClassNames());
-		if (info instanceof SmartPersistenceUnitInfo) {
+		if (info instanceof SmartPersistenceUnitInfo)
+		{
 			mergedClassesAndPackages.addAll(((SmartPersistenceUnitInfo) info).getManagedPackages());
 		}
-		return new EntityManagerFactoryBuilderImpl(
-				new PersistenceUnitInfoDescriptor(info) {
-					@Override
-					public List<String> getManagedClassNames() {
-						return mergedClassesAndPackages;
-					}
-				}, properties).build();
+		return new EntityManagerFactoryBuilderImpl(new PersistenceUnitInfoDescriptor(info)
+		{
+			@Override
+			public List<String> getManagedClassNames()
+			{
+				return mergedClassesAndPackages;
+			}
+		}, properties).build();
 	}
 
 }

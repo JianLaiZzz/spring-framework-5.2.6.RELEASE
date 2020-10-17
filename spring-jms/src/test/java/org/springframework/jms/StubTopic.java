@@ -23,24 +23,25 @@ import javax.jms.Topic;
  *
  * @author Rick Evans
  */
-public class StubTopic implements Topic {
+public class StubTopic implements Topic
+{
 
 	public static final String DEFAULT_TOPIC_NAME = "banjo";
 
-
 	private String topicName = DEFAULT_TOPIC_NAME;
 
-
-	public StubTopic() {
+	public StubTopic()
+	{
 	}
 
-	public StubTopic(String topicName) {
+	public StubTopic(String topicName)
+	{
 		this.topicName = topicName;
 	}
 
-
 	@Override
-	public String getTopicName() {
+	public String getTopicName()
+	{
 		return this.topicName;
 	}
 

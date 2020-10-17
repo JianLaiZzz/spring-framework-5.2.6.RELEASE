@@ -16,33 +16,34 @@
 
 package org.springframework.aop.framework;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.core.testfixture.io.ResourceTestUtils.qualifiedResource;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.Resource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.core.testfixture.io.ResourceTestUtils.qualifiedResource;
 
 /**
  * @author Juergen Hoeller
  * @author Chris Beams
  * @since 03.09.2004
  */
-public class PrototypeTargetTests {
+public class PrototypeTargetTests
+{
 
 	private static final Resource CONTEXT = qualifiedResource(PrototypeTargetTests.class, "context.xml");
 
-
 	@Test
-	public void testPrototypeProxyWithPrototypeTarget() {
+	public void testPrototypeProxyWithPrototypeTarget()
+	{
 		TestBeanImpl.constructionCount = 0;
 		DefaultListableBeanFactory bf = new DefaultListableBeanFactory();
 		new XmlBeanDefinitionReader(bf).loadBeanDefinitions(CONTEXT);
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 10; i++)
+		{
 			TestBean tb = (TestBean) bf.getBean("testBeanPrototype");
 			tb.doSomething();
 		}
@@ -52,11 +53,13 @@ public class PrototypeTargetTests {
 	}
 
 	@Test
-	public void testSingletonProxyWithPrototypeTarget() {
+	public void testSingletonProxyWithPrototypeTarget()
+	{
 		TestBeanImpl.constructionCount = 0;
 		DefaultListableBeanFactory bf = new DefaultListableBeanFactory();
 		new XmlBeanDefinitionReader(bf).loadBeanDefinitions(CONTEXT);
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 10; i++)
+		{
 			TestBean tb = (TestBean) bf.getBean("testBeanSingleton");
 			tb.doSomething();
 		}
@@ -65,33 +68,36 @@ public class PrototypeTargetTests {
 		assertThat(interceptor.invocationCount).isEqualTo(10);
 	}
 
-
-	public interface TestBean {
+	public interface TestBean
+	{
 
 		void doSomething();
 	}
 
-
-	public static class TestBeanImpl implements TestBean {
+	public static class TestBeanImpl implements TestBean
+	{
 
 		private static int constructionCount = 0;
 
-		public TestBeanImpl() {
+		public TestBeanImpl()
+		{
 			constructionCount++;
 		}
 
 		@Override
-		public void doSomething() {
+		public void doSomething()
+		{
 		}
 	}
 
-
-	public static class TestInterceptor implements MethodInterceptor {
+	public static class TestInterceptor implements MethodInterceptor
+	{
 
 		private int invocationCount = 0;
 
 		@Override
-		public Object invoke(MethodInvocation methodInvocation) throws Throwable {
+		public Object invoke(MethodInvocation methodInvocation) throws Throwable
+		{
 			invocationCount++;
 			return methodInvocation.proceed();
 		}

@@ -26,35 +26,42 @@ import javax.jms.JMSException;
  *
  * @author Mark Fisher
  */
-public class StubConnectionFactory implements ConnectionFactory {
+public class StubConnectionFactory implements ConnectionFactory
+{
 
 	@Override
-	public Connection createConnection() throws JMSException {
+	public Connection createConnection() throws JMSException
+	{
 		return null;
 	}
 
 	@Override
-	public Connection createConnection(String username, String password) throws JMSException {
+	public Connection createConnection(String username, String password) throws JMSException
+	{
 		return null;
 	}
 
 	@Override
-	public JMSContext createContext() {
+	public JMSContext createContext()
+	{
 		return null;
 	}
 
 	@Override
-	public JMSContext createContext(String userName, String password) {
+	public JMSContext createContext(String userName, String password)
+	{
 		return null;
 	}
 
 	@Override
-	public JMSContext createContext(String userName, String password, int sessionMode) {
+	public JMSContext createContext(String userName, String password, int sessionMode)
+	{
 		return null;
 	}
 
 	@Override
-	public JMSContext createContext(int sessionMode) {
+	public JMSContext createContext(int sessionMode)
+	{
 		return null;
 	}
 

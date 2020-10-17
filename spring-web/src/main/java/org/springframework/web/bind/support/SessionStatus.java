@@ -30,7 +30,8 @@ package org.springframework.web.bind.support;
  * @see org.springframework.web.bind.annotation.RequestMapping
  * @see org.springframework.web.bind.annotation.SessionAttributes
  */
-public interface SessionStatus {
+public interface SessionStatus
+{
 
 	/**
 	 * Mark the current handler's session processing as complete, allowing for

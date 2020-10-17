@@ -35,7 +35,9 @@ import org.springframework.util.ClassUtils;
  * @see TransactionManagementConfigUtils#TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME
  * @see TransactionManagementConfigUtils#JTA_TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME
  */
-public class TransactionManagementConfigurationSelector extends AdviceModeImportSelector<EnableTransactionManagement> {
+public class TransactionManagementConfigurationSelector
+		extends AdviceModeImportSelector<EnableTransactionManagement>
+{
 
 	/**
 	 * Returns {@link ProxyTransactionManagementConfiguration} or
@@ -44,22 +46,25 @@ public class TransactionManagementConfigurationSelector extends AdviceModeImport
 	 * respectively.
 	 */
 	@Override
-	protected String[] selectImports(AdviceMode adviceMode) {
-		switch (adviceMode) {
-			case PROXY:
-				return new String[] {AutoProxyRegistrar.class.getName(),
-						ProxyTransactionManagementConfiguration.class.getName()};
-			case ASPECTJ:
-				return new String[] {determineTransactionAspectClass()};
-			default:
-				return null;
+	protected String[] selectImports(AdviceMode adviceMode)
+	{
+		switch (adviceMode)
+		{
+		case PROXY:
+			return new String[] { AutoProxyRegistrar.class.getName(),
+					ProxyTransactionManagementConfiguration.class.getName() };
+		case ASPECTJ:
+			return new String[] { determineTransactionAspectClass() };
+		default:
+			return null;
 		}
 	}
 
-	private String determineTransactionAspectClass() {
-		return (ClassUtils.isPresent("javax.transaction.Transactional", getClass().getClassLoader()) ?
-				TransactionManagementConfigUtils.JTA_TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME :
-				TransactionManagementConfigUtils.TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME);
+	private String determineTransactionAspectClass()
+	{
+		return (ClassUtils.isPresent("javax.transaction.Transactional", getClass().getClassLoader())
+				? TransactionManagementConfigUtils.JTA_TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME
+				: TransactionManagementConfigUtils.TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME);
 	}
 
 }

@@ -26,7 +26,6 @@ import javax.faces.context.FacesContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 import org.springframework.web.context.WebApplicationContext;
@@ -36,67 +35,82 @@ import org.springframework.web.jsf.FacesContextUtils;
  * Special JSF {@code ELResolver} that exposes the Spring {@code WebApplicationContext}
  * instance under a variable named "webApplicationContext".
  *
- * <p>In contrast to {@link SpringBeanFacesELResolver}, this ELResolver variant
+ * <p>
+ * In contrast to {@link SpringBeanFacesELResolver}, this ELResolver variant
  * does <i>not</i> resolve JSF variable names as Spring bean names. It rather
  * exposes Spring's root WebApplicationContext <i>itself</i> under a special name,
  * and is able to resolve "webApplicationContext.mySpringManagedBusinessObject"
  * dereferences to Spring-defined beans in that application context.
  *
- * <p>Configure this resolver in your {@code faces-config.xml} file as follows:
+ * <p>
+ * Configure this resolver in your {@code faces-config.xml} file as follows:
  *
  * <pre class="code">
  * &lt;application>
  *   ...
  *   &lt;el-resolver>org.springframework.web.jsf.el.WebApplicationContextFacesELResolver&lt;/el-resolver>
- * &lt;/application></pre>
+ * &lt;/application>
+ * </pre>
  *
  * @author Juergen Hoeller
  * @since 2.5
  * @see SpringBeanFacesELResolver
  * @see org.springframework.web.jsf.FacesContextUtils#getWebApplicationContext
  */
-public class WebApplicationContextFacesELResolver extends ELResolver {
+public class WebApplicationContextFacesELResolver extends ELResolver
+{
 
 	/**
 	 * Name of the exposed WebApplicationContext variable: "webApplicationContext".
 	 */
 	public static final String WEB_APPLICATION_CONTEXT_VARIABLE_NAME = "webApplicationContext";
 
-
 	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-
 	@Override
 	@Nullable
-	public Object getValue(ELContext elContext, @Nullable Object base, Object property) throws ELException {
-		if (base != null) {
-			if (base instanceof WebApplicationContext) {
+	public Object getValue(ELContext elContext, @Nullable Object base, Object property) throws ELException
+	{
+		if (base != null)
+		{
+			if (base instanceof WebApplicationContext)
+			{
 				WebApplicationContext wac = (WebApplicationContext) base;
 				String beanName = property.toString();
-				if (logger.isTraceEnabled()) {
-					logger.trace("Attempting to resolve property '" + beanName + "' in root WebApplicationContext");
+				if (logger.isTraceEnabled())
+				{
+					logger.trace("Attempting to resolve property '" + beanName
+							+ "' in root WebApplicationContext");
 				}
-				if (wac.containsBean(beanName)) {
-					if (logger.isDebugEnabled()) {
-						logger.debug("Successfully resolved property '" + beanName + "' in root WebApplicationContext");
+				if (wac.containsBean(beanName))
+				{
+					if (logger.isDebugEnabled())
+					{
+						logger.debug("Successfully resolved property '" + beanName
+								+ "' in root WebApplicationContext");
 					}
 					elContext.setPropertyResolved(true);
-					try {
+					try
+					{
 						return wac.getBean(beanName);
 					}
-					catch (BeansException ex) {
+					catch (BeansException ex)
+					{
 						throw new ELException(ex);
 					}
 				}
-				else {
+				else
+				{
 					// Mimic standard JSF/JSP behavior when base is a Map by returning null.
 					return null;
 				}
 			}
 		}
-		else {
-			if (WEB_APPLICATION_CONTEXT_VARIABLE_NAME.equals(property)) {
+		else
+		{
+			if (WEB_APPLICATION_CONTEXT_VARIABLE_NAME.equals(property))
+			{
 				elContext.setPropertyResolved(true);
 				return getWebApplicationContext(elContext);
 			}
@@ -107,34 +121,48 @@ public class WebApplicationContextFacesELResolver extends ELResolver {
 
 	@Override
 	@Nullable
-	public Class<?> getType(ELContext elContext, @Nullable Object base, Object property) throws ELException {
-		if (base != null) {
-			if (base instanceof WebApplicationContext) {
+	public Class<?> getType(ELContext elContext, @Nullable Object base, Object property)
+			throws ELException
+	{
+		if (base != null)
+		{
+			if (base instanceof WebApplicationContext)
+			{
 				WebApplicationContext wac = (WebApplicationContext) base;
 				String beanName = property.toString();
-				if (logger.isDebugEnabled()) {
-					logger.debug("Attempting to resolve property '" + beanName + "' in root WebApplicationContext");
+				if (logger.isDebugEnabled())
+				{
+					logger.debug("Attempting to resolve property '" + beanName
+							+ "' in root WebApplicationContext");
 				}
-				if (wac.containsBean(beanName)) {
-					if (logger.isDebugEnabled()) {
-						logger.debug("Successfully resolved property '" + beanName + "' in root WebApplicationContext");
+				if (wac.containsBean(beanName))
+				{
+					if (logger.isDebugEnabled())
+					{
+						logger.debug("Successfully resolved property '" + beanName
+								+ "' in root WebApplicationContext");
 					}
 					elContext.setPropertyResolved(true);
-					try {
+					try
+					{
 						return wac.getType(beanName);
 					}
-					catch (BeansException ex) {
+					catch (BeansException ex)
+					{
 						throw new ELException(ex);
 					}
 				}
-				else {
+				else
+				{
 					// Mimic standard JSF/JSP behavior when base is a Map by returning null.
 					return null;
 				}
 			}
 		}
-		else {
-			if (WEB_APPLICATION_CONTEXT_VARIABLE_NAME.equals(property)) {
+		else
+		{
+			if (WEB_APPLICATION_CONTEXT_VARIABLE_NAME.equals(property))
+			{
 				elContext.setPropertyResolved(true);
 				return WebApplicationContext.class;
 			}
@@ -144,12 +172,16 @@ public class WebApplicationContextFacesELResolver extends ELResolver {
 	}
 
 	@Override
-	public void setValue(ELContext elContext, Object base, Object property, Object value) throws ELException {
+	public void setValue(ELContext elContext, Object base, Object property, Object value)
+			throws ELException
+	{
 	}
 
 	@Override
-	public boolean isReadOnly(ELContext elContext, Object base, Object property) throws ELException {
-		if (base instanceof WebApplicationContext) {
+	public boolean isReadOnly(ELContext elContext, Object base, Object property) throws ELException
+	{
+		if (base instanceof WebApplicationContext)
+		{
 			elContext.setPropertyResolved(true);
 			return true;
 		}
@@ -158,26 +190,31 @@ public class WebApplicationContextFacesELResolver extends ELResolver {
 
 	@Override
 	@Nullable
-	public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext elContext, Object base) {
+	public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext elContext, Object base)
+	{
 		return null;
 	}
 
 	@Override
-	public Class<?> getCommonPropertyType(ELContext elContext, Object base) {
+	public Class<?> getCommonPropertyType(ELContext elContext, Object base)
+	{
 		return Object.class;
 	}
 
-
 	/**
 	 * Retrieve the {@link WebApplicationContext} reference to expose.
-	 * <p>The default implementation delegates to {@link FacesContextUtils},
+	 * <p>
+	 * The default implementation delegates to {@link FacesContextUtils},
 	 * returning {@code null} if no {@code WebApplicationContext} found.
-	 * @param elContext the current JSF ELContext
+	 * 
+	 * @param elContext
+	 *            the current JSF ELContext
 	 * @return the Spring web application context
 	 * @see org.springframework.web.jsf.FacesContextUtils#getWebApplicationContext
 	 */
 	@Nullable
-	protected WebApplicationContext getWebApplicationContext(ELContext elContext) {
+	protected WebApplicationContext getWebApplicationContext(ELContext elContext)
+	{
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		return FacesContextUtils.getRequiredWebApplicationContext(facesContext);
 	}

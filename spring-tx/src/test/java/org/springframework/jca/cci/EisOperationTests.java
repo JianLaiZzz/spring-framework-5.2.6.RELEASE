@@ -16,33 +16,29 @@
 
 package org.springframework.jca.cci;
 
-import javax.resource.ResourceException;
-import javax.resource.cci.Connection;
-import javax.resource.cci.ConnectionFactory;
-import javax.resource.cci.Interaction;
-import javax.resource.cci.InteractionSpec;
-import javax.resource.cci.Record;
-import javax.resource.cci.RecordFactory;
-
-import org.junit.jupiter.api.Test;
-
-import org.springframework.jca.cci.core.RecordCreator;
-import org.springframework.jca.cci.object.MappingRecordOperation;
-import org.springframework.jca.cci.object.SimpleRecordOperation;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import javax.resource.ResourceException;
+import javax.resource.cci.*;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.jca.cci.core.RecordCreator;
+import org.springframework.jca.cci.object.MappingRecordOperation;
+import org.springframework.jca.cci.object.SimpleRecordOperation;
+
 /**
  * @author Thierry Templier
  * @author Chris Beams
  */
-public class EisOperationTests {
+public class EisOperationTests
+{
 
 	@Test
-	public void testSimpleRecordOperation() throws ResourceException {
+	public void testSimpleRecordOperation() throws ResourceException
+	{
 		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		Connection connection = mock(Connection.class);
 		Interaction interaction = mock(Interaction.class);
@@ -66,7 +62,8 @@ public class EisOperationTests {
 	}
 
 	@Test
-	public void testSimpleRecordOperationWithExplicitOutputRecord() throws ResourceException {
+	public void testSimpleRecordOperationWithExplicitOutputRecord() throws ResourceException
+	{
 		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		Connection connection = mock(Connection.class);
 		Interaction interaction = mock(Interaction.class);
@@ -90,7 +87,8 @@ public class EisOperationTests {
 	}
 
 	@Test
-	public void testSimpleRecordOperationWithInputOutputRecord() throws ResourceException {
+	public void testSimpleRecordOperationWithInputOutputRecord() throws ResourceException
+	{
 		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		Connection connection = mock(Connection.class);
 		Interaction interaction = mock(Interaction.class);
@@ -103,7 +101,8 @@ public class EisOperationTests {
 
 		given(connectionFactory.getConnection()).willReturn(connection);
 		given(connection.createInteraction()).willReturn(interaction);
-		given(interaction.execute(interactionSpec, inputOutputRecord, inputOutputRecord)).willReturn(true);
+		given(interaction.execute(interactionSpec, inputOutputRecord, inputOutputRecord))
+				.willReturn(true);
 
 		query.execute(inputOutputRecord, inputOutputRecord);
 
@@ -113,7 +112,8 @@ public class EisOperationTests {
 	}
 
 	@Test
-	public void testMappingRecordOperation() throws ResourceException {
+	public void testMappingRecordOperation() throws ResourceException
+	{
 		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		Connection connection = mock(Connection.class);
 		Interaction interaction = mock(Interaction.class);
@@ -126,7 +126,8 @@ public class EisOperationTests {
 
 		QueryCallDetector callDetector = mock(QueryCallDetector.class);
 
-		MappingRecordOperationImpl query = new MappingRecordOperationImpl(connectionFactory, interactionSpec);
+		MappingRecordOperationImpl query = new MappingRecordOperationImpl(connectionFactory,
+				interactionSpec);
 		query.setCallDetector(callDetector);
 
 		Object inObj = new Object();
@@ -145,7 +146,8 @@ public class EisOperationTests {
 	}
 
 	@Test
-	public void testMappingRecordOperationWithOutputRecordCreator() throws ResourceException {
+	public void testMappingRecordOperationWithOutputRecordCreator() throws ResourceException
+	{
 		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		Connection connection = mock(Connection.class);
 		Interaction interaction = mock(Interaction.class);
@@ -160,7 +162,8 @@ public class EisOperationTests {
 
 		QueryCallDetector callDetector = mock(QueryCallDetector.class);
 
-		MappingRecordOperationImpl query = new MappingRecordOperationImpl(connectionFactory, interactionSpec);
+		MappingRecordOperationImpl query = new MappingRecordOperationImpl(connectionFactory,
+				interactionSpec);
 		query.setOutputRecordCreator(outputCreator);
 		query.setCallDetector(callDetector);
 
@@ -181,32 +184,37 @@ public class EisOperationTests {
 		verify(connection).close();
 	}
 
-
-	private class MappingRecordOperationImpl extends MappingRecordOperation {
+	private class MappingRecordOperationImpl extends MappingRecordOperation
+	{
 
 		private QueryCallDetector callDetector;
 
-		public MappingRecordOperationImpl(ConnectionFactory connectionFactory, InteractionSpec interactionSpec) {
+		public MappingRecordOperationImpl(ConnectionFactory connectionFactory,
+				InteractionSpec interactionSpec)
+		{
 			super(connectionFactory, interactionSpec);
 		}
 
-		public void setCallDetector(QueryCallDetector callDetector) {
+		public void setCallDetector(QueryCallDetector callDetector)
+		{
 			this.callDetector = callDetector;
 		}
 
 		@Override
-		protected Record createInputRecord(RecordFactory recordFactory, Object inputObject) {
+		protected Record createInputRecord(RecordFactory recordFactory, Object inputObject)
+		{
 			return this.callDetector.callCreateInputRecord(recordFactory, inputObject);
 		}
 
 		@Override
-		protected Object extractOutputData(Record outputRecord) throws ResourceException {
+		protected Object extractOutputData(Record outputRecord) throws ResourceException
+		{
 			return this.callDetector.callExtractOutputData(outputRecord);
 		}
 	}
 
-
-	private interface QueryCallDetector {
+	private interface QueryCallDetector
+	{
 
 		Record callCreateInputRecord(RecordFactory recordFactory, Object inputObject);
 

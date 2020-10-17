@@ -30,11 +30,13 @@ import javax.persistence.spi.PersistenceUnitInfo;
  * @see PersistenceUnitManager
  * @see org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
  */
-public interface SmartPersistenceUnitInfo extends PersistenceUnitInfo {
+public interface SmartPersistenceUnitInfo extends PersistenceUnitInfo
+{
 
 	/**
 	 * Return a list of managed Java packages, to be introspected by the persistence provider.
 	 * Typically found through scanning but not exposable through {@link #getManagedClassNames()}.
+	 * 
 	 * @return a list of names of managed Java packages (potentially empty)
 	 * @since 4.1
 	 */
@@ -42,6 +44,7 @@ public interface SmartPersistenceUnitInfo extends PersistenceUnitInfo {
 
 	/**
 	 * Set the persistence provider's own package name, for exclusion from class transformation.
+	 * 
 	 * @see #addTransformer(javax.persistence.spi.ClassTransformer)
 	 * @see #getNewTempClassLoader()
 	 */

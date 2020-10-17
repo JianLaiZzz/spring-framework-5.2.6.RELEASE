@@ -29,7 +29,8 @@ import javax.jms.TextMessage;
  *
  * @author Rick Evans
  */
-public interface ResponsiveMessageDelegate {
+public interface ResponsiveMessageDelegate
+{
 
 	String handleMessage(TextMessage message);
 

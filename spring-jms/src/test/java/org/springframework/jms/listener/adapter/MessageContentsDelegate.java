@@ -24,11 +24,12 @@ import java.util.Map;
  * @author Rick Evans
  * @author Juergen Hoeller
  */
-public interface MessageContentsDelegate {
+public interface MessageContentsDelegate
+{
 
 	void handleMessage(CharSequence message);
 
-	void handleMessage(Map<String, Object>  message);
+	void handleMessage(Map<String, Object> message);
 
 	void handleMessage(byte[] message);
 

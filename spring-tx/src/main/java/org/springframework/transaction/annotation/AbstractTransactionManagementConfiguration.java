@@ -42,7 +42,8 @@ import org.springframework.util.CollectionUtils;
  * @see EnableTransactionManagement
  */
 @Configuration
-public abstract class AbstractTransactionManagementConfiguration implements ImportAware {
+public abstract class AbstractTransactionManagementConfiguration implements ImportAware
+{
 
 	@Nullable
 	protected AnnotationAttributes enableTx;
@@ -53,33 +54,38 @@ public abstract class AbstractTransactionManagementConfiguration implements Impo
 	@Nullable
 	protected TransactionManager txManager;
 
-
 	@Override
-	public void setImportMetadata(AnnotationMetadata importMetadata) {
-		this.enableTx = AnnotationAttributes.fromMap(
-				importMetadata.getAnnotationAttributes(EnableTransactionManagement.class.getName(), false));
-		if (this.enableTx == null) {
+	public void setImportMetadata(AnnotationMetadata importMetadata)
+	{
+		this.enableTx = AnnotationAttributes.fromMap(importMetadata
+				.getAnnotationAttributes(EnableTransactionManagement.class.getName(), false));
+		if (this.enableTx == null)
+		{
 			throw new IllegalArgumentException(
-					"@EnableTransactionManagement is not present on importing class " + importMetadata.getClassName());
+					"@EnableTransactionManagement is not present on importing class "
+							+ importMetadata.getClassName());
 		}
 	}
 
 	@Autowired(required = false)
-	void setConfigurers(Collection<TransactionManagementConfigurer> configurers) {
-		if (CollectionUtils.isEmpty(configurers)) {
+	void setConfigurers(Collection<TransactionManagementConfigurer> configurers)
+	{
+		if (CollectionUtils.isEmpty(configurers))
+		{
 			return;
 		}
-		if (configurers.size() > 1) {
+		if (configurers.size() > 1)
+		{
 			throw new IllegalStateException("Only one TransactionManagementConfigurer may exist");
 		}
 		TransactionManagementConfigurer configurer = configurers.iterator().next();
 		this.txManager = configurer.annotationDrivenTransactionManager();
 	}
 
-
 	@Bean(name = TransactionManagementConfigUtils.TRANSACTIONAL_EVENT_LISTENER_FACTORY_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public static TransactionalEventListenerFactory transactionalEventListenerFactory() {
+	public static TransactionalEventListenerFactory transactionalEventListenerFactory()
+	{
 		return new TransactionalEventListenerFactory();
 	}
 

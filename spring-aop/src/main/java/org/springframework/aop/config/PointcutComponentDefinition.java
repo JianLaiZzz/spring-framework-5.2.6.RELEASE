@@ -28,7 +28,8 @@ import org.springframework.util.Assert;
  * @author Rob Harrop
  * @since 2.0
  */
-public class PointcutComponentDefinition extends AbstractComponentDefinition {
+public class PointcutComponentDefinition extends AbstractComponentDefinition
+{
 
 	private final String pointcutBeanName;
 
@@ -36,8 +37,9 @@ public class PointcutComponentDefinition extends AbstractComponentDefinition {
 
 	private final String description;
 
-
-	public PointcutComponentDefinition(String pointcutBeanName, BeanDefinition pointcutDefinition, String expression) {
+	public PointcutComponentDefinition(String pointcutBeanName, BeanDefinition pointcutDefinition,
+			String expression)
+	{
 		Assert.notNull(pointcutBeanName, "Bean name must not be null");
 		Assert.notNull(pointcutDefinition, "Pointcut definition must not be null");
 		Assert.notNull(expression, "Expression must not be null");
@@ -46,25 +48,28 @@ public class PointcutComponentDefinition extends AbstractComponentDefinition {
 		this.description = "Pointcut <name='" + pointcutBeanName + "', expression=[" + expression + "]>";
 	}
 
-
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return this.pointcutBeanName;
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription()
+	{
 		return this.description;
 	}
 
 	@Override
-	public BeanDefinition[] getBeanDefinitions() {
-		return new BeanDefinition[] {this.pointcutDefinition};
+	public BeanDefinition[] getBeanDefinitions()
+	{
+		return new BeanDefinition[] { this.pointcutDefinition };
 	}
 
 	@Override
 	@Nullable
-	public Object getSource() {
+	public Object getSource()
+	{
 		return this.pointcutDefinition.getSource();
 	}
 

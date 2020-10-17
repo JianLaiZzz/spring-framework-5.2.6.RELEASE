@@ -26,7 +26,8 @@ package org.springframework.transaction.support;
  * @see ResourceHolderSupport
  * @see ResourceHolderSynchronization
  */
-public interface ResourceHolder {
+public interface ResourceHolder
+{
 
 	/**
 	 * Reset the transactional state of this holder.

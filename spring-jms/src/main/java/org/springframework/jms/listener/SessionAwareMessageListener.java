@@ -27,7 +27,8 @@ import javax.jms.Session;
  * without the need to access an external Connection/Session,
  * i.e. without the need to access the underlying ConnectionFactory.
  *
- * <p>Supported by Spring's {@link DefaultMessageListenerContainer}
+ * <p>
+ * Supported by Spring's {@link DefaultMessageListenerContainer}
  * and {@link SimpleMessageListenerContainer},
  * as direct alternative to the standard JMS MessageListener interface.
  * Typically <i>not</i> supported by JCA-based listener containers:
@@ -35,7 +36,8 @@ import javax.jms.Session;
  *
  * @author Juergen Hoeller
  * @since 2.0
- * @param <M> the message type
+ * @param <M>
+ *            the message type
  * @see AbstractMessageListenerContainer#setMessageListener
  * @see DefaultMessageListenerContainer
  * @see SimpleMessageListenerContainer
@@ -43,15 +45,21 @@ import javax.jms.Session;
  * @see javax.jms.MessageListener
  */
 @FunctionalInterface
-public interface SessionAwareMessageListener<M extends Message> {
+public interface SessionAwareMessageListener<M extends Message>
+{
 
 	/**
 	 * Callback for processing a received JMS message.
-	 * <p>Implementors are supposed to process the given Message,
+	 * <p>
+	 * Implementors are supposed to process the given Message,
 	 * typically sending reply messages through the given Session.
-	 * @param message the received JMS message (never {@code null})
-	 * @param session the underlying JMS Session (never {@code null})
-	 * @throws JMSException if thrown by JMS methods
+	 * 
+	 * @param message
+	 *            the received JMS message (never {@code null})
+	 * @param session
+	 *            the underlying JMS Session (never {@code null})
+	 * @throws JMSException
+	 *             if thrown by JMS methods
 	 */
 	void onMessage(M message, Session session) throws JMSException;
 

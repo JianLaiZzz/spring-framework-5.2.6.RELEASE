@@ -16,17 +16,9 @@
 
 package org.springframework.jms.support.converter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 
-import javax.jms.BytesMessage;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import javax.jms.*;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
@@ -51,7 +43,8 @@ import org.springframework.util.Assert;
  * @see org.springframework.jms.core.JmsTemplate#convertAndSend
  * @see org.springframework.jms.core.JmsTemplate#receiveAndConvert
  */
-public class MarshallingMessageConverter implements MessageConverter, InitializingBean {
+public class MarshallingMessageConverter implements MessageConverter, InitializingBean
+{
 
 	@Nullable
 	private Marshaller marshaller;
@@ -61,34 +54,42 @@ public class MarshallingMessageConverter implements MessageConverter, Initializi
 
 	private MessageType targetType = MessageType.BYTES;
 
-
 	/**
 	 * Construct a new {@code MarshallingMessageConverter} with no {@link Marshaller}
 	 * or {@link Unmarshaller} set. The marshaller must be set after construction by invoking
 	 * {@link #setMarshaller(Marshaller)} and {@link #setUnmarshaller(Unmarshaller)} .
 	 */
-	public MarshallingMessageConverter() {
+	public MarshallingMessageConverter()
+	{
 	}
 
 	/**
 	 * Construct a new {@code MarshallingMessageConverter} with the given {@link Marshaller} set.
-	 * <p>If the given {@link Marshaller} also implements the {@link Unmarshaller} interface,
+	 * <p>
+	 * If the given {@link Marshaller} also implements the {@link Unmarshaller} interface,
 	 * it is used for both marshalling and unmarshalling. Otherwise, an exception is thrown.
-	 * <p>Note that all {@link Marshaller} implementations in Spring also implement the
+	 * <p>
+	 * Note that all {@link Marshaller} implementations in Spring also implement the
 	 * {@link Unmarshaller} interface, so that you can safely use this constructor.
-	 * @param marshaller object used as marshaller and unmarshaller
-	 * @throws IllegalArgumentException when {@code marshaller} does not implement the
-	 * {@link Unmarshaller} interface as well
+	 * 
+	 * @param marshaller
+	 *            object used as marshaller and unmarshaller
+	 * @throws IllegalArgumentException
+	 *             when {@code marshaller} does not implement the
+	 *             {@link Unmarshaller} interface as well
 	 */
-	public MarshallingMessageConverter(Marshaller marshaller) {
+	public MarshallingMessageConverter(Marshaller marshaller)
+	{
 		Assert.notNull(marshaller, "Marshaller must not be null");
-		if (!(marshaller instanceof Unmarshaller)) {
+		if (!(marshaller instanceof Unmarshaller))
+		{
 			throw new IllegalArgumentException(
-					"Marshaller [" + marshaller + "] does not implement the Unmarshaller " +
-					"interface. Please set an Unmarshaller explicitly by using the " +
-					"MarshallingMessageConverter(Marshaller, Unmarshaller) constructor.");
+					"Marshaller [" + marshaller + "] does not implement the Unmarshaller "
+							+ "interface. Please set an Unmarshaller explicitly by using the "
+							+ "MarshallingMessageConverter(Marshaller, Unmarshaller) constructor.");
 		}
-		else {
+		else
+		{
 			this.marshaller = marshaller;
 			this.unmarshaller = (Unmarshaller) marshaller;
 		}
@@ -97,21 +98,25 @@ public class MarshallingMessageConverter implements MessageConverter, Initializi
 	/**
 	 * Construct a new {@code MarshallingMessageConverter} with the
 	 * given Marshaller and Unmarshaller.
-	 * @param marshaller the Marshaller to use
-	 * @param unmarshaller the Unmarshaller to use
+	 * 
+	 * @param marshaller
+	 *            the Marshaller to use
+	 * @param unmarshaller
+	 *            the Unmarshaller to use
 	 */
-	public MarshallingMessageConverter(Marshaller marshaller, Unmarshaller unmarshaller) {
+	public MarshallingMessageConverter(Marshaller marshaller, Unmarshaller unmarshaller)
+	{
 		Assert.notNull(marshaller, "Marshaller must not be null");
 		Assert.notNull(unmarshaller, "Unmarshaller must not be null");
 		this.marshaller = marshaller;
 		this.unmarshaller = unmarshaller;
 	}
 
-
 	/**
 	 * Set the {@link Marshaller} to be used by this message converter.
 	 */
-	public void setMarshaller(Marshaller marshaller) {
+	public void setMarshaller(Marshaller marshaller)
+	{
 		Assert.notNull(marshaller, "Marshaller must not be null");
 		this.marshaller = marshaller;
 	}
@@ -119,7 +124,8 @@ public class MarshallingMessageConverter implements MessageConverter, Initializi
 	/**
 	 * Set the {@link Unmarshaller} to be used by this message converter.
 	 */
-	public void setUnmarshaller(Unmarshaller unmarshaller) {
+	public void setUnmarshaller(Unmarshaller unmarshaller)
+	{
 		Assert.notNull(unmarshaller, "Unmarshaller must not be null");
 		this.unmarshaller = unmarshaller;
 	}
@@ -127,93 +133,117 @@ public class MarshallingMessageConverter implements MessageConverter, Initializi
 	/**
 	 * Specify whether {@link #toMessage(Object, Session)} should marshal to
 	 * a {@link BytesMessage} or a {@link TextMessage}.
-	 * <p>The default is {@link MessageType#BYTES}, i.e. this converter marshals
+	 * <p>
+	 * The default is {@link MessageType#BYTES}, i.e. this converter marshals
 	 * to a {@link BytesMessage}. Note that the default version of this converter
 	 * supports {@link MessageType#BYTES} and {@link MessageType#TEXT} only.
+	 * 
 	 * @see MessageType#BYTES
 	 * @see MessageType#TEXT
 	 */
-	public void setTargetType(MessageType targetType) {
+	public void setTargetType(MessageType targetType)
+	{
 		Assert.notNull(targetType, "MessageType must not be null");
 		this.targetType = targetType;
 	}
 
 	@Override
-	public void afterPropertiesSet() {
+	public void afterPropertiesSet()
+	{
 		Assert.notNull(this.marshaller, "Property 'marshaller' is required");
 		Assert.notNull(this.unmarshaller, "Property 'unmarshaller' is required");
 	}
-
 
 	/**
 	 * This implementation marshals the given object to a {@link javax.jms.TextMessage} or
 	 * {@link javax.jms.BytesMessage}. The desired message type can be defined by setting
 	 * the {@link #setTargetType "marshalTo"} property.
+	 * 
 	 * @see #marshalToTextMessage
 	 * @see #marshalToBytesMessage
 	 */
 	@Override
-	public Message toMessage(Object object, Session session) throws JMSException, MessageConversionException {
+	public Message toMessage(Object object, Session session)
+			throws JMSException, MessageConversionException
+	{
 		Assert.state(this.marshaller != null, "No Marshaller set");
-		try {
-			switch (this.targetType) {
-				case TEXT:
-					return marshalToTextMessage(object, session, this.marshaller);
-				case BYTES:
-					return marshalToBytesMessage(object, session, this.marshaller);
-				default:
-					return marshalToMessage(object, session, this.marshaller, this.targetType);
+		try
+		{
+			switch (this.targetType)
+			{
+			case TEXT:
+				return marshalToTextMessage(object, session, this.marshaller);
+			case BYTES:
+				return marshalToBytesMessage(object, session, this.marshaller);
+			default:
+				return marshalToMessage(object, session, this.marshaller, this.targetType);
 			}
 		}
-		catch (XmlMappingException | IOException ex) {
+		catch (XmlMappingException | IOException ex)
+		{
 			throw new MessageConversionException("Could not marshal [" + object + "]", ex);
 		}
 	}
 
 	/**
 	 * This implementation unmarshals the given {@link Message} into an object.
+	 * 
 	 * @see #unmarshalFromTextMessage
 	 * @see #unmarshalFromBytesMessage
 	 */
 	@Override
-	public Object fromMessage(Message message) throws JMSException, MessageConversionException {
+	public Object fromMessage(Message message) throws JMSException, MessageConversionException
+	{
 		Assert.state(this.unmarshaller != null, "No Unmarshaller set");
-		try {
-			if (message instanceof TextMessage) {
+		try
+		{
+			if (message instanceof TextMessage)
+			{
 				TextMessage textMessage = (TextMessage) message;
 				return unmarshalFromTextMessage(textMessage, this.unmarshaller);
 			}
-			else if (message instanceof BytesMessage) {
+			else if (message instanceof BytesMessage)
+			{
 				BytesMessage bytesMessage = (BytesMessage) message;
 				return unmarshalFromBytesMessage(bytesMessage, this.unmarshaller);
 			}
-			else {
+			else
+			{
 				return unmarshalFromMessage(message, this.unmarshaller);
 			}
 		}
-		catch (IOException ex) {
+		catch (IOException ex)
+		{
 			throw new MessageConversionException("Could not access message content: " + message, ex);
 		}
-		catch (XmlMappingException ex) {
+		catch (XmlMappingException ex)
+		{
 			throw new MessageConversionException("Could not unmarshal message: " + message, ex);
 		}
 	}
 
-
 	/**
 	 * Marshal the given object to a {@link TextMessage}.
-	 * @param object the object to be marshalled
-	 * @param session current JMS session
-	 * @param marshaller the marshaller to use
+	 * 
+	 * @param object
+	 *            the object to be marshalled
+	 * @param session
+	 *            current JMS session
+	 * @param marshaller
+	 *            the marshaller to use
 	 * @return the resulting message
-	 * @throws JMSException if thrown by JMS methods
-	 * @throws IOException in case of I/O errors
-	 * @throws XmlMappingException in case of OXM mapping errors
+	 * @throws JMSException
+	 *             if thrown by JMS methods
+	 * @throws IOException
+	 *             in case of I/O errors
+	 * @throws XmlMappingException
+	 *             in case of OXM mapping errors
 	 * @see Session#createTextMessage
 	 * @see Marshaller#marshal(Object, Result)
 	 */
 	protected TextMessage marshalToTextMessage(Object object, Session session, Marshaller marshaller)
-			throws JMSException, IOException, XmlMappingException {
+			throws JMSException, IOException, XmlMappingException
+	{
 
 		StringWriter writer = new StringWriter();
 		Result result = new StreamResult(writer);
@@ -223,18 +253,26 @@ public class MarshallingMessageConverter implements MessageConverter, Initializi
 
 	/**
 	 * Marshal the given object to a {@link BytesMessage}.
-	 * @param object the object to be marshalled
-	 * @param session current JMS session
-	 * @param marshaller the marshaller to use
+	 * 
+	 * @param object
+	 *            the object to be marshalled
+	 * @param session
+	 *            current JMS session
+	 * @param marshaller
+	 *            the marshaller to use
 	 * @return the resulting message
-	 * @throws JMSException if thrown by JMS methods
-	 * @throws IOException in case of I/O errors
-	 * @throws XmlMappingException in case of OXM mapping errors
+	 * @throws JMSException
+	 *             if thrown by JMS methods
+	 * @throws IOException
+	 *             in case of I/O errors
+	 * @throws XmlMappingException
+	 *             in case of OXM mapping errors
 	 * @see Session#createBytesMessage
 	 * @see Marshaller#marshal(Object, Result)
 	 */
 	protected BytesMessage marshalToBytesMessage(Object object, Session session, Marshaller marshaller)
-			throws JMSException, IOException, XmlMappingException {
+			throws JMSException, IOException, XmlMappingException
+	{
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream(1024);
 		StreamResult streamResult = new StreamResult(bos);
@@ -248,36 +286,52 @@ public class MarshallingMessageConverter implements MessageConverter, Initializi
 	 * Template method that allows for custom message marshalling.
 	 * Invoked when {@link #setTargetType} is not {@link MessageType#TEXT} or
 	 * {@link MessageType#BYTES}.
-	 * <p>The default implementation throws an {@link IllegalArgumentException}.
-	 * @param object the object to marshal
-	 * @param session the JMS session
-	 * @param marshaller the marshaller to use
-	 * @param targetType the target message type (other than TEXT or BYTES)
+	 * <p>
+	 * The default implementation throws an {@link IllegalArgumentException}.
+	 * 
+	 * @param object
+	 *            the object to marshal
+	 * @param session
+	 *            the JMS session
+	 * @param marshaller
+	 *            the marshaller to use
+	 * @param targetType
+	 *            the target message type (other than TEXT or BYTES)
 	 * @return the resulting message
-	 * @throws JMSException if thrown by JMS methods
-	 * @throws IOException in case of I/O errors
-	 * @throws XmlMappingException in case of OXM mapping errors
+	 * @throws JMSException
+	 *             if thrown by JMS methods
+	 * @throws IOException
+	 *             in case of I/O errors
+	 * @throws XmlMappingException
+	 *             in case of OXM mapping errors
 	 */
-	protected Message marshalToMessage(Object object, Session session, Marshaller marshaller, MessageType targetType)
-			throws JMSException, IOException, XmlMappingException {
+	protected Message marshalToMessage(Object object, Session session, Marshaller marshaller,
+			MessageType targetType) throws JMSException, IOException, XmlMappingException
+	{
 
-		throw new IllegalArgumentException("Unsupported message type [" + targetType +
-				"]. MarshallingMessageConverter by default only supports TextMessages and BytesMessages.");
+		throw new IllegalArgumentException("Unsupported message type [" + targetType
+				+ "]. MarshallingMessageConverter by default only supports TextMessages and BytesMessages.");
 	}
-
 
 	/**
 	 * Unmarshal the given {@link TextMessage} into an object.
-	 * @param message the message
-	 * @param unmarshaller the unmarshaller to use
+	 * 
+	 * @param message
+	 *            the message
+	 * @param unmarshaller
+	 *            the unmarshaller to use
 	 * @return the unmarshalled object
-	 * @throws JMSException if thrown by JMS methods
-	 * @throws IOException in case of I/O errors
-	 * @throws XmlMappingException in case of OXM mapping errors
+	 * @throws JMSException
+	 *             if thrown by JMS methods
+	 * @throws IOException
+	 *             in case of I/O errors
+	 * @throws XmlMappingException
+	 *             in case of OXM mapping errors
 	 * @see Unmarshaller#unmarshal(Source)
 	 */
 	protected Object unmarshalFromTextMessage(TextMessage message, Unmarshaller unmarshaller)
-			throws JMSException, IOException, XmlMappingException {
+			throws JMSException, IOException, XmlMappingException
+	{
 
 		Source source = new StreamSource(new StringReader(message.getText()));
 		return unmarshaller.unmarshal(source);
@@ -285,16 +339,23 @@ public class MarshallingMessageConverter implements MessageConverter, Initializi
 
 	/**
 	 * Unmarshal the given {@link BytesMessage} into an object.
-	 * @param message the message
-	 * @param unmarshaller the unmarshaller to use
+	 * 
+	 * @param message
+	 *            the message
+	 * @param unmarshaller
+	 *            the unmarshaller to use
 	 * @return the unmarshalled object
-	 * @throws JMSException if thrown by JMS methods
-	 * @throws IOException in case of I/O errors
-	 * @throws XmlMappingException in case of OXM mapping errors
+	 * @throws JMSException
+	 *             if thrown by JMS methods
+	 * @throws IOException
+	 *             in case of I/O errors
+	 * @throws XmlMappingException
+	 *             in case of OXM mapping errors
 	 * @see Unmarshaller#unmarshal(Source)
 	 */
 	protected Object unmarshalFromBytesMessage(BytesMessage message, Unmarshaller unmarshaller)
-			throws JMSException, IOException, XmlMappingException {
+			throws JMSException, IOException, XmlMappingException
+	{
 
 		byte[] bytes = new byte[(int) message.getBodyLength()];
 		message.readBytes(bytes);
@@ -307,19 +368,27 @@ public class MarshallingMessageConverter implements MessageConverter, Initializi
 	 * Template method that allows for custom message unmarshalling.
 	 * Invoked when {@link #fromMessage(Message)} is invoked with a message
 	 * that is not a {@link TextMessage} or {@link BytesMessage}.
-	 * <p>The default implementation throws an {@link IllegalArgumentException}.
-	 * @param message the message
-	 * @param unmarshaller the unmarshaller to use
+	 * <p>
+	 * The default implementation throws an {@link IllegalArgumentException}.
+	 * 
+	 * @param message
+	 *            the message
+	 * @param unmarshaller
+	 *            the unmarshaller to use
 	 * @return the unmarshalled object
-	 * @throws JMSException if thrown by JMS methods
-	 * @throws IOException in case of I/O errors
-	 * @throws XmlMappingException in case of OXM mapping errors
+	 * @throws JMSException
+	 *             if thrown by JMS methods
+	 * @throws IOException
+	 *             in case of I/O errors
+	 * @throws XmlMappingException
+	 *             in case of OXM mapping errors
 	 */
 	protected Object unmarshalFromMessage(Message message, Unmarshaller unmarshaller)
-			throws JMSException, IOException, XmlMappingException {
+			throws JMSException, IOException, XmlMappingException
+	{
 
-		throw new IllegalArgumentException("Unsupported message type [" + message.getClass() +
-				"]. MarshallingMessageConverter by default only supports TextMessages and BytesMessages.");
+		throw new IllegalArgumentException("Unsupported message type [" + message.getClass()
+				+ "]. MarshallingMessageConverter by default only supports TextMessages and BytesMessages.");
 	}
 
 }

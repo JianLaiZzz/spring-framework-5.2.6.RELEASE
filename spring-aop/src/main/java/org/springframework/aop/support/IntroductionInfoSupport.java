@@ -26,14 +26,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.aopalliance.intercept.MethodInvocation;
-
 import org.springframework.aop.IntroductionInfo;
 import org.springframework.util.ClassUtils;
 
 /**
  * Support for implementations of {@link org.springframework.aop.IntroductionInfo}.
  *
- * <p>Allows subclasses to conveniently add all interfaces from a given object,
+ * <p>
+ * Allows subclasses to conveniently add all interfaces from a given object,
  * and to suppress interfaces that should not be added. Also allows for querying
  * all introduced interfaces.
  *
@@ -41,37 +41,47 @@ import org.springframework.util.ClassUtils;
  * @author Juergen Hoeller
  */
 @SuppressWarnings("serial")
-public class IntroductionInfoSupport implements IntroductionInfo, Serializable {
+public class IntroductionInfoSupport implements IntroductionInfo, Serializable
+{
 
 	protected final Set<Class<?>> publishedInterfaces = new LinkedHashSet<>();
 
 	private transient Map<Method, Boolean> rememberedMethods = new ConcurrentHashMap<>(32);
 
-
 	/**
 	 * Suppress the specified interface, which may have been autodetected
 	 * due to the delegate implementing it. Call this method to exclude
 	 * internal interfaces from being visible at the proxy level.
-	 * <p>Does nothing if the interface is not implemented by the delegate.
-	 * @param ifc the interface to suppress
+	 * <p>
+	 * Does nothing if the interface is not implemented by the delegate.
+	 * 
+	 * @param ifc
+	 *            the interface to suppress
 	 */
-	public void suppressInterface(Class<?> ifc) {
+	public void suppressInterface(Class<?> ifc)
+	{
 		this.publishedInterfaces.remove(ifc);
 	}
 
 	@Override
-	public Class<?>[] getInterfaces() {
+	public Class<?>[] getInterfaces()
+	{
 		return ClassUtils.toClassArray(this.publishedInterfaces);
 	}
 
 	/**
 	 * Check whether the specified interfaces is a published introduction interface.
-	 * @param ifc the interface to check
+	 * 
+	 * @param ifc
+	 *            the interface to check
 	 * @return whether the interface is part of this introduction
 	 */
-	public boolean implementsInterface(Class<?> ifc) {
-		for (Class<?> pubIfc : this.publishedInterfaces) {
-			if (ifc.isInterface() && ifc.isAssignableFrom(pubIfc)) {
+	public boolean implementsInterface(Class<?> ifc)
+	{
+		for (Class<?> pubIfc : this.publishedInterfaces)
+		{
+			if (ifc.isInterface() && ifc.isAssignableFrom(pubIfc))
+			{
 				return true;
 			}
 		}
@@ -80,30 +90,37 @@ public class IntroductionInfoSupport implements IntroductionInfo, Serializable {
 
 	/**
 	 * Publish all interfaces that the given delegate implements at the proxy level.
-	 * @param delegate the delegate object
+	 * 
+	 * @param delegate
+	 *            the delegate object
 	 */
-	protected void implementInterfacesOnObject(Object delegate) {
+	protected void implementInterfacesOnObject(Object delegate)
+	{
 		this.publishedInterfaces.addAll(ClassUtils.getAllInterfacesAsSet(delegate));
 	}
 
 	/**
 	 * Is this method on an introduced interface?
-	 * @param mi the method invocation
+	 * 
+	 * @param mi
+	 *            the method invocation
 	 * @return whether the invoked method is on an introduced interface
 	 */
-	protected final boolean isMethodOnIntroducedInterface(MethodInvocation mi) {
+	protected final boolean isMethodOnIntroducedInterface(MethodInvocation mi)
+	{
 		Boolean rememberedResult = this.rememberedMethods.get(mi.getMethod());
-		if (rememberedResult != null) {
+		if (rememberedResult != null)
+		{
 			return rememberedResult;
 		}
-		else {
+		else
+		{
 			// Work it out and cache it.
 			boolean result = implementsInterface(mi.getMethod().getDeclaringClass());
 			this.rememberedMethods.put(mi.getMethod(), result);
 			return result;
 		}
 	}
-
 
 	//---------------------------------------------------------------------
 	// Serialization support
@@ -114,7 +131,8 @@ public class IntroductionInfoSupport implements IntroductionInfo, Serializable {
 	 * We don't make the logger static as that would mean that subclasses
 	 * would use this class's log category.
 	 */
-	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException
+	{
 		// Rely on default serialization; just initialize state after deserialization.
 		ois.defaultReadObject();
 		// Initialize transient fields.

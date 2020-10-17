@@ -40,28 +40,33 @@ import org.springframework.util.Assert;
  * @author Stephane Nicoll
  * @since 4.1
  */
-public class MessagingMessageConverter implements MessageConverter, InitializingBean {
+public class MessagingMessageConverter implements MessageConverter, InitializingBean
+{
 
 	private MessageConverter payloadConverter;
 
 	private JmsHeaderMapper headerMapper;
 
-
 	/**
 	 * Create an instance with a default payload converter.
+	 * 
 	 * @see org.springframework.jms.support.converter.SimpleMessageConverter
 	 * @see org.springframework.jms.support.SimpleJmsHeaderMapper
 	 */
-	public MessagingMessageConverter() {
+	public MessagingMessageConverter()
+	{
 		this(new SimpleMessageConverter(), new SimpleJmsHeaderMapper());
 	}
 
 	/**
 	 * Create an instance with the specific payload converter.
-	 * @param payloadConverter the payload converter to use
+	 * 
+	 * @param payloadConverter
+	 *            the payload converter to use
 	 * @since 4.3.12
 	 */
-	public MessagingMessageConverter(MessageConverter payloadConverter) {
+	public MessagingMessageConverter(MessageConverter payloadConverter)
+	{
 		this(payloadConverter, new SimpleJmsHeaderMapper());
 	}
 
@@ -69,18 +74,19 @@ public class MessagingMessageConverter implements MessageConverter, Initializing
 	 * Create an instance with the specified payload converter and
 	 * header mapper.
 	 */
-	public MessagingMessageConverter(MessageConverter payloadConverter, JmsHeaderMapper headerMapper) {
+	public MessagingMessageConverter(MessageConverter payloadConverter, JmsHeaderMapper headerMapper)
+	{
 		Assert.notNull(payloadConverter, "PayloadConverter must not be null");
 		Assert.notNull(headerMapper, "HeaderMapper must not be null");
 		this.payloadConverter = payloadConverter;
 		this.headerMapper = headerMapper;
 	}
 
-
 	/**
 	 * Set the {@link MessageConverter} to use to convert the payload.
 	 */
-	public void setPayloadConverter(MessageConverter payloadConverter) {
+	public void setPayloadConverter(MessageConverter payloadConverter)
+	{
 		this.payloadConverter = payloadConverter;
 	}
 
@@ -88,22 +94,26 @@ public class MessagingMessageConverter implements MessageConverter, Initializing
 	 * Set the {@link JmsHeaderMapper} to use to map JMS headers to and from
 	 * standard message headers.
 	 */
-	public void setHeaderMapper(JmsHeaderMapper headerMapper) {
+	public void setHeaderMapper(JmsHeaderMapper headerMapper)
+	{
 		this.headerMapper = headerMapper;
 	}
 
 	@Override
-	public void afterPropertiesSet() {
+	public void afterPropertiesSet()
+	{
 		Assert.notNull(this.payloadConverter, "Property 'payloadConverter' is required");
 		Assert.notNull(this.headerMapper, "Property 'headerMapper' is required");
 	}
 
-
 	@Override
-	public javax.jms.Message toMessage(Object object, Session session) throws JMSException, MessageConversionException {
-		if (!(object instanceof Message)) {
-			throw new IllegalArgumentException("Could not convert [" + object + "] - only [" +
-					Message.class.getName() + "] is handled by this converter");
+	public javax.jms.Message toMessage(Object object, Session session)
+			throws JMSException, MessageConversionException
+	{
+		if (!(object instanceof Message))
+		{
+			throw new IllegalArgumentException("Could not convert [" + object + "] - only ["
+					+ Message.class.getName() + "] is handled by this converter");
 		}
 		Message<?> input = (Message<?>) object;
 		MessageHeaders headers = input.getHeaders();
@@ -115,19 +125,22 @@ public class MessagingMessageConverter implements MessageConverter, Initializing
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object fromMessage(javax.jms.Message message) throws JMSException, MessageConversionException {
+	public Object fromMessage(javax.jms.Message message) throws JMSException, MessageConversionException
+	{
 		Map<String, Object> mappedHeaders = extractHeaders(message);
 		Object convertedObject = extractPayload(message);
-		MessageBuilder<Object> builder = (convertedObject instanceof org.springframework.messaging.Message ?
-				MessageBuilder.fromMessage((org.springframework.messaging.Message<Object>) convertedObject) :
-				MessageBuilder.withPayload(convertedObject));
+		MessageBuilder<Object> builder = (convertedObject instanceof org.springframework.messaging.Message
+				? MessageBuilder
+						.fromMessage((org.springframework.messaging.Message<Object>) convertedObject)
+				: MessageBuilder.withPayload(convertedObject));
 		return builder.copyHeadersIfAbsent(mappedHeaders).build();
 	}
 
 	/**
 	 * Extract the payload of the specified {@link javax.jms.Message}.
 	 */
-	protected Object extractPayload(javax.jms.Message message) throws JMSException {
+	protected Object extractPayload(javax.jms.Message message) throws JMSException
+	{
 		return this.payloadConverter.fromMessage(message);
 	}
 
@@ -135,16 +148,19 @@ public class MessagingMessageConverter implements MessageConverter, Initializing
 	 * Create a JMS message for the specified payload and conversionHint.
 	 * The conversion hint is an extra object passed to the {@link MessageConverter},
 	 * e.g. the associated {@code MethodParameter} (may be {@code null}}.
+	 * 
 	 * @since 4.3
 	 * @see MessageConverter#toMessage(Object, Session)
 	 */
-	protected javax.jms.Message createMessageForPayload(
-			Object payload, Session session, @Nullable Object conversionHint) throws JMSException {
+	protected javax.jms.Message createMessageForPayload(Object payload, Session session,
+			@Nullable Object conversionHint) throws JMSException
+	{
 
 		return this.payloadConverter.toMessage(payload, session);
 	}
 
-	protected final MessageHeaders extractHeaders(javax.jms.Message message) {
+	protected final MessageHeaders extractHeaders(javax.jms.Message message)
+	{
 		return this.headerMapper.toHeaders(message);
 	}
 

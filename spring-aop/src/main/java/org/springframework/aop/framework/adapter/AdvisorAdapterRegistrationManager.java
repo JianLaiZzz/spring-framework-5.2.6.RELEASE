@@ -23,7 +23,8 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  * BeanPostProcessor that registers {@link AdvisorAdapter} beans in the BeanFactory with
  * an {@link AdvisorAdapterRegistry} (by default the {@link GlobalAdvisorAdapterRegistry}).
  *
- * <p>The only requirement for it to work is that it needs to be defined
+ * <p>
+ * The only requirement for it to work is that it needs to be defined
  * in application context along with "non-native" Spring AdvisorAdapters
  * that need to be "recognized" by Spring's AOP framework.
  *
@@ -33,29 +34,33 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  * @see #setAdvisorAdapterRegistry
  * @see AdvisorAdapter
  */
-public class AdvisorAdapterRegistrationManager implements BeanPostProcessor {
+public class AdvisorAdapterRegistrationManager implements BeanPostProcessor
+{
 
 	private AdvisorAdapterRegistry advisorAdapterRegistry = GlobalAdvisorAdapterRegistry.getInstance();
-
 
 	/**
 	 * Specify the AdvisorAdapterRegistry to register AdvisorAdapter beans with.
 	 * Default is the global AdvisorAdapterRegistry.
+	 * 
 	 * @see GlobalAdvisorAdapterRegistry
 	 */
-	public void setAdvisorAdapterRegistry(AdvisorAdapterRegistry advisorAdapterRegistry) {
+	public void setAdvisorAdapterRegistry(AdvisorAdapterRegistry advisorAdapterRegistry)
+	{
 		this.advisorAdapterRegistry = advisorAdapterRegistry;
 	}
 
-
 	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException
+	{
 		return bean;
 	}
 
 	@Override
-	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-		if (bean instanceof AdvisorAdapter){
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException
+	{
+		if (bean instanceof AdvisorAdapter)
+		{
 			this.advisorAdapterRegistry.registerAdvisorAdapter((AdvisorAdapter) bean);
 		}
 		return bean;

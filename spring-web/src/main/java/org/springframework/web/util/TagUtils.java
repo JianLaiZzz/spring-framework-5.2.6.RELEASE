@@ -42,7 +42,8 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @author Rick Evans
  */
-public abstract class TagUtils {
+public abstract class TagUtils
+{
 
 	/** Constant identifying the page scope. */
 	public static final String SCOPE_PAGE = "page";
@@ -56,27 +57,35 @@ public abstract class TagUtils {
 	/** Constant identifying the application scope. */
 	public static final String SCOPE_APPLICATION = "application";
 
-
 	/**
 	 * Determines the scope for a given input {@code String}.
-	 * <p>If the {@code String} does not match 'request', 'session',
+	 * <p>
+	 * If the {@code String} does not match 'request', 'session',
 	 * 'page' or 'application', the method will return {@link PageContext#PAGE_SCOPE}.
-	 * @param scope the {@code String} to inspect
+	 * 
+	 * @param scope
+	 *            the {@code String} to inspect
 	 * @return the scope found, or {@link PageContext#PAGE_SCOPE} if no scope matched
-	 * @throws IllegalArgumentException if the supplied {@code scope} is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if the supplied {@code scope} is {@code null}
 	 */
-	public static int getScope(String scope) {
+	public static int getScope(String scope)
+	{
 		Assert.notNull(scope, "Scope to search for cannot be null");
-		if (scope.equals(SCOPE_REQUEST)) {
+		if (scope.equals(SCOPE_REQUEST))
+		{
 			return PageContext.REQUEST_SCOPE;
 		}
-		else if (scope.equals(SCOPE_SESSION)) {
+		else if (scope.equals(SCOPE_SESSION))
+		{
 			return PageContext.SESSION_SCOPE;
 		}
-		else if (scope.equals(SCOPE_APPLICATION)) {
+		else if (scope.equals(SCOPE_APPLICATION))
+		{
 			return PageContext.APPLICATION_SCOPE;
 		}
-		else {
+		else
+		{
 			return PageContext.PAGE_SCOPE;
 		}
 	}
@@ -84,24 +93,32 @@ public abstract class TagUtils {
 	/**
 	 * Determine whether the supplied {@link Tag} has any ancestor tag
 	 * of the supplied type.
-	 * @param tag the tag whose ancestors are to be checked
-	 * @param ancestorTagClass the ancestor {@link Class} being searched for
+	 * 
+	 * @param tag
+	 *            the tag whose ancestors are to be checked
+	 * @param ancestorTagClass
+	 *            the ancestor {@link Class} being searched for
 	 * @return {@code true} if the supplied {@link Tag} has any ancestor tag
-	 * of the supplied type
-	 * @throws IllegalArgumentException if either of the supplied arguments is {@code null};
-	 * or if the supplied {@code ancestorTagClass} is not type-assignable to
-	 * the {@link Tag} class
+	 *         of the supplied type
+	 * @throws IllegalArgumentException
+	 *             if either of the supplied arguments is {@code null};
+	 *             or if the supplied {@code ancestorTagClass} is not type-assignable to
+	 *             the {@link Tag} class
 	 */
-	public static boolean hasAncestorOfType(Tag tag, Class<?> ancestorTagClass) {
+	public static boolean hasAncestorOfType(Tag tag, Class<?> ancestorTagClass)
+	{
 		Assert.notNull(tag, "Tag cannot be null");
 		Assert.notNull(ancestorTagClass, "Ancestor tag class cannot be null");
-		if (!Tag.class.isAssignableFrom(ancestorTagClass)) {
+		if (!Tag.class.isAssignableFrom(ancestorTagClass))
+		{
 			throw new IllegalArgumentException(
 					"Class '" + ancestorTagClass.getName() + "' is not a valid Tag type");
 		}
 		Tag ancestor = tag.getParent();
-		while (ancestor != null) {
-			if (ancestorTagClass.isAssignableFrom(ancestor.getClass())) {
+		while (ancestor != null)
+		{
+			if (ancestorTagClass.isAssignableFrom(ancestor.getClass()))
+			{
 				return true;
 			}
 			ancestor = ancestor.getParent();
@@ -113,26 +130,35 @@ public abstract class TagUtils {
 	 * Determine whether the supplied {@link Tag} has any ancestor tag
 	 * of the supplied type, throwing an {@link IllegalStateException}
 	 * if not.
-	 * @param tag the tag whose ancestors are to be checked
-	 * @param ancestorTagClass the ancestor {@link Class} being searched for
-	 * @param tagName the name of the {@code tag}; for example '{@code option}'
-	 * @param ancestorTagName the name of the ancestor {@code tag}; for example '{@code select}'
-	 * @throws IllegalStateException if the supplied {@code tag} does not
-	 * have a tag of the supplied {@code parentTagClass} as an ancestor
-	 * @throws IllegalArgumentException if any of the supplied arguments is {@code null},
-	 * or in the case of the {@link String}-typed arguments, is composed wholly
-	 * of whitespace; or if the supplied {@code ancestorTagClass} is not
-	 * type-assignable to the {@link Tag} class
+	 * 
+	 * @param tag
+	 *            the tag whose ancestors are to be checked
+	 * @param ancestorTagClass
+	 *            the ancestor {@link Class} being searched for
+	 * @param tagName
+	 *            the name of the {@code tag}; for example '{@code option}'
+	 * @param ancestorTagName
+	 *            the name of the ancestor {@code tag}; for example '{@code select}'
+	 * @throws IllegalStateException
+	 *             if the supplied {@code tag} does not
+	 *             have a tag of the supplied {@code parentTagClass} as an ancestor
+	 * @throws IllegalArgumentException
+	 *             if any of the supplied arguments is {@code null},
+	 *             or in the case of the {@link String}-typed arguments, is composed wholly
+	 *             of whitespace; or if the supplied {@code ancestorTagClass} is not
+	 *             type-assignable to the {@link Tag} class
 	 * @see #hasAncestorOfType(javax.servlet.jsp.tagext.Tag, Class)
 	 */
 	public static void assertHasAncestorOfType(Tag tag, Class<?> ancestorTagClass, String tagName,
-			String ancestorTagName) {
+			String ancestorTagName)
+	{
 
 		Assert.hasText(tagName, "'tagName' must not be empty");
 		Assert.hasText(ancestorTagName, "'ancestorTagName' must not be empty");
-		if (!TagUtils.hasAncestorOfType(tag, ancestorTagClass)) {
-			throw new IllegalStateException("The '" + tagName +
-					"' tag can only be used inside a valid '" + ancestorTagName + "' tag.");
+		if (!TagUtils.hasAncestorOfType(tag, ancestorTagClass))
+		{
+			throw new IllegalStateException("The '" + tagName + "' tag can only be used inside a valid '"
+					+ ancestorTagName + "' tag.");
 		}
 	}
 

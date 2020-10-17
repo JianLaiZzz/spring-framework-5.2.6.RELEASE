@@ -16,39 +16,41 @@
 
 package org.springframework.orm.jpa;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.OptimisticLockException;
-
-import org.junit.jupiter.api.Test;
-
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionException;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.OptimisticLockException;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionException;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+
 /**
  * @author Costin Leau
  * @author Phillip Webb
  */
-public class DefaultJpaDialectTests {
+public class DefaultJpaDialectTests
+{
 
 	private JpaDialect dialect = new DefaultJpaDialect();
 
 	@Test
-	public void testDefaultTransactionDefinition() throws Exception {
+	public void testDefaultTransactionDefinition() throws Exception
+	{
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
 		definition.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
-		assertThatExceptionOfType(TransactionException.class).isThrownBy(() ->
-				dialect.beginTransaction(null, definition));
+		assertThatExceptionOfType(TransactionException.class)
+				.isThrownBy(() -> dialect.beginTransaction(null, definition));
 	}
 
 	@Test
-	public void testDefaultBeginTransaction() throws Exception {
+	public void testDefaultBeginTransaction() throws Exception
+	{
 		TransactionDefinition definition = new DefaultTransactionDefinition();
 		EntityManager entityManager = mock(EntityManager.class);
 		EntityTransaction entityTx = mock(EntityTransaction.class);
@@ -59,8 +61,10 @@ public class DefaultJpaDialectTests {
 	}
 
 	@Test
-	public void testTranslateException() {
+	public void testTranslateException()
+	{
 		OptimisticLockException ex = new OptimisticLockException();
-		assertThat(dialect.translateExceptionIfPossible(ex).getCause()).isEqualTo(EntityManagerFactoryUtils.convertJpaAccessExceptionIfPossible(ex).getCause());
+		assertThat(dialect.translateExceptionIfPossible(ex).getCause())
+				.isEqualTo(EntityManagerFactoryUtils.convertJpaAccessExceptionIfPossible(ex).getCause());
 	}
 }

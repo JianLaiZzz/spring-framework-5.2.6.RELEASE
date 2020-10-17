@@ -28,7 +28,8 @@ import org.springframework.util.PatternMatchUtils;
 /**
  * Pointcut bean for simple method name matches, as an alternative to regexp patterns.
  *
- * <p>Does not handle overloaded methods: all methods with a given name will be eligible.
+ * <p>
+ * Does not handle overloaded methods: all methods with a given name will be eligible.
  *
  * @author Juergen Hoeller
  * @author Rod Johnson
@@ -37,17 +38,19 @@ import org.springframework.util.PatternMatchUtils;
  * @see #isMatch
  */
 @SuppressWarnings("serial")
-public class NameMatchMethodPointcut extends StaticMethodMatcherPointcut implements Serializable {
+public class NameMatchMethodPointcut extends StaticMethodMatcherPointcut implements Serializable
+{
 
 	private List<String> mappedNames = new ArrayList<>();
-
 
 	/**
 	 * Convenience method when we have only a single method name to match.
 	 * Use either this method or {@code setMappedNames}, not both.
+	 * 
 	 * @see #setMappedNames
 	 */
-	public void setMappedName(String mappedName) {
+	public void setMappedName(String mappedName)
+	{
 		setMappedNames(mappedName);
 	}
 
@@ -56,7 +59,8 @@ public class NameMatchMethodPointcut extends StaticMethodMatcherPointcut impleme
 	 * Matching will be the union of all these; if any match,
 	 * the pointcut matches.
 	 */
-	public void setMappedNames(String... mappedNames) {
+	public void setMappedNames(String... mappedNames)
+	{
 		this.mappedNames = new ArrayList<>(Arrays.asList(mappedNames));
 	}
 
@@ -64,21 +68,27 @@ public class NameMatchMethodPointcut extends StaticMethodMatcherPointcut impleme
 	 * Add another eligible method name, in addition to those already named.
 	 * Like the set methods, this method is for use when configuring proxies,
 	 * before a proxy is used.
-	 * <p><b>NB:</b> This method does not work after the proxy is in
+	 * <p>
+	 * <b>NB:</b> This method does not work after the proxy is in
 	 * use, as advice chains will be cached.
-	 * @param name the name of the additional method that will match
+	 * 
+	 * @param name
+	 *            the name of the additional method that will match
 	 * @return this pointcut to allow for multiple additions in one line
 	 */
-	public NameMatchMethodPointcut addMethodName(String name) {
+	public NameMatchMethodPointcut addMethodName(String name)
+	{
 		this.mappedNames.add(name);
 		return this;
 	}
 
-
 	@Override
-	public boolean matches(Method method, Class<?> targetClass) {
-		for (String mappedName : this.mappedNames) {
-			if (mappedName.equals(method.getName()) || isMatch(method.getName(), mappedName)) {
+	public boolean matches(Method method, Class<?> targetClass)
+	{
+		for (String mappedName : this.mappedNames)
+		{
+			if (mappedName.equals(method.getName()) || isMatch(method.getName(), mappedName))
+			{
 				return true;
 			}
 		}
@@ -87,31 +97,38 @@ public class NameMatchMethodPointcut extends StaticMethodMatcherPointcut impleme
 
 	/**
 	 * Return if the given method name matches the mapped name.
-	 * <p>The default implementation checks for "xxx*", "*xxx" and "*xxx*" matches,
+	 * <p>
+	 * The default implementation checks for "xxx*", "*xxx" and "*xxx*" matches,
 	 * as well as direct equality. Can be overridden in subclasses.
-	 * @param methodName the method name of the class
-	 * @param mappedName the name in the descriptor
+	 * 
+	 * @param methodName
+	 *            the method name of the class
+	 * @param mappedName
+	 *            the name in the descriptor
 	 * @return if the names match
 	 * @see org.springframework.util.PatternMatchUtils#simpleMatch(String, String)
 	 */
-	protected boolean isMatch(String methodName, String mappedName) {
+	protected boolean isMatch(String methodName, String mappedName)
+	{
 		return PatternMatchUtils.simpleMatch(mappedName, methodName);
 	}
 
-
 	@Override
-	public boolean equals(@Nullable Object other) {
-		return (this == other || (other instanceof NameMatchMethodPointcut &&
-				this.mappedNames.equals(((NameMatchMethodPointcut) other).mappedNames)));
+	public boolean equals(@Nullable Object other)
+	{
+		return (this == other || (other instanceof NameMatchMethodPointcut
+				&& this.mappedNames.equals(((NameMatchMethodPointcut) other).mappedNames)));
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		return this.mappedNames.hashCode();
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return getClass().getName() + ": " + this.mappedNames;
 	}
 

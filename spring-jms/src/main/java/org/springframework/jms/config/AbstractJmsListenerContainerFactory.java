@@ -20,7 +20,6 @@ import javax.jms.ConnectionFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.jms.listener.AbstractMessageListenerContainer;
 import org.springframework.jms.support.QosSettings;
 import org.springframework.jms.support.converter.MessageConverter;
@@ -33,11 +32,13 @@ import org.springframework.util.ErrorHandler;
  *
  * @author Stephane Nicoll
  * @since 4.1
- * @param <C> the container type
+ * @param <C>
+ *            the container type
  * @see AbstractMessageListenerContainer
  */
 public abstract class AbstractJmsListenerContainerFactory<C extends AbstractMessageListenerContainer>
-		implements JmsListenerContainerFactory<C> {
+		implements JmsListenerContainerFactory<C>
+{
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -83,149 +84,177 @@ public abstract class AbstractJmsListenerContainerFactory<C extends AbstractMess
 	@Nullable
 	private Boolean autoStartup;
 
-
 	/**
 	 * @see AbstractMessageListenerContainer#setConnectionFactory(ConnectionFactory)
 	 */
-	public void setConnectionFactory(ConnectionFactory connectionFactory) {
+	public void setConnectionFactory(ConnectionFactory connectionFactory)
+	{
 		this.connectionFactory = connectionFactory;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setDestinationResolver(DestinationResolver)
 	 */
-	public void setDestinationResolver(DestinationResolver destinationResolver) {
+	public void setDestinationResolver(DestinationResolver destinationResolver)
+	{
 		this.destinationResolver = destinationResolver;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setErrorHandler(ErrorHandler)
 	 */
-	public void setErrorHandler(ErrorHandler errorHandler) {
+	public void setErrorHandler(ErrorHandler errorHandler)
+	{
 		this.errorHandler = errorHandler;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setMessageConverter(MessageConverter)
 	 */
-	public void setMessageConverter(MessageConverter messageConverter) {
+	public void setMessageConverter(MessageConverter messageConverter)
+	{
 		this.messageConverter = messageConverter;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setSessionTransacted(boolean)
 	 */
-	public void setSessionTransacted(Boolean sessionTransacted) {
+	public void setSessionTransacted(Boolean sessionTransacted)
+	{
 		this.sessionTransacted = sessionTransacted;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setSessionAcknowledgeMode(int)
 	 */
-	public void setSessionAcknowledgeMode(Integer sessionAcknowledgeMode) {
+	public void setSessionAcknowledgeMode(Integer sessionAcknowledgeMode)
+	{
 		this.sessionAcknowledgeMode = sessionAcknowledgeMode;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setPubSubDomain(boolean)
 	 */
-	public void setPubSubDomain(Boolean pubSubDomain) {
+	public void setPubSubDomain(Boolean pubSubDomain)
+	{
 		this.pubSubDomain = pubSubDomain;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setReplyPubSubDomain(boolean)
 	 */
-	public void setReplyPubSubDomain(Boolean replyPubSubDomain) {
+	public void setReplyPubSubDomain(Boolean replyPubSubDomain)
+	{
 		this.replyPubSubDomain = replyPubSubDomain;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setReplyQosSettings(QosSettings)
 	 */
-	public void setReplyQosSettings(QosSettings replyQosSettings) {
+	public void setReplyQosSettings(QosSettings replyQosSettings)
+	{
 		this.replyQosSettings = replyQosSettings;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setSubscriptionDurable(boolean)
 	 */
-	public void setSubscriptionDurable(Boolean subscriptionDurable) {
+	public void setSubscriptionDurable(Boolean subscriptionDurable)
+	{
 		this.subscriptionDurable = subscriptionDurable;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setSubscriptionShared(boolean)
 	 */
-	public void setSubscriptionShared(Boolean subscriptionShared) {
+	public void setSubscriptionShared(Boolean subscriptionShared)
+	{
 		this.subscriptionShared = subscriptionShared;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setClientId(String)
 	 */
-	public void setClientId(String clientId) {
+	public void setClientId(String clientId)
+	{
 		this.clientId = clientId;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setPhase(int)
 	 */
-	public void setPhase(int phase) {
+	public void setPhase(int phase)
+	{
 		this.phase = phase;
 	}
 
 	/**
 	 * @see AbstractMessageListenerContainer#setAutoStartup(boolean)
 	 */
-	public void setAutoStartup(boolean autoStartup) {
+	public void setAutoStartup(boolean autoStartup)
+	{
 		this.autoStartup = autoStartup;
 	}
 
 	@Override
-	public C createListenerContainer(JmsListenerEndpoint endpoint) {
+	public C createListenerContainer(JmsListenerEndpoint endpoint)
+	{
 		C instance = createContainerInstance();
 
-		if (this.connectionFactory != null) {
+		if (this.connectionFactory != null)
+		{
 			instance.setConnectionFactory(this.connectionFactory);
 		}
-		if (this.destinationResolver != null) {
+		if (this.destinationResolver != null)
+		{
 			instance.setDestinationResolver(this.destinationResolver);
 		}
-		if (this.errorHandler != null) {
+		if (this.errorHandler != null)
+		{
 			instance.setErrorHandler(this.errorHandler);
 		}
-		if (this.messageConverter != null) {
+		if (this.messageConverter != null)
+		{
 			instance.setMessageConverter(this.messageConverter);
 		}
-		if (this.sessionTransacted != null) {
+		if (this.sessionTransacted != null)
+		{
 			instance.setSessionTransacted(this.sessionTransacted);
 		}
-		if (this.sessionAcknowledgeMode != null) {
+		if (this.sessionAcknowledgeMode != null)
+		{
 			instance.setSessionAcknowledgeMode(this.sessionAcknowledgeMode);
 		}
-		if (this.pubSubDomain != null) {
+		if (this.pubSubDomain != null)
+		{
 			instance.setPubSubDomain(this.pubSubDomain);
 		}
-		if (this.replyPubSubDomain != null) {
+		if (this.replyPubSubDomain != null)
+		{
 			instance.setReplyPubSubDomain(this.replyPubSubDomain);
 		}
-		if (this.replyQosSettings != null) {
+		if (this.replyQosSettings != null)
+		{
 			instance.setReplyQosSettings(this.replyQosSettings);
 		}
-		if (this.subscriptionDurable != null) {
+		if (this.subscriptionDurable != null)
+		{
 			instance.setSubscriptionDurable(this.subscriptionDurable);
 		}
-		if (this.subscriptionShared != null) {
+		if (this.subscriptionShared != null)
+		{
 			instance.setSubscriptionShared(this.subscriptionShared);
 		}
-		if (this.clientId != null) {
+		if (this.clientId != null)
+		{
 			instance.setClientId(this.clientId);
 		}
-		if (this.phase != null) {
+		if (this.phase != null)
+		{
 			instance.setPhase(this.phase);
 		}
-		if (this.autoStartup != null) {
+		if (this.autoStartup != null)
+		{
 			instance.setAutoStartup(this.autoStartup);
 		}
 
@@ -242,10 +271,12 @@ public abstract class AbstractJmsListenerContainerFactory<C extends AbstractMess
 
 	/**
 	 * Further initialize the specified container.
-	 * <p>Subclasses can inherit from this method to apply extra
+	 * <p>
+	 * Subclasses can inherit from this method to apply extra
 	 * configuration if necessary.
 	 */
-	protected void initializeContainer(C instance) {
+	protected void initializeContainer(C instance)
+	{
 	}
 
 }

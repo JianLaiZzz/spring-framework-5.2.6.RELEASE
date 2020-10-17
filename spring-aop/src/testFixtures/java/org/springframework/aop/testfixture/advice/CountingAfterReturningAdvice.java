@@ -26,10 +26,12 @@ import org.springframework.aop.AfterReturningAdvice;
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
-public class CountingAfterReturningAdvice extends MethodCounter implements AfterReturningAdvice {
+public class CountingAfterReturningAdvice extends MethodCounter implements AfterReturningAdvice
+{
 
 	@Override
-	public void afterReturning(Object o, Method m, Object[] args, Object target) throws Throwable {
+	public void afterReturning(Object o, Method m, Object[] args, Object target) throws Throwable
+	{
 		count(m);
 	}
 

@@ -30,23 +30,25 @@ import org.springframework.transaction.TransactionStatus;
  * @since 5.2
  * @see TransactionOperations#withoutTransaction()
  */
-final class WithoutTransactionOperations implements TransactionOperations {
+final class WithoutTransactionOperations implements TransactionOperations
+{
 
 	static final WithoutTransactionOperations INSTANCE = new WithoutTransactionOperations();
 
-
-	private WithoutTransactionOperations() {
+	private WithoutTransactionOperations()
+	{
 	}
-
 
 	@Override
 	@Nullable
-	public <T> T execute(TransactionCallback<T> action) throws TransactionException {
+	public <T> T execute(TransactionCallback<T> action) throws TransactionException
+	{
 		return action.doInTransaction(new SimpleTransactionStatus(false));
 	}
 
 	@Override
-	public void executeWithoutResult(Consumer<TransactionStatus> action) throws TransactionException {
+	public void executeWithoutResult(Consumer<TransactionStatus> action) throws TransactionException
+	{
 		action.accept(new SimpleTransactionStatus(false));
 	}
 

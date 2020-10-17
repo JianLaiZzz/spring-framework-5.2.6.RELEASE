@@ -16,16 +16,15 @@
 
 package org.springframework.aop.interceptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.core.testfixture.io.ResourceTestUtils.qualifiedResource;
+
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.beans.testfixture.beans.ITestBean;
 import org.springframework.beans.testfixture.beans.TestBean;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.core.testfixture.io.ResourceTestUtils.qualifiedResource;
 
 /**
  * Non-XML tests are in AbstractAopProxyTests
@@ -33,10 +32,12 @@ import static org.springframework.core.testfixture.io.ResourceTestUtils.qualifie
  * @author Rod Johnson
  * @author Chris Beams
  */
-public class ExposeInvocationInterceptorTests {
+public class ExposeInvocationInterceptorTests
+{
 
 	@Test
-	public void testXmlConfig() {
+	public void testXmlConfig()
+	{
 		DefaultListableBeanFactory bf = new DefaultListableBeanFactory();
 		new XmlBeanDefinitionReader(bf).loadBeanDefinitions(
 				qualifiedResource(ExposeInvocationInterceptorTests.class, "context.xml"));
@@ -49,18 +50,20 @@ public class ExposeInvocationInterceptorTests {
 
 }
 
-
-abstract class ExposedInvocationTestBean extends TestBean {
+abstract class ExposedInvocationTestBean extends TestBean
+{
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		MethodInvocation invocation = ExposeInvocationInterceptor.currentInvocation();
 		assertions(invocation);
 		return super.getName();
 	}
 
 	@Override
-	public void absquatulate() {
+	public void absquatulate()
+	{
 		MethodInvocation invocation = ExposeInvocationInterceptor.currentInvocation();
 		assertions(invocation);
 		super.absquatulate();
@@ -69,12 +72,14 @@ abstract class ExposedInvocationTestBean extends TestBean {
 	protected abstract void assertions(MethodInvocation invocation);
 }
 
-
-class InvocationCheckExposedInvocationTestBean extends ExposedInvocationTestBean {
+class InvocationCheckExposedInvocationTestBean extends ExposedInvocationTestBean
+{
 
 	@Override
-	protected void assertions(MethodInvocation invocation) {
+	protected void assertions(MethodInvocation invocation)
+	{
 		assertThat(invocation.getThis() == this).isTrue();
-		assertThat(ITestBean.class.isAssignableFrom(invocation.getMethod().getDeclaringClass())).as("Invocation should be on ITestBean: " + invocation.getMethod()).isTrue();
+		assertThat(ITestBean.class.isAssignableFrom(invocation.getMethod().getDeclaringClass()))
+				.as("Invocation should be on ITestBean: " + invocation.getMethod()).isTrue();
 	}
 }

@@ -16,7 +16,7 @@
 
 package org.springframework.oxm.jaxb;
 
-import java.awt.Image;
+import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -42,13 +42,16 @@ import javax.xml.namespace.QName;
  *
  * @author Arjen Poutsma
  */
-public class StandardClasses {
+public class StandardClasses
+{
 
-	private static final QName NAME = new QName("https://springframework.org/oxm-test", "standard-classes");
+	private static final QName NAME = new QName("https://springframework.org/oxm-test",
+			"standard-classes");
 
 	private DatatypeFactory factory;
 
-	public StandardClasses() throws DatatypeConfigurationException {
+	public StandardClasses() throws DatatypeConfigurationException
+	{
 		factory = DatatypeFactory.newInstance();
 	}
 
@@ -62,55 +65,69 @@ public class StandardClasses {
 	javax.xml.transform.Source
 	java.util.UUID
 		 */
-	public JAXBElement<String> standardClassString() {
+	public JAXBElement<String> standardClassString()
+	{
 		return new JAXBElement<>(NAME, String.class, "42");
 	}
 
-	public JAXBElement<BigInteger> standardClassBigInteger() {
+	public JAXBElement<BigInteger> standardClassBigInteger()
+	{
 		return new JAXBElement<>(NAME, BigInteger.class, new BigInteger("42"));
 	}
 
-	public JAXBElement<BigDecimal> standardClassBigDecimal() {
+	public JAXBElement<BigDecimal> standardClassBigDecimal()
+	{
 		return new JAXBElement<>(NAME, BigDecimal.class, new BigDecimal("42.0"));
 	}
 
-	public JAXBElement<Calendar> standardClassCalendar() {
+	public JAXBElement<Calendar> standardClassCalendar()
+	{
 		return new JAXBElement<>(NAME, Calendar.class, Calendar.getInstance());
 	}
 
-	public JAXBElement<GregorianCalendar> standardClassGregorianCalendar() {
-		return new JAXBElement<>(NAME, GregorianCalendar.class, (GregorianCalendar) Calendar.getInstance());
+	public JAXBElement<GregorianCalendar> standardClassGregorianCalendar()
+	{
+		return new JAXBElement<>(NAME, GregorianCalendar.class,
+				(GregorianCalendar) Calendar.getInstance());
 	}
 
-	public JAXBElement<Date> standardClassDate() {
+	public JAXBElement<Date> standardClassDate()
+	{
 		return new JAXBElement<>(NAME, Date.class, new Date());
 	}
 
-	public JAXBElement<QName> standardClassQName() {
+	public JAXBElement<QName> standardClassQName()
+	{
 		return new JAXBElement<>(NAME, QName.class, NAME);
 	}
 
-	public JAXBElement<URI> standardClassURI() {
+	public JAXBElement<URI> standardClassURI()
+	{
 		return new JAXBElement<>(NAME, URI.class, URI.create("https://springframework.org"));
 	}
 
-	public JAXBElement<XMLGregorianCalendar> standardClassXMLGregorianCalendar() throws DatatypeConfigurationException {
-		XMLGregorianCalendar calendar =
-				factory.newXMLGregorianCalendar((GregorianCalendar) Calendar.getInstance());
+	public JAXBElement<XMLGregorianCalendar> standardClassXMLGregorianCalendar()
+			throws DatatypeConfigurationException
+	{
+		XMLGregorianCalendar calendar = factory
+				.newXMLGregorianCalendar((GregorianCalendar) Calendar.getInstance());
 		return new JAXBElement<>(NAME, XMLGregorianCalendar.class, calendar);
 	}
 
-	public JAXBElement<Duration> standardClassDuration() {
+	public JAXBElement<Duration> standardClassDuration()
+	{
 		Duration duration = factory.newDuration(42000);
 		return new JAXBElement<>(NAME, Duration.class, duration);
 	}
 
-	public JAXBElement<Image> standardClassImage() throws IOException {
+	public JAXBElement<Image> standardClassImage() throws IOException
+	{
 		Image image = ImageIO.read(getClass().getResourceAsStream("spring-ws.png"));
 		return new JAXBElement<>(NAME, Image.class, image);
 	}
 
-	public JAXBElement<DataHandler> standardClassDataHandler() {
+	public JAXBElement<DataHandler> standardClassDataHandler()
+	{
 		DataSource dataSource = new URLDataSource(getClass().getResource("spring-ws.png"));
 		DataHandler dataHandler = new DataHandler(dataSource);
 		return new JAXBElement<>(NAME, DataHandler.class, dataHandler);
@@ -123,7 +140,8 @@ public class StandardClasses {
 	}
 	*/
 
-	public JAXBElement<UUID> standardClassUUID() {
+	public JAXBElement<UUID> standardClassUUID()
+	{
 		return new JAXBElement<>(NAME, UUID.class, UUID.randomUUID());
 	}
 

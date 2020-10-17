@@ -29,9 +29,11 @@ import org.springframework.orm.ObjectRetrievalFailureException;
  * @see EntityManagerFactoryUtils#convertJpaAccessExceptionIfPossible
  */
 @SuppressWarnings("serial")
-public class JpaObjectRetrievalFailureException extends ObjectRetrievalFailureException {
+public class JpaObjectRetrievalFailureException extends ObjectRetrievalFailureException
+{
 
-	public JpaObjectRetrievalFailureException(EntityNotFoundException ex) {
+	public JpaObjectRetrievalFailureException(EntityNotFoundException ex)
+	{
 		super(ex.getMessage(), ex);
 	}
 

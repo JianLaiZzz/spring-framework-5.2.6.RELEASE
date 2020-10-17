@@ -29,14 +29,19 @@ import org.springframework.jms.JmsException;
  * @see ConnectionFactoryUtils
  */
 @SuppressWarnings("serial")
-public class SynchedLocalTransactionFailedException extends JmsException {
+public class SynchedLocalTransactionFailedException extends JmsException
+{
 
 	/**
 	 * Create a new SynchedLocalTransactionFailedException.
-	 * @param msg the detail message
-	 * @param cause the root cause
+	 * 
+	 * @param msg
+	 *            the detail message
+	 * @param cause
+	 *            the root cause
 	 */
-	public SynchedLocalTransactionFailedException(String msg, JMSException cause) {
+	public SynchedLocalTransactionFailedException(String msg, JMSException cause)
+	{
 		super(msg, cause);
 	}
 

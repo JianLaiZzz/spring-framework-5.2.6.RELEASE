@@ -18,14 +18,14 @@ package org.springframework.aop.interceptor;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
-
 import org.springframework.util.StopWatch;
 
 /**
  * Simple AOP Alliance {@code MethodInterceptor} for performance monitoring.
  * This interceptor has no effect on the intercepted method call.
  *
- * <p>Uses a {@code StopWatch} for the actual performance measuring.
+ * <p>
+ * Uses a {@code StopWatch} for the actual performance measuring.
  *
  * @author Rod Johnson
  * @author Dmitriy Kopylenko
@@ -34,34 +34,41 @@ import org.springframework.util.StopWatch;
  * @see JamonPerformanceMonitorInterceptor
  */
 @SuppressWarnings("serial")
-public class PerformanceMonitorInterceptor extends AbstractMonitoringInterceptor {
+public class PerformanceMonitorInterceptor extends AbstractMonitoringInterceptor
+{
 
 	/**
 	 * Create a new PerformanceMonitorInterceptor with a static logger.
 	 */
-	public PerformanceMonitorInterceptor() {
+	public PerformanceMonitorInterceptor()
+	{
 	}
 
 	/**
 	 * Create a new PerformanceMonitorInterceptor with a dynamic or static logger,
 	 * according to the given flag.
-	 * @param useDynamicLogger whether to use a dynamic logger or a static logger
+	 * 
+	 * @param useDynamicLogger
+	 *            whether to use a dynamic logger or a static logger
 	 * @see #setUseDynamicLogger
 	 */
-	public PerformanceMonitorInterceptor(boolean useDynamicLogger) {
+	public PerformanceMonitorInterceptor(boolean useDynamicLogger)
+	{
 		setUseDynamicLogger(useDynamicLogger);
 	}
 
-
 	@Override
-	protected Object invokeUnderTrace(MethodInvocation invocation, Log logger) throws Throwable {
+	protected Object invokeUnderTrace(MethodInvocation invocation, Log logger) throws Throwable
+	{
 		String name = createInvocationTraceName(invocation);
 		StopWatch stopWatch = new StopWatch(name);
 		stopWatch.start(name);
-		try {
+		try
+		{
 			return invocation.proceed();
 		}
-		finally {
+		finally
+		{
 			stopWatch.stop();
 			writeToLog(logger, stopWatch.shortSummary());
 		}

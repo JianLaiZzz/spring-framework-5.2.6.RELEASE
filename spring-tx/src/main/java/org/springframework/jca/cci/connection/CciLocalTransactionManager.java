@@ -40,7 +40,8 @@ import org.springframework.util.Assert;
  * Binds a CCI Connection from the specified ConnectionFactory to the thread,
  * potentially allowing for one thread-bound Connection per ConnectionFactory.
  *
- * <p>Application code is required to retrieve the CCI Connection via
+ * <p>
+ * Application code is required to retrieve the CCI Connection via
  * {@link ConnectionFactoryUtils#getConnection(ConnectionFactory)} instead of a standard
  * Java EE-style {@link ConnectionFactory#getConnection()} call. Spring classes such as
  * {@link org.springframework.jca.cci.core.CciTemplate} use this strategy implicitly.
@@ -48,7 +49,8 @@ import org.springframework.util.Assert;
  * {@link ConnectionFactoryUtils} lookup strategy behaves exactly like the native
  * DataSource lookup; it can thus be used in a portable fashion.
  *
- * <p>Alternatively, you can allow application code to work with the standard
+ * <p>
+ * Alternatively, you can allow application code to work with the standard
  * Java EE lookup pattern {@link ConnectionFactory#getConnection()}, for example
  * for legacy code that is not aware of Spring at all. In that case, define a
  * {@link TransactionAwareConnectionFactoryProxy} for your target ConnectionFactory,
@@ -64,42 +66,50 @@ import org.springframework.util.Assert;
  */
 @SuppressWarnings("serial")
 public class CciLocalTransactionManager extends AbstractPlatformTransactionManager
-		implements ResourceTransactionManager, InitializingBean {
+		implements ResourceTransactionManager, InitializingBean
+{
 
 	@Nullable
 	private ConnectionFactory connectionFactory;
 
-
 	/**
 	 * Create a new CciLocalTransactionManager instance.
 	 * A ConnectionFactory has to be set to be able to use it.
+	 * 
 	 * @see #setConnectionFactory
 	 */
-	public CciLocalTransactionManager() {
+	public CciLocalTransactionManager()
+	{
 	}
 
 	/**
 	 * Create a new CciLocalTransactionManager instance.
-	 * @param connectionFactory the CCI ConnectionFactory to manage local transactions for
+	 * 
+	 * @param connectionFactory
+	 *            the CCI ConnectionFactory to manage local transactions for
 	 */
-	public CciLocalTransactionManager(ConnectionFactory connectionFactory) {
+	public CciLocalTransactionManager(ConnectionFactory connectionFactory)
+	{
 		setConnectionFactory(connectionFactory);
 		afterPropertiesSet();
 	}
-
 
 	/**
 	 * Set the CCI ConnectionFactory that this instance should manage local
 	 * transactions for.
 	 */
-	public void setConnectionFactory(@Nullable ConnectionFactory cf) {
-		if (cf instanceof TransactionAwareConnectionFactoryProxy) {
+	public void setConnectionFactory(@Nullable ConnectionFactory cf)
+	{
+		if (cf instanceof TransactionAwareConnectionFactoryProxy)
+		{
 			// If we got a TransactionAwareConnectionFactoryProxy, we need to perform transactions
 			// for its underlying target ConnectionFactory, else JMS access code won't see
 			// properly exposed transactions (i.e. transactions for the target ConnectionFactory).
-			this.connectionFactory = ((TransactionAwareConnectionFactoryProxy) cf).getTargetConnectionFactory();
+			this.connectionFactory = ((TransactionAwareConnectionFactoryProxy) cf)
+					.getTargetConnectionFactory();
 		}
-		else {
+		else
+		{
 			this.connectionFactory = cf;
 		}
 	}
@@ -109,54 +119,63 @@ public class CciLocalTransactionManager extends AbstractPlatformTransactionManag
 	 * transactions for.
 	 */
 	@Nullable
-	public ConnectionFactory getConnectionFactory() {
+	public ConnectionFactory getConnectionFactory()
+	{
 		return this.connectionFactory;
 	}
 
-	private ConnectionFactory obtainConnectionFactory() {
+	private ConnectionFactory obtainConnectionFactory()
+	{
 		ConnectionFactory connectionFactory = getConnectionFactory();
 		Assert.state(connectionFactory != null, "No ConnectionFactory set");
 		return connectionFactory;
 	}
 
 	@Override
-	public void afterPropertiesSet() {
-		if (getConnectionFactory() == null) {
+	public void afterPropertiesSet()
+	{
+		if (getConnectionFactory() == null)
+		{
 			throw new IllegalArgumentException("Property 'connectionFactory' is required");
 		}
 	}
 
-
 	@Override
-	public Object getResourceFactory() {
+	public Object getResourceFactory()
+	{
 		return obtainConnectionFactory();
 	}
 
 	@Override
-	protected Object doGetTransaction() {
+	protected Object doGetTransaction()
+	{
 		CciLocalTransactionObject txObject = new CciLocalTransactionObject();
-		ConnectionHolder conHolder =
-				(ConnectionHolder) TransactionSynchronizationManager.getResource(obtainConnectionFactory());
+		ConnectionHolder conHolder = (ConnectionHolder) TransactionSynchronizationManager
+				.getResource(obtainConnectionFactory());
 		txObject.setConnectionHolder(conHolder);
 		return txObject;
 	}
 
 	@Override
-	protected boolean isExistingTransaction(Object transaction) {
+	protected boolean isExistingTransaction(Object transaction)
+	{
 		CciLocalTransactionObject txObject = (CciLocalTransactionObject) transaction;
 		// Consider a pre-bound connection as transaction.
 		return txObject.hasConnectionHolder();
 	}
 
 	@Override
-	protected void doBegin(Object transaction, TransactionDefinition definition) {
+	protected void doBegin(Object transaction, TransactionDefinition definition)
+	{
 		CciLocalTransactionObject txObject = (CciLocalTransactionObject) transaction;
 		ConnectionFactory connectionFactory = obtainConnectionFactory();
 		Connection con = null;
 
-		try {
+		try
+		{
 			con = connectionFactory.getConnection();
-			if (logger.isDebugEnabled()) {
+			if (logger.isDebugEnabled())
+			{
 				logger.debug("Acquired Connection [" + con + "] for local CCI transaction");
 			}
 
@@ -165,93 +184,117 @@ public class CciLocalTransactionManager extends AbstractPlatformTransactionManag
 
 			con.getLocalTransaction().begin();
 			int timeout = determineTimeout(definition);
-			if (timeout != TransactionDefinition.TIMEOUT_DEFAULT) {
+			if (timeout != TransactionDefinition.TIMEOUT_DEFAULT)
+			{
 				connectionHolder.setTimeoutInSeconds(timeout);
 			}
 
 			txObject.setConnectionHolder(connectionHolder);
 			TransactionSynchronizationManager.bindResource(connectionFactory, connectionHolder);
 		}
-		catch (NotSupportedException ex) {
+		catch (NotSupportedException ex)
+		{
 			ConnectionFactoryUtils.releaseConnection(con, connectionFactory);
-			throw new CannotCreateTransactionException("CCI Connection does not support local transactions", ex);
+			throw new CannotCreateTransactionException(
+					"CCI Connection does not support local transactions", ex);
 		}
-		catch (LocalTransactionException ex) {
+		catch (LocalTransactionException ex)
+		{
 			ConnectionFactoryUtils.releaseConnection(con, connectionFactory);
 			throw new CannotCreateTransactionException("Could not begin local CCI transaction", ex);
 		}
-		catch (Throwable ex) {
+		catch (Throwable ex)
+		{
 			ConnectionFactoryUtils.releaseConnection(con, connectionFactory);
-			throw new TransactionSystemException("Unexpected failure on begin of CCI local transaction", ex);
+			throw new TransactionSystemException("Unexpected failure on begin of CCI local transaction",
+					ex);
 		}
 	}
 
 	@Override
-	protected Object doSuspend(Object transaction) {
+	protected Object doSuspend(Object transaction)
+	{
 		CciLocalTransactionObject txObject = (CciLocalTransactionObject) transaction;
 		txObject.setConnectionHolder(null);
 		return TransactionSynchronizationManager.unbindResource(obtainConnectionFactory());
 	}
 
 	@Override
-	protected void doResume(@Nullable Object transaction, Object suspendedResources) {
+	protected void doResume(@Nullable Object transaction, Object suspendedResources)
+	{
 		ConnectionHolder conHolder = (ConnectionHolder) suspendedResources;
 		TransactionSynchronizationManager.bindResource(obtainConnectionFactory(), conHolder);
 	}
 
-	protected boolean isRollbackOnly(Object transaction) throws TransactionException {
+	protected boolean isRollbackOnly(Object transaction) throws TransactionException
+	{
 		CciLocalTransactionObject txObject = (CciLocalTransactionObject) transaction;
 		return txObject.getConnectionHolder().isRollbackOnly();
 	}
 
 	@Override
-	protected void doCommit(DefaultTransactionStatus status) {
+	protected void doCommit(DefaultTransactionStatus status)
+	{
 		CciLocalTransactionObject txObject = (CciLocalTransactionObject) status.getTransaction();
 		Connection con = txObject.getConnectionHolder().getConnection();
-		if (status.isDebug()) {
+		if (status.isDebug())
+		{
 			logger.debug("Committing CCI local transaction on Connection [" + con + "]");
 		}
-		try {
+		try
+		{
 			con.getLocalTransaction().commit();
 		}
-		catch (LocalTransactionException ex) {
+		catch (LocalTransactionException ex)
+		{
 			throw new TransactionSystemException("Could not commit CCI local transaction", ex);
 		}
-		catch (ResourceException ex) {
-			throw new TransactionSystemException("Unexpected failure on commit of CCI local transaction", ex);
+		catch (ResourceException ex)
+		{
+			throw new TransactionSystemException("Unexpected failure on commit of CCI local transaction",
+					ex);
 		}
 	}
 
 	@Override
-	protected void doRollback(DefaultTransactionStatus status) {
+	protected void doRollback(DefaultTransactionStatus status)
+	{
 		CciLocalTransactionObject txObject = (CciLocalTransactionObject) status.getTransaction();
 		Connection con = txObject.getConnectionHolder().getConnection();
-		if (status.isDebug()) {
+		if (status.isDebug())
+		{
 			logger.debug("Rolling back CCI local transaction on Connection [" + con + "]");
 		}
-		try {
+		try
+		{
 			con.getLocalTransaction().rollback();
 		}
-		catch (LocalTransactionException ex) {
+		catch (LocalTransactionException ex)
+		{
 			throw new TransactionSystemException("Could not roll back CCI local transaction", ex);
 		}
-		catch (ResourceException ex) {
-			throw new TransactionSystemException("Unexpected failure on rollback of CCI local transaction", ex);
+		catch (ResourceException ex)
+		{
+			throw new TransactionSystemException(
+					"Unexpected failure on rollback of CCI local transaction", ex);
 		}
 	}
 
 	@Override
-	protected void doSetRollbackOnly(DefaultTransactionStatus status) {
+	protected void doSetRollbackOnly(DefaultTransactionStatus status)
+	{
 		CciLocalTransactionObject txObject = (CciLocalTransactionObject) status.getTransaction();
-		if (status.isDebug()) {
-			logger.debug("Setting CCI local transaction [" + txObject.getConnectionHolder().getConnection() +
-					"] rollback-only");
+		if (status.isDebug())
+		{
+			logger.debug("Setting CCI local transaction ["
+					+ txObject.getConnectionHolder().getConnection() + "] rollback-only");
 		}
 		txObject.getConnectionHolder().setRollbackOnly();
 	}
 
 	@Override
-	protected void doCleanupAfterCompletion(Object transaction) {
+	protected void doCleanupAfterCompletion(Object transaction)
+	{
 		CciLocalTransactionObject txObject = (CciLocalTransactionObject) transaction;
 		ConnectionFactory connectionFactory = obtainConnectionFactory();
 
@@ -260,33 +303,38 @@ public class CciLocalTransactionManager extends AbstractPlatformTransactionManag
 		txObject.getConnectionHolder().clear();
 
 		Connection con = txObject.getConnectionHolder().getConnection();
-		if (logger.isDebugEnabled()) {
+		if (logger.isDebugEnabled())
+		{
 			logger.debug("Releasing CCI Connection [" + con + "] after transaction");
 		}
 		ConnectionFactoryUtils.releaseConnection(con, connectionFactory);
 	}
 
-
 	/**
 	 * CCI local transaction object, representing a ConnectionHolder.
 	 * Used as transaction object by CciLocalTransactionManager.
+	 * 
 	 * @see ConnectionHolder
 	 */
-	private static class CciLocalTransactionObject {
+	private static class CciLocalTransactionObject
+	{
 
 		@Nullable
 		private ConnectionHolder connectionHolder;
 
-		public void setConnectionHolder(@Nullable ConnectionHolder connectionHolder) {
+		public void setConnectionHolder(@Nullable ConnectionHolder connectionHolder)
+		{
 			this.connectionHolder = connectionHolder;
 		}
 
-		public ConnectionHolder getConnectionHolder() {
+		public ConnectionHolder getConnectionHolder()
+		{
 			Assert.state(this.connectionHolder != null, "No ConnectionHolder available");
 			return this.connectionHolder;
 		}
 
-		public boolean hasConnectionHolder() {
+		public boolean hasConnectionHolder()
+		{
 			return (this.connectionHolder != null);
 		}
 	}

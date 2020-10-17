@@ -16,20 +16,19 @@
 
 package org.springframework.orm.jpa.hibernate;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import javax.persistence.EntityManager;
 
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.target.SingletonTargetSource;
 import org.springframework.orm.jpa.AbstractContainerEntityManagerFactoryIntegrationTests;
 import org.springframework.orm.jpa.EntityManagerFactoryInfo;
 import org.springframework.orm.jpa.EntityManagerProxy;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Hibernate-specific JPA tests.
@@ -38,19 +37,23 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Rod Johnson
  */
 @SuppressWarnings("deprecation")
-public class HibernateEntityManagerFactoryIntegrationTests extends AbstractContainerEntityManagerFactoryIntegrationTests {
+public class HibernateEntityManagerFactoryIntegrationTests
+		extends AbstractContainerEntityManagerFactoryIntegrationTests
+{
 
 	@Override
-	protected String[] getConfigLocations() {
-		return new String[] {"/org/springframework/orm/jpa/hibernate/hibernate-manager.xml",
-				"/org/springframework/orm/jpa/memdb.xml", "/org/springframework/orm/jpa/inject.xml"};
+	protected String[] getConfigLocations()
+	{
+		return new String[] { "/org/springframework/orm/jpa/hibernate/hibernate-manager.xml",
+				"/org/springframework/orm/jpa/memdb.xml", "/org/springframework/orm/jpa/inject.xml" };
 	}
 
-
 	@Test
-	public void testCanCastNativeEntityManagerFactoryToHibernateEntityManagerFactoryImpl() {
+	public void testCanCastNativeEntityManagerFactoryToHibernateEntityManagerFactoryImpl()
+	{
 		EntityManagerFactoryInfo emfi = (EntityManagerFactoryInfo) entityManagerFactory;
-		boolean condition1 = emfi.getNativeEntityManagerFactory() instanceof org.hibernate.jpa.HibernateEntityManagerFactory;
+		boolean condition1 = emfi
+				.getNativeEntityManagerFactory() instanceof org.hibernate.jpa.HibernateEntityManagerFactory;
 		assertThat(condition1).isTrue();
 		// as of Hibernate 5.2
 		boolean condition = emfi.getNativeEntityManagerFactory() instanceof SessionFactory;
@@ -58,16 +61,19 @@ public class HibernateEntityManagerFactoryIntegrationTests extends AbstractConta
 	}
 
 	@Test
-	public void testCanCastSharedEntityManagerProxyToHibernateEntityManager() {
+	public void testCanCastSharedEntityManagerProxyToHibernateEntityManager()
+	{
 		boolean condition1 = sharedEntityManager instanceof org.hibernate.jpa.HibernateEntityManager;
 		assertThat(condition1).isTrue();
 		// as of Hibernate 5.2
-		boolean condition = ((EntityManagerProxy) sharedEntityManager).getTargetEntityManager() instanceof Session;
+		boolean condition = ((EntityManagerProxy) sharedEntityManager)
+				.getTargetEntityManager() instanceof Session;
 		assertThat(condition).isTrue();
 	}
 
 	@Test
-	public void testCanUnwrapAopProxy() {
+	public void testCanUnwrapAopProxy()
+	{
 		EntityManager em = entityManagerFactory.createEntityManager();
 		EntityManager proxy = ProxyFactory.getProxy(EntityManager.class, new SingletonTargetSource(em));
 		boolean condition = em instanceof org.hibernate.jpa.HibernateEntityManager;
@@ -79,15 +85,18 @@ public class HibernateEntityManagerFactoryIntegrationTests extends AbstractConta
 		assertThat(proxy.getDelegate()).isSameAs(em.getDelegate());
 	}
 
-	@Test  // SPR-16956
-	public void testReadOnly() {
-		assertThat(sharedEntityManager.unwrap(Session.class).getHibernateFlushMode()).isSameAs(FlushMode.AUTO);
+	@Test // SPR-16956
+	public void testReadOnly()
+	{
+		assertThat(sharedEntityManager.unwrap(Session.class).getHibernateFlushMode())
+				.isSameAs(FlushMode.AUTO);
 		assertThat(sharedEntityManager.unwrap(Session.class).isDefaultReadOnly()).isFalse();
 		endTransaction();
 
 		this.transactionDefinition.setReadOnly(true);
 		startNewTransaction();
-		assertThat(sharedEntityManager.unwrap(Session.class).getHibernateFlushMode()).isSameAs(FlushMode.MANUAL);
+		assertThat(sharedEntityManager.unwrap(Session.class).getHibernateFlushMode())
+				.isSameAs(FlushMode.MANUAL);
 		assertThat(sharedEntityManager.unwrap(Session.class).isDefaultReadOnly()).isTrue();
 	}
 

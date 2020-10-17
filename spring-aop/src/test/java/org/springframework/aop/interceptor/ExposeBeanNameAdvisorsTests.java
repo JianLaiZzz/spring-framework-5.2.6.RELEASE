@@ -16,37 +16,41 @@
 
 package org.springframework.aop.interceptor;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.NamedBean;
 import org.springframework.beans.testfixture.beans.ITestBean;
 import org.springframework.beans.testfixture.beans.TestBean;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * @author Rod Johnson
  * @author Chris Beams
  */
-public class ExposeBeanNameAdvisorsTests {
+public class ExposeBeanNameAdvisorsTests
+{
 
-	private class RequiresBeanNameBoundTestBean extends TestBean {
+	private class RequiresBeanNameBoundTestBean extends TestBean
+	{
 		private final String beanName;
 
-		public RequiresBeanNameBoundTestBean(String beanName) {
+		public RequiresBeanNameBoundTestBean(String beanName)
+		{
 			this.beanName = beanName;
 		}
 
 		@Override
-		public int getAge() {
+		public int getAge()
+		{
 			assertThat(ExposeBeanNameAdvisors.getBeanName()).isEqualTo(beanName);
 			return super.getAge();
 		}
 	}
 
 	@Test
-	public void testNoIntroduction() {
+	public void testNoIntroduction()
+	{
 		String beanName = "foo";
 		TestBean target = new RequiresBeanNameBoundTestBean(beanName);
 		ProxyFactory pf = new ProxyFactory(target);
@@ -61,7 +65,8 @@ public class ExposeBeanNameAdvisorsTests {
 	}
 
 	@Test
-	public void testWithIntroduction() {
+	public void testWithIntroduction()
+	{
 		String beanName = "foo";
 		TestBean target = new RequiresBeanNameBoundTestBean(beanName);
 		ProxyFactory pf = new ProxyFactory(target);

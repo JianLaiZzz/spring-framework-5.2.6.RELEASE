@@ -28,22 +28,29 @@ import javax.xml.transform.Source;
  * @since 3.0
  * @see Marshaller
  */
-public interface Unmarshaller {
+public interface Unmarshaller
+{
 
 	/**
 	 * Indicate whether this unmarshaller can unmarshal instances of the supplied type.
-	 * @param clazz the class that this unmarshaller is being asked if it can marshal
+	 * 
+	 * @param clazz
+	 *            the class that this unmarshaller is being asked if it can marshal
 	 * @return {@code true} if this unmarshaller can indeed unmarshal to the supplied class;
-	 * {@code false} otherwise
+	 *         {@code false} otherwise
 	 */
 	boolean supports(Class<?> clazz);
 
 	/**
 	 * Unmarshal the given {@link Source} into an object graph.
-	 * @param source the source to marshal from
+	 * 
+	 * @param source
+	 *            the source to marshal from
 	 * @return the object graph
-	 * @throws IOException if an I/O error occurs
-	 * @throws XmlMappingException if the given source cannot be mapped to an object
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 * @throws XmlMappingException
+	 *             if the given source cannot be mapped to an object
 	 */
 	Object unmarshal(Source source) throws IOException, XmlMappingException;
 

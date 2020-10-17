@@ -16,11 +16,13 @@
 
 package org.springframework.transaction.support;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.beans.testfixture.beans.DerivedTestBean;
@@ -28,17 +30,16 @@ import org.springframework.beans.testfixture.beans.TestBean;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.transaction.testfixture.CallCountingTransactionManager;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 /**
  * @author Juergen Hoeller
  */
-public class SimpleTransactionScopeTests {
+public class SimpleTransactionScopeTests
+{
 
 	@Test
 	@SuppressWarnings("resource")
-	public void getFromScope() throws Exception {
+	public void getFromScope() throws Exception
+	{
 		GenericApplicationContext context = new GenericApplicationContext();
 		context.getBeanFactory().registerScope("tx", new SimpleTransactionScope());
 
@@ -55,13 +56,13 @@ public class SimpleTransactionScopeTests {
 
 		context.refresh();
 
-		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
-				context.getBean(TestBean.class))
-			.withCauseInstanceOf(IllegalStateException.class);
+		assertThatExceptionOfType(BeanCreationException.class)
+				.isThrownBy(() -> context.getBean(TestBean.class))
+				.withCauseInstanceOf(IllegalStateException.class);
 
-		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
-				context.getBean(DerivedTestBean.class))
-			.withCauseInstanceOf(IllegalStateException.class);
+		assertThatExceptionOfType(BeanCreationException.class)
+				.isThrownBy(() -> context.getBean(DerivedTestBean.class))
+				.withCauseInstanceOf(IllegalStateException.class);
 
 		TestBean bean1 = null;
 		DerivedTestBean bean2 = null;
@@ -69,7 +70,8 @@ public class SimpleTransactionScopeTests {
 		DerivedTestBean bean2b = null;
 
 		TransactionSynchronizationManager.initSynchronization();
-		try {
+		try
+		{
 			bean1 = context.getBean(TestBean.class);
 			assertThat(context.getBean(TestBean.class)).isSameAs(bean1);
 
@@ -91,8 +93,10 @@ public class SimpleTransactionScopeTests {
 			assertThat(bean2b).isNotSameAs(bean2);
 			assertThat(bean2b).isNotSameAs(bean2a);
 		}
-		finally {
-			TransactionSynchronizationUtils.triggerAfterCompletion(TransactionSynchronization.STATUS_COMMITTED);
+		finally
+		{
+			TransactionSynchronizationUtils
+					.triggerAfterCompletion(TransactionSynchronization.STATUS_COMMITTED);
 			TransactionSynchronizationManager.clearSynchronization();
 		}
 
@@ -100,18 +104,20 @@ public class SimpleTransactionScopeTests {
 		assertThat(bean2b.wasDestroyed()).isTrue();
 		assertThat(TransactionSynchronizationManager.getResourceMap().isEmpty()).isTrue();
 
-		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
-				context.getBean(TestBean.class))
-			.withCauseInstanceOf(IllegalStateException.class);
+		assertThatExceptionOfType(BeanCreationException.class)
+				.isThrownBy(() -> context.getBean(TestBean.class))
+				.withCauseInstanceOf(IllegalStateException.class);
 
-		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
-				context.getBean(DerivedTestBean.class))
-			.withCauseInstanceOf(IllegalStateException.class);
+		assertThatExceptionOfType(BeanCreationException.class)
+				.isThrownBy(() -> context.getBean(DerivedTestBean.class))
+				.withCauseInstanceOf(IllegalStateException.class);
 	}
 
 	@Test
-	public void getWithTransactionManager() throws Exception {
-		try (GenericApplicationContext context = new GenericApplicationContext()) {
+	public void getWithTransactionManager() throws Exception
+	{
+		try (GenericApplicationContext context = new GenericApplicationContext())
+		{
 			context.getBeanFactory().registerScope("tx", new SimpleTransactionScope());
 
 			GenericBeanDefinition bd1 = new GenericBeanDefinition();
@@ -131,7 +137,8 @@ public class SimpleTransactionScopeTests {
 			TransactionTemplate tt = new TransactionTemplate(tm);
 			Set<DerivedTestBean> finallyDestroy = new HashSet<>();
 
-			tt.execute(status -> {
+			tt.execute(status ->
+			{
 				TestBean bean1 = context.getBean(TestBean.class);
 				assertThat(context.getBean(TestBean.class)).isSameAs(bean1);
 
@@ -157,7 +164,8 @@ public class SimpleTransactionScopeTests {
 				Set<DerivedTestBean> immediatelyDestroy = new HashSet<>();
 				TransactionTemplate tt2 = new TransactionTemplate(tm);
 				tt2.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRED);
-				tt2.execute(status2 -> {
+				tt2.execute(status2 ->
+				{
 					DerivedTestBean bean2c = context.getBean(DerivedTestBean.class);
 					immediatelyDestroy.add(bean2c);
 					assertThat(context.getBean(DerivedTestBean.class)).isSameAs(bean2c);

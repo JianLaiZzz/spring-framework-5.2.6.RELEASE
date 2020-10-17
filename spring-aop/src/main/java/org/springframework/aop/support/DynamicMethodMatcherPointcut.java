@@ -28,15 +28,18 @@ import org.springframework.aop.Pointcut;
  *
  * @author Rod Johnson
  */
-public abstract class DynamicMethodMatcherPointcut extends DynamicMethodMatcher implements Pointcut {
+public abstract class DynamicMethodMatcherPointcut extends DynamicMethodMatcher implements Pointcut
+{
 
 	@Override
-	public ClassFilter getClassFilter() {
+	public ClassFilter getClassFilter()
+	{
 		return ClassFilter.TRUE;
 	}
 
 	@Override
-	public final MethodMatcher getMethodMatcher() {
+	public final MethodMatcher getMethodMatcher()
+	{
 		return this;
 	}
 

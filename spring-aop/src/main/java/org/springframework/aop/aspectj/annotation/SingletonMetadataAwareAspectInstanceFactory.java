@@ -34,34 +34,40 @@ import org.springframework.core.annotation.OrderUtils;
  */
 @SuppressWarnings("serial")
 public class SingletonMetadataAwareAspectInstanceFactory extends SingletonAspectInstanceFactory
-		implements MetadataAwareAspectInstanceFactory, Serializable {
+		implements MetadataAwareAspectInstanceFactory, Serializable
+{
 
 	private final AspectMetadata metadata;
 
-
 	/**
 	 * Create a new SingletonMetadataAwareAspectInstanceFactory for the given aspect.
-	 * @param aspectInstance the singleton aspect instance
-	 * @param aspectName the name of the aspect
+	 * 
+	 * @param aspectInstance
+	 *            the singleton aspect instance
+	 * @param aspectName
+	 *            the name of the aspect
 	 */
-	public SingletonMetadataAwareAspectInstanceFactory(Object aspectInstance, String aspectName) {
+	public SingletonMetadataAwareAspectInstanceFactory(Object aspectInstance, String aspectName)
+	{
 		super(aspectInstance);
 		this.metadata = new AspectMetadata(aspectInstance.getClass(), aspectName);
 	}
 
-
 	@Override
-	public final AspectMetadata getAspectMetadata() {
+	public final AspectMetadata getAspectMetadata()
+	{
 		return this.metadata;
 	}
 
 	@Override
-	public Object getAspectCreationMutex() {
+	public Object getAspectCreationMutex()
+	{
 		return this;
 	}
 
 	@Override
-	protected int getOrderForAspectClass(Class<?> aspectClass) {
+	protected int getOrderForAspectClass(Class<?> aspectClass)
+	{
 		return OrderUtils.getOrder(aspectClass, Ordered.LOWEST_PRECEDENCE);
 	}
 

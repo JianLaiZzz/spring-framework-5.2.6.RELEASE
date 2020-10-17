@@ -20,7 +20,8 @@ package org.springframework.orm.jpa.vendor;
  * Enumeration for common database platforms. Allows strong typing of database type
  * and portable configuration between JpaVendorDialect implementations.
  *
- * <p>If a given PersistenceProvider supports a database not listed here,
+ * <p>
+ * If a given PersistenceProvider supports a database not listed here,
  * the strategy class can still be specified using the fully-qualified class name.
  * This enumeration is merely a convenience. The database products listed here
  * are the same as those explicitly supported for Spring JDBC exception translation
@@ -31,7 +32,8 @@ package org.springframework.orm.jpa.vendor;
  * @since 2.0
  * @see AbstractJpaVendorAdapter#setDatabase
  */
-public enum Database {
+public enum Database
+{
 
 	DEFAULT,
 

@@ -19,21 +19,16 @@ package org.springframework.transaction.config;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.w3c.dom.Element;
-
 import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
-import org.springframework.transaction.interceptor.NoRollbackRuleAttribute;
-import org.springframework.transaction.interceptor.RollbackRuleAttribute;
-import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
-import org.springframework.transaction.interceptor.TransactionInterceptor;
+import org.springframework.transaction.interceptor.*;
 import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
+import org.w3c.dom.Element;
 
 /**
  * {@link org.springframework.beans.factory.xml.BeanDefinitionParser
@@ -45,7 +40,8 @@ import org.springframework.util.xml.DomUtils;
  * @author Chris Beams
  * @since 2.0
  */
-class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser
+{
 
 	private static final String METHOD_ELEMENT = "method";
 
@@ -65,41 +61,49 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
 	private static final String NO_ROLLBACK_FOR_ATTRIBUTE = "no-rollback-for";
 
-
 	@Override
-	protected Class<?> getBeanClass(Element element) {
+	protected Class<?> getBeanClass(Element element)
+	{
 		return TransactionInterceptor.class;
 	}
 
 	@Override
-	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
-		builder.addPropertyReference("transactionManager", TxNamespaceHandler.getTransactionManagerName(element));
+	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder)
+	{
+		builder.addPropertyReference("transactionManager",
+				TxNamespaceHandler.getTransactionManagerName(element));
 
 		List<Element> txAttributes = DomUtils.getChildElementsByTagName(element, ATTRIBUTES_ELEMENT);
-		if (txAttributes.size() > 1) {
+		if (txAttributes.size() > 1)
+		{
 			parserContext.getReaderContext().error(
 					"Element <attributes> is allowed at most once inside element <advice>", element);
 		}
-		else if (txAttributes.size() == 1) {
+		else if (txAttributes.size() == 1)
+		{
 			// Using attributes source.
 			Element attributeSourceElement = txAttributes.get(0);
-			RootBeanDefinition attributeSourceDefinition = parseAttributeSource(attributeSourceElement, parserContext);
+			RootBeanDefinition attributeSourceDefinition = parseAttributeSource(attributeSourceElement,
+					parserContext);
 			builder.addPropertyValue("transactionAttributeSource", attributeSourceDefinition);
 		}
-		else {
+		else
+		{
 			// Assume annotations source.
-			builder.addPropertyValue("transactionAttributeSource",
-					new RootBeanDefinition("org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"));
+			builder.addPropertyValue("transactionAttributeSource", new RootBeanDefinition(
+					"org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"));
 		}
 	}
 
-	private RootBeanDefinition parseAttributeSource(Element attrEle, ParserContext parserContext) {
+	private RootBeanDefinition parseAttributeSource(Element attrEle, ParserContext parserContext)
+	{
 		List<Element> methods = DomUtils.getChildElementsByTagName(attrEle, METHOD_ELEMENT);
-		ManagedMap<TypedStringValue, RuleBasedTransactionAttribute> transactionAttributeMap =
-				new ManagedMap<>(methods.size());
+		ManagedMap<TypedStringValue, RuleBasedTransactionAttribute> transactionAttributeMap = new ManagedMap<>(
+				methods.size());
 		transactionAttributeMap.setSource(parserContext.extractSource(attrEle));
 
-		for (Element methodEle : methods) {
+		for (Element methodEle : methods)
+		{
 			String name = methodEle.getAttribute(METHOD_NAME_ATTRIBUTE);
 			TypedStringValue nameHolder = new TypedStringValue(name);
 			nameHolder.setSource(parserContext.extractSource(methodEle));
@@ -109,54 +113,72 @@ class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 			String isolation = methodEle.getAttribute(ISOLATION_ATTRIBUTE);
 			String timeout = methodEle.getAttribute(TIMEOUT_ATTRIBUTE);
 			String readOnly = methodEle.getAttribute(READ_ONLY_ATTRIBUTE);
-			if (StringUtils.hasText(propagation)) {
-				attribute.setPropagationBehaviorName(RuleBasedTransactionAttribute.PREFIX_PROPAGATION + propagation);
+			if (StringUtils.hasText(propagation))
+			{
+				attribute.setPropagationBehaviorName(
+						RuleBasedTransactionAttribute.PREFIX_PROPAGATION + propagation);
 			}
-			if (StringUtils.hasText(isolation)) {
-				attribute.setIsolationLevelName(RuleBasedTransactionAttribute.PREFIX_ISOLATION + isolation);
+			if (StringUtils.hasText(isolation))
+			{
+				attribute.setIsolationLevelName(
+						RuleBasedTransactionAttribute.PREFIX_ISOLATION + isolation);
 			}
-			if (StringUtils.hasText(timeout)) {
-				try {
+			if (StringUtils.hasText(timeout))
+			{
+				try
+				{
 					attribute.setTimeout(Integer.parseInt(timeout));
 				}
-				catch (NumberFormatException ex) {
-					parserContext.getReaderContext().error("Timeout must be an integer value: [" + timeout + "]", methodEle);
+				catch (NumberFormatException ex)
+				{
+					parserContext.getReaderContext()
+							.error("Timeout must be an integer value: [" + timeout + "]", methodEle);
 				}
 			}
-			if (StringUtils.hasText(readOnly)) {
+			if (StringUtils.hasText(readOnly))
+			{
 				attribute.setReadOnly(Boolean.parseBoolean(methodEle.getAttribute(READ_ONLY_ATTRIBUTE)));
 			}
 
 			List<RollbackRuleAttribute> rollbackRules = new LinkedList<>();
-			if (methodEle.hasAttribute(ROLLBACK_FOR_ATTRIBUTE)) {
+			if (methodEle.hasAttribute(ROLLBACK_FOR_ATTRIBUTE))
+			{
 				String rollbackForValue = methodEle.getAttribute(ROLLBACK_FOR_ATTRIBUTE);
-				addRollbackRuleAttributesTo(rollbackRules,rollbackForValue);
+				addRollbackRuleAttributesTo(rollbackRules, rollbackForValue);
 			}
-			if (methodEle.hasAttribute(NO_ROLLBACK_FOR_ATTRIBUTE)) {
+			if (methodEle.hasAttribute(NO_ROLLBACK_FOR_ATTRIBUTE))
+			{
 				String noRollbackForValue = methodEle.getAttribute(NO_ROLLBACK_FOR_ATTRIBUTE);
-				addNoRollbackRuleAttributesTo(rollbackRules,noRollbackForValue);
+				addNoRollbackRuleAttributesTo(rollbackRules, noRollbackForValue);
 			}
 			attribute.setRollbackRules(rollbackRules);
 
 			transactionAttributeMap.put(nameHolder, attribute);
 		}
 
-		RootBeanDefinition attributeSourceDefinition = new RootBeanDefinition(NameMatchTransactionAttributeSource.class);
+		RootBeanDefinition attributeSourceDefinition = new RootBeanDefinition(
+				NameMatchTransactionAttributeSource.class);
 		attributeSourceDefinition.setSource(parserContext.extractSource(attrEle));
 		attributeSourceDefinition.getPropertyValues().add("nameMap", transactionAttributeMap);
 		return attributeSourceDefinition;
 	}
 
-	private void addRollbackRuleAttributesTo(List<RollbackRuleAttribute> rollbackRules, String rollbackForValue) {
+	private void addRollbackRuleAttributesTo(List<RollbackRuleAttribute> rollbackRules,
+			String rollbackForValue)
+	{
 		String[] exceptionTypeNames = StringUtils.commaDelimitedListToStringArray(rollbackForValue);
-		for (String typeName : exceptionTypeNames) {
+		for (String typeName : exceptionTypeNames)
+		{
 			rollbackRules.add(new RollbackRuleAttribute(StringUtils.trimWhitespace(typeName)));
 		}
 	}
 
-	private void addNoRollbackRuleAttributesTo(List<RollbackRuleAttribute> rollbackRules, String noRollbackForValue) {
+	private void addNoRollbackRuleAttributesTo(List<RollbackRuleAttribute> rollbackRules,
+			String noRollbackForValue)
+	{
 		String[] exceptionTypeNames = StringUtils.commaDelimitedListToStringArray(noRollbackForValue);
-		for (String typeName : exceptionTypeNames) {
+		for (String typeName : exceptionTypeNames)
+		{
 			rollbackRules.add(new NoRollbackRuleAttribute(StringUtils.trimWhitespace(typeName)));
 		}
 	}

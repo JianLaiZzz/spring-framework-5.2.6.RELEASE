@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aop.scope.ScopedObject;
 import org.springframework.core.InfrastructureProxy;
 import org.springframework.lang.Nullable;
@@ -36,77 +35,101 @@ import org.springframework.util.ClassUtils;
  * @see TransactionSynchronization
  * @see TransactionSynchronizationManager#getSynchronizations()
  */
-public abstract class TransactionSynchronizationUtils {
+public abstract class TransactionSynchronizationUtils
+{
 
 	private static final Log logger = LogFactory.getLog(TransactionSynchronizationUtils.class);
 
 	private static final boolean aopAvailable = ClassUtils.isPresent(
-			"org.springframework.aop.scope.ScopedObject", TransactionSynchronizationUtils.class.getClassLoader());
-
+			"org.springframework.aop.scope.ScopedObject",
+			TransactionSynchronizationUtils.class.getClassLoader());
 
 	/**
 	 * Check whether the given resource transaction managers refers to the given
 	 * (underlying) resource factory.
+	 * 
 	 * @see ResourceTransactionManager#getResourceFactory()
 	 * @see org.springframework.core.InfrastructureProxy#getWrappedObject()
 	 */
-	public static boolean sameResourceFactory(ResourceTransactionManager tm, Object resourceFactory) {
-		return unwrapResourceIfNecessary(tm.getResourceFactory()).equals(unwrapResourceIfNecessary(resourceFactory));
+	public static boolean sameResourceFactory(ResourceTransactionManager tm, Object resourceFactory)
+	{
+		return unwrapResourceIfNecessary(tm.getResourceFactory())
+				.equals(unwrapResourceIfNecessary(resourceFactory));
 	}
 
 	/**
 	 * Unwrap the given resource handle if necessary; otherwise return
 	 * the given handle as-is.
+	 * 
 	 * @see org.springframework.core.InfrastructureProxy#getWrappedObject()
 	 */
-	static Object unwrapResourceIfNecessary(Object resource) {
+	static Object unwrapResourceIfNecessary(Object resource)
+	{
 		Assert.notNull(resource, "Resource must not be null");
 		Object resourceRef = resource;
 		// unwrap infrastructure proxy
-		if (resourceRef instanceof InfrastructureProxy) {
+		if (resourceRef instanceof InfrastructureProxy)
+		{
 			resourceRef = ((InfrastructureProxy) resourceRef).getWrappedObject();
 		}
-		if (aopAvailable) {
+		if (aopAvailable)
+		{
 			// now unwrap scoped proxy
 			resourceRef = ScopedProxyUnwrapper.unwrapIfNecessary(resourceRef);
 		}
 		return resourceRef;
 	}
 
-
 	/**
 	 * Trigger {@code flush} callbacks on all currently registered synchronizations.
-	 * @throws RuntimeException if thrown by a {@code flush} callback
+	 * 
+	 * @throws RuntimeException
+	 *             if thrown by a {@code flush} callback
 	 * @see TransactionSynchronization#flush()
 	 */
-	public static void triggerFlush() {
-		for (TransactionSynchronization synchronization : TransactionSynchronizationManager.getSynchronizations()) {
+	public static void triggerFlush()
+	{
+		for (TransactionSynchronization synchronization : TransactionSynchronizationManager
+				.getSynchronizations())
+		{
 			synchronization.flush();
 		}
 	}
 
 	/**
 	 * Trigger {@code beforeCommit} callbacks on all currently registered synchronizations.
-	 * @param readOnly whether the transaction is defined as read-only transaction
-	 * @throws RuntimeException if thrown by a {@code beforeCommit} callback
+	 * 
+	 * @param readOnly
+	 *            whether the transaction is defined as read-only transaction
+	 * @throws RuntimeException
+	 *             if thrown by a {@code beforeCommit} callback
 	 * @see TransactionSynchronization#beforeCommit(boolean)
 	 */
-	public static void triggerBeforeCommit(boolean readOnly) {
-		for (TransactionSynchronization synchronization : TransactionSynchronizationManager.getSynchronizations()) {
+	public static void triggerBeforeCommit(boolean readOnly)
+	{
+		for (TransactionSynchronization synchronization : TransactionSynchronizationManager
+				.getSynchronizations())
+		{
 			synchronization.beforeCommit(readOnly);
 		}
 	}
 
 	/**
 	 * Trigger {@code beforeCompletion} callbacks on all currently registered synchronizations.
+	 * 
 	 * @see TransactionSynchronization#beforeCompletion()
 	 */
-	public static void triggerBeforeCompletion() {
-		for (TransactionSynchronization synchronization : TransactionSynchronizationManager.getSynchronizations()) {
-			try {
+	public static void triggerBeforeCompletion()
+	{
+		for (TransactionSynchronization synchronization : TransactionSynchronizationManager
+				.getSynchronizations())
+		{
+			try
+			{
 				synchronization.beforeCompletion();
 			}
-			catch (Throwable tsex) {
+			catch (Throwable tsex)
+			{
 				logger.error("TransactionSynchronization.beforeCompletion threw exception", tsex);
 			}
 		}
@@ -114,23 +137,31 @@ public abstract class TransactionSynchronizationUtils {
 
 	/**
 	 * Trigger {@code afterCommit} callbacks on all currently registered synchronizations.
-	 * @throws RuntimeException if thrown by a {@code afterCommit} callback
+	 * 
+	 * @throws RuntimeException
+	 *             if thrown by a {@code afterCommit} callback
 	 * @see TransactionSynchronizationManager#getSynchronizations()
 	 * @see TransactionSynchronization#afterCommit()
 	 */
-	public static void triggerAfterCommit() {
+	public static void triggerAfterCommit()
+	{
 		invokeAfterCommit(TransactionSynchronizationManager.getSynchronizations());
 	}
 
 	/**
 	 * Actually invoke the {@code afterCommit} methods of the
 	 * given Spring TransactionSynchronization objects.
-	 * @param synchronizations a List of TransactionSynchronization objects
+	 * 
+	 * @param synchronizations
+	 *            a List of TransactionSynchronization objects
 	 * @see TransactionSynchronization#afterCommit()
 	 */
-	public static void invokeAfterCommit(@Nullable List<TransactionSynchronization> synchronizations) {
-		if (synchronizations != null) {
-			for (TransactionSynchronization synchronization : synchronizations) {
+	public static void invokeAfterCommit(@Nullable List<TransactionSynchronization> synchronizations)
+	{
+		if (synchronizations != null)
+		{
+			for (TransactionSynchronization synchronization : synchronizations)
+			{
 				synchronization.afterCommit();
 			}
 		}
@@ -138,56 +169,71 @@ public abstract class TransactionSynchronizationUtils {
 
 	/**
 	 * Trigger {@code afterCompletion} callbacks on all currently registered synchronizations.
-	 * @param completionStatus the completion status according to the
-	 * constants in the TransactionSynchronization interface
+	 * 
+	 * @param completionStatus
+	 *            the completion status according to the
+	 *            constants in the TransactionSynchronization interface
 	 * @see TransactionSynchronizationManager#getSynchronizations()
 	 * @see TransactionSynchronization#afterCompletion(int)
 	 * @see TransactionSynchronization#STATUS_COMMITTED
 	 * @see TransactionSynchronization#STATUS_ROLLED_BACK
 	 * @see TransactionSynchronization#STATUS_UNKNOWN
 	 */
-	public static void triggerAfterCompletion(int completionStatus) {
-		List<TransactionSynchronization> synchronizations = TransactionSynchronizationManager.getSynchronizations();
+	public static void triggerAfterCompletion(int completionStatus)
+	{
+		List<TransactionSynchronization> synchronizations = TransactionSynchronizationManager
+				.getSynchronizations();
 		invokeAfterCompletion(synchronizations, completionStatus);
 	}
 
 	/**
 	 * Actually invoke the {@code afterCompletion} methods of the
 	 * given Spring TransactionSynchronization objects.
-	 * @param synchronizations a List of TransactionSynchronization objects
-	 * @param completionStatus the completion status according to the
-	 * constants in the TransactionSynchronization interface
+	 * 
+	 * @param synchronizations
+	 *            a List of TransactionSynchronization objects
+	 * @param completionStatus
+	 *            the completion status according to the
+	 *            constants in the TransactionSynchronization interface
 	 * @see TransactionSynchronization#afterCompletion(int)
 	 * @see TransactionSynchronization#STATUS_COMMITTED
 	 * @see TransactionSynchronization#STATUS_ROLLED_BACK
 	 * @see TransactionSynchronization#STATUS_UNKNOWN
 	 */
 	public static void invokeAfterCompletion(@Nullable List<TransactionSynchronization> synchronizations,
-			int completionStatus) {
+			int completionStatus)
+	{
 
-		if (synchronizations != null) {
-			for (TransactionSynchronization synchronization : synchronizations) {
-				try {
+		if (synchronizations != null)
+		{
+			for (TransactionSynchronization synchronization : synchronizations)
+			{
+				try
+				{
 					synchronization.afterCompletion(completionStatus);
 				}
-				catch (Throwable tsex) {
+				catch (Throwable tsex)
+				{
 					logger.error("TransactionSynchronization.afterCompletion threw exception", tsex);
 				}
 			}
 		}
 	}
 
-
 	/**
 	 * Inner class to avoid hard-coded dependency on AOP module.
 	 */
-	private static class ScopedProxyUnwrapper {
+	private static class ScopedProxyUnwrapper
+	{
 
-		public static Object unwrapIfNecessary(Object resource) {
-			if (resource instanceof ScopedObject) {
+		public static Object unwrapIfNecessary(Object resource)
+		{
+			if (resource instanceof ScopedObject)
+			{
 				return ((ScopedObject) resource).getTargetObject();
 			}
-			else {
+			else
+			{
 				return resource;
 			}
 		}

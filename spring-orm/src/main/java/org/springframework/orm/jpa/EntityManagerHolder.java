@@ -28,17 +28,20 @@ import org.springframework.util.Assert;
  * {@link JpaTransactionManager} binds instances of this class to the thread,
  * for a given {@link javax.persistence.EntityManagerFactory}.
  *
- * <p>Also serves as a base class for {@link org.springframework.orm.hibernate5.SessionHolder},
+ * <p>
+ * Also serves as a base class for {@link org.springframework.orm.hibernate5.SessionHolder},
  * as of 5.1.
  *
- * <p>Note: This is an SPI class, not intended to be used by applications.
+ * <p>
+ * Note: This is an SPI class, not intended to be used by applications.
  *
  * @author Juergen Hoeller
  * @since 2.0
  * @see JpaTransactionManager
  * @see EntityManagerFactoryUtils
  */
-public class EntityManagerHolder extends ResourceHolderSupport {
+public class EntityManagerHolder extends ResourceHolderSupport
+{
 
 	@Nullable
 	private final EntityManager entityManager;
@@ -48,37 +51,41 @@ public class EntityManagerHolder extends ResourceHolderSupport {
 	@Nullable
 	private SavepointManager savepointManager;
 
-
-	public EntityManagerHolder(@Nullable EntityManager entityManager) {
+	public EntityManagerHolder(@Nullable EntityManager entityManager)
+	{
 		this.entityManager = entityManager;
 	}
 
-
-	public EntityManager getEntityManager() {
+	public EntityManager getEntityManager()
+	{
 		Assert.state(this.entityManager != null, "No EntityManager available");
 		return this.entityManager;
 	}
 
-	protected void setTransactionActive(boolean transactionActive) {
+	protected void setTransactionActive(boolean transactionActive)
+	{
 		this.transactionActive = transactionActive;
 	}
 
-	protected boolean isTransactionActive() {
+	protected boolean isTransactionActive()
+	{
 		return this.transactionActive;
 	}
 
-	protected void setSavepointManager(@Nullable SavepointManager savepointManager) {
+	protected void setSavepointManager(@Nullable SavepointManager savepointManager)
+	{
 		this.savepointManager = savepointManager;
 	}
 
 	@Nullable
-	protected SavepointManager getSavepointManager() {
+	protected SavepointManager getSavepointManager()
+	{
 		return this.savepointManager;
 	}
 
-
 	@Override
-	public void clear() {
+	public void clear()
+	{
 		super.clear();
 		this.transactionActive = false;
 		this.savepointManager = null;

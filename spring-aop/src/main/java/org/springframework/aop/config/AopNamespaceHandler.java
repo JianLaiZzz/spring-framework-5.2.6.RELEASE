@@ -23,17 +23,21 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 /**
  * {@code NamespaceHandler} for the {@code aop} namespace.
  *
- * <p>Provides a {@link org.springframework.beans.factory.xml.BeanDefinitionParser} for the
+ * <p>
+ * Provides a {@link org.springframework.beans.factory.xml.BeanDefinitionParser} for the
  * {@code <aop:config>} tag. A {@code config} tag can include nested
  * {@code pointcut}, {@code advisor} and {@code aspect} tags.
  *
- * <p>The {@code pointcut} tag allows for creation of named
+ * <p>
+ * The {@code pointcut} tag allows for creation of named
  * {@link AspectJExpressionPointcut} beans using a simple syntax:
+ * 
  * <pre class="code">
  * &lt;aop:pointcut id=&quot;getNameCalls&quot; expression=&quot;execution(* *..ITestBean.getName(..))&quot;/&gt;
  * </pre>
  *
- * <p>Using the {@code advisor} tag you can configure an {@link org.springframework.aop.Advisor}
+ * <p>
+ * Using the {@code advisor} tag you can configure an {@link org.springframework.aop.Advisor}
  * and have it applied to all relevant beans in you {@link org.springframework.beans.factory.BeanFactory}
  * automatically. The {@code advisor} tag supports both in-line and referenced
  * {@link org.springframework.aop.Pointcut Pointcuts}:
@@ -45,14 +49,16 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  *
  * &lt;aop:advisor id=&quot;getNameAdvisor&quot;
  *     pointcut-ref=&quot;getNameCalls&quot;
- *     advice-ref=&quot;getNameCounter&quot;/&gt;</pre>
+ *     advice-ref=&quot;getNameCounter&quot;/&gt;
+ * </pre>
  *
  * @author Rob Harrop
  * @author Adrian Colyer
  * @author Juergen Hoeller
  * @since 2.0
  */
-public class AopNamespaceHandler extends NamespaceHandlerSupport {
+public class AopNamespaceHandler extends NamespaceHandlerSupport
+{
 
 	/**
 	 * Register the {@link BeanDefinitionParser BeanDefinitionParsers} for the
@@ -60,7 +66,8 @@ public class AopNamespaceHandler extends NamespaceHandlerSupport {
 	 * and '{@code scoped-proxy}' tags.
 	 */
 	@Override
-	public void init() {
+	public void init()
+	{
 		// In 2.0 XSD as well as in 2.1 XSD.
 		registerBeanDefinitionParser("config", new ConfigBeanDefinitionParser());
 		registerBeanDefinitionParser("aspectj-autoproxy", new AspectJAutoProxyBeanDefinitionParser());

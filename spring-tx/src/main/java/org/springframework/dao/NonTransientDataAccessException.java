@@ -28,23 +28,31 @@ import org.springframework.lang.Nullable;
  * @see java.sql.SQLNonTransientException
  */
 @SuppressWarnings("serial")
-public abstract class NonTransientDataAccessException extends DataAccessException {
+public abstract class NonTransientDataAccessException extends DataAccessException
+{
 
 	/**
 	 * Constructor for NonTransientDataAccessException.
-	 * @param msg the detail message
+	 * 
+	 * @param msg
+	 *            the detail message
 	 */
-	public NonTransientDataAccessException(String msg) {
+	public NonTransientDataAccessException(String msg)
+	{
 		super(msg);
 	}
 
 	/**
 	 * Constructor for NonTransientDataAccessException.
-	 * @param msg the detail message
-	 * @param cause the root cause (usually from using a underlying
-	 * data access API such as JDBC)
+	 * 
+	 * @param msg
+	 *            the detail message
+	 * @param cause
+	 *            the root cause (usually from using a underlying
+	 *            data access API such as JDBC)
 	 */
-	public NonTransientDataAccessException(@Nullable String msg, @Nullable Throwable cause) {
+	public NonTransientDataAccessException(@Nullable String msg, @Nullable Throwable cause)
+	{
 		super(msg, cause);
 	}
 

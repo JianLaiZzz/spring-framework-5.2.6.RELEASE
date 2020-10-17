@@ -31,11 +31,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.jdbc.datasource.lookup.DataSourceLookup;
@@ -45,6 +40,10 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
 import org.springframework.util.xml.SimpleSaxErrorHandler;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
 
 /**
  * Internal helper class for reading JPA-compliant {@code persistence.xml} files.
@@ -53,7 +52,8 @@ import org.springframework.util.xml.SimpleSaxErrorHandler;
  * @author Juergen Hoeller
  * @since 2.0
  */
-final class PersistenceUnitReader {
+final class PersistenceUnitReader
+{
 
 	private static final String PERSISTENCE_VERSION = "version";
 
@@ -85,81 +85,100 @@ final class PersistenceUnitReader {
 
 	private static final String META_INF = "META-INF";
 
-
 	private static final Log logger = LogFactory.getLog(PersistenceUnitReader.class);
 
 	private final ResourcePatternResolver resourcePatternResolver;
 
 	private final DataSourceLookup dataSourceLookup;
 
-
 	/**
 	 * Create a new PersistenceUnitReader.
-	 * @param resourcePatternResolver the ResourcePatternResolver to use for loading resources
-	 * @param dataSourceLookup the DataSourceLookup to resolve DataSource names in
-	 * {@code persistence.xml} files against
+	 * 
+	 * @param resourcePatternResolver
+	 *            the ResourcePatternResolver to use for loading resources
+	 * @param dataSourceLookup
+	 *            the DataSourceLookup to resolve DataSource names in
+	 *            {@code persistence.xml} files against
 	 */
-	public PersistenceUnitReader(ResourcePatternResolver resourcePatternResolver, DataSourceLookup dataSourceLookup) {
+	public PersistenceUnitReader(ResourcePatternResolver resourcePatternResolver,
+			DataSourceLookup dataSourceLookup)
+	{
 		Assert.notNull(resourcePatternResolver, "ResourceLoader must not be null");
 		Assert.notNull(dataSourceLookup, "DataSourceLookup must not be null");
 		this.resourcePatternResolver = resourcePatternResolver;
 		this.dataSourceLookup = dataSourceLookup;
 	}
 
-
 	/**
 	 * Parse and build all persistence unit infos defined in the specified XML file(s).
-	 * @param persistenceXmlLocation the resource location (can be a pattern)
+	 * 
+	 * @param persistenceXmlLocation
+	 *            the resource location (can be a pattern)
 	 * @return the resulting PersistenceUnitInfo instances
 	 */
-	public SpringPersistenceUnitInfo[] readPersistenceUnitInfos(String persistenceXmlLocation) {
-		return readPersistenceUnitInfos(new String[] {persistenceXmlLocation});
+	public SpringPersistenceUnitInfo[] readPersistenceUnitInfos(String persistenceXmlLocation)
+	{
+		return readPersistenceUnitInfos(new String[] { persistenceXmlLocation });
 	}
 
 	/**
 	 * Parse and build all persistence unit infos defined in the given XML files.
-	 * @param persistenceXmlLocations the resource locations (can be patterns)
+	 * 
+	 * @param persistenceXmlLocations
+	 *            the resource locations (can be patterns)
 	 * @return the resulting PersistenceUnitInfo instances
 	 */
-	public SpringPersistenceUnitInfo[] readPersistenceUnitInfos(String[] persistenceXmlLocations) {
+	public SpringPersistenceUnitInfo[] readPersistenceUnitInfos(String[] persistenceXmlLocations)
+	{
 		ErrorHandler handler = new SimpleSaxErrorHandler(logger);
 		List<SpringPersistenceUnitInfo> infos = new LinkedList<>();
 		String resourceLocation = null;
-		try {
-			for (String location : persistenceXmlLocations) {
+		try
+		{
+			for (String location : persistenceXmlLocations)
+			{
 				Resource[] resources = this.resourcePatternResolver.getResources(location);
-				for (Resource resource : resources) {
+				for (Resource resource : resources)
+				{
 					resourceLocation = resource.toString();
 					InputStream stream = resource.getInputStream();
-					try {
+					try
+					{
 						Document document = buildDocument(handler, stream);
 						parseDocument(resource, document, infos);
 					}
-					finally {
+					finally
+					{
 						stream.close();
 					}
 				}
 			}
 		}
-		catch (IOException ex) {
-			throw new IllegalArgumentException("Cannot parse persistence unit from " + resourceLocation, ex);
+		catch (IOException ex)
+		{
+			throw new IllegalArgumentException("Cannot parse persistence unit from " + resourceLocation,
+					ex);
 		}
-		catch (SAXException ex) {
-			throw new IllegalArgumentException("Invalid XML in persistence unit from " + resourceLocation, ex);
+		catch (SAXException ex)
+		{
+			throw new IllegalArgumentException("Invalid XML in persistence unit from " + resourceLocation,
+					ex);
 		}
-		catch (ParserConfigurationException ex) {
-			throw new IllegalArgumentException("Internal error parsing persistence unit from " + resourceLocation);
+		catch (ParserConfigurationException ex)
+		{
+			throw new IllegalArgumentException(
+					"Internal error parsing persistence unit from " + resourceLocation);
 		}
 
 		return infos.toArray(new SpringPersistenceUnitInfo[0]);
 	}
 
-
 	/**
 	 * Validate the given stream and return a valid DOM document for parsing.
 	 */
 	protected Document buildDocument(ErrorHandler handler, InputStream stream)
-			throws ParserConfigurationException, SAXException, IOException {
+			throws ParserConfigurationException, SAXException, IOException
+	{
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setNamespaceAware(true);
@@ -168,19 +187,20 @@ final class PersistenceUnitReader {
 		return parser.parse(stream);
 	}
 
-
 	/**
 	 * Parse the validated document and add entries to the given unit info list.
 	 */
-	protected List<SpringPersistenceUnitInfo> parseDocument(
-			Resource resource, Document document, List<SpringPersistenceUnitInfo> infos) throws IOException {
+	protected List<SpringPersistenceUnitInfo> parseDocument(Resource resource, Document document,
+			List<SpringPersistenceUnitInfo> infos) throws IOException
+	{
 
 		Element persistence = document.getDocumentElement();
 		String version = persistence.getAttribute(PERSISTENCE_VERSION);
 		URL rootUrl = determinePersistenceUnitRootUrl(resource);
 
 		List<Element> units = DomUtils.getChildElementsByTagName(persistence, PERSISTENCE_UNIT);
-		for (Element unit : units) {
+		for (Element unit : units)
+		{
 			infos.add(parsePersistenceUnitInfo(unit, version, rootUrl));
 		}
 
@@ -190,8 +210,9 @@ final class PersistenceUnitReader {
 	/**
 	 * Parse the unit info DOM element.
 	 */
-	protected SpringPersistenceUnitInfo parsePersistenceUnitInfo(
-			Element persistenceUnit, String version, @Nullable URL rootUrl) throws IOException {
+	protected SpringPersistenceUnitInfo parsePersistenceUnitInfo(Element persistenceUnit, String version,
+			@Nullable URL rootUrl) throws IOException
+	{
 
 		SpringPersistenceUnitInfo unitInfo = new SpringPersistenceUnitInfo();
 
@@ -206,43 +227,53 @@ final class PersistenceUnitReader {
 
 		// set transaction type
 		String txType = persistenceUnit.getAttribute(TRANSACTION_TYPE).trim();
-		if (StringUtils.hasText(txType)) {
+		if (StringUtils.hasText(txType))
+		{
 			unitInfo.setTransactionType(PersistenceUnitTransactionType.valueOf(txType));
 		}
 
 		// evaluate data sources
 		String jtaDataSource = DomUtils.getChildElementValueByTagName(persistenceUnit, JTA_DATA_SOURCE);
-		if (StringUtils.hasText(jtaDataSource)) {
+		if (StringUtils.hasText(jtaDataSource))
+		{
 			unitInfo.setJtaDataSource(this.dataSourceLookup.getDataSource(jtaDataSource.trim()));
 		}
 
-		String nonJtaDataSource = DomUtils.getChildElementValueByTagName(persistenceUnit, NON_JTA_DATA_SOURCE);
-		if (StringUtils.hasText(nonJtaDataSource)) {
+		String nonJtaDataSource = DomUtils.getChildElementValueByTagName(persistenceUnit,
+				NON_JTA_DATA_SOURCE);
+		if (StringUtils.hasText(nonJtaDataSource))
+		{
 			unitInfo.setNonJtaDataSource(this.dataSourceLookup.getDataSource(nonJtaDataSource.trim()));
 		}
 
 		// provider
 		String provider = DomUtils.getChildElementValueByTagName(persistenceUnit, PROVIDER);
-		if (StringUtils.hasText(provider)) {
+		if (StringUtils.hasText(provider))
+		{
 			unitInfo.setPersistenceProviderClassName(provider.trim());
 		}
 
 		// exclude unlisted classes
-		Element excludeUnlistedClasses = DomUtils.getChildElementByTagName(persistenceUnit, EXCLUDE_UNLISTED_CLASSES);
-		if (excludeUnlistedClasses != null) {
+		Element excludeUnlistedClasses = DomUtils.getChildElementByTagName(persistenceUnit,
+				EXCLUDE_UNLISTED_CLASSES);
+		if (excludeUnlistedClasses != null)
+		{
 			String excludeText = DomUtils.getTextValue(excludeUnlistedClasses);
-			unitInfo.setExcludeUnlistedClasses(!StringUtils.hasText(excludeText) || Boolean.parseBoolean(excludeText));
+			unitInfo.setExcludeUnlistedClasses(
+					!StringUtils.hasText(excludeText) || Boolean.parseBoolean(excludeText));
 		}
 
 		// set JPA 2.0 shared cache mode
 		String cacheMode = DomUtils.getChildElementValueByTagName(persistenceUnit, SHARED_CACHE_MODE);
-		if (StringUtils.hasText(cacheMode)) {
+		if (StringUtils.hasText(cacheMode))
+		{
 			unitInfo.setSharedCacheMode(SharedCacheMode.valueOf(cacheMode));
 		}
 
 		// set JPA 2.0 validation mode
 		String validationMode = DomUtils.getChildElementValueByTagName(persistenceUnit, VALIDATION_MODE);
-		if (StringUtils.hasText(validationMode)) {
+		if (StringUtils.hasText(validationMode))
+		{
 			unitInfo.setValidationMode(ValidationMode.valueOf(validationMode));
 		}
 
@@ -257,13 +288,16 @@ final class PersistenceUnitReader {
 	/**
 	 * Parse the {@code property} XML elements.
 	 */
-	protected void parseProperties(Element persistenceUnit, SpringPersistenceUnitInfo unitInfo) {
+	protected void parseProperties(Element persistenceUnit, SpringPersistenceUnitInfo unitInfo)
+	{
 		Element propRoot = DomUtils.getChildElementByTagName(persistenceUnit, PROPERTIES);
-		if (propRoot == null) {
+		if (propRoot == null)
+		{
 			return;
 		}
 		List<Element> properties = DomUtils.getChildElementsByTagName(propRoot, "property");
-		for (Element property : properties) {
+		for (Element property : properties)
+		{
 			String name = property.getAttribute("name");
 			String value = property.getAttribute("value");
 			unitInfo.addProperty(name, value);
@@ -273,11 +307,14 @@ final class PersistenceUnitReader {
 	/**
 	 * Parse the {@code class} XML elements.
 	 */
-	protected void parseManagedClasses(Element persistenceUnit, SpringPersistenceUnitInfo unitInfo) {
+	protected void parseManagedClasses(Element persistenceUnit, SpringPersistenceUnitInfo unitInfo)
+	{
 		List<Element> classes = DomUtils.getChildElementsByTagName(persistenceUnit, MANAGED_CLASS_NAME);
-		for (Element element : classes) {
+		for (Element element : classes)
+		{
 			String value = DomUtils.getTextValue(element).trim();
-			if (StringUtils.hasText(value)) {
+			if (StringUtils.hasText(value))
+			{
 				unitInfo.addManagedClassName(value);
 			}
 		}
@@ -286,11 +323,14 @@ final class PersistenceUnitReader {
 	/**
 	 * Parse the {@code mapping-file} XML elements.
 	 */
-	protected void parseMappingFiles(Element persistenceUnit, SpringPersistenceUnitInfo unitInfo) {
+	protected void parseMappingFiles(Element persistenceUnit, SpringPersistenceUnitInfo unitInfo)
+	{
 		List<Element> files = DomUtils.getChildElementsByTagName(persistenceUnit, MAPPING_FILE_NAME);
-		for (Element element : files) {
+		for (Element element : files)
+		{
 			String value = DomUtils.getTextValue(element).trim();
-			if (StringUtils.hasText(value)) {
+			if (StringUtils.hasText(value))
+			{
 				unitInfo.addMappingFileName(value);
 			}
 		}
@@ -299,72 +339,90 @@ final class PersistenceUnitReader {
 	/**
 	 * Parse the {@code jar-file} XML elements.
 	 */
-	protected void parseJarFiles(Element persistenceUnit, SpringPersistenceUnitInfo unitInfo) throws IOException {
+	protected void parseJarFiles(Element persistenceUnit, SpringPersistenceUnitInfo unitInfo)
+			throws IOException
+	{
 		List<Element> jars = DomUtils.getChildElementsByTagName(persistenceUnit, JAR_FILE_URL);
-		for (Element element : jars) {
+		for (Element element : jars)
+		{
 			String value = DomUtils.getTextValue(element).trim();
-			if (StringUtils.hasText(value)) {
+			if (StringUtils.hasText(value))
+			{
 				Resource[] resources = this.resourcePatternResolver.getResources(value);
 				boolean found = false;
-				for (Resource resource : resources) {
-					if (resource.exists()) {
+				for (Resource resource : resources)
+				{
+					if (resource.exists())
+					{
 						found = true;
 						unitInfo.addJarFileUrl(resource.getURL());
 					}
 				}
-				if (!found) {
+				if (!found)
+				{
 					// relative to the persistence unit root, according to the JPA spec
 					URL rootUrl = unitInfo.getPersistenceUnitRootUrl();
-					if (rootUrl != null) {
+					if (rootUrl != null)
+					{
 						unitInfo.addJarFileUrl(new URL(rootUrl, value));
 					}
-					else {
-						logger.warn("Cannot resolve jar-file entry [" + value + "] in persistence unit '" +
-								unitInfo.getPersistenceUnitName() + "' without root URL");
+					else
+					{
+						logger.warn("Cannot resolve jar-file entry [" + value + "] in persistence unit '"
+								+ unitInfo.getPersistenceUnitName() + "' without root URL");
 					}
 				}
 			}
 		}
 	}
 
-
 	/**
 	 * Determine the persistence unit root URL based on the given resource
 	 * (which points to the {@code persistence.xml} file we're reading).
-	 * @param resource the resource to check
+	 * 
+	 * @param resource
+	 *            the resource to check
 	 * @return the corresponding persistence unit root URL
-	 * @throws IOException if the checking failed
+	 * @throws IOException
+	 *             if the checking failed
 	 */
 	@Nullable
-	static URL determinePersistenceUnitRootUrl(Resource resource) throws IOException {
+	static URL determinePersistenceUnitRootUrl(Resource resource) throws IOException
+	{
 		URL originalURL = resource.getURL();
 
 		// If we get an archive, simply return the jar URL (section 6.2 from the JPA spec)
-		if (ResourceUtils.isJarURL(originalURL)) {
+		if (ResourceUtils.isJarURL(originalURL))
+		{
 			return ResourceUtils.extractJarFileURL(originalURL);
 		}
 
 		// Check META-INF folder
 		String urlToString = originalURL.toExternalForm();
-		if (!urlToString.contains(META_INF)) {
-			if (logger.isInfoEnabled()) {
-				logger.info(resource.getFilename() +
-						" should be located inside META-INF directory; cannot determine persistence unit root URL for " +
-						resource);
+		if (!urlToString.contains(META_INF))
+		{
+			if (logger.isInfoEnabled())
+			{
+				logger.info(resource.getFilename()
+						+ " should be located inside META-INF directory; cannot determine persistence unit root URL for "
+						+ resource);
 			}
 			return null;
 		}
-		if (urlToString.lastIndexOf(META_INF) == urlToString.lastIndexOf('/') - (1 + META_INF.length())) {
-			if (logger.isInfoEnabled()) {
-				logger.info(resource.getFilename() +
-						" is not located in the root of META-INF directory; cannot determine persistence unit root URL for " +
-						resource);
+		if (urlToString.lastIndexOf(META_INF) == urlToString.lastIndexOf('/') - (1 + META_INF.length()))
+		{
+			if (logger.isInfoEnabled())
+			{
+				logger.info(resource.getFilename()
+						+ " is not located in the root of META-INF directory; cannot determine persistence unit root URL for "
+						+ resource);
 			}
 			return null;
 		}
 
 		String persistenceUnitRoot = urlToString.substring(0, urlToString.lastIndexOf(META_INF));
-		if (persistenceUnitRoot.endsWith("/")) {
+		if (persistenceUnitRoot.endsWith("/"))
+		{
 			persistenceUnitRoot = persistenceUnitRoot.substring(0, persistenceUnitRoot.length() - 1);
 		}
 		return new URL(persistenceUnitRoot);

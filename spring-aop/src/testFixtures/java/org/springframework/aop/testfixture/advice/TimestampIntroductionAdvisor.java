@@ -24,9 +24,11 @@ import org.springframework.aop.testfixture.interceptor.TimestampIntroductionInte
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
-public class TimestampIntroductionAdvisor extends DefaultIntroductionAdvisor {
+public class TimestampIntroductionAdvisor extends DefaultIntroductionAdvisor
+{
 
-	public TimestampIntroductionAdvisor() {
+	public TimestampIntroductionAdvisor()
+	{
 		super(new DelegatingIntroductionInterceptor(new TimestampIntroductionInterceptor()));
 	}
 

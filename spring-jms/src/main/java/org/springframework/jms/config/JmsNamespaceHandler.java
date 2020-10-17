@@ -27,10 +27,12 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * @author Stephane Nicoll
  * @since 2.5
  */
-public class JmsNamespaceHandler extends NamespaceHandlerSupport {
+public class JmsNamespaceHandler extends NamespaceHandlerSupport
+{
 
 	@Override
-	public void init() {
+	public void init()
+	{
 		registerBeanDefinitionParser("listener-container", new JmsListenerContainerParser());
 		registerBeanDefinitionParser("jca-listener-container", new JcaListenerContainerParser());
 		registerBeanDefinitionParser("annotation-driven", new AnnotationDrivenJmsBeanDefinitionParser());

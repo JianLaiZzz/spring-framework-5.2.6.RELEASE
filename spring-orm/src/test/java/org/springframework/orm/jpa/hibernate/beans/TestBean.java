@@ -19,7 +19,8 @@ package org.springframework.orm.jpa.hibernate.beans;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-public abstract class TestBean {
+public abstract class TestBean
+{
 	private BeanSource source;
 
 	private String name;
@@ -27,23 +28,28 @@ public abstract class TestBean {
 	@Autowired
 	private ApplicationContext applicationContext;
 
-	public BeanSource getSource() {
+	public BeanSource getSource()
+	{
 		return source;
 	}
 
-	public void setSource(BeanSource source) {
+	public void setSource(BeanSource source)
+	{
 		this.source = source;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		this.name = name;
 	}
 
-	public ApplicationContext getApplicationContext() {
+	public ApplicationContext getApplicationContext()
+	{
 		return applicationContext;
 	}
 }

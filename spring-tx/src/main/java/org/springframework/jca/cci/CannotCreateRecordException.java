@@ -28,14 +28,19 @@ import org.springframework.dao.DataAccessResourceFailureException;
  * @since 1.2
  */
 @SuppressWarnings("serial")
-public class CannotCreateRecordException extends DataAccessResourceFailureException {
+public class CannotCreateRecordException extends DataAccessResourceFailureException
+{
 
 	/**
 	 * Constructor for CannotCreateRecordException.
-	 * @param msg message
-	 * @param ex the root ResourceException cause
+	 * 
+	 * @param msg
+	 *            message
+	 * @param ex
+	 *            the root ResourceException cause
 	 */
-	public CannotCreateRecordException(String msg, ResourceException ex) {
+	public CannotCreateRecordException(String msg, ResourceException ex)
+	{
 		super(msg, ex);
 	}
 

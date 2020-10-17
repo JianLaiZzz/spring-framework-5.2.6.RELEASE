@@ -24,9 +24,11 @@ package org.springframework.jms;
  * @see javax.jms.MessageNotReadableException
  */
 @SuppressWarnings("serial")
-public class MessageNotReadableException extends JmsException {
+public class MessageNotReadableException extends JmsException
+{
 
-	public MessageNotReadableException(javax.jms.MessageNotReadableException cause) {
+	public MessageNotReadableException(javax.jms.MessageNotReadableException cause)
+	{
 		super(cause);
 	}
 

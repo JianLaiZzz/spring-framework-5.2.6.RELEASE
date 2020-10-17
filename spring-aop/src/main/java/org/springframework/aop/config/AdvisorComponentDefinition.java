@@ -33,7 +33,8 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 2.0
  */
-public class AdvisorComponentDefinition extends AbstractComponentDefinition {
+public class AdvisorComponentDefinition extends AbstractComponentDefinition
+{
 
 	private final String advisorBeanName;
 
@@ -45,13 +46,14 @@ public class AdvisorComponentDefinition extends AbstractComponentDefinition {
 
 	private final BeanDefinition[] beanDefinitions;
 
-
-	public AdvisorComponentDefinition(String advisorBeanName, BeanDefinition advisorDefinition) {
+	public AdvisorComponentDefinition(String advisorBeanName, BeanDefinition advisorDefinition)
+	{
 		this(advisorBeanName, advisorDefinition, null);
 	}
 
-	public AdvisorComponentDefinition(
-			String advisorBeanName, BeanDefinition advisorDefinition, @Nullable BeanDefinition pointcutDefinition) {
+	public AdvisorComponentDefinition(String advisorBeanName, BeanDefinition advisorDefinition,
+			@Nullable BeanDefinition pointcutDefinition)
+	{
 
 		Assert.notNull(advisorBeanName, "'advisorBeanName' must not be null");
 		Assert.notNull(advisorDefinition, "'advisorDefinition' must not be null");
@@ -62,56 +64,62 @@ public class AdvisorComponentDefinition extends AbstractComponentDefinition {
 		BeanReference adviceReference = (BeanReference) pvs.get("adviceBeanName");
 		Assert.state(adviceReference != null, "Missing 'adviceBeanName' property");
 
-		if (pointcutDefinition != null) {
-			this.beanReferences = new BeanReference[] {adviceReference};
-			this.beanDefinitions = new BeanDefinition[] {advisorDefinition, pointcutDefinition};
+		if (pointcutDefinition != null)
+		{
+			this.beanReferences = new BeanReference[] { adviceReference };
+			this.beanDefinitions = new BeanDefinition[] { advisorDefinition, pointcutDefinition };
 			this.description = buildDescription(adviceReference, pointcutDefinition);
 		}
-		else {
+		else
+		{
 			BeanReference pointcutReference = (BeanReference) pvs.get("pointcut");
 			Assert.state(pointcutReference != null, "Missing 'pointcut' property");
-			this.beanReferences = new BeanReference[] {adviceReference, pointcutReference};
-			this.beanDefinitions = new BeanDefinition[] {advisorDefinition};
+			this.beanReferences = new BeanReference[] { adviceReference, pointcutReference };
+			this.beanDefinitions = new BeanDefinition[] { advisorDefinition };
 			this.description = buildDescription(adviceReference, pointcutReference);
 		}
 	}
 
-	private String buildDescription(BeanReference adviceReference, BeanDefinition pointcutDefinition) {
-		return "Advisor <advice(ref)='" +
-				adviceReference.getBeanName() + "', pointcut(expression)=[" +
-				pointcutDefinition.getPropertyValues().get("expression") + "]>";
+	private String buildDescription(BeanReference adviceReference, BeanDefinition pointcutDefinition)
+	{
+		return "Advisor <advice(ref)='" + adviceReference.getBeanName() + "', pointcut(expression)=["
+				+ pointcutDefinition.getPropertyValues().get("expression") + "]>";
 	}
 
-	private String buildDescription(BeanReference adviceReference, BeanReference pointcutReference) {
-		return "Advisor <advice(ref)='" +
-				adviceReference.getBeanName() + "', pointcut(ref)='" +
-				pointcutReference.getBeanName() + "'>";
+	private String buildDescription(BeanReference adviceReference, BeanReference pointcutReference)
+	{
+		return "Advisor <advice(ref)='" + adviceReference.getBeanName() + "', pointcut(ref)='"
+				+ pointcutReference.getBeanName() + "'>";
 	}
-
 
 	@Override
-	public String getName() {
+	public String getName()
+	{
 		return this.advisorBeanName;
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription()
+	{
 		return this.description;
 	}
 
 	@Override
-	public BeanDefinition[] getBeanDefinitions() {
+	public BeanDefinition[] getBeanDefinitions()
+	{
 		return this.beanDefinitions;
 	}
 
 	@Override
-	public BeanReference[] getBeanReferences() {
+	public BeanReference[] getBeanReferences()
+	{
 		return this.beanReferences;
 	}
 
 	@Override
 	@Nullable
-	public Object getSource() {
+	public Object getSource()
+	{
 		return this.advisorDefinition.getSource();
 	}
 

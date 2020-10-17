@@ -36,24 +36,28 @@ import org.springframework.util.Assert;
  * @see SpringContextResourceAdapter
  * @see BootstrapContextAware
  */
-public class ResourceAdapterApplicationContext extends GenericApplicationContext {
+public class ResourceAdapterApplicationContext extends GenericApplicationContext
+{
 
 	private final BootstrapContext bootstrapContext;
 
-
 	/**
 	 * Create a new ResourceAdapterApplicationContext for the given BootstrapContext.
-	 * @param bootstrapContext the JCA BootstrapContext that the ResourceAdapter
-	 * has been started with
+	 * 
+	 * @param bootstrapContext
+	 *            the JCA BootstrapContext that the ResourceAdapter
+	 *            has been started with
 	 */
-	public ResourceAdapterApplicationContext(BootstrapContext bootstrapContext) {
+	public ResourceAdapterApplicationContext(BootstrapContext bootstrapContext)
+	{
 		Assert.notNull(bootstrapContext, "BootstrapContext must not be null");
 		this.bootstrapContext = bootstrapContext;
 	}
 
-
 	@Override
-	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
+			throws BeansException
+	{
 		beanFactory.addBeanPostProcessor(new BootstrapContextAwareProcessor(this.bootstrapContext));
 		beanFactory.ignoreDependencyInterface(BootstrapContextAware.class);
 		beanFactory.registerResolvableDependency(BootstrapContext.class, this.bootstrapContext);

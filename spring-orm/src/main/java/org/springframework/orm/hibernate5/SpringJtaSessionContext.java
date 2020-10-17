@@ -20,7 +20,6 @@ import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.context.internal.JTASessionContext;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
@@ -31,17 +30,21 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * @since 4.2
  */
 @SuppressWarnings("serial")
-public class SpringJtaSessionContext extends JTASessionContext {
+public class SpringJtaSessionContext extends JTASessionContext
+{
 
-	public SpringJtaSessionContext(SessionFactoryImplementor factory) {
+	public SpringJtaSessionContext(SessionFactoryImplementor factory)
+	{
 		super(factory);
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
-	protected Session buildOrObtainSession() {
+	protected Session buildOrObtainSession()
+	{
 		Session session = super.buildOrObtainSession();
-		if (TransactionSynchronizationManager.isCurrentTransactionReadOnly()) {
+		if (TransactionSynchronizationManager.isCurrentTransactionReadOnly())
+		{
 			session.setFlushMode(FlushMode.MANUAL);
 		}
 		return session;

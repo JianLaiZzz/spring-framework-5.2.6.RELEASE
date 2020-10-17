@@ -16,24 +16,25 @@
 
 package org.springframework.aop.support;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.testfixture.interceptor.NopInterceptor;
 import org.springframework.beans.testfixture.beans.ITestBean;
 import org.springframework.beans.testfixture.beans.TestBean;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * @author Rod Johnson
  * @author Chris Beams
  */
-public class ControlFlowPointcutTests {
+public class ControlFlowPointcutTests
+{
 
 	@Test
-	public void testMatches() {
+	public void testMatches()
+	{
 		TestBean target = new TestBean();
 		target.setAge(27);
 		NopInterceptor nop = new NopInterceptor();
@@ -64,7 +65,8 @@ public class ControlFlowPointcutTests {
 	 * expensive.
 	 */
 	@Test
-	public void testSelectiveApplication() {
+	public void testSelectiveApplication()
+	{
 		TestBean target = new TestBean();
 		target.setAge(27);
 		NopInterceptor nop = new NopInterceptor();
@@ -91,31 +93,47 @@ public class ControlFlowPointcutTests {
 	}
 
 	@Test
-	public void testEqualsAndHashCode() throws Exception {
+	public void testEqualsAndHashCode() throws Exception
+	{
 		assertThat(new ControlFlowPointcut(One.class)).isEqualTo(new ControlFlowPointcut(One.class));
-		assertThat(new ControlFlowPointcut(One.class, "getAge")).isEqualTo(new ControlFlowPointcut(One.class, "getAge"));
-		assertThat(new ControlFlowPointcut(One.class, "getAge").equals(new ControlFlowPointcut(One.class))).isFalse();
-		assertThat(new ControlFlowPointcut(One.class).hashCode()).isEqualTo(new ControlFlowPointcut(One.class).hashCode());
-		assertThat(new ControlFlowPointcut(One.class, "getAge").hashCode()).isEqualTo(new ControlFlowPointcut(One.class, "getAge").hashCode());
-		assertThat(new ControlFlowPointcut(One.class, "getAge").hashCode() == new ControlFlowPointcut(One.class).hashCode()).isFalse();
+		assertThat(new ControlFlowPointcut(One.class, "getAge"))
+				.isEqualTo(new ControlFlowPointcut(One.class, "getAge"));
+		assertThat(
+				new ControlFlowPointcut(One.class, "getAge").equals(new ControlFlowPointcut(One.class)))
+						.isFalse();
+		assertThat(new ControlFlowPointcut(One.class).hashCode())
+				.isEqualTo(new ControlFlowPointcut(One.class).hashCode());
+		assertThat(new ControlFlowPointcut(One.class, "getAge").hashCode())
+				.isEqualTo(new ControlFlowPointcut(One.class, "getAge").hashCode());
+		assertThat(new ControlFlowPointcut(One.class, "getAge")
+				.hashCode() == new ControlFlowPointcut(One.class).hashCode()).isFalse();
 	}
 
 	@Test
-	public void testToString() {
+	public void testToString()
+	{
 		assertThat(new ControlFlowPointcut(One.class).toString())
-			.isEqualTo(ControlFlowPointcut.class.getName() + ": class = " + One.class.getName() + "; methodName = null");
+				.isEqualTo(ControlFlowPointcut.class.getName() + ": class = " + One.class.getName()
+						+ "; methodName = null");
 		assertThat(new ControlFlowPointcut(One.class, "getAge").toString())
-			.isEqualTo(ControlFlowPointcut.class.getName() + ": class = " + One.class.getName() + "; methodName = getAge");
+				.isEqualTo(ControlFlowPointcut.class.getName() + ": class = " + One.class.getName()
+						+ "; methodName = getAge");
 	}
 
-	public class One {
-		int getAge(ITestBean proxied) {
+	public class One
+	{
+		int getAge(ITestBean proxied)
+		{
 			return proxied.getAge();
 		}
-		int nomatch(ITestBean proxied) {
+
+		int nomatch(ITestBean proxied)
+		{
 			return proxied.getAge();
 		}
-		void set(ITestBean proxied) {
+
+		void set(ITestBean proxied)
+		{
 			proxied.setAge(5);
 		}
 	}

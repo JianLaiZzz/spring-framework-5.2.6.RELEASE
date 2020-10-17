@@ -27,7 +27,8 @@ import org.springframework.aop.PointcutAdvisor;
  * @author Juergen Hoeller
  * @since 2.0
  */
-public interface InstantiationModelAwarePointcutAdvisor extends PointcutAdvisor {
+public interface InstantiationModelAwarePointcutAdvisor extends PointcutAdvisor
+{
 
 	/**
 	 * Return whether this advisor is lazily initializing its underlying advice.

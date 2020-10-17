@@ -28,23 +28,29 @@ import org.springframework.lang.Nullable;
  * from a {@link ClientHttpResponse}, but don't need to worry about exception
  * handling or closing resources.
  *
- * <p>Used internally by the {@link RestTemplate}, but also useful for
+ * <p>
+ * Used internally by the {@link RestTemplate}, but also useful for
  * application code. There is one available factory method, see
  * {@link RestTemplate#responseEntityExtractor(Type)}.
  *
  * @author Arjen Poutsma
  * @since 3.0
- * @param <T> the data type
+ * @param <T>
+ *            the data type
  * @see RestTemplate#execute
  */
 @FunctionalInterface
-public interface ResponseExtractor<T> {
+public interface ResponseExtractor<T>
+{
 
 	/**
 	 * Extract data from the given {@code ClientHttpResponse} and return it.
-	 * @param response the HTTP response
+	 * 
+	 * @param response
+	 *            the HTTP response
 	 * @return the extracted data
-	 * @throws IOException in case of I/O errors
+	 * @throws IOException
+	 *             in case of I/O errors
 	 */
 	@Nullable
 	T extractData(ClientHttpResponse response) throws IOException;

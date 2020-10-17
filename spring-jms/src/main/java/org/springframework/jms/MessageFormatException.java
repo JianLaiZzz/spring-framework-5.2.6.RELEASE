@@ -24,9 +24,11 @@ package org.springframework.jms;
  * @see javax.jms.MessageFormatException
  */
 @SuppressWarnings("serial")
-public class MessageFormatException extends JmsException {
+public class MessageFormatException extends JmsException
+{
 
-	public MessageFormatException(javax.jms.MessageFormatException cause) {
+	public MessageFormatException(javax.jms.MessageFormatException cause)
+	{
 		super(cause);
 	}
 

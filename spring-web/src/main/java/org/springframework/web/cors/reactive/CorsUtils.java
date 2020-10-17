@@ -33,25 +33,28 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @author Sebastien Deleuze
  * @since 5.0
  */
-public abstract class CorsUtils {
+public abstract class CorsUtils
+{
 
 	/**
 	 * Returns {@code true} if the request is a valid CORS one by checking {@code Origin}
 	 * header presence and ensuring that origins are different via {@link #isSameOrigin}.
 	 */
 	@SuppressWarnings("deprecation")
-	public static boolean isCorsRequest(ServerHttpRequest request) {
+	public static boolean isCorsRequest(ServerHttpRequest request)
+	{
 		return request.getHeaders().containsKey(HttpHeaders.ORIGIN) && !isSameOrigin(request);
 	}
 
 	/**
-	 * Returns {@code true} if the request is a valid CORS pre-flight one by checking {code OPTIONS} method with
+	 * Returns {@code true} if the request is a valid CORS pre-flight one by checking {code OPTIONS}
+	 * method with
 	 * {@code Origin} and {@code Access-Control-Request-Method} headers presence.
 	 */
-	public static boolean isPreFlightRequest(ServerHttpRequest request) {
+	public static boolean isPreFlightRequest(ServerHttpRequest request)
+	{
 		HttpHeaders headers = request.getHeaders();
-		return (request.getMethod() == HttpMethod.OPTIONS
-				&& headers.containsKey(HttpHeaders.ORIGIN)
+		return (request.getMethod() == HttpMethod.OPTIONS && headers.containsKey(HttpHeaders.ORIGIN)
 				&& headers.containsKey(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD));
 	}
 
@@ -59,19 +62,22 @@ public abstract class CorsUtils {
 	 * Check if the request is a same-origin one, based on {@code Origin}, and
 	 * {@code Host} headers.
 	 *
-	 * <p><strong>Note:</strong> as of 5.1 this method ignores
+	 * <p>
+	 * <strong>Note:</strong> as of 5.1 this method ignores
 	 * {@code "Forwarded"} and {@code "X-Forwarded-*"} headers that specify the
 	 * client-originated address. Consider using the {@code ForwardedHeaderFilter}
 	 * to extract and use, or to discard such headers.
 	 *
 	 * @return {@code true} if the request is a same-origin one, {@code false} in case
-	 * of a cross-origin request
+	 *         of a cross-origin request
 	 * @deprecated as of 5.2, same-origin checks are performed directly by {@link #isCorsRequest}
 	 */
 	@Deprecated
-	public static boolean isSameOrigin(ServerHttpRequest request) {
+	public static boolean isSameOrigin(ServerHttpRequest request)
+	{
 		String origin = request.getHeaders().getOrigin();
-		if (origin == null) {
+		if (origin == null)
+		{
 			return true;
 		}
 
@@ -84,17 +90,20 @@ public abstract class CorsUtils {
 		Assert.isTrue(actualPort != -1, "Actual request port must not be undefined");
 
 		UriComponents originUrl = UriComponentsBuilder.fromOriginHeader(origin).build();
-		return (actualScheme.equals(originUrl.getScheme()) &&
-				actualHost.equals(originUrl.getHost()) &&
-				actualPort == getPort(originUrl.getScheme(), originUrl.getPort()));
+		return (actualScheme.equals(originUrl.getScheme()) && actualHost.equals(originUrl.getHost())
+				&& actualPort == getPort(originUrl.getScheme(), originUrl.getPort()));
 	}
 
-	private static int getPort(@Nullable String scheme, int port) {
-		if (port == -1) {
-			if ("http".equals(scheme) || "ws".equals(scheme)) {
+	private static int getPort(@Nullable String scheme, int port)
+	{
+		if (port == -1)
+		{
+			if ("http".equals(scheme) || "ws".equals(scheme))
+			{
 				port = 80;
 			}
-			else if ("https".equals(scheme) || "wss".equals(scheme)) {
+			else if ("https".equals(scheme) || "wss".equals(scheme))
+			{
 				port = 443;
 			}
 		}

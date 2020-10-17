@@ -31,15 +31,17 @@ import org.springframework.util.Assert;
  * the exposed proxy (either an existing AOP proxy or a newly generated proxy that
  * implements all of the target's interfaces).
  *
- * <p>Translates native resource exceptions to Spring's
+ * <p>
+ * Translates native resource exceptions to Spring's
  * {@link org.springframework.dao.DataAccessException DataAccessException} hierarchy.
  * Autodetects beans that implement the
  * {@link org.springframework.dao.support.PersistenceExceptionTranslator
  * PersistenceExceptionTranslator} interface, which are subsequently asked to translate
  * candidate exceptions.
  *
-
- * <p>All of Spring's applicable resource factories (e.g.
+ * 
+ * <p>
+ * All of Spring's applicable resource factories (e.g.
  * {@link org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean})
  * implement the {@code PersistenceExceptionTranslator} interface out of the box.
  * As a consequence, all that is usually needed to enable automatic exception
@@ -56,34 +58,41 @@ import org.springframework.util.Assert;
  * @see org.springframework.dao.support.PersistenceExceptionTranslator
  */
 @SuppressWarnings("serial")
-public class PersistenceExceptionTranslationPostProcessor extends AbstractBeanFactoryAwareAdvisingPostProcessor {
+public class PersistenceExceptionTranslationPostProcessor
+		extends AbstractBeanFactoryAwareAdvisingPostProcessor
+{
 
 	private Class<? extends Annotation> repositoryAnnotationType = Repository.class;
-
 
 	/**
 	 * Set the 'repository' annotation type.
 	 * The default repository annotation type is the {@link Repository} annotation.
-	 * <p>This setter property exists so that developers can provide their own
+	 * <p>
+	 * This setter property exists so that developers can provide their own
 	 * (non-Spring-specific) annotation type to indicate that a class has a
 	 * repository role.
-	 * @param repositoryAnnotationType the desired annotation type
+	 * 
+	 * @param repositoryAnnotationType
+	 *            the desired annotation type
 	 */
-	public void setRepositoryAnnotationType(Class<? extends Annotation> repositoryAnnotationType) {
+	public void setRepositoryAnnotationType(Class<? extends Annotation> repositoryAnnotationType)
+	{
 		Assert.notNull(repositoryAnnotationType, "'repositoryAnnotationType' must not be null");
 		this.repositoryAnnotationType = repositoryAnnotationType;
 	}
 
 	@Override
-	public void setBeanFactory(BeanFactory beanFactory) {
+	public void setBeanFactory(BeanFactory beanFactory)
+	{
 		super.setBeanFactory(beanFactory);
 
-		if (!(beanFactory instanceof ListableBeanFactory)) {
+		if (!(beanFactory instanceof ListableBeanFactory))
+		{
 			throw new IllegalArgumentException(
 					"Cannot use PersistenceExceptionTranslator autodetection without ListableBeanFactory");
 		}
-		this.advisor = new PersistenceExceptionTranslationAdvisor(
-				(ListableBeanFactory) beanFactory, this.repositoryAnnotationType);
+		this.advisor = new PersistenceExceptionTranslationAdvisor((ListableBeanFactory) beanFactory,
+				this.repositoryAnnotationType);
 	}
 
 }

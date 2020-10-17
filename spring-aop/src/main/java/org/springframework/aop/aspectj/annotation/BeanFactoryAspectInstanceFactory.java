@@ -30,7 +30,8 @@ import org.springframework.util.ClassUtils;
  * {@link org.springframework.aop.aspectj.AspectInstanceFactory} implementation
  * backed by a Spring {@link org.springframework.beans.factory.BeanFactory}.
  *
- * <p>Note that this may instantiate multiple times if using a prototype,
+ * <p>
+ * Note that this may instantiate multiple times if using a prototype,
  * which probably won't give the semantics you expect.
  * Use a {@link LazySingletonAspectInstanceFactoryDecorator}
  * to wrap this to ensure only one new aspect comes back.
@@ -42,7 +43,8 @@ import org.springframework.util.ClassUtils;
  * @see LazySingletonAspectInstanceFactoryDecorator
  */
 @SuppressWarnings("serial")
-public class BeanFactoryAspectInstanceFactory implements MetadataAwareAspectInstanceFactory, Serializable {
+public class BeanFactoryAspectInstanceFactory implements MetadataAwareAspectInstanceFactory, Serializable
+{
 
 	private final BeanFactory beanFactory;
 
@@ -50,15 +52,18 @@ public class BeanFactoryAspectInstanceFactory implements MetadataAwareAspectInst
 
 	private final AspectMetadata aspectMetadata;
 
-
 	/**
 	 * Create a BeanFactoryAspectInstanceFactory. AspectJ will be called to
 	 * introspect to create AJType metadata using the type returned for the
 	 * given bean name from the BeanFactory.
-	 * @param beanFactory the BeanFactory to obtain instance(s) from
-	 * @param name the name of the bean
+	 * 
+	 * @param beanFactory
+	 *            the BeanFactory to obtain instance(s) from
+	 * @param name
+	 *            the name of the bean
 	 */
-	public BeanFactoryAspectInstanceFactory(BeanFactory beanFactory, String name) {
+	public BeanFactoryAspectInstanceFactory(BeanFactory beanFactory, String name)
+	{
 		this(beanFactory, name, null);
 	}
 
@@ -66,57 +71,70 @@ public class BeanFactoryAspectInstanceFactory implements MetadataAwareAspectInst
 	 * Create a BeanFactoryAspectInstanceFactory, providing a type that AspectJ should
 	 * introspect to create AJType metadata. Use if the BeanFactory may consider the type
 	 * to be a subclass (as when using CGLIB), and the information should relate to a superclass.
-	 * @param beanFactory the BeanFactory to obtain instance(s) from
-	 * @param name the name of the bean
-	 * @param type the type that should be introspected by AspectJ
-	 * ({@code null} indicates resolution through {@link BeanFactory#getType} via the bean name)
+	 * 
+	 * @param beanFactory
+	 *            the BeanFactory to obtain instance(s) from
+	 * @param name
+	 *            the name of the bean
+	 * @param type
+	 *            the type that should be introspected by AspectJ
+	 *            ({@code null} indicates resolution through {@link BeanFactory#getType} via the bean
+	 *            name)
 	 */
-	public BeanFactoryAspectInstanceFactory(BeanFactory beanFactory, String name, @Nullable Class<?> type) {
+	public BeanFactoryAspectInstanceFactory(BeanFactory beanFactory, String name, @Nullable Class<?> type)
+	{
 		Assert.notNull(beanFactory, "BeanFactory must not be null");
 		Assert.notNull(name, "Bean name must not be null");
 		this.beanFactory = beanFactory;
 		this.name = name;
 		Class<?> resolvedType = type;
-		if (type == null) {
+		if (type == null)
+		{
 			resolvedType = beanFactory.getType(name);
 			Assert.notNull(resolvedType, "Unresolvable bean type - explicitly specify the aspect class");
 		}
 		this.aspectMetadata = new AspectMetadata(resolvedType, name);
 	}
 
-
 	@Override
-	public Object getAspectInstance() {
+	public Object getAspectInstance()
+	{
 		return this.beanFactory.getBean(this.name);
 	}
 
 	@Override
 	@Nullable
-	public ClassLoader getAspectClassLoader() {
-		return (this.beanFactory instanceof ConfigurableBeanFactory ?
-				((ConfigurableBeanFactory) this.beanFactory).getBeanClassLoader() :
-				ClassUtils.getDefaultClassLoader());
+	public ClassLoader getAspectClassLoader()
+	{
+		return (this.beanFactory instanceof ConfigurableBeanFactory
+				? ((ConfigurableBeanFactory) this.beanFactory).getBeanClassLoader()
+				: ClassUtils.getDefaultClassLoader());
 	}
 
 	@Override
-	public AspectMetadata getAspectMetadata() {
+	public AspectMetadata getAspectMetadata()
+	{
 		return this.aspectMetadata;
 	}
 
 	@Override
 	@Nullable
-	public Object getAspectCreationMutex() {
-		if (this.beanFactory.isSingleton(this.name)) {
+	public Object getAspectCreationMutex()
+	{
+		if (this.beanFactory.isSingleton(this.name))
+		{
 			// Rely on singleton semantics provided by the factory -> no local lock.
 			return null;
 		}
-		else if (this.beanFactory instanceof ConfigurableBeanFactory) {
+		else if (this.beanFactory instanceof ConfigurableBeanFactory)
+		{
 			// No singleton guarantees from the factory -> let's lock locally but
 			// reuse the factory's singleton lock, just in case a lazy dependency
 			// of our advice bean happens to trigger the singleton lock implicitly...
 			return ((ConfigurableBeanFactory) this.beanFactory).getSingletonMutex();
 		}
-		else {
+		else
+		{
 			return this;
 		}
 	}
@@ -128,14 +146,18 @@ public class BeanFactoryAspectInstanceFactory implements MetadataAwareAspectInst
 	 * checked for singleton beans), or an order expressed through the
 	 * {@link org.springframework.core.annotation.Order} annotation
 	 * at the class level.
+	 * 
 	 * @see org.springframework.core.Ordered
 	 * @see org.springframework.core.annotation.Order
 	 */
 	@Override
-	public int getOrder() {
+	public int getOrder()
+	{
 		Class<?> type = this.beanFactory.getType(this.name);
-		if (type != null) {
-			if (Ordered.class.isAssignableFrom(type) && this.beanFactory.isSingleton(this.name)) {
+		if (type != null)
+		{
+			if (Ordered.class.isAssignableFrom(type) && this.beanFactory.isSingleton(this.name))
+			{
 				return ((Ordered) this.beanFactory.getBean(this.name)).getOrder();
 			}
 			return OrderUtils.getOrder(type, Ordered.LOWEST_PRECEDENCE);
@@ -143,9 +165,9 @@ public class BeanFactoryAspectInstanceFactory implements MetadataAwareAspectInst
 		return Ordered.LOWEST_PRECEDENCE;
 	}
 
-
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return getClass().getSimpleName() + ": bean name '" + this.name + "'";
 	}
 

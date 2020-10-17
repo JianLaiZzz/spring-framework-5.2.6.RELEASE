@@ -34,7 +34,8 @@ import org.springframework.util.FileCopyUtils;
  * @see org.springframework.jca.cci.object.MappingCommAreaOperation
  */
 @SuppressWarnings("serial")
-public class CommAreaRecord implements Record, Streamable {
+public class CommAreaRecord implements Record, Streamable
+{
 
 	private byte[] bytes = new byte[0];
 
@@ -42,62 +43,71 @@ public class CommAreaRecord implements Record, Streamable {
 
 	private String recordShortDescription = "";
 
-
 	/**
 	 * Create a new CommAreaRecord.
+	 * 
 	 * @see #read(java.io.InputStream)
 	 */
-	public CommAreaRecord() {
+	public CommAreaRecord()
+	{
 	}
 
 	/**
 	 * Create a new CommAreaRecord.
-	 * @param bytes the bytes to fill the record with
+	 * 
+	 * @param bytes
+	 *            the bytes to fill the record with
 	 */
-	public CommAreaRecord(byte[] bytes) {
+	public CommAreaRecord(byte[] bytes)
+	{
 		this.bytes = bytes;
 	}
 
-
 	@Override
-	public void setRecordName(String recordName) {
+	public void setRecordName(String recordName)
+	{
 		this.recordName = recordName;
 	}
 
 	@Override
-	public String getRecordName() {
+	public String getRecordName()
+	{
 		return this.recordName;
 	}
 
 	@Override
-	public void setRecordShortDescription(String recordShortDescription) {
+	public void setRecordShortDescription(String recordShortDescription)
+	{
 		this.recordShortDescription = recordShortDescription;
 	}
 
 	@Override
-	public String getRecordShortDescription() {
+	public String getRecordShortDescription()
+	{
 		return this.recordShortDescription;
 	}
 
-
 	@Override
-	public void read(InputStream in) throws IOException {
+	public void read(InputStream in) throws IOException
+	{
 		this.bytes = FileCopyUtils.copyToByteArray(in);
 	}
 
 	@Override
-	public void write(OutputStream out) throws IOException {
+	public void write(OutputStream out) throws IOException
+	{
 		out.write(this.bytes);
 		out.flush();
 	}
 
-	public byte[] toByteArray() {
+	public byte[] toByteArray()
+	{
 		return this.bytes;
 	}
 
-
 	@Override
-	public Object clone() {
+	public Object clone()
+	{
 		return new CommAreaRecord(this.bytes);
 	}
 

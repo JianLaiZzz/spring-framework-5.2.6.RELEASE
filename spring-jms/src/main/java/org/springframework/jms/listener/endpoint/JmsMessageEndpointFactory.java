@@ -31,11 +31,13 @@ import org.springframework.util.Assert;
  * providing transaction management capabilities for a JMS listener object
  * (e.g. a {@link javax.jms.MessageListener} object).
  *
- * <p>Uses a static endpoint implementation, simply wrapping the
+ * <p>
+ * Uses a static endpoint implementation, simply wrapping the
  * specified message listener object and exposing all of its implemented
  * interfaces on the endpoint instance.
  *
- * <p>Typically used with Spring's {@link JmsMessageEndpointManager},
+ * <p>
+ * Typically used with Spring's {@link JmsMessageEndpointManager},
  * but not tied to it. As a consequence, this endpoint factory could
  * also be used with programmatic endpoint management on a native
  * {@link javax.resource.spi.ResourceAdapter} instance.
@@ -47,23 +49,25 @@ import org.springframework.util.Assert;
  * @see #setTransactionManager
  * @see JmsMessageEndpointManager
  */
-public class JmsMessageEndpointFactory extends AbstractMessageEndpointFactory  {
+public class JmsMessageEndpointFactory extends AbstractMessageEndpointFactory
+{
 
 	@Nullable
 	private MessageListener messageListener;
 
-
 	/**
 	 * Set the JMS MessageListener for this endpoint.
 	 */
-	public void setMessageListener(MessageListener messageListener) {
+	public void setMessageListener(MessageListener messageListener)
+	{
 		this.messageListener = messageListener;
 	}
 
 	/**
 	 * Return the JMS MessageListener for this endpoint.
 	 */
-	protected MessageListener getMessageListener() {
+	protected MessageListener getMessageListener()
+	{
 		Assert.state(this.messageListener != null, "No MessageListener set");
 		return this.messageListener;
 	}
@@ -72,43 +76,55 @@ public class JmsMessageEndpointFactory extends AbstractMessageEndpointFactory  {
 	 * Creates a concrete JMS message endpoint, internal to this factory.
 	 */
 	@Override
-	protected AbstractMessageEndpoint createEndpointInternal() throws UnavailableException {
+	protected AbstractMessageEndpoint createEndpointInternal() throws UnavailableException
+	{
 		return new JmsMessageEndpoint();
 	}
-
 
 	/**
 	 * Private inner class that implements the concrete JMS message endpoint.
 	 */
-	private class JmsMessageEndpoint extends AbstractMessageEndpoint implements MessageListener {
+	private class JmsMessageEndpoint extends AbstractMessageEndpoint implements MessageListener
+	{
 
 		@Override
-		public void onMessage(Message message) {
+		public void onMessage(Message message)
+		{
 			Throwable endpointEx = null;
 			boolean applyDeliveryCalls = !hasBeforeDeliveryBeenCalled();
-			if (applyDeliveryCalls) {
-				try {
+			if (applyDeliveryCalls)
+			{
+				try
+				{
 					beforeDelivery(null);
 				}
-				catch (ResourceException ex) {
+				catch (ResourceException ex)
+				{
 					throw new JmsResourceException(ex);
 				}
 			}
-			try {
+			try
+			{
 				getMessageListener().onMessage(message);
 			}
-			catch (RuntimeException | Error ex) {
+			catch (RuntimeException | Error ex)
+			{
 				endpointEx = ex;
 				onEndpointException(ex);
 				throw ex;
 			}
-			finally {
-				if (applyDeliveryCalls) {
-					try {
+			finally
+			{
+				if (applyDeliveryCalls)
+				{
+					try
+					{
 						afterDelivery();
 					}
-					catch (ResourceException ex) {
-						if (endpointEx == null) {
+					catch (ResourceException ex)
+					{
+						if (endpointEx == null)
+						{
 							throw new JmsResourceException(ex);
 						}
 					}
@@ -117,24 +133,27 @@ public class JmsMessageEndpointFactory extends AbstractMessageEndpointFactory  {
 		}
 
 		@Override
-		protected ClassLoader getEndpointClassLoader() {
+		protected ClassLoader getEndpointClassLoader()
+		{
 			return getMessageListener().getClass().getClassLoader();
 		}
 	}
 
-
 	/**
 	 * Internal exception thrown when a ResourceException has been encountered
 	 * during the endpoint invocation.
-	 * <p>Will only be used if the ResourceAdapter does not invoke the
+	 * <p>
+	 * Will only be used if the ResourceAdapter does not invoke the
 	 * endpoint's {@code beforeDelivery} and {@code afterDelivery}
 	 * directly, leaving it up to the concrete endpoint to apply those -
 	 * and to handle any ResourceExceptions thrown from them.
 	 */
 	@SuppressWarnings("serial")
-	public static class JmsResourceException extends RuntimeException {
+	public static class JmsResourceException extends RuntimeException
+	{
 
-		public JmsResourceException(ResourceException cause) {
+		public JmsResourceException(ResourceException cause)
+		{
 			super(cause);
 		}
 	}

@@ -28,22 +28,30 @@ import org.springframework.lang.Nullable;
  * @see MessageConverter
  */
 @SuppressWarnings("serial")
-public class MessageConversionException extends JmsException {
+public class MessageConversionException extends JmsException
+{
 
 	/**
 	 * Create a new MessageConversionException.
-	 * @param msg the detail message
+	 * 
+	 * @param msg
+	 *            the detail message
 	 */
-	public MessageConversionException(String msg) {
+	public MessageConversionException(String msg)
+	{
 		super(msg);
 	}
 
 	/**
 	 * Create a new MessageConversionException.
-	 * @param msg the detail message
-	 * @param cause the root cause (if any)
+	 * 
+	 * @param msg
+	 *            the detail message
+	 * @param cause
+	 *            the root cause (if any)
 	 */
-	public MessageConversionException(String msg, @Nullable Throwable cause) {
+	public MessageConversionException(String msg, @Nullable Throwable cause)
+	{
 		super(msg, cause);
 	}
 

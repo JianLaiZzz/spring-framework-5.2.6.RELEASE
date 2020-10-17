@@ -16,35 +16,24 @@
 
 package org.springframework.jms.connection;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.ExceptionListener;
-import javax.jms.JMSException;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueSession;
-import javax.jms.Session;
-import javax.jms.TopicConnection;
-import javax.jms.TopicConnectionFactory;
-import javax.jms.TopicSession;
-
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
+
+import javax.jms.*;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Juergen Hoeller
  * @since 26.07.2004
  */
-public class SingleConnectionFactoryTests {
+public class SingleConnectionFactoryTests
+{
 
 	@Test
-	public void testWithConnection() throws JMSException {
+	public void testWithConnection() throws JMSException
+	{
 		Connection con = mock(Connection.class);
 
 		SingleConnectionFactory scf = new SingleConnectionFactory(con);
@@ -56,7 +45,7 @@ public class SingleConnectionFactoryTests {
 		con2.start();
 		con2.stop();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(con, times(2)).start();
 		verify(con, times(2)).stop();
@@ -65,7 +54,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithQueueConnection() throws JMSException {
+	public void testWithQueueConnection() throws JMSException
+	{
 		Connection con = mock(QueueConnection.class);
 
 		SingleConnectionFactory scf = new SingleConnectionFactory(con);
@@ -77,7 +67,7 @@ public class SingleConnectionFactoryTests {
 		con2.start();
 		con2.stop();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(con, times(2)).start();
 		verify(con, times(2)).stop();
@@ -86,7 +76,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithTopicConnection() throws JMSException {
+	public void testWithTopicConnection() throws JMSException
+	{
 		Connection con = mock(TopicConnection.class);
 
 		SingleConnectionFactory scf = new SingleConnectionFactory(con);
@@ -98,7 +89,7 @@ public class SingleConnectionFactoryTests {
 		con2.start();
 		con2.stop();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(con, times(2)).start();
 		verify(con, times(2)).stop();
@@ -107,7 +98,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithConnectionFactory() throws JMSException {
+	public void testWithConnectionFactory() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		Connection con = mock(Connection.class);
 
@@ -120,7 +112,7 @@ public class SingleConnectionFactoryTests {
 		con2.start();
 		con1.close();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(con).start();
 		verify(con).stop();
@@ -129,7 +121,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithQueueConnectionFactoryAndJms11Usage() throws JMSException {
+	public void testWithQueueConnectionFactoryAndJms11Usage() throws JMSException
+	{
 		QueueConnectionFactory cf = mock(QueueConnectionFactory.class);
 		QueueConnection con = mock(QueueConnection.class);
 
@@ -142,7 +135,7 @@ public class SingleConnectionFactoryTests {
 		con2.start();
 		con1.close();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(con).start();
 		verify(con).stop();
@@ -151,7 +144,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithQueueConnectionFactoryAndJms102Usage() throws JMSException {
+	public void testWithQueueConnectionFactoryAndJms102Usage() throws JMSException
+	{
 		QueueConnectionFactory cf = mock(QueueConnectionFactory.class);
 		QueueConnection con = mock(QueueConnection.class);
 
@@ -164,7 +158,7 @@ public class SingleConnectionFactoryTests {
 		con2.start();
 		con1.close();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(con).start();
 		verify(con).stop();
@@ -173,7 +167,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithTopicConnectionFactoryAndJms11Usage() throws JMSException {
+	public void testWithTopicConnectionFactoryAndJms11Usage() throws JMSException
+	{
 		TopicConnectionFactory cf = mock(TopicConnectionFactory.class);
 		TopicConnection con = mock(TopicConnection.class);
 
@@ -186,7 +181,7 @@ public class SingleConnectionFactoryTests {
 		con2.start();
 		con1.close();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(con).start();
 		verify(con).stop();
@@ -195,7 +190,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithTopicConnectionFactoryAndJms102Usage() throws JMSException {
+	public void testWithTopicConnectionFactoryAndJms102Usage() throws JMSException
+	{
 		TopicConnectionFactory cf = mock(TopicConnectionFactory.class);
 		TopicConnection con = mock(TopicConnection.class);
 
@@ -208,7 +204,7 @@ public class SingleConnectionFactoryTests {
 		con2.start();
 		con1.close();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(con).start();
 		verify(con).stop();
@@ -217,7 +213,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithConnectionAggregatedStartStop() throws JMSException {
+	public void testWithConnectionAggregatedStartStop() throws JMSException
+	{
 		Connection con = mock(Connection.class);
 
 		SingleConnectionFactory scf = new SingleConnectionFactory(con);
@@ -249,7 +246,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithConnectionFactoryAndClientId() throws JMSException {
+	public void testWithConnectionFactoryAndClientId() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		Connection con = mock(Connection.class);
 		given(cf.createConnection()).willReturn(con);
@@ -262,7 +260,7 @@ public class SingleConnectionFactoryTests {
 		con2.start();
 		con1.close();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(con).setClientID("myId");
 		verify(con).start();
@@ -272,7 +270,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithConnectionFactoryAndExceptionListener() throws JMSException {
+	public void testWithConnectionFactoryAndExceptionListener() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		Connection con = mock(Connection.class);
 
@@ -291,7 +290,7 @@ public class SingleConnectionFactoryTests {
 		con2.start();
 		con2.stop();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(con).setExceptionListener(listener);
 		verify(con, times(2)).start();
@@ -300,7 +299,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithConnectionFactoryAndReconnectOnException() throws JMSException {
+	public void testWithConnectionFactoryAndReconnectOnException() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		TestConnection con = new TestConnection();
 		given(cf.createConnection()).willReturn(con);
@@ -313,14 +313,15 @@ public class SingleConnectionFactoryTests {
 		con.getExceptionListener().onException(new JMSException(""));
 		Connection con2 = scf.createConnection();
 		con2.start();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		assertThat(con.getStartCount()).isEqualTo(2);
 		assertThat(con.getCloseCount()).isEqualTo(2);
 	}
 
 	@Test
-	public void testWithConnectionFactoryAndExceptionListenerAndReconnectOnException() throws JMSException {
+	public void testWithConnectionFactoryAndExceptionListenerAndReconnectOnException() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		TestConnection con = new TestConnection();
 		given(cf.createConnection()).willReturn(con);
@@ -335,7 +336,7 @@ public class SingleConnectionFactoryTests {
 		con.getExceptionListener().onException(new JMSException(""));
 		Connection con2 = scf.createConnection();
 		con2.start();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		assertThat(con.getStartCount()).isEqualTo(2);
 		assertThat(con.getCloseCount()).isEqualTo(2);
@@ -343,7 +344,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithConnectionFactoryAndLocalExceptionListenerWithCleanup() throws JMSException {
+	public void testWithConnectionFactoryAndLocalExceptionListenerWithCleanup() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		TestConnection con = new TestConnection();
 		given(cf.createConnection()).willReturn(con);
@@ -352,9 +354,11 @@ public class SingleConnectionFactoryTests {
 		TestExceptionListener listener1 = new TestExceptionListener();
 		TestExceptionListener listener2 = new TestExceptionListener();
 
-		SingleConnectionFactory scf = new SingleConnectionFactory(cf) {
+		SingleConnectionFactory scf = new SingleConnectionFactory(cf)
+		{
 			@Override
-			public void onException(JMSException ex) {
+			public void onException(JMSException ex)
+			{
 				// no-op
 			}
 		};
@@ -371,7 +375,7 @@ public class SingleConnectionFactoryTests {
 		con.getExceptionListener().onException(new JMSException(""));
 		con1.close();
 		con.getExceptionListener().onException(new JMSException(""));
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		assertThat(con.getStartCount()).isEqualTo(0);
 		assertThat(con.getCloseCount()).isEqualTo(1);
@@ -381,7 +385,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testWithConnectionFactoryAndLocalExceptionListenerWithReconnect() throws JMSException {
+	public void testWithConnectionFactoryAndLocalExceptionListenerWithReconnect() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		TestConnection con = new TestConnection();
 		given(cf.createConnection()).willReturn(con);
@@ -405,7 +410,7 @@ public class SingleConnectionFactoryTests {
 		con1.getMetaData();
 		con.getExceptionListener().onException(new JMSException(""));
 		con1.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		assertThat(con.getStartCount()).isEqualTo(2);
 		assertThat(con.getCloseCount()).isEqualTo(2);
@@ -415,7 +420,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testCachingConnectionFactory() throws JMSException {
+	public void testCachingConnectionFactory() throws JMSException
+	{
 		ConnectionFactory cf = mock(ConnectionFactory.class);
 		Connection con = mock(Connection.class);
 		Session txSession = mock(Session.class);
@@ -431,7 +437,7 @@ public class SingleConnectionFactoryTests {
 		Connection con1 = scf.createConnection();
 		Session session1 = con1.createSession(true, Session.AUTO_ACKNOWLEDGE);
 		session1.getTransacted();
-		session1.close();  // should lead to rollback
+		session1.close(); // should lead to rollback
 		session1 = con1.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 		session1.close();
 		con1.start();
@@ -444,7 +450,7 @@ public class SingleConnectionFactoryTests {
 		con2.start();
 		con1.close();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(txSession).commit();
 		verify(txSession).close();
@@ -455,7 +461,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testCachingConnectionFactoryWithQueueConnectionFactoryAndJms102Usage() throws JMSException {
+	public void testCachingConnectionFactoryWithQueueConnectionFactoryAndJms102Usage() throws JMSException
+	{
 		QueueConnectionFactory cf = mock(QueueConnectionFactory.class);
 		QueueConnection con = mock(QueueConnection.class);
 		QueueSession txSession = mock(QueueSession.class);
@@ -480,11 +487,11 @@ public class SingleConnectionFactoryTests {
 		session2.close();
 		session2 = con2.createSession(true, Session.AUTO_ACKNOWLEDGE);
 		session2.getTransacted();
-		session2.close();  // should lead to rollback
+		session2.close(); // should lead to rollback
 		con2.start();
 		con1.close();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(txSession).rollback();
 		verify(txSession).close();
@@ -495,7 +502,8 @@ public class SingleConnectionFactoryTests {
 	}
 
 	@Test
-	public void testCachingConnectionFactoryWithTopicConnectionFactoryAndJms102Usage() throws JMSException {
+	public void testCachingConnectionFactoryWithTopicConnectionFactoryAndJms102Usage() throws JMSException
+	{
 		TopicConnectionFactory cf = mock(TopicConnectionFactory.class);
 		TopicConnection con = mock(TopicConnection.class);
 		TopicSession txSession = mock(TopicSession.class);
@@ -511,7 +519,7 @@ public class SingleConnectionFactoryTests {
 		Connection con1 = scf.createTopicConnection();
 		Session session1 = con1.createSession(true, Session.AUTO_ACKNOWLEDGE);
 		session1.getTransacted();
-		session1.close();  // should lead to rollback
+		session1.close(); // should lead to rollback
 		session1 = con1.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 		session1.close();
 		con1.start();
@@ -524,7 +532,7 @@ public class SingleConnectionFactoryTests {
 		con2.start();
 		con1.close();
 		con2.close();
-		scf.destroy();  // should trigger actual close
+		scf.destroy(); // should trigger actual close
 
 		verify(txSession).close();
 		verify(nonTxSession).close();

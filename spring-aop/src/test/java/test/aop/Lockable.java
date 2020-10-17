@@ -16,14 +16,14 @@
 
 package test.aop;
 
-
 /**
  * Simple interface to use for mixins
  *
  * @author Rod Johnson
  *
  */
-public interface Lockable {
+public interface Lockable
+{
 
 	void lock();
 

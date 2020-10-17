@@ -35,44 +35,51 @@ import org.springframework.transaction.support.TransactionSynchronizationUtils;
  * @see TransactionSynchronization#afterCommit
  * @see TransactionSynchronization#afterCompletion
  */
-public class JtaAfterCompletionSynchronization implements Synchronization {
+public class JtaAfterCompletionSynchronization implements Synchronization
+{
 
 	private final List<TransactionSynchronization> synchronizations;
 
-
 	/**
 	 * Create a new JtaAfterCompletionSynchronization for the given synchronization objects.
-	 * @param synchronizations the List of TransactionSynchronization objects
+	 * 
+	 * @param synchronizations
+	 *            the List of TransactionSynchronization objects
 	 * @see org.springframework.transaction.support.TransactionSynchronization
 	 */
-	public JtaAfterCompletionSynchronization(List<TransactionSynchronization> synchronizations) {
+	public JtaAfterCompletionSynchronization(List<TransactionSynchronization> synchronizations)
+	{
 		this.synchronizations = synchronizations;
 	}
 
-
 	@Override
-	public void beforeCompletion() {
+	public void beforeCompletion()
+	{
 	}
 
 	@Override
-	public void afterCompletion(int status) {
-		switch (status) {
-			case Status.STATUS_COMMITTED:
-				try {
-					TransactionSynchronizationUtils.invokeAfterCommit(this.synchronizations);
-				}
-				finally {
-					TransactionSynchronizationUtils.invokeAfterCompletion(
-							this.synchronizations, TransactionSynchronization.STATUS_COMMITTED);
-				}
-				break;
-			case Status.STATUS_ROLLEDBACK:
-				TransactionSynchronizationUtils.invokeAfterCompletion(
-						this.synchronizations, TransactionSynchronization.STATUS_ROLLED_BACK);
-				break;
-			default:
-				TransactionSynchronizationUtils.invokeAfterCompletion(
-						this.synchronizations, TransactionSynchronization.STATUS_UNKNOWN);
+	public void afterCompletion(int status)
+	{
+		switch (status)
+		{
+		case Status.STATUS_COMMITTED:
+			try
+			{
+				TransactionSynchronizationUtils.invokeAfterCommit(this.synchronizations);
+			}
+			finally
+			{
+				TransactionSynchronizationUtils.invokeAfterCompletion(this.synchronizations,
+						TransactionSynchronization.STATUS_COMMITTED);
+			}
+			break;
+		case Status.STATUS_ROLLEDBACK:
+			TransactionSynchronizationUtils.invokeAfterCompletion(this.synchronizations,
+					TransactionSynchronization.STATUS_ROLLED_BACK);
+			break;
+		default:
+			TransactionSynchronizationUtils.invokeAfterCompletion(this.synchronizations,
+					TransactionSynchronization.STATUS_UNKNOWN);
 		}
 	}
 }

@@ -21,7 +21,6 @@ import java.util.concurrent.Callable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
-
 import org.springframework.orm.hibernate5.SessionFactoryUtils;
 import org.springframework.orm.hibernate5.SessionHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -41,7 +40,9 @@ import org.springframework.web.context.request.async.DeferredResultProcessingInt
  * @author Rossen Stoyanchev
  * @since 4.2
  */
-class AsyncRequestInterceptor implements CallableProcessingInterceptor, DeferredResultProcessingInterceptor {
+class AsyncRequestInterceptor
+		implements CallableProcessingInterceptor, DeferredResultProcessingInterceptor
+{
 
 	private static final Log logger = LogFactory.getLog(AsyncRequestInterceptor.class);
 
@@ -53,70 +54,80 @@ class AsyncRequestInterceptor implements CallableProcessingInterceptor, Deferred
 
 	private volatile boolean errorInProgress;
 
-
-	public AsyncRequestInterceptor(SessionFactory sessionFactory, SessionHolder sessionHolder) {
+	public AsyncRequestInterceptor(SessionFactory sessionFactory, SessionHolder sessionHolder)
+	{
 		this.sessionFactory = sessionFactory;
 		this.sessionHolder = sessionHolder;
 	}
 
-
 	@Override
-	public <T> void preProcess(NativeWebRequest request, Callable<T> task) {
+	public <T> void preProcess(NativeWebRequest request, Callable<T> task)
+	{
 		bindSession();
 	}
 
-	public void bindSession() {
+	public void bindSession()
+	{
 		this.timeoutInProgress = false;
 		this.errorInProgress = false;
 		TransactionSynchronizationManager.bindResource(this.sessionFactory, this.sessionHolder);
 	}
 
 	@Override
-	public <T> void postProcess(NativeWebRequest request, Callable<T> task, Object concurrentResult) {
+	public <T> void postProcess(NativeWebRequest request, Callable<T> task, Object concurrentResult)
+	{
 		TransactionSynchronizationManager.unbindResource(this.sessionFactory);
 	}
 
 	@Override
-	public <T> Object handleTimeout(NativeWebRequest request, Callable<T> task) {
+	public <T> Object handleTimeout(NativeWebRequest request, Callable<T> task)
+	{
 		this.timeoutInProgress = true;
-		return RESULT_NONE;  // give other interceptors a chance to handle the timeout
+		return RESULT_NONE; // give other interceptors a chance to handle the timeout
 	}
 
 	@Override
-	public <T> Object handleError(NativeWebRequest request, Callable<T> task, Throwable t) {
+	public <T> Object handleError(NativeWebRequest request, Callable<T> task, Throwable t)
+	{
 		this.errorInProgress = true;
-		return RESULT_NONE;  // give other interceptors a chance to handle the error
+		return RESULT_NONE; // give other interceptors a chance to handle the error
 	}
 
 	@Override
-	public <T> void afterCompletion(NativeWebRequest request, Callable<T> task) throws Exception {
+	public <T> void afterCompletion(NativeWebRequest request, Callable<T> task) throws Exception
+	{
 		closeSession();
 	}
 
-	private void closeSession() {
-		if (this.timeoutInProgress || this.errorInProgress) {
+	private void closeSession()
+	{
+		if (this.timeoutInProgress || this.errorInProgress)
+		{
 			logger.debug("Closing Hibernate Session after async request timeout/error");
 			SessionFactoryUtils.closeSession(this.sessionHolder.getSession());
 		}
 	}
 
-
 	// Implementation of DeferredResultProcessingInterceptor methods
 
 	@Override
-	public <T> boolean handleTimeout(NativeWebRequest request, DeferredResult<T> deferredResult) {
+	public <T> boolean handleTimeout(NativeWebRequest request, DeferredResult<T> deferredResult)
+	{
 		this.timeoutInProgress = true;
-		return true;  // give other interceptors a chance to handle the timeout
+		return true; // give other interceptors a chance to handle the timeout
 	}
 
 	@Override
-	public <T> boolean handleError(NativeWebRequest request, DeferredResult<T> deferredResult, Throwable t) {
+	public <T> boolean handleError(NativeWebRequest request, DeferredResult<T> deferredResult,
+			Throwable t)
+	{
 		this.errorInProgress = true;
-		return true;  // give other interceptors a chance to handle the error
+		return true; // give other interceptors a chance to handle the error
 	}
 
 	@Override
-	public <T> void afterCompletion(NativeWebRequest request, DeferredResult<T> deferredResult) {
+	public <T> void afterCompletion(NativeWebRequest request, DeferredResult<T> deferredResult)
+	{
 		closeSession();
 	}
 

@@ -32,27 +32,31 @@ import org.springframework.lang.Nullable;
  * @see TransactionAttributeSourceAdvisor
  */
 @SuppressWarnings("serial")
-public class BeanFactoryTransactionAttributeSourceAdvisor extends AbstractBeanFactoryPointcutAdvisor {
+public class BeanFactoryTransactionAttributeSourceAdvisor extends AbstractBeanFactoryPointcutAdvisor
+{
 
 	@Nullable
 	private TransactionAttributeSource transactionAttributeSource;
 
-	private final TransactionAttributeSourcePointcut pointcut = new TransactionAttributeSourcePointcut() {
+	private final TransactionAttributeSourcePointcut pointcut = new TransactionAttributeSourcePointcut()
+	{
 		@Override
 		@Nullable
-		protected TransactionAttributeSource getTransactionAttributeSource() {
+		protected TransactionAttributeSource getTransactionAttributeSource()
+		{
 			return transactionAttributeSource;
 		}
 	};
-
 
 	/**
 	 * Set the transaction attribute source which is used to find transaction
 	 * attributes. This should usually be identical to the source reference
 	 * set on the transaction interceptor itself.
+	 * 
 	 * @see TransactionInterceptor#setTransactionAttributeSource
 	 */
-	public void setTransactionAttributeSource(TransactionAttributeSource transactionAttributeSource) {
+	public void setTransactionAttributeSource(TransactionAttributeSource transactionAttributeSource)
+	{
 		this.transactionAttributeSource = transactionAttributeSource;
 	}
 
@@ -60,12 +64,14 @@ public class BeanFactoryTransactionAttributeSourceAdvisor extends AbstractBeanFa
 	 * Set the {@link ClassFilter} to use for this pointcut.
 	 * Default is {@link ClassFilter#TRUE}.
 	 */
-	public void setClassFilter(ClassFilter classFilter) {
+	public void setClassFilter(ClassFilter classFilter)
+	{
 		this.pointcut.setClassFilter(classFilter);
 	}
 
 	@Override
-	public Pointcut getPointcut() {
+	public Pointcut getPointcut()
+	{
 		return this.pointcut;
 	}
 

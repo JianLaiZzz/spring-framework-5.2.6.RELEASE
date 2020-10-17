@@ -26,7 +26,8 @@ import org.springframework.core.Ordered;
  * @since 2.0
  * @see org.springframework.aop.aspectj.autoproxy.AspectJPrecedenceComparator
  */
-public interface AspectJPrecedenceInformation extends Ordered {
+public interface AspectJPrecedenceInformation extends Ordered
+{
 
 	// Implementation note:
 	// We need the level of indirection this interface provides as otherwise the

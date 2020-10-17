@@ -35,65 +35,73 @@ import org.springframework.web.util.UrlPathHelper;
  * A {@code ContentNegotiationStrategy} that resolves the file extension in the
  * request path to a key to be used to look up a media type.
  *
- * <p>If the file extension is not found in the explicit registrations provided
+ * <p>
+ * If the file extension is not found in the explicit registrations provided
  * to the constructor, the {@link MediaTypeFactory} is used as a fallback
  * mechanism.
  *
  * @author Rossen Stoyanchev
  * @since 3.2
  * @deprecated as of 5.2.4. See class-level note in
- * {@link ContentNegotiationManagerFactoryBean} on the deprecation of path
- * extension config options.
+ *             {@link ContentNegotiationManagerFactoryBean} on the deprecation of path
+ *             extension config options.
  */
 @Deprecated
-public class PathExtensionContentNegotiationStrategy extends AbstractMappingContentNegotiationStrategy {
+public class PathExtensionContentNegotiationStrategy extends AbstractMappingContentNegotiationStrategy
+{
 
 	private UrlPathHelper urlPathHelper = new UrlPathHelper();
-
 
 	/**
 	 * Create an instance without any mappings to start with. Mappings may be added
 	 * later on if any extensions are resolved through the Java Activation framework.
 	 */
-	public PathExtensionContentNegotiationStrategy() {
+	public PathExtensionContentNegotiationStrategy()
+	{
 		this(null);
 	}
 
 	/**
 	 * Create an instance with the given map of file extensions and media types.
 	 */
-	public PathExtensionContentNegotiationStrategy(@Nullable Map<String, MediaType> mediaTypes) {
+	public PathExtensionContentNegotiationStrategy(@Nullable Map<String, MediaType> mediaTypes)
+	{
 		super(mediaTypes);
 		setUseRegisteredExtensionsOnly(false);
 		setIgnoreUnknownExtensions(true);
 		this.urlPathHelper.setUrlDecode(false);
 	}
 
-
 	/**
 	 * Configure a {@code UrlPathHelper} to use in {@link #getMediaTypeKey}
 	 * in order to derive the lookup path for a target request URL path.
+	 * 
 	 * @since 4.2.8
 	 */
-	public void setUrlPathHelper(UrlPathHelper urlPathHelper) {
+	public void setUrlPathHelper(UrlPathHelper urlPathHelper)
+	{
 		this.urlPathHelper = urlPathHelper;
 	}
 
 	/**
 	 * Indicate whether to use the Java Activation Framework as a fallback option
 	 * to map from file extensions to media types.
+	 * 
 	 * @deprecated as of 5.0, in favor of {@link #setUseRegisteredExtensionsOnly(boolean)}.
 	 */
 	@Deprecated
-	public void setUseJaf(boolean useJaf) {
+	public void setUseJaf(boolean useJaf)
+	{
 		setUseRegisteredExtensionsOnly(!useJaf);
 	}
 
 	@Override
 	@Nullable
-	protected String getMediaTypeKey(NativeWebRequest webRequest) {
+	protected String getMediaTypeKey(NativeWebRequest webRequest)
+	{
 		HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-		if (request == null) {
+		if (request == null)
+		{
 			return null;
 		}
 		// Ignore LOOKUP_PATH attribute, use our own "fixed" UrlPathHelper with decoding off
@@ -107,20 +115,25 @@ public class PathExtensionContentNegotiationStrategy extends AbstractMappingCont
 	 * resolve file extensions to a {@link MediaType} in this case for a given
 	 * {@link Resource}. The method first looks up any explicitly registered
 	 * file extensions first and then falls back on {@link MediaTypeFactory} if available.
-	 * @param resource the resource to look up
+	 * 
+	 * @param resource
+	 *            the resource to look up
 	 * @return the MediaType for the extension, or {@code null} if none found
 	 * @since 4.3
 	 */
 	@Nullable
-	public MediaType getMediaTypeForResource(Resource resource) {
+	public MediaType getMediaTypeForResource(Resource resource)
+	{
 		Assert.notNull(resource, "Resource must not be null");
 		MediaType mediaType = null;
 		String filename = resource.getFilename();
 		String extension = StringUtils.getFilenameExtension(filename);
-		if (extension != null) {
+		if (extension != null)
+		{
 			mediaType = lookupMediaType(extension);
 		}
-		if (mediaType == null) {
+		if (mediaType == null)
+		{
 			mediaType = MediaTypeFactory.getMediaType(filename).orElse(null);
 		}
 		return mediaType;

@@ -33,7 +33,8 @@ import org.springframework.lang.Nullable;
  * @see MethodJmsListenerEndpoint
  * @see SimpleJmsListenerEndpoint
  */
-public abstract class AbstractJmsListenerEndpoint implements JmsListenerEndpoint {
+public abstract class AbstractJmsListenerEndpoint implements JmsListenerEndpoint
+{
 
 	private String id = "";
 
@@ -49,20 +50,22 @@ public abstract class AbstractJmsListenerEndpoint implements JmsListenerEndpoint
 	@Nullable
 	private String concurrency;
 
-
-	public void setId(String id) {
+	public void setId(String id)
+	{
 		this.id = id;
 	}
 
 	@Override
-	public String getId() {
+	public String getId()
+	{
 		return this.id;
 	}
 
 	/**
 	 * Set the name of the destination for this endpoint.
 	 */
-	public void setDestination(@Nullable String destination) {
+	public void setDestination(@Nullable String destination)
+	{
 		this.destination = destination;
 	}
 
@@ -70,14 +73,16 @@ public abstract class AbstractJmsListenerEndpoint implements JmsListenerEndpoint
 	 * Return the name of the destination for this endpoint.
 	 */
 	@Nullable
-	public String getDestination() {
+	public String getDestination()
+	{
 		return this.destination;
 	}
 
 	/**
 	 * Set the name for the durable subscription.
 	 */
-	public void setSubscription(@Nullable String subscription) {
+	public void setSubscription(@Nullable String subscription)
+	{
 		this.subscription = subscription;
 	}
 
@@ -85,15 +90,18 @@ public abstract class AbstractJmsListenerEndpoint implements JmsListenerEndpoint
 	 * Return the name for the durable subscription, if any.
 	 */
 	@Nullable
-	public String getSubscription() {
+	public String getSubscription()
+	{
 		return this.subscription;
 	}
 
 	/**
 	 * Set the JMS message selector expression.
-	 * <p>See the JMS specification for a detailed definition of selector expressions.
+	 * <p>
+	 * See the JMS specification for a detailed definition of selector expressions.
 	 */
-	public void setSelector(@Nullable String selector) {
+	public void setSelector(@Nullable String selector)
+	{
 		this.selector = selector;
 	}
 
@@ -101,18 +109,22 @@ public abstract class AbstractJmsListenerEndpoint implements JmsListenerEndpoint
 	 * Return the JMS message selector expression, if any.
 	 */
 	@Nullable
-	public String getSelector() {
+	public String getSelector()
+	{
 		return this.selector;
 	}
 
 	/**
 	 * Set a concurrency for the listener, if any.
-	 * <p>The concurrency limits can be a "lower-upper" String, e.g. "5-10", or a simple
+	 * <p>
+	 * The concurrency limits can be a "lower-upper" String, e.g. "5-10", or a simple
 	 * upper limit String, e.g. "10" (the lower limit will be 1 in this case).
-	 * <p>The underlying container may or may not support all features. For instance, it
+	 * <p>
+	 * The underlying container may or may not support all features. For instance, it
 	 * may not be able to scale: in that case only the upper value is used.
 	 */
-	public void setConcurrency(@Nullable String concurrency) {
+	public void setConcurrency(@Nullable String concurrency)
+	{
 		this.concurrency = concurrency;
 	}
 
@@ -120,32 +132,40 @@ public abstract class AbstractJmsListenerEndpoint implements JmsListenerEndpoint
 	 * Return the concurrency for the listener, if any.
 	 */
 	@Nullable
-	public String getConcurrency() {
+	public String getConcurrency()
+	{
 		return this.concurrency;
 	}
 
-
 	@Override
-	public void setupListenerContainer(MessageListenerContainer listenerContainer) {
-		if (listenerContainer instanceof AbstractMessageListenerContainer) {
+	public void setupListenerContainer(MessageListenerContainer listenerContainer)
+	{
+		if (listenerContainer instanceof AbstractMessageListenerContainer)
+		{
 			setupJmsListenerContainer((AbstractMessageListenerContainer) listenerContainer);
 		}
-		else {
+		else
+		{
 			new JcaEndpointConfigurer().configureEndpoint(listenerContainer);
 		}
 	}
 
-	private void setupJmsListenerContainer(AbstractMessageListenerContainer listenerContainer) {
-		if (getDestination() != null) {
+	private void setupJmsListenerContainer(AbstractMessageListenerContainer listenerContainer)
+	{
+		if (getDestination() != null)
+		{
 			listenerContainer.setDestinationName(getDestination());
 		}
-		if (getSubscription() != null) {
+		if (getSubscription() != null)
+		{
 			listenerContainer.setSubscriptionName(getSubscription());
 		}
-		if (getSelector() != null) {
+		if (getSelector() != null)
+		{
 			listenerContainer.setMessageSelector(getSelector());
 		}
-		if (getConcurrency() != null) {
+		if (getConcurrency() != null)
+		{
 			listenerContainer.setConcurrency(getConcurrency());
 		}
 		setupMessageListener(listenerContainer);
@@ -157,59 +177,74 @@ public abstract class AbstractJmsListenerEndpoint implements JmsListenerEndpoint
 	 */
 	protected abstract MessageListener createMessageListener(MessageListenerContainer container);
 
-	private void setupMessageListener(MessageListenerContainer container) {
+	private void setupMessageListener(MessageListenerContainer container)
+	{
 		container.setupMessageListener(createMessageListener(container));
 	}
 
 	/**
 	 * Return a description for this endpoint.
-	 * <p>Available to subclasses, for inclusion in their {@code toString()} result.
+	 * <p>
+	 * Available to subclasses, for inclusion in their {@code toString()} result.
 	 */
-	protected StringBuilder getEndpointDescription() {
+	protected StringBuilder getEndpointDescription()
+	{
 		StringBuilder result = new StringBuilder();
-		return result.append(getClass().getSimpleName()).append("[").append(this.id).append("] destination=").
-				append(this.destination).append("' | subscription='").append(this.subscription).
-				append(" | selector='").append(this.selector).append("'");
+		return result.append(getClass().getSimpleName()).append("[").append(this.id)
+				.append("] destination=").append(this.destination).append("' | subscription='")
+				.append(this.subscription).append(" | selector='").append(this.selector).append("'");
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return getEndpointDescription().toString();
 	}
-
 
 	/**
 	 * Inner class to avoid a hard dependency on the JCA API.
 	 */
-	private class JcaEndpointConfigurer {
+	private class JcaEndpointConfigurer
+	{
 
-		public void configureEndpoint(Object listenerContainer) {
-			if (listenerContainer instanceof JmsMessageEndpointManager) {
+		public void configureEndpoint(Object listenerContainer)
+		{
+			if (listenerContainer instanceof JmsMessageEndpointManager)
+			{
 				setupJcaMessageContainer((JmsMessageEndpointManager) listenerContainer);
 			}
-			else {
-				throw new IllegalArgumentException("Could not configure endpoint with the specified container '" +
-						listenerContainer + "' Only JMS (" + AbstractMessageListenerContainer.class.getName() +
-						" subclass) or JCA (" + JmsMessageEndpointManager.class.getName() + ") are supported.");
+			else
+			{
+				throw new IllegalArgumentException(
+						"Could not configure endpoint with the specified container '" + listenerContainer
+								+ "' Only JMS (" + AbstractMessageListenerContainer.class.getName()
+								+ " subclass) or JCA (" + JmsMessageEndpointManager.class.getName()
+								+ ") are supported.");
 			}
 		}
 
-		private void setupJcaMessageContainer(JmsMessageEndpointManager container) {
+		private void setupJcaMessageContainer(JmsMessageEndpointManager container)
+		{
 			JmsActivationSpecConfig activationSpecConfig = container.getActivationSpecConfig();
-			if (activationSpecConfig == null) {
+			if (activationSpecConfig == null)
+			{
 				activationSpecConfig = new JmsActivationSpecConfig();
 				container.setActivationSpecConfig(activationSpecConfig);
 			}
-			if (getDestination() != null) {
+			if (getDestination() != null)
+			{
 				activationSpecConfig.setDestinationName(getDestination());
 			}
-			if (getSubscription() != null) {
+			if (getSubscription() != null)
+			{
 				activationSpecConfig.setSubscriptionName(getSubscription());
 			}
-			if (getSelector() != null) {
+			if (getSelector() != null)
+			{
 				activationSpecConfig.setMessageSelector(getSelector());
 			}
-			if (getConcurrency() != null) {
+			if (getConcurrency() != null)
+			{
 				activationSpecConfig.setConcurrency(getConcurrency());
 			}
 			setupMessageListener(container);

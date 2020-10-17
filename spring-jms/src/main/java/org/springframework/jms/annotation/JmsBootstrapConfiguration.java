@@ -28,7 +28,8 @@ import org.springframework.jms.config.JmsListenerEndpointRegistry;
  * bean capable of processing Spring's @{@link JmsListener} annotation. Also register
  * a default {@link JmsListenerEndpointRegistry}.
  *
- * <p>This configuration class is automatically imported when using the @{@link EnableJms}
+ * <p>
+ * This configuration class is automatically imported when using the @{@link EnableJms}
  * annotation. See the {@link EnableJms} javadocs for complete usage details.
  *
  * @author Stephane Nicoll
@@ -39,16 +40,19 @@ import org.springframework.jms.config.JmsListenerEndpointRegistry;
  */
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-public class JmsBootstrapConfiguration {
+public class JmsBootstrapConfiguration
+{
 
 	@Bean(name = JmsListenerConfigUtils.JMS_LISTENER_ANNOTATION_PROCESSOR_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public JmsListenerAnnotationBeanPostProcessor jmsListenerAnnotationProcessor() {
+	public JmsListenerAnnotationBeanPostProcessor jmsListenerAnnotationProcessor()
+	{
 		return new JmsListenerAnnotationBeanPostProcessor();
 	}
 
 	@Bean(name = JmsListenerConfigUtils.JMS_LISTENER_ENDPOINT_REGISTRY_BEAN_NAME)
-	public JmsListenerEndpointRegistry defaultJmsListenerEndpointRegistry() {
+	public JmsListenerEndpointRegistry defaultJmsListenerEndpointRegistry()
+	{
 		return new JmsListenerEndpointRegistry();
 	}
 

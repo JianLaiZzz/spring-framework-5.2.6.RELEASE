@@ -35,7 +35,8 @@ import org.springframework.util.ClassUtils;
  * {@link org.springframework.transaction.interceptor.TransactionAttributeSource}
  * interface for working with transaction metadata in JDK 1.5+ annotation format.
  *
- * <p>This class reads Spring's JDK 1.5+ {@link Transactional} annotation and
+ * <p>
+ * This class reads Spring's JDK 1.5+ {@link Transactional} annotation and
  * exposes corresponding transaction attributes to Spring's transaction infrastructure.
  * Also supports JTA 1.2's {@link javax.transaction.Transactional} and EJB3's
  * {@link javax.ejb.TransactionAttribute} annotation (if present).
@@ -54,13 +55,15 @@ import org.springframework.util.ClassUtils;
  */
 @SuppressWarnings("serial")
 public class AnnotationTransactionAttributeSource extends AbstractFallbackTransactionAttributeSource
-		implements Serializable {
+		implements Serializable
+{
 
 	private static final boolean jta12Present;
 
 	private static final boolean ejb3Present;
 
-	static {
+	static
+	{
 		ClassLoader classLoader = AnnotationTransactionAttributeSource.class.getClassLoader();
 		jta12Present = ClassUtils.isPresent("javax.transaction.Transactional", classLoader);
 		ejb3Present = ClassUtils.isPresent("javax.ejb.TransactionAttribute", classLoader);
@@ -70,13 +73,13 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 
 	private final Set<TransactionAnnotationParser> annotationParsers;
 
-
 	/**
 	 * Create a default AnnotationTransactionAttributeSource, supporting
 	 * public methods that carry the {@code Transactional} annotation
 	 * or the EJB3 {@link javax.ejb.TransactionAttribute} annotation.
 	 */
-	public AnnotationTransactionAttributeSource() {
+	public AnnotationTransactionAttributeSource()
+	{
 		this(true);
 	}
 
@@ -84,33 +87,43 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	 * Create a custom AnnotationTransactionAttributeSource, supporting
 	 * public methods that carry the {@code Transactional} annotation
 	 * or the EJB3 {@link javax.ejb.TransactionAttribute} annotation.
-	 * @param publicMethodsOnly whether to support public methods that carry
-	 * the {@code Transactional} annotation only (typically for use
-	 * with proxy-based AOP), or protected/private methods as well
-	 * (typically used with AspectJ class weaving)
+	 * 
+	 * @param publicMethodsOnly
+	 *            whether to support public methods that carry
+	 *            the {@code Transactional} annotation only (typically for use
+	 *            with proxy-based AOP), or protected/private methods as well
+	 *            (typically used with AspectJ class weaving)
 	 */
-	public AnnotationTransactionAttributeSource(boolean publicMethodsOnly) {
+	public AnnotationTransactionAttributeSource(boolean publicMethodsOnly)
+	{
 		this.publicMethodsOnly = publicMethodsOnly;
-		if (jta12Present || ejb3Present) {
+		if (jta12Present || ejb3Present)
+		{
 			this.annotationParsers = new LinkedHashSet<>(4);
 			this.annotationParsers.add(new SpringTransactionAnnotationParser());
-			if (jta12Present) {
+			if (jta12Present)
+			{
 				this.annotationParsers.add(new JtaTransactionAnnotationParser());
 			}
-			if (ejb3Present) {
+			if (ejb3Present)
+			{
 				this.annotationParsers.add(new Ejb3TransactionAnnotationParser());
 			}
 		}
-		else {
+		else
+		{
 			this.annotationParsers = Collections.singleton(new SpringTransactionAnnotationParser());
 		}
 	}
 
 	/**
 	 * Create a custom AnnotationTransactionAttributeSource.
-	 * @param annotationParser the TransactionAnnotationParser to use
+	 * 
+	 * @param annotationParser
+	 *            the TransactionAnnotationParser to use
 	 */
-	public AnnotationTransactionAttributeSource(TransactionAnnotationParser annotationParser) {
+	public AnnotationTransactionAttributeSource(TransactionAnnotationParser annotationParser)
+	{
 		this.publicMethodsOnly = true;
 		Assert.notNull(annotationParser, "TransactionAnnotationParser must not be null");
 		this.annotationParsers = Collections.singleton(annotationParser);
@@ -118,29 +131,39 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 
 	/**
 	 * Create a custom AnnotationTransactionAttributeSource.
-	 * @param annotationParsers the TransactionAnnotationParsers to use
+	 * 
+	 * @param annotationParsers
+	 *            the TransactionAnnotationParsers to use
 	 */
-	public AnnotationTransactionAttributeSource(TransactionAnnotationParser... annotationParsers) {
+	public AnnotationTransactionAttributeSource(TransactionAnnotationParser... annotationParsers)
+	{
 		this.publicMethodsOnly = true;
-		Assert.notEmpty(annotationParsers, "At least one TransactionAnnotationParser needs to be specified");
+		Assert.notEmpty(annotationParsers,
+				"At least one TransactionAnnotationParser needs to be specified");
 		this.annotationParsers = new LinkedHashSet<>(Arrays.asList(annotationParsers));
 	}
 
 	/**
 	 * Create a custom AnnotationTransactionAttributeSource.
-	 * @param annotationParsers the TransactionAnnotationParsers to use
+	 * 
+	 * @param annotationParsers
+	 *            the TransactionAnnotationParsers to use
 	 */
-	public AnnotationTransactionAttributeSource(Set<TransactionAnnotationParser> annotationParsers) {
+	public AnnotationTransactionAttributeSource(Set<TransactionAnnotationParser> annotationParsers)
+	{
 		this.publicMethodsOnly = true;
-		Assert.notEmpty(annotationParsers, "At least one TransactionAnnotationParser needs to be specified");
+		Assert.notEmpty(annotationParsers,
+				"At least one TransactionAnnotationParser needs to be specified");
 		this.annotationParsers = annotationParsers;
 	}
 
-
 	@Override
-	public boolean isCandidateClass(Class<?> targetClass) {
-		for (TransactionAnnotationParser parser : this.annotationParsers) {
-			if (parser.isCandidateClass(targetClass)) {
+	public boolean isCandidateClass(Class<?> targetClass)
+	{
+		for (TransactionAnnotationParser parser : this.annotationParsers)
+		{
+			if (parser.isCandidateClass(targetClass))
+			{
 				return true;
 			}
 		}
@@ -149,31 +172,40 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 
 	@Override
 	@Nullable
-	protected TransactionAttribute findTransactionAttribute(Class<?> clazz) {
+	protected TransactionAttribute findTransactionAttribute(Class<?> clazz)
+	{
 		return determineTransactionAttribute(clazz);
 	}
 
 	@Override
 	@Nullable
-	protected TransactionAttribute findTransactionAttribute(Method method) {
+	protected TransactionAttribute findTransactionAttribute(Method method)
+	{
 		return determineTransactionAttribute(method);
 	}
 
 	/**
 	 * Determine the transaction attribute for the given method or class.
-	 * <p>This implementation delegates to configured
+	 * <p>
+	 * This implementation delegates to configured
 	 * {@link TransactionAnnotationParser TransactionAnnotationParsers}
 	 * for parsing known annotations into Spring's metadata attribute class.
 	 * Returns {@code null} if it's not transactional.
-	 * <p>Can be overridden to support custom annotations that carry transaction metadata.
-	 * @param element the annotated method or class
+	 * <p>
+	 * Can be overridden to support custom annotations that carry transaction metadata.
+	 * 
+	 * @param element
+	 *            the annotated method or class
 	 * @return the configured transaction attribute, or {@code null} if none was found
 	 */
 	@Nullable
-	protected TransactionAttribute determineTransactionAttribute(AnnotatedElement element) {
-		for (TransactionAnnotationParser parser : this.annotationParsers) {
+	protected TransactionAttribute determineTransactionAttribute(AnnotatedElement element)
+	{
+		for (TransactionAnnotationParser parser : this.annotationParsers)
+		{
 			TransactionAttribute attr = parser.parseTransactionAnnotation(element);
-			if (attr != null) {
+			if (attr != null)
+			{
 				return attr;
 			}
 		}
@@ -184,26 +216,30 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	 * By default, only public methods can be made transactional.
 	 */
 	@Override
-	protected boolean allowPublicMethodsOnly() {
+	protected boolean allowPublicMethodsOnly()
+	{
 		return this.publicMethodsOnly;
 	}
 
-
 	@Override
-	public boolean equals(@Nullable Object other) {
-		if (this == other) {
+	public boolean equals(@Nullable Object other)
+	{
+		if (this == other)
+		{
 			return true;
 		}
-		if (!(other instanceof AnnotationTransactionAttributeSource)) {
+		if (!(other instanceof AnnotationTransactionAttributeSource))
+		{
 			return false;
 		}
 		AnnotationTransactionAttributeSource otherTas = (AnnotationTransactionAttributeSource) other;
-		return (this.annotationParsers.equals(otherTas.annotationParsers) &&
-				this.publicMethodsOnly == otherTas.publicMethodsOnly);
+		return (this.annotationParsers.equals(otherTas.annotationParsers)
+				&& this.publicMethodsOnly == otherTas.publicMethodsOnly);
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		return this.annotationParsers.hashCode();
 	}
 

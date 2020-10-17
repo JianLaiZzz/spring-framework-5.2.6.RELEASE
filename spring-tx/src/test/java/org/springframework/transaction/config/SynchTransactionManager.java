@@ -24,6 +24,7 @@ import org.springframework.transaction.testfixture.CallCountingTransactionManage
  */
 @Qualifier("synch")
 @SuppressWarnings("serial")
-public class SynchTransactionManager extends CallCountingTransactionManager {
+public class SynchTransactionManager extends CallCountingTransactionManager
+{
 
 }

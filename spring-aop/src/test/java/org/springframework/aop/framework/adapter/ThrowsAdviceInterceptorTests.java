@@ -16,36 +16,35 @@
 
 package org.springframework.aop.framework.adapter;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.io.FileNotFoundException;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.aop.testfixture.advice.MyThrowsHandler;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 /**
  * @author Rod Johnson
  * @author Chris Beams
  */
-public class ThrowsAdviceInterceptorTests {
+public class ThrowsAdviceInterceptorTests
+{
 
 	@Test
-	public void testNoHandlerMethods() {
+	public void testNoHandlerMethods()
+	{
 		// should require one handler method at least
-		assertThatIllegalArgumentException().isThrownBy(() ->
-				new ThrowsAdviceInterceptor(new Object()));
+		assertThatIllegalArgumentException().isThrownBy(() -> new ThrowsAdviceInterceptor(new Object()));
 	}
 
 	@Test
-	public void testNotInvoked() throws Throwable {
+	public void testNotInvoked() throws Throwable
+	{
 		MyThrowsHandler th = new MyThrowsHandler();
 		ThrowsAdviceInterceptor ti = new ThrowsAdviceInterceptor(th);
 		Object ret = new Object();
@@ -56,21 +55,21 @@ public class ThrowsAdviceInterceptorTests {
 	}
 
 	@Test
-	public void testNoHandlerMethodForThrowable() throws Throwable {
+	public void testNoHandlerMethodForThrowable() throws Throwable
+	{
 		MyThrowsHandler th = new MyThrowsHandler();
 		ThrowsAdviceInterceptor ti = new ThrowsAdviceInterceptor(th);
 		assertThat(ti.getHandlerMethodCount()).isEqualTo(2);
 		Exception ex = new Exception();
 		MethodInvocation mi = mock(MethodInvocation.class);
 		given(mi.proceed()).willThrow(ex);
-		assertThatExceptionOfType(Exception.class).isThrownBy(() ->
-				ti.invoke(mi))
-			.isSameAs(ex);
+		assertThatExceptionOfType(Exception.class).isThrownBy(() -> ti.invoke(mi)).isSameAs(ex);
 		assertThat(th.getCalls()).isEqualTo(0);
 	}
 
 	@Test
-	public void testCorrectHandlerUsed() throws Throwable {
+	public void testCorrectHandlerUsed() throws Throwable
+	{
 		MyThrowsHandler th = new MyThrowsHandler();
 		ThrowsAdviceInterceptor ti = new ThrowsAdviceInterceptor(th);
 		FileNotFoundException ex = new FileNotFoundException();
@@ -78,36 +77,37 @@ public class ThrowsAdviceInterceptorTests {
 		given(mi.getMethod()).willReturn(Object.class.getMethod("hashCode"));
 		given(mi.getThis()).willReturn(new Object());
 		given(mi.proceed()).willThrow(ex);
-		assertThatExceptionOfType(FileNotFoundException.class).isThrownBy(() ->
-				ti.invoke(mi))
-			.isSameAs(ex);
+		assertThatExceptionOfType(FileNotFoundException.class).isThrownBy(() -> ti.invoke(mi))
+				.isSameAs(ex);
 		assertThat(th.getCalls()).isEqualTo(1);
 		assertThat(th.getCalls("ioException")).isEqualTo(1);
 	}
 
 	@Test
-	public void testCorrectHandlerUsedForSubclass() throws Throwable {
+	public void testCorrectHandlerUsedForSubclass() throws Throwable
+	{
 		MyThrowsHandler th = new MyThrowsHandler();
 		ThrowsAdviceInterceptor ti = new ThrowsAdviceInterceptor(th);
 		// Extends RemoteException
 		ConnectException ex = new ConnectException("");
 		MethodInvocation mi = mock(MethodInvocation.class);
 		given(mi.proceed()).willThrow(ex);
-		assertThatExceptionOfType(ConnectException.class).isThrownBy(() ->
-				ti.invoke(mi))
-			.isSameAs(ex);
+		assertThatExceptionOfType(ConnectException.class).isThrownBy(() -> ti.invoke(mi)).isSameAs(ex);
 		assertThat(th.getCalls()).isEqualTo(1);
 		assertThat(th.getCalls("remoteException")).isEqualTo(1);
 	}
 
 	@Test
-	public void testHandlerMethodThrowsException() throws Throwable {
+	public void testHandlerMethodThrowsException() throws Throwable
+	{
 		final Throwable t = new Throwable();
 
 		@SuppressWarnings("serial")
-		MyThrowsHandler th = new MyThrowsHandler() {
+		MyThrowsHandler th = new MyThrowsHandler()
+		{
 			@Override
-			public void afterThrowing(RemoteException ex) throws Throwable {
+			public void afterThrowing(RemoteException ex) throws Throwable
+			{
 				super.afterThrowing(ex);
 				throw t;
 			}
@@ -118,9 +118,7 @@ public class ThrowsAdviceInterceptorTests {
 		ConnectException ex = new ConnectException("");
 		MethodInvocation mi = mock(MethodInvocation.class);
 		given(mi.proceed()).willThrow(ex);
-		assertThatExceptionOfType(Throwable.class).isThrownBy(() ->
-				ti.invoke(mi))
-			.isSameAs(t);
+		assertThatExceptionOfType(Throwable.class).isThrownBy(() -> ti.invoke(mi)).isSameAs(t);
 		assertThat(th.getCalls()).isEqualTo(1);
 		assertThat(th.getCalls("remoteException")).isEqualTo(1);
 	}

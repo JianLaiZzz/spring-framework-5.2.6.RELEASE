@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.lang.Nullable;
@@ -35,12 +34,14 @@ import org.springframework.web.context.request.NativeWebRequest;
  * Base class for {@code ContentNegotiationStrategy} implementations with the
  * steps to resolve a request to media types.
  *
- * <p>First a key (e.g. "json", "pdf") must be extracted from the request (e.g.
+ * <p>
+ * First a key (e.g. "json", "pdf") must be extracted from the request (e.g.
  * file extension, query param). The key must then be resolved to media type(s)
  * through the base class {@link MappingMediaTypeFileExtensionResolver} which
  * stores such mappings.
  *
- * <p>The method {@link #handleNoMatch} allow sub-classes to plug in additional
+ * <p>
+ * The method {@link #handleNoMatch} allow sub-classes to plug in additional
  * ways of looking up media types (e.g. through the Java Activation framework,
  * or {@link javax.servlet.ServletContext#getMimeType}. Media types resolved
  * via base classes are then added to the base class
@@ -49,8 +50,9 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Rossen Stoyanchev
  * @since 3.2
  */
-public abstract class AbstractMappingContentNegotiationStrategy extends MappingMediaTypeFileExtensionResolver
-		implements ContentNegotiationStrategy {
+public abstract class AbstractMappingContentNegotiationStrategy
+		extends MappingMediaTypeFileExtensionResolver implements ContentNegotiationStrategy
+{
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -58,46 +60,51 @@ public abstract class AbstractMappingContentNegotiationStrategy extends MappingM
 
 	private boolean ignoreUnknownExtensions = false;
 
-
 	/**
 	 * Create an instance with the given map of file extensions and media types.
 	 */
-	public AbstractMappingContentNegotiationStrategy(@Nullable Map<String, MediaType> mediaTypes) {
+	public AbstractMappingContentNegotiationStrategy(@Nullable Map<String, MediaType> mediaTypes)
+	{
 		super(mediaTypes);
 	}
-
 
 	/**
 	 * Whether to only use the registered mappings to look up file extensions,
 	 * or also to use dynamic resolution (e.g. via {@link MediaTypeFactory}.
-	 * <p>By default this is set to {@code false}.
+	 * <p>
+	 * By default this is set to {@code false}.
 	 */
-	public void setUseRegisteredExtensionsOnly(boolean useRegisteredExtensionsOnly) {
+	public void setUseRegisteredExtensionsOnly(boolean useRegisteredExtensionsOnly)
+	{
 		this.useRegisteredExtensionsOnly = useRegisteredExtensionsOnly;
 	}
 
-	public boolean isUseRegisteredExtensionsOnly() {
+	public boolean isUseRegisteredExtensionsOnly()
+	{
 		return this.useRegisteredExtensionsOnly;
 	}
 
 	/**
 	 * Whether to ignore requests with unknown file extension. Setting this to
 	 * {@code false} results in {@code HttpMediaTypeNotAcceptableException}.
-	 * <p>By default this is set to {@literal false} but is overridden in
+	 * <p>
+	 * By default this is set to {@literal false} but is overridden in
 	 * {@link PathExtensionContentNegotiationStrategy} to {@literal true}.
 	 */
-	public void setIgnoreUnknownExtensions(boolean ignoreUnknownExtensions) {
+	public void setIgnoreUnknownExtensions(boolean ignoreUnknownExtensions)
+	{
 		this.ignoreUnknownExtensions = ignoreUnknownExtensions;
 	}
 
-	public boolean isIgnoreUnknownExtensions() {
+	public boolean isIgnoreUnknownExtensions()
+	{
 		return this.ignoreUnknownExtensions;
 	}
 
-
 	@Override
 	public List<MediaType> resolveMediaTypes(NativeWebRequest webRequest)
-			throws HttpMediaTypeNotAcceptableException {
+			throws HttpMediaTypeNotAcceptableException
+	{
 
 		return resolveMediaTypeKey(webRequest, getMediaTypeKey(webRequest));
 	}
@@ -105,19 +112,24 @@ public abstract class AbstractMappingContentNegotiationStrategy extends MappingM
 	/**
 	 * An alternative to {@link #resolveMediaTypes(NativeWebRequest)} that accepts
 	 * an already extracted key.
+	 * 
 	 * @since 3.2.16
 	 */
 	public List<MediaType> resolveMediaTypeKey(NativeWebRequest webRequest, @Nullable String key)
-			throws HttpMediaTypeNotAcceptableException {
+			throws HttpMediaTypeNotAcceptableException
+	{
 
-		if (StringUtils.hasText(key)) {
+		if (StringUtils.hasText(key))
+		{
 			MediaType mediaType = lookupMediaType(key);
-			if (mediaType != null) {
+			if (mediaType != null)
+			{
 				handleMatch(key, mediaType);
 				return Collections.singletonList(mediaType);
 			}
 			mediaType = handleNoMatch(webRequest, key);
-			if (mediaType != null) {
+			if (mediaType != null)
+			{
 				addMapping(key, mediaType);
 				return Collections.singletonList(mediaType);
 			}
@@ -125,9 +137,9 @@ public abstract class AbstractMappingContentNegotiationStrategy extends MappingM
 		return MEDIA_TYPE_ALL_LIST;
 	}
 
-
 	/**
 	 * Extract a key from the request to use to look up media types.
+	 * 
 	 * @return the lookup key, or {@code null} if none
 	 */
 	@Nullable
@@ -137,7 +149,8 @@ public abstract class AbstractMappingContentNegotiationStrategy extends MappingM
 	 * Override to provide handling when a key is successfully resolved via
 	 * {@link #lookupMediaType}.
 	 */
-	protected void handleMatch(String key, MediaType mediaType) {
+	protected void handleMatch(String key, MediaType mediaType)
+	{
 	}
 
 	/**
@@ -148,15 +161,19 @@ public abstract class AbstractMappingContentNegotiationStrategy extends MappingM
 	 */
 	@Nullable
 	protected MediaType handleNoMatch(NativeWebRequest request, String key)
-			throws HttpMediaTypeNotAcceptableException {
+			throws HttpMediaTypeNotAcceptableException
+	{
 
-		if (!isUseRegisteredExtensionsOnly()) {
+		if (!isUseRegisteredExtensionsOnly())
+		{
 			Optional<MediaType> mediaType = MediaTypeFactory.getMediaType("file." + key);
-			if (mediaType.isPresent()) {
+			if (mediaType.isPresent())
+			{
 				return mediaType.get();
 			}
 		}
-		if (isIgnoreUnknownExtensions()) {
+		if (isIgnoreUnknownExtensions())
+		{
 			return null;
 		}
 		throw new HttpMediaTypeNotAcceptableException(getAllMediaTypes());

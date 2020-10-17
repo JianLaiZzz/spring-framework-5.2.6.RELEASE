@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-
 import org.springframework.aop.AfterAdvice;
 
 /**
@@ -32,37 +31,45 @@ import org.springframework.aop.AfterAdvice;
  */
 @SuppressWarnings("serial")
 public class AspectJAfterThrowingAdvice extends AbstractAspectJAdvice
-		implements MethodInterceptor, AfterAdvice, Serializable {
+		implements MethodInterceptor, AfterAdvice, Serializable
+{
 
-	public AspectJAfterThrowingAdvice(
-			Method aspectJBeforeAdviceMethod, AspectJExpressionPointcut pointcut, AspectInstanceFactory aif) {
+	public AspectJAfterThrowingAdvice(Method aspectJBeforeAdviceMethod,
+			AspectJExpressionPointcut pointcut, AspectInstanceFactory aif)
+	{
 
 		super(aspectJBeforeAdviceMethod, pointcut, aif);
 	}
 
-
 	@Override
-	public boolean isBeforeAdvice() {
+	public boolean isBeforeAdvice()
+	{
 		return false;
 	}
 
 	@Override
-	public boolean isAfterAdvice() {
+	public boolean isAfterAdvice()
+	{
 		return true;
 	}
 
 	@Override
-	public void setThrowingName(String name) {
+	public void setThrowingName(String name)
+	{
 		setThrowingNameNoCheck(name);
 	}
 
 	@Override
-	public Object invoke(MethodInvocation mi) throws Throwable {
-		try {
+	public Object invoke(MethodInvocation mi) throws Throwable
+	{
+		try
+		{
 			return mi.proceed();
 		}
-		catch (Throwable ex) {
-			if (shouldInvokeOnThrowing(ex)) {
+		catch (Throwable ex)
+		{
+			if (shouldInvokeOnThrowing(ex))
+			{
 				invokeAdviceMethod(getJoinPointMatch(), null, ex);
 			}
 			throw ex;
@@ -73,7 +80,8 @@ public class AspectJAfterThrowingAdvice extends AbstractAspectJAdvice
 	 * In AspectJ semantics, after throwing advice that specifies a throwing clause
 	 * is only invoked if the thrown exception is a subtype of the given throwing type.
 	 */
-	private boolean shouldInvokeOnThrowing(Throwable ex) {
+	private boolean shouldInvokeOnThrowing(Throwable ex)
+	{
 		return getDiscoveredThrowingType().isAssignableFrom(ex.getClass());
 	}
 

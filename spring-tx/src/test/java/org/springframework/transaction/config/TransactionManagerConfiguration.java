@@ -26,17 +26,20 @@ import org.springframework.transaction.testfixture.CallCountingTransactionManage
  * @author Juergen Hoeller
  */
 @Configuration
-public class TransactionManagerConfiguration {
+public class TransactionManagerConfiguration
+{
 
 	@Bean
 	@Qualifier("synch")
-	public PlatformTransactionManager transactionManager1() {
+	public PlatformTransactionManager transactionManager1()
+	{
 		return new CallCountingTransactionManager();
 	}
 
 	@Bean
 	@NoSynch
-	public PlatformTransactionManager transactionManager2() {
+	public PlatformTransactionManager transactionManager2()
+	{
 		CallCountingTransactionManager tm = new CallCountingTransactionManager();
 		tm.setTransactionSynchronization(CallCountingTransactionManager.SYNCHRONIZATION_NEVER);
 		return tm;

@@ -26,7 +26,8 @@ import javax.resource.cci.RecordFactory;
  * Implementation of the CCI RecordFactory interface that always throws
  * NotSupportedException.
  *
- * <p>Useful as a placeholder for a RecordFactory argument (for example as
+ * <p>
+ * Useful as a placeholder for a RecordFactory argument (for example as
  * defined by the RecordCreator callback), in particular when the connector's
  * {@code ConnectionFactory.getRecordFactory()} implementation happens to
  * throw NotSupportedException early rather than throwing the exception from
@@ -39,15 +40,18 @@ import javax.resource.cci.RecordFactory;
  * @see javax.resource.cci.ConnectionFactory#getRecordFactory()
  * @see javax.resource.NotSupportedException
  */
-public class NotSupportedRecordFactory implements RecordFactory {
+public class NotSupportedRecordFactory implements RecordFactory
+{
 
 	@Override
-	public MappedRecord createMappedRecord(String name) throws ResourceException {
+	public MappedRecord createMappedRecord(String name) throws ResourceException
+	{
 		throw new NotSupportedException("The RecordFactory facility is not supported by the connector");
 	}
 
 	@Override
-	public IndexedRecord createIndexedRecord(String name) throws ResourceException {
+	public IndexedRecord createIndexedRecord(String name) throws ResourceException
+	{
 		throw new NotSupportedException("The RecordFactory facility is not supported by the connector");
 	}
 

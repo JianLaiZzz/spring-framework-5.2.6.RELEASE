@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  */
 @Qualifier("noSynch")
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NoSynch {
+public @interface NoSynch
+{
 
 }

@@ -29,9 +29,11 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
  * @see EntityManagerFactoryUtils#convertJpaAccessExceptionIfPossible
  */
 @SuppressWarnings("serial")
-public class JpaOptimisticLockingFailureException extends ObjectOptimisticLockingFailureException {
+public class JpaOptimisticLockingFailureException extends ObjectOptimisticLockingFailureException
+{
 
-	public JpaOptimisticLockingFailureException(OptimisticLockException ex) {
+	public JpaOptimisticLockingFailureException(OptimisticLockException ex)
+	{
 		super(ex.getMessage(), ex);
 	}
 

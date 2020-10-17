@@ -26,12 +26,14 @@ import org.springframework.transaction.TransactionDefinition;
  * @since 5.1
  * @see ResourceTransactionManager
  */
-public interface ResourceTransactionDefinition extends TransactionDefinition {
+public interface ResourceTransactionDefinition extends TransactionDefinition
+{
 
 	/**
 	 * Determine whether the transactional resource is ready for local optimizations.
+	 * 
 	 * @return {@code true} if the resource is known to be entirely transaction-local,
-	 * not affecting any operations outside of the scope of the current transaction
+	 *         not affecting any operations outside of the scope of the current transaction
 	 * @see #isReadOnly()
 	 */
 	boolean isLocalResource();

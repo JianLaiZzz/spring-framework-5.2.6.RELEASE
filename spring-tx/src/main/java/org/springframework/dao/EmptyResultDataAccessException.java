@@ -25,32 +25,45 @@ package org.springframework.dao;
  * @see IncorrectResultSizeDataAccessException
  */
 @SuppressWarnings("serial")
-public class EmptyResultDataAccessException extends IncorrectResultSizeDataAccessException {
+public class EmptyResultDataAccessException extends IncorrectResultSizeDataAccessException
+{
 
 	/**
 	 * Constructor for EmptyResultDataAccessException.
-	 * @param expectedSize the expected result size
+	 * 
+	 * @param expectedSize
+	 *            the expected result size
 	 */
-	public EmptyResultDataAccessException(int expectedSize) {
+	public EmptyResultDataAccessException(int expectedSize)
+	{
 		super(expectedSize, 0);
 	}
 
 	/**
 	 * Constructor for EmptyResultDataAccessException.
-	 * @param msg the detail message
-	 * @param expectedSize the expected result size
+	 * 
+	 * @param msg
+	 *            the detail message
+	 * @param expectedSize
+	 *            the expected result size
 	 */
-	public EmptyResultDataAccessException(String msg, int expectedSize) {
+	public EmptyResultDataAccessException(String msg, int expectedSize)
+	{
 		super(msg, expectedSize, 0);
 	}
 
 	/**
 	 * Constructor for EmptyResultDataAccessException.
-	 * @param msg the detail message
-	 * @param expectedSize the expected result size
-	 * @param ex the wrapped exception
+	 * 
+	 * @param msg
+	 *            the detail message
+	 * @param expectedSize
+	 *            the expected result size
+	 * @param ex
+	 *            the wrapped exception
 	 */
-	public EmptyResultDataAccessException(String msg, int expectedSize, Throwable ex) {
+	public EmptyResultDataAccessException(String msg, int expectedSize, Throwable ex)
+	{
 		super(msg, expectedSize, 0, ex);
 	}
 

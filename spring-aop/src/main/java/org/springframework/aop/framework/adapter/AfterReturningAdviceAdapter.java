@@ -20,7 +20,6 @@ import java.io.Serializable;
 
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
-
 import org.springframework.aop.Advisor;
 import org.springframework.aop.AfterReturningAdvice;
 
@@ -32,15 +31,18 @@ import org.springframework.aop.AfterReturningAdvice;
  * @author Juergen Hoeller
  */
 @SuppressWarnings("serial")
-class AfterReturningAdviceAdapter implements AdvisorAdapter, Serializable {
+class AfterReturningAdviceAdapter implements AdvisorAdapter, Serializable
+{
 
 	@Override
-	public boolean supportsAdvice(Advice advice) {
+	public boolean supportsAdvice(Advice advice)
+	{
 		return (advice instanceof AfterReturningAdvice);
 	}
 
 	@Override
-	public MethodInterceptor getInterceptor(Advisor advisor) {
+	public MethodInterceptor getInterceptor(Advisor advisor)
+	{
 		AfterReturningAdvice advice = (AfterReturningAdvice) advisor.getAdvice();
 		return new AfterReturningAdviceInterceptor(advice);
 	}

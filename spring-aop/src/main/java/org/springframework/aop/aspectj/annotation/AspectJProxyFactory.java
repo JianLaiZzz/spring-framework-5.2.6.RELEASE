@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.aspectj.lang.reflect.PerClauseKind;
-
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJProxyUtils;
 import org.springframework.aop.aspectj.SimpleAspectInstanceFactory;
@@ -47,26 +46,31 @@ import org.springframework.util.ClassUtils;
  * @see org.springframework.aop.framework.ProxyFactory
  */
 @SuppressWarnings("serial")
-public class AspectJProxyFactory extends ProxyCreatorSupport {
+public class AspectJProxyFactory extends ProxyCreatorSupport
+{
 
 	/** Cache for singleton aspect instances. */
 	private static final Map<Class<?>, Object> aspectCache = new ConcurrentHashMap<>();
 
 	private final AspectJAdvisorFactory aspectFactory = new ReflectiveAspectJAdvisorFactory();
 
-
 	/**
 	 * Create a new AspectJProxyFactory.
 	 */
-	public AspectJProxyFactory() {
+	public AspectJProxyFactory()
+	{
 	}
 
 	/**
 	 * Create a new AspectJProxyFactory.
-	 * <p>Will proxy all interfaces that the given target implements.
-	 * @param target the target object to be proxied
+	 * <p>
+	 * Will proxy all interfaces that the given target implements.
+	 * 
+	 * @param target
+	 *            the target object to be proxied
 	 */
-	public AspectJProxyFactory(Object target) {
+	public AspectJProxyFactory(Object target)
+	{
 		Assert.notNull(target, "Target object must not be null");
 		setInterfaces(ClassUtils.getAllInterfaces(target));
 		setTarget(target);
@@ -76,23 +80,27 @@ public class AspectJProxyFactory extends ProxyCreatorSupport {
 	 * Create a new {@code AspectJProxyFactory}.
 	 * No target, only interfaces. Must add interceptors.
 	 */
-	public AspectJProxyFactory(Class<?>... interfaces) {
+	public AspectJProxyFactory(Class<?>... interfaces)
+	{
 		setInterfaces(interfaces);
 	}
-
 
 	/**
 	 * Add the supplied aspect instance to the chain. The type of the aspect instance
 	 * supplied must be a singleton aspect. True singleton lifecycle is not honoured when
 	 * using this method - the caller is responsible for managing the lifecycle of any
 	 * aspects added in this way.
-	 * @param aspectInstance the AspectJ aspect instance
+	 * 
+	 * @param aspectInstance
+	 *            the AspectJ aspect instance
 	 */
-	public void addAspect(Object aspectInstance) {
+	public void addAspect(Object aspectInstance)
+	{
 		Class<?> aspectClass = aspectInstance.getClass();
 		String aspectName = aspectClass.getName();
 		AspectMetadata am = createAspectMetadata(aspectClass, aspectName);
-		if (am.getAjType().getPerClause().getKind() != PerClauseKind.SINGLETON) {
+		if (am.getAjType().getPerClause().getKind() != PerClauseKind.SINGLETON)
+		{
 			throw new IllegalArgumentException(
 					"Aspect class [" + aspectClass.getName() + "] does not define a singleton aspect");
 		}
@@ -102,22 +110,27 @@ public class AspectJProxyFactory extends ProxyCreatorSupport {
 
 	/**
 	 * Add an aspect of the supplied type to the end of the advice chain.
-	 * @param aspectClass the AspectJ aspect class
+	 * 
+	 * @param aspectClass
+	 *            the AspectJ aspect class
 	 */
-	public void addAspect(Class<?> aspectClass) {
+	public void addAspect(Class<?> aspectClass)
+	{
 		String aspectName = aspectClass.getName();
 		AspectMetadata am = createAspectMetadata(aspectClass, aspectName);
-		MetadataAwareAspectInstanceFactory instanceFactory = createAspectInstanceFactory(am, aspectClass, aspectName);
+		MetadataAwareAspectInstanceFactory instanceFactory = createAspectInstanceFactory(am, aspectClass,
+				aspectName);
 		addAdvisorsFromAspectInstanceFactory(instanceFactory);
 	}
-
 
 	/**
 	 * Add all {@link Advisor Advisors} from the supplied {@link MetadataAwareAspectInstanceFactory}
 	 * to the current chain. Exposes any special purpose {@link Advisor Advisors} if needed.
+	 * 
 	 * @see AspectJProxyUtils#makeAdvisorChainAspectJCapableIfNecessary(List)
 	 */
-	private void addAdvisorsFromAspectInstanceFactory(MetadataAwareAspectInstanceFactory instanceFactory) {
+	private void addAdvisorsFromAspectInstanceFactory(MetadataAwareAspectInstanceFactory instanceFactory)
+	{
 		List<Advisor> advisors = this.aspectFactory.getAdvisors(instanceFactory);
 		Class<?> targetClass = getTargetClass();
 		Assert.state(targetClass != null, "Unresolvable target class");
@@ -130,29 +143,37 @@ public class AspectJProxyFactory extends ProxyCreatorSupport {
 	/**
 	 * Create an {@link AspectMetadata} instance for the supplied aspect type.
 	 */
-	private AspectMetadata createAspectMetadata(Class<?> aspectClass, String aspectName) {
+	private AspectMetadata createAspectMetadata(Class<?> aspectClass, String aspectName)
+	{
 		AspectMetadata am = new AspectMetadata(aspectClass, aspectName);
-		if (!am.getAjType().isAspect()) {
-			throw new IllegalArgumentException("Class [" + aspectClass.getName() + "] is not a valid aspect type");
+		if (!am.getAjType().isAspect())
+		{
+			throw new IllegalArgumentException(
+					"Class [" + aspectClass.getName() + "] is not a valid aspect type");
 		}
 		return am;
 	}
 
 	/**
-	 * Create a {@link MetadataAwareAspectInstanceFactory} for the supplied aspect type. If the aspect type
-	 * has no per clause, then a {@link SingletonMetadataAwareAspectInstanceFactory} is returned, otherwise
+	 * Create a {@link MetadataAwareAspectInstanceFactory} for the supplied aspect type. If the aspect
+	 * type
+	 * has no per clause, then a {@link SingletonMetadataAwareAspectInstanceFactory} is returned,
+	 * otherwise
 	 * a {@link PrototypeAspectInstanceFactory} is returned.
 	 */
-	private MetadataAwareAspectInstanceFactory createAspectInstanceFactory(
-			AspectMetadata am, Class<?> aspectClass, String aspectName) {
+	private MetadataAwareAspectInstanceFactory createAspectInstanceFactory(AspectMetadata am,
+			Class<?> aspectClass, String aspectName)
+	{
 
 		MetadataAwareAspectInstanceFactory instanceFactory;
-		if (am.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
+		if (am.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON)
+		{
 			// Create a shared aspect instance.
 			Object instance = getSingletonAspectInstance(aspectClass);
 			instanceFactory = new SingletonMetadataAwareAspectInstanceFactory(instance, aspectName);
 		}
-		else {
+		else
+		{
 			// Create a factory for independent aspect instances.
 			instanceFactory = new SimpleMetadataAwareAspectInstanceFactory(aspectClass, aspectName);
 		}
@@ -163,14 +184,18 @@ public class AspectJProxyFactory extends ProxyCreatorSupport {
 	 * Get the singleton aspect instance for the supplied aspect type. An instance
 	 * is created if one cannot be found in the instance cache.
 	 */
-	private Object getSingletonAspectInstance(Class<?> aspectClass) {
+	private Object getSingletonAspectInstance(Class<?> aspectClass)
+	{
 		// Quick check without a lock...
 		Object instance = aspectCache.get(aspectClass);
-		if (instance == null) {
-			synchronized (aspectCache) {
+		if (instance == null)
+		{
+			synchronized (aspectCache)
+			{
 				// To be safe, check within full lock now...
 				instance = aspectCache.get(aspectClass);
-				if (instance == null) {
+				if (instance == null)
+				{
 					instance = new SimpleAspectInstanceFactory(aspectClass).getAspectInstance();
 					aspectCache.put(aspectClass, instance);
 				}
@@ -179,30 +204,38 @@ public class AspectJProxyFactory extends ProxyCreatorSupport {
 		return instance;
 	}
 
-
 	/**
 	 * Create a new proxy according to the settings in this factory.
-	 * <p>Can be called repeatedly. Effect will vary if we've added
+	 * <p>
+	 * Can be called repeatedly. Effect will vary if we've added
 	 * or removed interfaces. Can add and remove interceptors.
-	 * <p>Uses a default class loader: Usually, the thread context class loader
+	 * <p>
+	 * Uses a default class loader: Usually, the thread context class loader
 	 * (if necessary for proxy creation).
+	 * 
 	 * @return the new proxy
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T getProxy() {
+	public <T> T getProxy()
+	{
 		return (T) createAopProxy().getProxy();
 	}
 
 	/**
 	 * Create a new proxy according to the settings in this factory.
-	 * <p>Can be called repeatedly. Effect will vary if we've added
+	 * <p>
+	 * Can be called repeatedly. Effect will vary if we've added
 	 * or removed interfaces. Can add and remove interceptors.
-	 * <p>Uses the given class loader (if necessary for proxy creation).
-	 * @param classLoader the class loader to create the proxy with
+	 * <p>
+	 * Uses the given class loader (if necessary for proxy creation).
+	 * 
+	 * @param classLoader
+	 *            the class loader to create the proxy with
 	 * @return the new proxy
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T getProxy(ClassLoader classLoader) {
+	public <T> T getProxy(ClassLoader classLoader)
+	{
 		return (T) createAopProxy().getProxy(classLoader);
 	}
 

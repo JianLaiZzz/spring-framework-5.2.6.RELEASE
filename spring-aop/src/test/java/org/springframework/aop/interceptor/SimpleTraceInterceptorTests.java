@@ -16,17 +16,15 @@
 
 package org.springframework.aop.interceptor;
 
-import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.logging.Log;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+
+import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.logging.Log;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for the {@link SimpleTraceInterceptor} class.
@@ -34,10 +32,12 @@ import static org.mockito.Mockito.verify;
  * @author Rick Evans
  * @author Chris Beams
  */
-public class SimpleTraceInterceptorTests {
+public class SimpleTraceInterceptorTests
+{
 
 	@Test
-	public void testSunnyDayPathLogsCorrectly() throws Throwable {
+	public void testSunnyDayPathLogsCorrectly() throws Throwable
+	{
 		MethodInvocation mi = mock(MethodInvocation.class);
 		given(mi.getMethod()).willReturn(String.class.getMethod("toString"));
 		given(mi.getThis()).willReturn(this);
@@ -51,7 +51,8 @@ public class SimpleTraceInterceptorTests {
 	}
 
 	@Test
-	public void testExceptionPathStillLogsCorrectly() throws Throwable {
+	public void testExceptionPathStillLogsCorrectly() throws Throwable
+	{
 		MethodInvocation mi = mock(MethodInvocation.class);
 		given(mi.getMethod()).willReturn(String.class.getMethod("toString"));
 		given(mi.getThis()).willReturn(this);
@@ -61,8 +62,7 @@ public class SimpleTraceInterceptorTests {
 		Log log = mock(Log.class);
 
 		final SimpleTraceInterceptor interceptor = new SimpleTraceInterceptor(true);
-		assertThatIllegalArgumentException().isThrownBy(() ->
-			interceptor.invokeUnderTrace(mi, log));
+		assertThatIllegalArgumentException().isThrownBy(() -> interceptor.invokeUnderTrace(mi, log));
 
 		verify(log).trace(anyString());
 		verify(log).trace(anyString(), eq(exception));

@@ -21,22 +21,26 @@ package test.aop;
  *
  * @author Rod Johnson
  */
-public class DefaultLockable implements Lockable {
+public class DefaultLockable implements Lockable
+{
 
 	private boolean locked;
 
 	@Override
-	public void lock() {
+	public void lock()
+	{
 		this.locked = true;
 	}
 
 	@Override
-	public void unlock() {
+	public void unlock()
+	{
 		this.locked = false;
 	}
 
 	@Override
-	public boolean locked() {
+	public boolean locked()
+	{
 		return this.locked;
 	}
 

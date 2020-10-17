@@ -26,14 +26,19 @@ import org.springframework.jms.JmsException;
  * @see MessageListenerAdapter
  */
 @SuppressWarnings("serial")
-public class ListenerExecutionFailedException extends JmsException {
+public class ListenerExecutionFailedException extends JmsException
+{
 
 	/**
 	 * Constructor for ListenerExecutionFailedException.
-	 * @param msg the detail message
-	 * @param cause the exception thrown by the listener method
+	 * 
+	 * @param msg
+	 *            the detail message
+	 * @param cause
+	 *            the exception thrown by the listener method
 	 */
-	public ListenerExecutionFailedException(String msg, Throwable cause) {
+	public ListenerExecutionFailedException(String msg, Throwable cause)
+	{
 		super(msg, cause);
 	}
 

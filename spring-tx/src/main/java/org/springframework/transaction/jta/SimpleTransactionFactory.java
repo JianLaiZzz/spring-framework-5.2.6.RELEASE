@@ -28,7 +28,8 @@ import org.springframework.util.Assert;
  * Default implementation of the {@link TransactionFactory} strategy interface,
  * simply wrapping a standard JTA {@link javax.transaction.TransactionManager}.
  *
- * <p>Does not support transaction names; simply ignores any specified name.
+ * <p>
+ * Does not support transaction names; simply ignores any specified name.
  *
  * @author Juergen Hoeller
  * @since 2.5
@@ -36,24 +37,29 @@ import org.springframework.util.Assert;
  * @see javax.transaction.TransactionManager#begin()
  * @see javax.transaction.TransactionManager#getTransaction()
  */
-public class SimpleTransactionFactory implements TransactionFactory {
+public class SimpleTransactionFactory implements TransactionFactory
+{
 
 	private final TransactionManager transactionManager;
 
-
 	/**
 	 * Create a new SimpleTransactionFactory for the given TransactionManager.
-	 * @param transactionManager the JTA TransactionManager to wrap
+	 * 
+	 * @param transactionManager
+	 *            the JTA TransactionManager to wrap
 	 */
-	public SimpleTransactionFactory(TransactionManager transactionManager) {
+	public SimpleTransactionFactory(TransactionManager transactionManager)
+	{
 		Assert.notNull(transactionManager, "TransactionManager must not be null");
 		this.transactionManager = transactionManager;
 	}
 
-
 	@Override
-	public Transaction createTransaction(@Nullable String name, int timeout) throws NotSupportedException, SystemException {
-		if (timeout >= 0) {
+	public Transaction createTransaction(@Nullable String name, int timeout)
+			throws NotSupportedException, SystemException
+	{
+		if (timeout >= 0)
+		{
 			this.transactionManager.setTransactionTimeout(timeout);
 		}
 		this.transactionManager.begin();
@@ -61,7 +67,8 @@ public class SimpleTransactionFactory implements TransactionFactory {
 	}
 
 	@Override
-	public boolean supportsResourceAdapterManagedTransactions() {
+	public boolean supportsResourceAdapterManagedTransactions()
+	{
 		return false;
 	}
 

@@ -25,7 +25,8 @@ package org.springframework.jms.support.converter;
  * @since 3.0
  * @see MarshallingMessageConverter#setTargetType
  */
-public enum MessageType {
+public enum MessageType
+{
 
 	/**
 	 * A {@link javax.jms.TextMessage}.

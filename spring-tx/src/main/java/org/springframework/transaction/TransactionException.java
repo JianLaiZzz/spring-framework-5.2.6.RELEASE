@@ -25,22 +25,30 @@ import org.springframework.core.NestedRuntimeException;
  * @since 17.03.2003
  */
 @SuppressWarnings("serial")
-public abstract class TransactionException extends NestedRuntimeException {
+public abstract class TransactionException extends NestedRuntimeException
+{
 
 	/**
 	 * Constructor for TransactionException.
-	 * @param msg the detail message
+	 * 
+	 * @param msg
+	 *            the detail message
 	 */
-	public TransactionException(String msg) {
+	public TransactionException(String msg)
+	{
 		super(msg);
 	}
 
 	/**
 	 * Constructor for TransactionException.
-	 * @param msg the detail message
-	 * @param cause the root cause from the transaction API in use
+	 * 
+	 * @param msg
+	 *            the detail message
+	 * @param cause
+	 *            the root cause from the transaction API in use
 	 */
-	public TransactionException(String msg, Throwable cause) {
+	public TransactionException(String msg, Throwable cause)
+	{
 		super(msg, cause);
 	}
 

@@ -25,6 +25,7 @@ package org.springframework.transaction;
  * @see PlatformTransactionManager
  * @see ReactiveTransactionManager
  */
-public interface TransactionManager {
+public interface TransactionManager
+{
 
 }

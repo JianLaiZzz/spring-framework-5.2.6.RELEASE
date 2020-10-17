@@ -27,10 +27,12 @@ import org.springframework.lang.Nullable;
  * @author Sebastien Deleuze
  * @since 4.2
  */
-public interface CorsConfigurationSource {
+public interface CorsConfigurationSource
+{
 
 	/**
 	 * Return a {@link CorsConfiguration} based on the incoming request.
+	 * 
 	 * @return the associated {@link CorsConfiguration}, or {@code null} if none
 	 */
 	@Nullable

@@ -23,7 +23,8 @@ package org.springframework.aop;
  *
  * @author Rod Johnson
  */
-public interface PointcutAdvisor extends Advisor {
+public interface PointcutAdvisor extends Advisor
+{
 
 	/**
 	 * Get the Pointcut that drives this advisor.

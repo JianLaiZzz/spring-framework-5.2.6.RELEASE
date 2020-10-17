@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.SessionFactory;
-
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.lang.Nullable;
 import org.springframework.orm.jpa.EntityManagerFactoryAccessor;
@@ -32,22 +31,26 @@ import org.springframework.util.ReflectionUtils;
  * Simple {@code FactoryBean} that exposes the underlying {@link SessionFactory}
  * behind a Hibernate-backed JPA {@link EntityManagerFactory}.
  *
- * <p>Primarily available for resolving a SessionFactory by JPA persistence unit name
+ * <p>
+ * Primarily available for resolving a SessionFactory by JPA persistence unit name
  * via the {@link #setPersistenceUnitName "persistenceUnitName"} bean property.
  *
- * <p>Note that, for straightforward cases, you could also simply declare a factory method:
+ * <p>
+ * Note that, for straightforward cases, you could also simply declare a factory method:
  *
  * <pre class="code">
  * &lt;bean id="sessionFactory" factory-bean="entityManagerFactory" factory-method="getSessionFactory"/&gt;
  * </pre>
  *
- * <p>And as of JPA 2.1, {@link EntityManagerFactory#unwrap} provides a nice approach as well,
+ * <p>
+ * And as of JPA 2.1, {@link EntityManagerFactory#unwrap} provides a nice approach as well,
  * in particular within configuration class arrangements:
  *
  * <pre class="code">
  * &#064;Bean
- * public SessionFactory sessionFactory(@Qualifier("entityManagerFactory") EntityManagerFactory emf) {
- *     return emf.unwrap(SessionFactory.class);
+ * public SessionFactory sessionFactory(@Qualifier("entityManagerFactory") EntityManagerFactory emf)
+ * {
+ * 	return emf.unwrap(SessionFactory.class);
  * }
  * </pre>
  *
@@ -61,32 +64,40 @@ import org.springframework.util.ReflectionUtils;
  * @see #setPersistenceUnitName
  * @see #setEntityManagerFactory
  * @deprecated as of Spring Framework 4.3.12 against Hibernate 5.2, in favor of a custom solution
- * based on {@link EntityManagerFactory#unwrap} with explicit qualifiers and/or primary markers
+ *             based on {@link EntityManagerFactory#unwrap} with explicit qualifiers and/or primary
+ *             markers
  */
 @Deprecated
-public class HibernateJpaSessionFactoryBean extends EntityManagerFactoryAccessor implements FactoryBean<SessionFactory> {
+public class HibernateJpaSessionFactoryBean extends EntityManagerFactoryAccessor
+		implements FactoryBean<SessionFactory>
+{
 
 	@Override
 	@Nullable
-	public SessionFactory getObject() {
+	public SessionFactory getObject()
+	{
 		EntityManagerFactory emf = getEntityManagerFactory();
 		Assert.state(emf != null, "EntityManagerFactory must not be null");
-		try {
+		try
+		{
 			Method getSessionFactory = emf.getClass().getMethod("getSessionFactory");
 			return (SessionFactory) ReflectionUtils.invokeMethod(getSessionFactory, emf);
 		}
-		catch (NoSuchMethodException ex) {
+		catch (NoSuchMethodException ex)
+		{
 			throw new IllegalStateException("No compatible Hibernate EntityManagerFactory found: " + ex);
 		}
 	}
 
 	@Override
-	public Class<?> getObjectType() {
+	public Class<?> getObjectType()
+	{
 		return SessionFactory.class;
 	}
 
 	@Override
-	public boolean isSingleton() {
+	public boolean isSingleton()
+	{
 		return true;
 	}
 

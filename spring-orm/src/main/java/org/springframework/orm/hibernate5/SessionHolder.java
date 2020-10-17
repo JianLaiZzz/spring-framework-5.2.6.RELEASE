@@ -21,7 +21,6 @@ import javax.persistence.EntityManager;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import org.springframework.lang.Nullable;
 import org.springframework.orm.jpa.EntityManagerHolder;
 
@@ -31,14 +30,16 @@ import org.springframework.orm.jpa.EntityManagerHolder;
  * for a given {@link org.hibernate.SessionFactory}. Extends {@link EntityManagerHolder}
  * as of 5.1, automatically exposing an {@code EntityManager} handle on Hibernate 5.2+.
  *
- * <p>Note: This is an SPI class, not intended to be used by applications.
+ * <p>
+ * Note: This is an SPI class, not intended to be used by applications.
  *
  * @author Juergen Hoeller
  * @since 4.2
  * @see HibernateTransactionManager
  * @see SessionFactoryUtils
  */
-public class SessionHolder extends EntityManagerHolder {
+public class SessionHolder extends EntityManagerHolder
+{
 
 	private final Session session;
 
@@ -48,40 +49,44 @@ public class SessionHolder extends EntityManagerHolder {
 	@Nullable
 	private FlushMode previousFlushMode;
 
-
-	public SessionHolder(Session session) {
+	public SessionHolder(Session session)
+	{
 		// Check below is always true against Hibernate >= 5.2 but not against 5.0/5.1 at runtime
 		super(EntityManager.class.isInstance(session) ? session : null);
 		this.session = session;
 	}
 
-
-	public Session getSession() {
+	public Session getSession()
+	{
 		return this.session;
 	}
 
-	public void setTransaction(@Nullable Transaction transaction) {
+	public void setTransaction(@Nullable Transaction transaction)
+	{
 		this.transaction = transaction;
 		setTransactionActive(transaction != null);
 	}
 
 	@Nullable
-	public Transaction getTransaction() {
+	public Transaction getTransaction()
+	{
 		return this.transaction;
 	}
 
-	public void setPreviousFlushMode(@Nullable FlushMode previousFlushMode) {
+	public void setPreviousFlushMode(@Nullable FlushMode previousFlushMode)
+	{
 		this.previousFlushMode = previousFlushMode;
 	}
 
 	@Nullable
-	public FlushMode getPreviousFlushMode() {
+	public FlushMode getPreviousFlushMode()
+	{
 		return this.previousFlushMode;
 	}
 
-
 	@Override
-	public void clear() {
+	public void clear()
+	{
 		super.clear();
 		this.transaction = null;
 		this.previousFlushMode = null;

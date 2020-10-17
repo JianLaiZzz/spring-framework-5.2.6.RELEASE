@@ -21,12 +21,14 @@ import org.aopalliance.aop.Advice;
 /**
  * This interface represents a generic interceptor.
  *
- * <p>A generic interceptor can intercept runtime events that occur
+ * <p>
+ * A generic interceptor can intercept runtime events that occur
  * within a base program. Those events are materialized by (reified
  * in) joinpoints. Runtime joinpoints can be invocations, field
  * access, exceptions...
  *
- * <p>This interface is not used directly. Use the sub-interfaces
+ * <p>
+ * This interface is not used directly. Use the sub-interfaces
  * to intercept specific events. For instance, the following class
  * implements some specific interceptors in order to implement a
  * debugger:
@@ -54,6 +56,7 @@ import org.aopalliance.aop.Advice;
  * @author Rod Johnson
  * @see Joinpoint
  */
-public interface Interceptor extends Advice {
+public interface Interceptor extends Advice
+{
 
 }

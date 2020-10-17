@@ -16,9 +16,10 @@
 
 package org.springframework.aop.support;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.testfixture.interceptor.NopInterceptor;
@@ -27,13 +28,12 @@ import org.springframework.beans.testfixture.beans.Person;
 import org.springframework.beans.testfixture.beans.SerializablePerson;
 import org.springframework.core.testfixture.io.SerializationTestUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * @author Rod Johnson
  * @author Chris Beams
  */
-public class NameMatchMethodPointcutTests {
+public class NameMatchMethodPointcutTests
+{
 
 	protected NameMatchMethodPointcut pc;
 
@@ -41,12 +41,12 @@ public class NameMatchMethodPointcutTests {
 
 	protected SerializableNopInterceptor nop;
 
-
 	/**
 	 * Create an empty pointcut, populating instance variables.
 	 */
 	@BeforeEach
-	public void setup() {
+	public void setup()
+	{
 		ProxyFactory pf = new ProxyFactory(new SerializablePerson());
 		nop = new SerializableNopInterceptor();
 		pc = new NameMatchMethodPointcut();
@@ -54,9 +54,9 @@ public class NameMatchMethodPointcutTests {
 		proxied = (Person) pf.getProxy();
 	}
 
-
 	@Test
-	public void testMatchingOnly() {
+	public void testMatchingOnly()
+	{
 		// Can't do exact matching through isMatch
 		assertThat(pc.isMatch("echo", "ech*")).isTrue();
 		assertThat(pc.isMatch("setName", "setN*")).isTrue();
@@ -67,7 +67,8 @@ public class NameMatchMethodPointcutTests {
 	}
 
 	@Test
-	public void testEmpty() throws Throwable {
+	public void testEmpty() throws Throwable
+	{
 		assertThat(nop.getCount()).isEqualTo(0);
 		proxied.getName();
 		proxied.setName("");
@@ -75,9 +76,9 @@ public class NameMatchMethodPointcutTests {
 		assertThat(nop.getCount()).isEqualTo(0);
 	}
 
-
 	@Test
-	public void testMatchOneMethod() throws Throwable {
+	public void testMatchOneMethod() throws Throwable
+	{
 		pc.addMethodName("echo");
 		pc.addMethodName("set*");
 		assertThat(nop.getCount()).isEqualTo(0);
@@ -95,7 +96,8 @@ public class NameMatchMethodPointcutTests {
 	}
 
 	@Test
-	public void testSets() throws Throwable {
+	public void testSets() throws Throwable
+	{
 		pc.setMappedNames("set*", "echo");
 		assertThat(nop.getCount()).isEqualTo(0);
 		proxied.getName();
@@ -106,7 +108,8 @@ public class NameMatchMethodPointcutTests {
 	}
 
 	@Test
-	public void testSerializable() throws Throwable {
+	public void testSerializable() throws Throwable
+	{
 		testSets();
 		// Count is now 2
 		Person p2 = (Person) SerializationTestUtils.serializeAndDeserialize(proxied);
@@ -118,7 +121,8 @@ public class NameMatchMethodPointcutTests {
 	}
 
 	@Test
-	public void testEqualsAndHashCode() {
+	public void testEqualsAndHashCode()
+	{
 		NameMatchMethodPointcut pc1 = new NameMatchMethodPointcut();
 		NameMatchMethodPointcut pc2 = new NameMatchMethodPointcut();
 

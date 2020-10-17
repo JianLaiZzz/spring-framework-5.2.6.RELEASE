@@ -16,14 +16,7 @@
 
 package org.springframework.jms.connection;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSContext;
-import javax.jms.JMSException;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.TopicConnection;
-import javax.jms.TopicConnectionFactory;
+import javax.jms.*;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
@@ -36,16 +29,19 @@ import org.springframework.util.Assert;
  * if necessary (e.g. when running JMS 1.0.2 API based code against a generic
  * JMS 1.1 ConnectionFactory, such as ActiveMQ's PooledConnectionFactory).
  *
- * <p>As of Spring Framework 5, this class supports JMS 2.0 {@code JMSContext}
+ * <p>
+ * As of Spring Framework 5, this class supports JMS 2.0 {@code JMSContext}
  * calls and therefore requires the JMS 2.0 API to be present at runtime.
  * It may nevertheless run against a JMS 1.1 driver (bound to the JMS 2.0 API)
  * as long as no actual JMS 2.0 calls are triggered by the application's setup.
  *
- * <p>This class allows for being subclassed, with subclasses overriding only
+ * <p>
+ * This class allows for being subclassed, with subclasses overriding only
  * those methods (such as {@link #createConnection()}) that should not simply
  * delegate to the target ConnectionFactory.
  *
- * <p>Can also be defined as-is, wrapping a specific target ConnectionFactory,
+ * <p>
+ * Can also be defined as-is, wrapping a specific target ConnectionFactory,
  * using the "shouldStopConnections" flag to indicate whether Connections
  * obtained from the target factory are supposed to be stopped before closed.
  * The latter may be necessary for some connection pools that simply return
@@ -57,19 +53,20 @@ import org.springframework.util.Assert;
  * @see #setShouldStopConnections
  * @see ConnectionFactoryUtils#releaseConnection
  */
-public class DelegatingConnectionFactory
-		implements SmartConnectionFactory, QueueConnectionFactory, TopicConnectionFactory, InitializingBean {
+public class DelegatingConnectionFactory implements SmartConnectionFactory, QueueConnectionFactory,
+		TopicConnectionFactory, InitializingBean
+{
 
 	@Nullable
 	private ConnectionFactory targetConnectionFactory;
 
 	private boolean shouldStopConnections = false;
 
-
 	/**
 	 * Set the target ConnectionFactory that this ConnectionFactory should delegate to.
 	 */
-	public void setTargetConnectionFactory(@Nullable ConnectionFactory targetConnectionFactory) {
+	public void setTargetConnectionFactory(@Nullable ConnectionFactory targetConnectionFactory)
+	{
 		this.targetConnectionFactory = targetConnectionFactory;
 	}
 
@@ -77,11 +74,13 @@ public class DelegatingConnectionFactory
 	 * Return the target ConnectionFactory that this ConnectionFactory delegates to.
 	 */
 	@Nullable
-	public ConnectionFactory getTargetConnectionFactory() {
+	public ConnectionFactory getTargetConnectionFactory()
+	{
 		return this.targetConnectionFactory;
 	}
 
-	private ConnectionFactory obtainTargetConnectionFactory() {
+	private ConnectionFactory obtainTargetConnectionFactory()
+	{
 		ConnectionFactory target = getTargetConnectionFactory();
 		Assert.state(target != null, "No 'targetConnectionFactory' set");
 		return target;
@@ -92,113 +91,144 @@ public class DelegatingConnectionFactory
 	 * to be stopped before closed ("true") or simply closed ("false").
 	 * An extra stop call may be necessary for some connection pools that simply return
 	 * released connections to the pool, not stopping them while they sit in the pool.
-	 * <p>Default is "false", simply closing Connections.
+	 * <p>
+	 * Default is "false", simply closing Connections.
+	 * 
 	 * @see ConnectionFactoryUtils#releaseConnection
 	 */
-	public void setShouldStopConnections(boolean shouldStopConnections) {
+	public void setShouldStopConnections(boolean shouldStopConnections)
+	{
 		this.shouldStopConnections = shouldStopConnections;
 	}
 
 	@Override
-	public void afterPropertiesSet() {
-		if (getTargetConnectionFactory() == null) {
+	public void afterPropertiesSet()
+	{
+		if (getTargetConnectionFactory() == null)
+		{
 			throw new IllegalArgumentException("'targetConnectionFactory' is required");
 		}
 	}
 
-
 	@Override
-	public Connection createConnection() throws JMSException {
+	public Connection createConnection() throws JMSException
+	{
 		return obtainTargetConnectionFactory().createConnection();
 	}
 
 	@Override
-	public Connection createConnection(String username, String password) throws JMSException {
+	public Connection createConnection(String username, String password) throws JMSException
+	{
 		return obtainTargetConnectionFactory().createConnection(username, password);
 	}
 
 	@Override
-	public QueueConnection createQueueConnection() throws JMSException {
+	public QueueConnection createQueueConnection() throws JMSException
+	{
 		ConnectionFactory target = obtainTargetConnectionFactory();
-		if (target instanceof QueueConnectionFactory) {
+		if (target instanceof QueueConnectionFactory)
+		{
 			return ((QueueConnectionFactory) target).createQueueConnection();
 		}
-		else {
+		else
+		{
 			Connection con = target.createConnection();
-			if (!(con instanceof QueueConnection)) {
-				throw new javax.jms.IllegalStateException("'targetConnectionFactory' is not a QueueConnectionFactory");
+			if (!(con instanceof QueueConnection))
+			{
+				throw new javax.jms.IllegalStateException(
+						"'targetConnectionFactory' is not a QueueConnectionFactory");
 			}
 			return (QueueConnection) con;
 		}
 	}
 
 	@Override
-	public QueueConnection createQueueConnection(String username, String password) throws JMSException {
+	public QueueConnection createQueueConnection(String username, String password) throws JMSException
+	{
 		ConnectionFactory target = obtainTargetConnectionFactory();
-		if (target instanceof QueueConnectionFactory) {
+		if (target instanceof QueueConnectionFactory)
+		{
 			return ((QueueConnectionFactory) target).createQueueConnection(username, password);
 		}
-		else {
+		else
+		{
 			Connection con = target.createConnection(username, password);
-			if (!(con instanceof QueueConnection)) {
-				throw new javax.jms.IllegalStateException("'targetConnectionFactory' is not a QueueConnectionFactory");
+			if (!(con instanceof QueueConnection))
+			{
+				throw new javax.jms.IllegalStateException(
+						"'targetConnectionFactory' is not a QueueConnectionFactory");
 			}
 			return (QueueConnection) con;
 		}
 	}
 
 	@Override
-	public TopicConnection createTopicConnection() throws JMSException {
+	public TopicConnection createTopicConnection() throws JMSException
+	{
 		ConnectionFactory target = obtainTargetConnectionFactory();
-		if (target instanceof TopicConnectionFactory) {
+		if (target instanceof TopicConnectionFactory)
+		{
 			return ((TopicConnectionFactory) target).createTopicConnection();
 		}
-		else {
+		else
+		{
 			Connection con = target.createConnection();
-			if (!(con instanceof TopicConnection)) {
-				throw new javax.jms.IllegalStateException("'targetConnectionFactory' is not a TopicConnectionFactory");
+			if (!(con instanceof TopicConnection))
+			{
+				throw new javax.jms.IllegalStateException(
+						"'targetConnectionFactory' is not a TopicConnectionFactory");
 			}
 			return (TopicConnection) con;
 		}
 	}
 
 	@Override
-	public TopicConnection createTopicConnection(String username, String password) throws JMSException {
+	public TopicConnection createTopicConnection(String username, String password) throws JMSException
+	{
 		ConnectionFactory target = obtainTargetConnectionFactory();
-		if (target instanceof TopicConnectionFactory) {
+		if (target instanceof TopicConnectionFactory)
+		{
 			return ((TopicConnectionFactory) target).createTopicConnection(username, password);
 		}
-		else {
+		else
+		{
 			Connection con = target.createConnection(username, password);
-			if (!(con instanceof TopicConnection)) {
-				throw new javax.jms.IllegalStateException("'targetConnectionFactory' is not a TopicConnectionFactory");
+			if (!(con instanceof TopicConnection))
+			{
+				throw new javax.jms.IllegalStateException(
+						"'targetConnectionFactory' is not a TopicConnectionFactory");
 			}
 			return (TopicConnection) con;
 		}
 	}
 
 	@Override
-	public JMSContext createContext() {
+	public JMSContext createContext()
+	{
 		return obtainTargetConnectionFactory().createContext();
 	}
 
 	@Override
-	public JMSContext createContext(String userName, String password) {
+	public JMSContext createContext(String userName, String password)
+	{
 		return obtainTargetConnectionFactory().createContext(userName, password);
 	}
 
 	@Override
-	public JMSContext createContext(String userName, String password, int sessionMode) {
+	public JMSContext createContext(String userName, String password, int sessionMode)
+	{
 		return obtainTargetConnectionFactory().createContext(userName, password, sessionMode);
 	}
 
 	@Override
-	public JMSContext createContext(int sessionMode) {
+	public JMSContext createContext(int sessionMode)
+	{
 		return obtainTargetConnectionFactory().createContext(sessionMode);
 	}
 
 	@Override
-	public boolean shouldStop(Connection con) {
+	public boolean shouldStop(Connection con)
+	{
 		return this.shouldStopConnections;
 	}
 

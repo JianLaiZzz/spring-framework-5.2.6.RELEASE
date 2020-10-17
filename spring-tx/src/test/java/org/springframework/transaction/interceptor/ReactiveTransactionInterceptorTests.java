@@ -16,20 +16,23 @@
 
 package org.springframework.transaction.interceptor;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.transaction.ReactiveTransactionManager;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests for {@link TransactionInterceptor} with reactive methods.
  *
  * @author Mark Paluch
  */
-public class ReactiveTransactionInterceptorTests extends AbstractReactiveTransactionAspectTests {
+public class ReactiveTransactionInterceptorTests extends AbstractReactiveTransactionAspectTests
+{
 
 	@Override
-	protected Object advised(Object target, ReactiveTransactionManager ptm, TransactionAttributeSource[] tas) {
+	protected Object advised(Object target, ReactiveTransactionManager ptm,
+			TransactionAttributeSource[] tas)
+	{
 		TransactionInterceptor ti = new TransactionInterceptor();
 		ti.setTransactionManager(ptm);
 		ti.setTransactionAttributeSources(tas);
@@ -45,7 +48,9 @@ public class ReactiveTransactionInterceptorTests extends AbstractReactiveTransac
 	 * Creates a TransactionInterceptor and applies it.
 	 */
 	@Override
-	protected Object advised(Object target, ReactiveTransactionManager ptm, TransactionAttributeSource tas) {
+	protected Object advised(Object target, ReactiveTransactionManager ptm,
+			TransactionAttributeSource tas)
+	{
 		TransactionInterceptor ti = new TransactionInterceptor();
 		ti.setTransactionManager(ptm);
 

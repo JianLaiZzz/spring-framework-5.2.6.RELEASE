@@ -19,7 +19,6 @@ package org.springframework.aop.interceptor;
 import java.lang.reflect.Method;
 
 import org.aopalliance.intercept.MethodInvocation;
-
 import org.springframework.lang.Nullable;
 
 /**
@@ -27,7 +26,8 @@ import org.springframework.lang.Nullable;
  * Provides configurable "prefix and "suffix" properties that help to
  * classify/group performance monitoring results.
  *
- * <p>In their {@link #invokeUnderTrace} implementation, subclasses should call the
+ * <p>
+ * In their {@link #invokeUnderTrace} implementation, subclasses should call the
  * {@link #createInvocationTraceName} method to create a name for the given trace,
  * including information about the method invocation along with a prefix/suffix.
  *
@@ -39,7 +39,8 @@ import org.springframework.lang.Nullable;
  * @see #createInvocationTraceName
  */
 @SuppressWarnings("serial")
-public abstract class AbstractMonitoringInterceptor extends AbstractTraceInterceptor {
+public abstract class AbstractMonitoringInterceptor extends AbstractTraceInterceptor
+{
 
 	private String prefix = "";
 
@@ -47,60 +48,69 @@ public abstract class AbstractMonitoringInterceptor extends AbstractTraceInterce
 
 	private boolean logTargetClassInvocation = false;
 
-
 	/**
 	 * Set the text that will get appended to the trace data.
-	 * <p>Default is none.
+	 * <p>
+	 * Default is none.
 	 */
-	public void setPrefix(@Nullable String prefix) {
+	public void setPrefix(@Nullable String prefix)
+	{
 		this.prefix = (prefix != null ? prefix : "");
 	}
 
 	/**
 	 * Return the text that will get appended to the trace data.
 	 */
-	protected String getPrefix() {
+	protected String getPrefix()
+	{
 		return this.prefix;
 	}
 
 	/**
 	 * Set the text that will get prepended to the trace data.
-	 * <p>Default is none.
+	 * <p>
+	 * Default is none.
 	 */
-	public void setSuffix(@Nullable String suffix) {
+	public void setSuffix(@Nullable String suffix)
+	{
 		this.suffix = (suffix != null ? suffix : "");
 	}
 
 	/**
 	 * Return the text that will get prepended to the trace data.
 	 */
-	protected String getSuffix() {
+	protected String getSuffix()
+	{
 		return this.suffix;
 	}
 
 	/**
 	 * Set whether to log the invocation on the target class, if applicable
 	 * (i.e. if the method is actually delegated to the target class).
-	 * <p>Default is "false", logging the invocation based on the proxy
+	 * <p>
+	 * Default is "false", logging the invocation based on the proxy
 	 * interface/class name.
 	 */
-	public void setLogTargetClassInvocation(boolean logTargetClassInvocation) {
+	public void setLogTargetClassInvocation(boolean logTargetClassInvocation)
+	{
 		this.logTargetClassInvocation = logTargetClassInvocation;
 	}
-
 
 	/**
 	 * Create a {@code String} name for the given {@code MethodInvocation}
 	 * that can be used for trace/logging purposes. This name is made up of the
 	 * configured prefix, followed by the fully-qualified name of the method being
 	 * invoked, followed by the configured suffix.
+	 * 
 	 * @see #setPrefix
 	 * @see #setSuffix
 	 */
-	protected String createInvocationTraceName(MethodInvocation invocation) {
+	protected String createInvocationTraceName(MethodInvocation invocation)
+	{
 		Method method = invocation.getMethod();
 		Class<?> clazz = method.getDeclaringClass();
-		if (this.logTargetClassInvocation && clazz.isInstance(invocation.getThis())) {
+		if (this.logTargetClassInvocation && clazz.isInstance(invocation.getThis()))
+		{
 			clazz = invocation.getThis().getClass();
 		}
 		return getPrefix() + clazz.getName() + '.' + method.getName() + getSuffix();

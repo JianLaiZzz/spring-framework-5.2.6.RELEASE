@@ -26,22 +26,30 @@ import org.springframework.lang.Nullable;
  * @author Thomas Risberg
  */
 @SuppressWarnings("serial")
-public class DataAccessResourceFailureException extends NonTransientDataAccessResourceException {
+public class DataAccessResourceFailureException extends NonTransientDataAccessResourceException
+{
 
 	/**
 	 * Constructor for DataAccessResourceFailureException.
-	 * @param msg the detail message
+	 * 
+	 * @param msg
+	 *            the detail message
 	 */
-	public DataAccessResourceFailureException(String msg) {
+	public DataAccessResourceFailureException(String msg)
+	{
 		super(msg);
 	}
 
 	/**
 	 * Constructor for DataAccessResourceFailureException.
-	 * @param msg the detail message
-	 * @param cause the root cause from the data access API in use
+	 * 
+	 * @param msg
+	 *            the detail message
+	 * @param cause
+	 *            the root cause from the data access API in use
 	 */
-	public DataAccessResourceFailureException(String msg, @Nullable Throwable cause) {
+	public DataAccessResourceFailureException(String msg, @Nullable Throwable cause)
+	{
 		super(msg, cause);
 	}
 

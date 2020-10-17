@@ -20,7 +20,6 @@ import java.lang.reflect.Constructor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.cglib.proxy.Callback;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.Factory;
@@ -36,50 +35,61 @@ import org.springframework.util.ReflectionUtils;
  * @since 4.0
  */
 @SuppressWarnings("serial")
-class ObjenesisCglibAopProxy extends CglibAopProxy {
+class ObjenesisCglibAopProxy extends CglibAopProxy
+{
 
 	private static final Log logger = LogFactory.getLog(ObjenesisCglibAopProxy.class);
 
 	private static final SpringObjenesis objenesis = new SpringObjenesis();
 
-
 	/**
 	 * Create a new ObjenesisCglibAopProxy for the given AOP configuration.
-	 * @param config the AOP configuration as AdvisedSupport object
+	 * 
+	 * @param config
+	 *            the AOP configuration as AdvisedSupport object
 	 */
-	public ObjenesisCglibAopProxy(AdvisedSupport config) {
+	public ObjenesisCglibAopProxy(AdvisedSupport config)
+	{
 		super(config);
 	}
 
-
 	@Override
-	protected Object createProxyClassAndInstance(Enhancer enhancer, Callback[] callbacks) {
+	protected Object createProxyClassAndInstance(Enhancer enhancer, Callback[] callbacks)
+	{
 		Class<?> proxyClass = enhancer.createClass();
 		Object proxyInstance = null;
 
-		if (objenesis.isWorthTrying()) {
-			try {
+		if (objenesis.isWorthTrying())
+		{
+			try
+			{
 				proxyInstance = objenesis.newInstance(proxyClass, enhancer.getUseCache());
 			}
-			catch (Throwable ex) {
-				logger.debug("Unable to instantiate proxy using Objenesis, " +
-						"falling back to regular proxy construction", ex);
+			catch (Throwable ex)
+			{
+				logger.debug("Unable to instantiate proxy using Objenesis, "
+						+ "falling back to regular proxy construction", ex);
 			}
 		}
 
-		if (proxyInstance == null) {
+		if (proxyInstance == null)
+		{
 			// Regular instantiation via default constructor...
-			try {
-				Constructor<?> ctor = (this.constructorArgs != null ?
-						proxyClass.getDeclaredConstructor(this.constructorArgTypes) :
-						proxyClass.getDeclaredConstructor());
+			try
+			{
+				Constructor<?> ctor = (this.constructorArgs != null
+						? proxyClass.getDeclaredConstructor(this.constructorArgTypes)
+						: proxyClass.getDeclaredConstructor());
 				ReflectionUtils.makeAccessible(ctor);
-				proxyInstance = (this.constructorArgs != null ?
-						ctor.newInstance(this.constructorArgs) : ctor.newInstance());
+				proxyInstance = (this.constructorArgs != null ? ctor.newInstance(this.constructorArgs)
+						: ctor.newInstance());
 			}
-			catch (Throwable ex) {
-				throw new AopConfigException("Unable to instantiate proxy using Objenesis, " +
-						"and regular proxy instantiation via default constructor fails as well", ex);
+			catch (Throwable ex)
+			{
+				throw new AopConfigException(
+						"Unable to instantiate proxy using Objenesis, "
+								+ "and regular proxy instantiation via default constructor fails as well",
+						ex);
 			}
 		}
 

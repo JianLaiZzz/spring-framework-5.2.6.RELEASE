@@ -27,16 +27,19 @@ import org.springframework.aop.framework.AopConfigException;
  * @since 2.0
  */
 @SuppressWarnings("serial")
-public class NotAnAtAspectException extends AopConfigException {
+public class NotAnAtAspectException extends AopConfigException
+{
 
 	private final Class<?> nonAspectClass;
 
-
 	/**
 	 * Create a new NotAnAtAspectException for the given class.
-	 * @param nonAspectClass the offending class
+	 * 
+	 * @param nonAspectClass
+	 *            the offending class
 	 */
-	public NotAnAtAspectException(Class<?> nonAspectClass) {
+	public NotAnAtAspectException(Class<?> nonAspectClass)
+	{
 		super(nonAspectClass.getName() + " is not an @AspectJ aspect");
 		this.nonAspectClass = nonAspectClass;
 	}
@@ -44,7 +47,8 @@ public class NotAnAtAspectException extends AopConfigException {
 	/**
 	 * Returns the offending class.
 	 */
-	public Class<?> getNonAspectClass() {
+	public Class<?> getNonAspectClass()
+	{
 		return this.nonAspectClass;
 	}
 

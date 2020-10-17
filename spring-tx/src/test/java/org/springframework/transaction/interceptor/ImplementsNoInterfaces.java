@@ -24,19 +24,23 @@ import org.springframework.beans.testfixture.beans.TestBean;
  *
  * @author Rod Johnson
  */
-public class ImplementsNoInterfaces {
+public class ImplementsNoInterfaces
+{
 
 	private TestBean testBean;
 
-	public void setDependency(TestBean testBean) {
+	public void setDependency(TestBean testBean)
+	{
 		this.testBean = testBean;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return testBean.getName();
 	}
 
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		testBean.setName(name);
 	}
 

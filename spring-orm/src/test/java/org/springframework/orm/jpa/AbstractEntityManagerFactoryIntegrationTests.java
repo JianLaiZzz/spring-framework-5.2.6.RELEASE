@@ -16,6 +16,8 @@
 
 package org.springframework.orm.jpa;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
@@ -24,7 +26,6 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -38,18 +39,16 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
-public abstract class AbstractEntityManagerFactoryIntegrationTests {
+public abstract class AbstractEntityManagerFactoryIntegrationTests
+{
 
 	protected static final String[] ECLIPSELINK_CONFIG_LOCATIONS = new String[] {
 			"/org/springframework/orm/jpa/eclipselink/eclipselink-manager.xml",
-			"/org/springframework/orm/jpa/memdb.xml", "/org/springframework/orm/jpa/inject.xml"};
-
+			"/org/springframework/orm/jpa/memdb.xml", "/org/springframework/orm/jpa/inject.xml" };
 
 	private static ConfigurableApplicationContext applicationContext;
 
@@ -69,43 +68,51 @@ public abstract class AbstractEntityManagerFactoryIntegrationTests {
 
 	private boolean zappedTables = false;
 
-
 	@Autowired
-	public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+	public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory)
+	{
 		this.entityManagerFactory = entityManagerFactory;
-		this.sharedEntityManager = SharedEntityManagerCreator.createSharedEntityManager(this.entityManagerFactory);
+		this.sharedEntityManager = SharedEntityManagerCreator
+				.createSharedEntityManager(this.entityManagerFactory);
 	}
 
 	@Autowired
-	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+	public void setTransactionManager(PlatformTransactionManager transactionManager)
+	{
 		this.transactionManager = transactionManager;
 	}
 
 	@Autowired
-	public void setDataSource(DataSource dataSource) {
+	public void setDataSource(DataSource dataSource)
+	{
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
-
 	@BeforeEach
-	public void setup() {
-		if (applicationContext == null) {
+	public void setup()
+	{
+		if (applicationContext == null)
+		{
 			applicationContext = new ClassPathXmlApplicationContext(getConfigLocations());
 		}
 		applicationContext.getAutowireCapableBeanFactory().autowireBean(this);
 
-		if (this.transactionManager != null && this.transactionDefinition != null) {
+		if (this.transactionManager != null && this.transactionDefinition != null)
+		{
 			startNewTransaction();
 		}
 	}
 
-	protected String[] getConfigLocations() {
+	protected String[] getConfigLocations()
+	{
 		return ECLIPSELINK_CONFIG_LOCATIONS;
 	}
 
 	@AfterEach
-	public void cleanup() {
-		if (this.transactionStatus != null && !this.transactionStatus.isCompleted()) {
+	public void cleanup()
+	{
+		if (this.transactionStatus != null && !this.transactionStatus.isCompleted())
+		{
 			endTransaction();
 		}
 
@@ -116,66 +123,84 @@ public abstract class AbstractEntityManagerFactoryIntegrationTests {
 	}
 
 	@AfterAll
-	public static void closeContext() {
-		if (applicationContext != null) {
+	public static void closeContext()
+	{
+		if (applicationContext != null)
+		{
 			applicationContext.close();
 			applicationContext = null;
 		}
 	}
 
-
-	protected EntityManager createContainerManagedEntityManager() {
-		return ExtendedEntityManagerCreator.createContainerManagedEntityManager(this.entityManagerFactory);
+	protected EntityManager createContainerManagedEntityManager()
+	{
+		return ExtendedEntityManagerCreator
+				.createContainerManagedEntityManager(this.entityManagerFactory);
 	}
 
-	protected void setComplete() {
-		if (this.transactionManager == null) {
+	protected void setComplete()
+	{
+		if (this.transactionManager == null)
+		{
 			throw new IllegalStateException("No transaction manager set");
 		}
-		if (this.zappedTables) {
+		if (this.zappedTables)
+		{
 			throw new IllegalStateException("Cannot set complete after deleting tables");
 		}
 		this.complete = true;
 	}
 
-	protected void endTransaction() {
+	protected void endTransaction()
+	{
 		final boolean commit = this.complete;
-		if (this.transactionStatus != null) {
-			try {
-				if (commit) {
+		if (this.transactionStatus != null)
+		{
+			try
+			{
+				if (commit)
+				{
 					this.transactionManager.commit(this.transactionStatus);
 				}
-				else {
+				else
+				{
 					this.transactionManager.rollback(this.transactionStatus);
 				}
 			}
-			finally {
+			finally
+			{
 				this.transactionStatus = null;
 			}
 		}
 	}
 
-	protected void startNewTransaction() throws TransactionException {
+	protected void startNewTransaction() throws TransactionException
+	{
 		this.transactionStatus = this.transactionManager.getTransaction(this.transactionDefinition);
 	}
 
-	protected void deleteFromTables(String... tableNames) {
-		for (String tableName : tableNames) {
+	protected void deleteFromTables(String... tableNames)
+	{
+		for (String tableName : tableNames)
+		{
 			this.jdbcTemplate.update("DELETE FROM " + tableName);
 		}
 		this.zappedTables = true;
 	}
 
-	protected int countRowsInTable(EntityManager em, String tableName) {
+	protected int countRowsInTable(EntityManager em, String tableName)
+	{
 		Query query = em.createNativeQuery("SELECT COUNT(0) FROM " + tableName);
 		return ((Number) query.getSingleResult()).intValue();
 	}
 
-	protected int countRowsInTable(String tableName) {
+	protected int countRowsInTable(String tableName)
+	{
 		return this.jdbcTemplate.queryForObject("SELECT COUNT(0) FROM " + tableName, Integer.class);
 	}
 
-	protected void executeSqlScript(String sqlResourcePath) throws DataAccessException {
+	protected void executeSqlScript(String sqlResourcePath) throws DataAccessException
+	{
 		Resource resource = applicationContext.getResource(sqlResourcePath);
 		new ResourceDatabasePopulator(resource).execute(this.jdbcTemplate.getDataSource());
 	}

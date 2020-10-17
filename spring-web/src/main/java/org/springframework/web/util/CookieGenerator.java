@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
@@ -30,7 +29,8 @@ import org.springframework.util.Assert;
  * as bean properties and being able to add and remove cookie to/from a
  * given response.
  *
- * <p>Can serve as base class for components that generate specific cookies,
+ * <p>
+ * Can serve as base class for components that generate specific cookies,
  * such as CookieLocaleResolver and CookieThemeResolver.
  *
  * @author Juergen Hoeller
@@ -40,13 +40,13 @@ import org.springframework.util.Assert;
  * @see org.springframework.web.servlet.i18n.CookieLocaleResolver
  * @see org.springframework.web.servlet.theme.CookieThemeResolver
  */
-public class CookieGenerator {
+public class CookieGenerator
+{
 
 	/**
 	 * Default path that cookies will be visible to: "/", i.e. the entire server.
 	 */
 	public static final String DEFAULT_COOKIE_PATH = "/";
-
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -65,12 +65,13 @@ public class CookieGenerator {
 
 	private boolean cookieHttpOnly = false;
 
-
 	/**
 	 * Use the given name for cookies created by this generator.
+	 * 
 	 * @see javax.servlet.http.Cookie#getName()
 	 */
-	public void setCookieName(@Nullable String cookieName) {
+	public void setCookieName(@Nullable String cookieName)
+	{
 		this.cookieName = cookieName;
 	}
 
@@ -78,16 +79,19 @@ public class CookieGenerator {
 	 * Return the given name for cookies created by this generator.
 	 */
 	@Nullable
-	public String getCookieName() {
+	public String getCookieName()
+	{
 		return this.cookieName;
 	}
 
 	/**
 	 * Use the given domain for cookies created by this generator.
 	 * The cookie is only visible to servers in this domain.
+	 * 
 	 * @see javax.servlet.http.Cookie#setDomain
 	 */
-	public void setCookieDomain(@Nullable String cookieDomain) {
+	public void setCookieDomain(@Nullable String cookieDomain)
+	{
 		this.cookieDomain = cookieDomain;
 	}
 
@@ -95,34 +99,41 @@ public class CookieGenerator {
 	 * Return the domain for cookies created by this generator, if any.
 	 */
 	@Nullable
-	public String getCookieDomain() {
+	public String getCookieDomain()
+	{
 		return this.cookieDomain;
 	}
 
 	/**
 	 * Use the given path for cookies created by this generator.
 	 * The cookie is only visible to URLs in this path and below.
+	 * 
 	 * @see javax.servlet.http.Cookie#setPath
 	 */
-	public void setCookiePath(String cookiePath) {
+	public void setCookiePath(String cookiePath)
+	{
 		this.cookiePath = cookiePath;
 	}
 
 	/**
 	 * Return the path for cookies created by this generator.
 	 */
-	public String getCookiePath() {
+	public String getCookiePath()
+	{
 		return this.cookiePath;
 	}
 
 	/**
 	 * Use the given maximum age (in seconds) for cookies created by this generator.
 	 * Useful special value: -1 ... not persistent, deleted when client shuts down.
-	 * <p>Default is no specific maximum age at all, using the Servlet container's
+	 * <p>
+	 * Default is no specific maximum age at all, using the Servlet container's
 	 * default.
+	 * 
 	 * @see javax.servlet.http.Cookie#setMaxAge
 	 */
-	public void setCookieMaxAge(@Nullable Integer cookieMaxAge) {
+	public void setCookieMaxAge(@Nullable Integer cookieMaxAge)
+	{
 		this.cookieMaxAge = cookieMaxAge;
 	}
 
@@ -130,7 +141,8 @@ public class CookieGenerator {
 	 * Return the maximum age for cookies created by this generator.
 	 */
 	@Nullable
-	public Integer getCookieMaxAge() {
+	public Integer getCookieMaxAge()
+	{
 		return this.cookieMaxAge;
 	}
 
@@ -138,10 +150,13 @@ public class CookieGenerator {
 	 * Set whether the cookie should only be sent using a secure protocol,
 	 * such as HTTPS (SSL). This is an indication to the receiving browser,
 	 * not processed by the HTTP server itself.
-	 * <p>Default is "false".
+	 * <p>
+	 * Default is "false".
+	 * 
 	 * @see javax.servlet.http.Cookie#setSecure
 	 */
-	public void setCookieSecure(boolean cookieSecure) {
+	public void setCookieSecure(boolean cookieSecure)
+	{
 		this.cookieSecure = cookieSecure;
 	}
 
@@ -149,53 +164,66 @@ public class CookieGenerator {
 	 * Return whether the cookie should only be sent using a secure protocol,
 	 * such as HTTPS (SSL).
 	 */
-	public boolean isCookieSecure() {
+	public boolean isCookieSecure()
+	{
 		return this.cookieSecure;
 	}
 
 	/**
 	 * Set whether the cookie is supposed to be marked with the "HttpOnly" attribute.
-	 * <p>Default is "false".
+	 * <p>
+	 * Default is "false".
+	 * 
 	 * @see javax.servlet.http.Cookie#setHttpOnly
 	 */
-	public void setCookieHttpOnly(boolean cookieHttpOnly) {
+	public void setCookieHttpOnly(boolean cookieHttpOnly)
+	{
 		this.cookieHttpOnly = cookieHttpOnly;
 	}
 
 	/**
 	 * Return whether the cookie is supposed to be marked with the "HttpOnly" attribute.
 	 */
-	public boolean isCookieHttpOnly() {
+	public boolean isCookieHttpOnly()
+	{
 		return this.cookieHttpOnly;
 	}
-
 
 	/**
 	 * Add a cookie with the given value to the response,
 	 * using the cookie descriptor settings of this generator.
-	 * <p>Delegates to {@link #createCookie} for cookie creation.
-	 * @param response the HTTP response to add the cookie to
-	 * @param cookieValue the value of the cookie to add
+	 * <p>
+	 * Delegates to {@link #createCookie} for cookie creation.
+	 * 
+	 * @param response
+	 *            the HTTP response to add the cookie to
+	 * @param cookieValue
+	 *            the value of the cookie to add
 	 * @see #setCookieName
 	 * @see #setCookieDomain
 	 * @see #setCookiePath
 	 * @see #setCookieMaxAge
 	 */
-	public void addCookie(HttpServletResponse response, String cookieValue) {
+	public void addCookie(HttpServletResponse response, String cookieValue)
+	{
 		Assert.notNull(response, "HttpServletResponse must not be null");
 		Cookie cookie = createCookie(cookieValue);
 		Integer maxAge = getCookieMaxAge();
-		if (maxAge != null) {
+		if (maxAge != null)
+		{
 			cookie.setMaxAge(maxAge);
 		}
-		if (isCookieSecure()) {
+		if (isCookieSecure())
+		{
 			cookie.setSecure(true);
 		}
-		if (isCookieHttpOnly()) {
+		if (isCookieHttpOnly())
+		{
 			cookie.setHttpOnly(true);
 		}
 		response.addCookie(cookie);
-		if (logger.isTraceEnabled()) {
+		if (logger.isTraceEnabled())
+		{
 			logger.trace("Added cookie [" + getCookieName() + "=" + cookieValue + "]");
 		}
 	}
@@ -203,24 +231,31 @@ public class CookieGenerator {
 	/**
 	 * Remove the cookie that this generator describes from the response.
 	 * Will generate a cookie with empty value and max age 0.
-	 * <p>Delegates to {@link #createCookie} for cookie creation.
-	 * @param response the HTTP response to remove the cookie from
+	 * <p>
+	 * Delegates to {@link #createCookie} for cookie creation.
+	 * 
+	 * @param response
+	 *            the HTTP response to remove the cookie from
 	 * @see #setCookieName
 	 * @see #setCookieDomain
 	 * @see #setCookiePath
 	 */
-	public void removeCookie(HttpServletResponse response) {
+	public void removeCookie(HttpServletResponse response)
+	{
 		Assert.notNull(response, "HttpServletResponse must not be null");
 		Cookie cookie = createCookie("");
 		cookie.setMaxAge(0);
-		if (isCookieSecure()) {
+		if (isCookieSecure())
+		{
 			cookie.setSecure(true);
 		}
-		if (isCookieHttpOnly()) {
+		if (isCookieHttpOnly())
+		{
 			cookie.setHttpOnly(true);
 		}
 		response.addCookie(cookie);
-		if (logger.isTraceEnabled()) {
+		if (logger.isTraceEnabled())
+		{
 			logger.trace("Removed cookie '" + getCookieName() + "'");
 		}
 	}
@@ -228,15 +263,19 @@ public class CookieGenerator {
 	/**
 	 * Create a cookie with the given value, using the cookie descriptor
 	 * settings of this generator (except for "cookieMaxAge").
-	 * @param cookieValue the value of the cookie to crate
+	 * 
+	 * @param cookieValue
+	 *            the value of the cookie to crate
 	 * @return the cookie
 	 * @see #setCookieName
 	 * @see #setCookieDomain
 	 * @see #setCookiePath
 	 */
-	protected Cookie createCookie(String cookieValue) {
+	protected Cookie createCookie(String cookieValue)
+	{
 		Cookie cookie = new Cookie(getCookieName(), cookieValue);
-		if (getCookieDomain() != null) {
+		if (getCookieDomain() != null)
+		{
 			cookie.setDomain(getCookieDomain());
 		}
 		cookie.setPath(getCookiePath());

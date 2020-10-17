@@ -25,7 +25,8 @@ import org.springframework.util.Assert;
  * Rule determining whether or not a given exception (and any subclasses)
  * should cause a rollback.
  *
- * <p>Multiple such rules can be applied to determine whether a transaction
+ * <p>
+ * Multiple such rules can be applied to determine whether a transaction
  * should commit or rollback after an exception has been thrown.
  *
  * @author Rod Johnson
@@ -33,15 +34,15 @@ import org.springframework.util.Assert;
  * @see NoRollbackRuleAttribute
  */
 @SuppressWarnings("serial")
-public class RollbackRuleAttribute implements Serializable{
+public class RollbackRuleAttribute implements Serializable
+{
 
 	/**
 	 * The {@link RollbackRuleAttribute rollback rule} for
 	 * {@link RuntimeException RuntimeExceptions}.
 	 */
-	public static final RollbackRuleAttribute ROLLBACK_ON_RUNTIME_EXCEPTIONS =
-			new RollbackRuleAttribute(RuntimeException.class);
-
+	public static final RollbackRuleAttribute ROLLBACK_ON_RUNTIME_EXCEPTIONS = new RollbackRuleAttribute(
+			RuntimeException.class);
 
 	/**
 	 * Could hold exception, resolving class name but would always require FQN.
@@ -50,21 +51,26 @@ public class RollbackRuleAttribute implements Serializable{
 	 */
 	private final String exceptionName;
 
-
 	/**
 	 * Create a new instance of the {@code RollbackRuleAttribute} class.
-	 * <p>This is the preferred way to construct a rollback rule that matches
+	 * <p>
+	 * This is the preferred way to construct a rollback rule that matches
 	 * the supplied {@link Exception} class, its subclasses, and its nested classes.
-	 * @param clazz throwable class; must be {@link Throwable} or a subclass
-	 * of {@code Throwable}
-	 * @throws IllegalArgumentException if the supplied {@code clazz} is
-	 * not a {@code Throwable} type or is {@code null}
+	 * 
+	 * @param clazz
+	 *            throwable class; must be {@link Throwable} or a subclass
+	 *            of {@code Throwable}
+	 * @throws IllegalArgumentException
+	 *             if the supplied {@code clazz} is
+	 *             not a {@code Throwable} type or is {@code null}
 	 */
-	public RollbackRuleAttribute(Class<?> clazz) {
+	public RollbackRuleAttribute(Class<?> clazz)
+	{
 		Assert.notNull(clazz, "'clazz' cannot be null");
-		if (!Throwable.class.isAssignableFrom(clazz)) {
-			throw new IllegalArgumentException(
-					"Cannot construct rollback rule from [" + clazz.getName() + "]: it's not a Throwable");
+		if (!Throwable.class.isAssignableFrom(clazz))
+		{
+			throw new IllegalArgumentException("Cannot construct rollback rule from [" + clazz.getName()
+					+ "]: it's not a Throwable");
 		}
 		this.exceptionName = clazz.getName();
 	}
@@ -72,64 +78,76 @@ public class RollbackRuleAttribute implements Serializable{
 	/**
 	 * Create a new instance of the {@code RollbackRuleAttribute} class
 	 * for the given {@code exceptionName}.
-	 * <p>This can be a substring, with no wildcard support at present. A value
+	 * <p>
+	 * This can be a substring, with no wildcard support at present. A value
 	 * of "ServletException" would match
 	 * {@code javax.servlet.ServletException} and subclasses, for example.
-	 * <p><b>NB:</b> Consider carefully how specific the pattern is, and
+	 * <p>
+	 * <b>NB:</b> Consider carefully how specific the pattern is, and
 	 * whether to include package information (which is not mandatory). For
 	 * example, "Exception" will match nearly anything, and will probably hide
 	 * other rules. "java.lang.Exception" would be correct if "Exception" was
 	 * meant to define a rule for all checked exceptions. With more unusual
 	 * exception names such as "BaseBusinessException" there's no need to use a
 	 * fully package-qualified name.
-	 * @param exceptionName the exception name pattern; can also be a fully
-	 * package-qualified class name
-	 * @throws IllegalArgumentException if the supplied
-	 * {@code exceptionName} is {@code null} or empty
+	 * 
+	 * @param exceptionName
+	 *            the exception name pattern; can also be a fully
+	 *            package-qualified class name
+	 * @throws IllegalArgumentException
+	 *             if the supplied
+	 *             {@code exceptionName} is {@code null} or empty
 	 */
-	public RollbackRuleAttribute(String exceptionName) {
+	public RollbackRuleAttribute(String exceptionName)
+	{
 		Assert.hasText(exceptionName, "'exceptionName' cannot be null or empty");
 		this.exceptionName = exceptionName;
 	}
 
-
 	/**
 	 * Return the pattern for the exception name.
 	 */
-	public String getExceptionName() {
+	public String getExceptionName()
+	{
 		return this.exceptionName;
 	}
 
 	/**
 	 * Return the depth of the superclass matching.
-	 * <p>{@code 0} means {@code ex} matches exactly. Returns
+	 * <p>
+	 * {@code 0} means {@code ex} matches exactly. Returns
 	 * {@code -1} if there is no match. Otherwise, returns depth with the
 	 * lowest depth winning.
 	 */
-	public int getDepth(Throwable ex) {
+	public int getDepth(Throwable ex)
+	{
 		return getDepth(ex.getClass(), 0);
 	}
 
-
-	private int getDepth(Class<?> exceptionClass, int depth) {
-		if (exceptionClass.getName().contains(this.exceptionName)) {
+	private int getDepth(Class<?> exceptionClass, int depth)
+	{
+		if (exceptionClass.getName().contains(this.exceptionName))
+		{
 			// Found it!
 			return depth;
 		}
 		// If we've gone as far as we can go and haven't found it...
-		if (exceptionClass == Throwable.class) {
+		if (exceptionClass == Throwable.class)
+		{
 			return -1;
 		}
 		return getDepth(exceptionClass.getSuperclass(), depth + 1);
 	}
 
-
 	@Override
-	public boolean equals(@Nullable Object other) {
-		if (this == other) {
+	public boolean equals(@Nullable Object other)
+	{
+		if (this == other)
+		{
 			return true;
 		}
-		if (!(other instanceof RollbackRuleAttribute)) {
+		if (!(other instanceof RollbackRuleAttribute))
+		{
 			return false;
 		}
 		RollbackRuleAttribute rhs = (RollbackRuleAttribute) other;
@@ -137,12 +155,14 @@ public class RollbackRuleAttribute implements Serializable{
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		return this.exceptionName.hashCode();
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return "RollbackRuleAttribute with pattern [" + this.exceptionName + "]";
 	}
 

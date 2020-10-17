@@ -25,37 +25,40 @@ import java.lang.reflect.Method;
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
-final class TrueMethodMatcher implements MethodMatcher, Serializable {
+final class TrueMethodMatcher implements MethodMatcher, Serializable
+{
 
 	public static final TrueMethodMatcher INSTANCE = new TrueMethodMatcher();
-
 
 	/**
 	 * Enforce Singleton pattern.
 	 */
-	private TrueMethodMatcher() {
+	private TrueMethodMatcher()
+	{
 	}
 
-
 	@Override
-	public boolean isRuntime() {
+	public boolean isRuntime()
+	{
 		return false;
 	}
 
 	@Override
-	public boolean matches(Method method, Class<?> targetClass) {
+	public boolean matches(Method method, Class<?> targetClass)
+	{
 		return true;
 	}
 
 	@Override
-	public boolean matches(Method method, Class<?> targetClass, Object... args) {
+	public boolean matches(Method method, Class<?> targetClass, Object... args)
+	{
 		// Should never be invoked as isRuntime returns false.
 		throw new UnsupportedOperationException();
 	}
 
-
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return "MethodMatcher.TRUE";
 	}
 
@@ -64,7 +67,8 @@ final class TrueMethodMatcher implements MethodMatcher, Serializable {
 	 * instance on deserialization, protecting Singleton pattern.
 	 * Alternative to overriding {@code equals()}.
 	 */
-	private Object readResolve() {
+	private Object readResolve()
+	{
 		return INSTANCE;
 	}
 

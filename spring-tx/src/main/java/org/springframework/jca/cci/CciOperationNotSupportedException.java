@@ -27,14 +27,19 @@ import org.springframework.dao.InvalidDataAccessResourceUsageException;
  * @since 1.2
  */
 @SuppressWarnings("serial")
-public class CciOperationNotSupportedException extends InvalidDataAccessResourceUsageException {
+public class CciOperationNotSupportedException extends InvalidDataAccessResourceUsageException
+{
 
 	/**
 	 * Constructor for CciOperationNotSupportedException.
-	 * @param msg message
-	 * @param ex the root ResourceException cause
+	 * 
+	 * @param msg
+	 *            message
+	 * @param ex
+	 *            the root ResourceException cause
 	 */
-	public CciOperationNotSupportedException(String msg, ResourceException ex) {
+	public CciOperationNotSupportedException(String msg, ResourceException ex)
+	{
 		super(msg, ex);
 	}
 

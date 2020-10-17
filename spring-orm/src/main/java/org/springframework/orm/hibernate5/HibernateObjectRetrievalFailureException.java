@@ -18,7 +18,6 @@ package org.springframework.orm.hibernate5;
 
 import org.hibernate.UnresolvableObjectException;
 import org.hibernate.WrongClassException;
-
 import org.springframework.orm.ObjectRetrievalFailureException;
 
 /**
@@ -30,13 +29,16 @@ import org.springframework.orm.ObjectRetrievalFailureException;
  * @see SessionFactoryUtils#convertHibernateAccessException
  */
 @SuppressWarnings("serial")
-public class HibernateObjectRetrievalFailureException extends ObjectRetrievalFailureException {
+public class HibernateObjectRetrievalFailureException extends ObjectRetrievalFailureException
+{
 
-	public HibernateObjectRetrievalFailureException(UnresolvableObjectException ex) {
+	public HibernateObjectRetrievalFailureException(UnresolvableObjectException ex)
+	{
 		super(ex.getEntityName(), ex.getIdentifier(), ex.getMessage(), ex);
 	}
 
-	public HibernateObjectRetrievalFailureException(WrongClassException ex) {
+	public HibernateObjectRetrievalFailureException(WrongClassException ex)
+	{
 		super(ex.getEntityName(), ex.getIdentifier(), ex.getMessage(), ex);
 	}
 

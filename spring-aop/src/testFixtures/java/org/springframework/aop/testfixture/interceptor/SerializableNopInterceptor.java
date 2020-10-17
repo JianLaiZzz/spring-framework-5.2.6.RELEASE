@@ -25,7 +25,8 @@ import java.io.Serializable;
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
-public class SerializableNopInterceptor extends NopInterceptor implements Serializable {
+public class SerializableNopInterceptor extends NopInterceptor implements Serializable
+{
 
 	/**
 	 * We must override this field and the related methods as
@@ -35,12 +36,14 @@ public class SerializableNopInterceptor extends NopInterceptor implements Serial
 	private int count;
 
 	@Override
-	public int getCount() {
+	public int getCount()
+	{
 		return this.count;
 	}
 
 	@Override
-	protected void increment() {
+	protected void increment()
+	{
 		++count;
 	}
 

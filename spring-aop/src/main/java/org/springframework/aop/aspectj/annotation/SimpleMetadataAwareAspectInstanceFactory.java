@@ -29,34 +29,40 @@ import org.springframework.core.annotation.OrderUtils;
  * @since 2.0.4
  */
 public class SimpleMetadataAwareAspectInstanceFactory extends SimpleAspectInstanceFactory
-		implements MetadataAwareAspectInstanceFactory {
+		implements MetadataAwareAspectInstanceFactory
+{
 
 	private final AspectMetadata metadata;
 
-
 	/**
 	 * Create a new SimpleMetadataAwareAspectInstanceFactory for the given aspect class.
-	 * @param aspectClass the aspect class
-	 * @param aspectName the aspect name
+	 * 
+	 * @param aspectClass
+	 *            the aspect class
+	 * @param aspectName
+	 *            the aspect name
 	 */
-	public SimpleMetadataAwareAspectInstanceFactory(Class<?> aspectClass, String aspectName) {
+	public SimpleMetadataAwareAspectInstanceFactory(Class<?> aspectClass, String aspectName)
+	{
 		super(aspectClass);
 		this.metadata = new AspectMetadata(aspectClass, aspectName);
 	}
 
-
 	@Override
-	public final AspectMetadata getAspectMetadata() {
+	public final AspectMetadata getAspectMetadata()
+	{
 		return this.metadata;
 	}
 
 	@Override
-	public Object getAspectCreationMutex() {
+	public Object getAspectCreationMutex()
+	{
 		return this;
 	}
 
 	@Override
-	protected int getOrderForAspectClass(Class<?> aspectClass) {
+	protected int getOrderForAspectClass(Class<?> aspectClass)
+	{
 		return OrderUtils.getOrder(aspectClass, Ordered.LOWEST_PRECEDENCE);
 	}
 

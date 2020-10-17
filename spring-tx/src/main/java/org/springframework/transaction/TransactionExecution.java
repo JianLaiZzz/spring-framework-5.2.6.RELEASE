@@ -24,7 +24,8 @@ package org.springframework.transaction;
  * @author Juergen Hoeller
  * @since 5.2
  */
-public interface TransactionExecution {
+public interface TransactionExecution
+{
 
 	/**
 	 * Return whether the present transaction is new; otherwise participating

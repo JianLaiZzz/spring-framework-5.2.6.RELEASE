@@ -30,7 +30,8 @@ import org.springframework.messaging.support.HeaderMapper;
  * @author Gary Russell
  * @since 4.1
  */
-public interface JmsHeaderMapper extends HeaderMapper<Message> {
+public interface JmsHeaderMapper extends HeaderMapper<Message>
+{
 
 	/**
 	 * The JMS-compliant {@code content_type} property.
@@ -38,4 +39,3 @@ public interface JmsHeaderMapper extends HeaderMapper<Message> {
 	String CONTENT_TYPE_PROPERTY = "content_type";
 
 }
-

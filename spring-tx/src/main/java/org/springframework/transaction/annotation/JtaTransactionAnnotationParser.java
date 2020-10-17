@@ -37,41 +37,50 @@ import org.springframework.transaction.interceptor.TransactionAttribute;
  * @since 4.0
  */
 @SuppressWarnings("serial")
-public class JtaTransactionAnnotationParser implements TransactionAnnotationParser, Serializable {
+public class JtaTransactionAnnotationParser implements TransactionAnnotationParser, Serializable
+{
 
 	@Override
-	public boolean isCandidateClass(Class<?> targetClass) {
+	public boolean isCandidateClass(Class<?> targetClass)
+	{
 		return AnnotationUtils.isCandidateClass(targetClass, javax.transaction.Transactional.class);
 	}
 
 	@Override
 	@Nullable
-	public TransactionAttribute parseTransactionAnnotation(AnnotatedElement element) {
-		AnnotationAttributes attributes = AnnotatedElementUtils.getMergedAnnotationAttributes(
-				element, javax.transaction.Transactional.class);
-		if (attributes != null) {
+	public TransactionAttribute parseTransactionAnnotation(AnnotatedElement element)
+	{
+		AnnotationAttributes attributes = AnnotatedElementUtils.getMergedAnnotationAttributes(element,
+				javax.transaction.Transactional.class);
+		if (attributes != null)
+		{
 			return parseTransactionAnnotation(attributes);
 		}
-		else {
+		else
+		{
 			return null;
 		}
 	}
 
-	public TransactionAttribute parseTransactionAnnotation(javax.transaction.Transactional ann) {
+	public TransactionAttribute parseTransactionAnnotation(javax.transaction.Transactional ann)
+	{
 		return parseTransactionAnnotation(AnnotationUtils.getAnnotationAttributes(ann, false, false));
 	}
 
-	protected TransactionAttribute parseTransactionAnnotation(AnnotationAttributes attributes) {
+	protected TransactionAttribute parseTransactionAnnotation(AnnotationAttributes attributes)
+	{
 		RuleBasedTransactionAttribute rbta = new RuleBasedTransactionAttribute();
 
-		rbta.setPropagationBehaviorName(
-				RuleBasedTransactionAttribute.PREFIX_PROPAGATION + attributes.getEnum("value").toString());
+		rbta.setPropagationBehaviorName(RuleBasedTransactionAttribute.PREFIX_PROPAGATION
+				+ attributes.getEnum("value").toString());
 
 		List<RollbackRuleAttribute> rollbackRules = new ArrayList<>();
-		for (Class<?> rbRule : attributes.getClassArray("rollbackOn")) {
+		for (Class<?> rbRule : attributes.getClassArray("rollbackOn"))
+		{
 			rollbackRules.add(new RollbackRuleAttribute(rbRule));
 		}
-		for (Class<?> rbRule : attributes.getClassArray("dontRollbackOn")) {
+		for (Class<?> rbRule : attributes.getClassArray("dontRollbackOn"))
+		{
 			rollbackRules.add(new NoRollbackRuleAttribute(rbRule));
 		}
 		rbta.setRollbackRules(rollbackRules);
@@ -79,14 +88,15 @@ public class JtaTransactionAnnotationParser implements TransactionAnnotationPars
 		return rbta;
 	}
 
-
 	@Override
-	public boolean equals(@Nullable Object other) {
+	public boolean equals(@Nullable Object other)
+	{
 		return (this == other || other instanceof JtaTransactionAnnotationParser);
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		return JtaTransactionAnnotationParser.class.hashCode();
 	}
 

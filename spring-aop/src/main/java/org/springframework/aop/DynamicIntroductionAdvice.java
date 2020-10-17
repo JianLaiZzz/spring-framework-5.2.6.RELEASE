@@ -23,10 +23,12 @@ import org.aopalliance.aop.Advice;
  * to be implemented by an Advice, and available via a proxy using that
  * interceptor. This is a fundamental AOP concept called <b>introduction</b>.
  *
- * <p>Introductions are often <b>mixins</b>, enabling the building of composite
+ * <p>
+ * Introductions are often <b>mixins</b>, enabling the building of composite
  * objects that can achieve many of the goals of multiple inheritance in Java.
  *
- * <p>Compared to {qlink IntroductionInfo}, this interface allows an advice to
+ * <p>
+ * Compared to {qlink IntroductionInfo}, this interface allows an advice to
  * implement a range of interfaces that is not necessarily known in advance.
  * Thus an {@link IntroductionAdvisor} can be used to specify which interfaces
  * will be exposed in an advised object.
@@ -36,11 +38,14 @@ import org.aopalliance.aop.Advice;
  * @see IntroductionInfo
  * @see IntroductionAdvisor
  */
-public interface DynamicIntroductionAdvice extends Advice {
+public interface DynamicIntroductionAdvice extends Advice
+{
 
 	/**
 	 * Does this introduction advice implement the given interface?
-	 * @param intf the interface to check
+	 * 
+	 * @param intf
+	 *            the interface to check
 	 * @return whether the advice implements the specified interface
 	 */
 	boolean implementsInterface(Class<?> intf);

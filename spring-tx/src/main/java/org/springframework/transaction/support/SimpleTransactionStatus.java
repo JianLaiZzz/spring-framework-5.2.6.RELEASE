@@ -21,7 +21,8 @@ package org.springframework.transaction.support;
  * implementation. Derives from {@link AbstractTransactionStatus} and
  * adds an explicit {@link #isNewTransaction() "newTransaction"} flag.
  *
- * <p>This class is not used by any of Spring's pre-built
+ * <p>
+ * This class is not used by any of Spring's pre-built
  * {@link org.springframework.transaction.PlatformTransactionManager}
  * implementations. It is mainly provided as a start for custom transaction
  * manager implementations and as a static mock for testing transactional
@@ -32,30 +33,34 @@ package org.springframework.transaction.support;
  * @since 1.2.3
  * @see TransactionCallback#doInTransaction
  */
-public class SimpleTransactionStatus extends AbstractTransactionStatus {
+public class SimpleTransactionStatus extends AbstractTransactionStatus
+{
 
 	private final boolean newTransaction;
-
 
 	/**
 	 * Create a new {@code SimpleTransactionStatus} instance,
 	 * indicating a new transaction.
 	 */
-	public SimpleTransactionStatus() {
+	public SimpleTransactionStatus()
+	{
 		this(true);
 	}
 
 	/**
 	 * Create a new {@code SimpleTransactionStatus} instance.
-	 * @param newTransaction whether to indicate a new transaction
+	 * 
+	 * @param newTransaction
+	 *            whether to indicate a new transaction
 	 */
-	public SimpleTransactionStatus(boolean newTransaction) {
+	public SimpleTransactionStatus(boolean newTransaction)
+	{
 		this.newTransaction = newTransaction;
 	}
 
-
 	@Override
-	public boolean isNewTransaction() {
+	public boolean isNewTransaction()
+	{
 		return this.newTransaction;
 	}
 

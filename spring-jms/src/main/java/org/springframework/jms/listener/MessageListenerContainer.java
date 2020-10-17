@@ -30,7 +30,8 @@ import org.springframework.lang.Nullable;
  * @author Stephane Nicoll
  * @since 4.1
  */
-public interface MessageListenerContainer extends SmartLifecycle {
+public interface MessageListenerContainer extends SmartLifecycle
+{
 
 	/**
 	 * Setup the message listener to use. Throws an {@link IllegalArgumentException}
@@ -62,13 +63,15 @@ public interface MessageListenerContainer extends SmartLifecycle {
 	 * Return whether the reply destination uses Publish/Subscribe domain
 	 * ({@link javax.jms.Topic Topics}). Otherwise, the Point-to-Point domain
 	 * ({@link javax.jms.Queue Queues}) is used.
-	 * <p>By default, the value is identical to {@link #isPubSubDomain()}.
+	 * <p>
+	 * By default, the value is identical to {@link #isPubSubDomain()}.
 	 */
 	boolean isReplyPubSubDomain();
 
 	/**
 	 * Return the {@link QosSettings} to use when sending a reply,
 	 * or {@code null} if the broker's defaults should be used.
+	 * 
 	 * @since 5.0
 	 */
 	@Nullable

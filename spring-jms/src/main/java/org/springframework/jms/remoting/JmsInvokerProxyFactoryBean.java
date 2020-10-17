@@ -27,11 +27,13 @@ import org.springframework.util.ClassUtils;
  * FactoryBean for JMS invoker proxies. Exposes the proxied service for use
  * as a bean reference, using the specified service interface.
  *
- * <p>Serializes remote invocation objects and deserializes remote invocation
+ * <p>
+ * Serializes remote invocation objects and deserializes remote invocation
  * result objects. Uses Java serialization just like RMI, but with the JMS
  * provider as communication infrastructure.
  *
- * <p>To be configured with a {@link javax.jms.QueueConnectionFactory} and a
+ * <p>
+ * To be configured with a {@link javax.jms.QueueConnectionFactory} and a
  * target queue (either as {@link javax.jms.Queue} reference or as queue name).
  *
  * @author Juergen Hoeller
@@ -43,7 +45,8 @@ import org.springframework.util.ClassUtils;
  * @see org.springframework.jms.remoting.JmsInvokerServiceExporter
  */
 public class JmsInvokerProxyFactoryBean extends JmsInvokerClientInterceptor
-		implements FactoryBean<Object>, BeanClassLoaderAware {
+		implements FactoryBean<Object>, BeanClassLoaderAware
+{
 
 	@Nullable
 	private Class<?> serviceInterface;
@@ -54,45 +57,52 @@ public class JmsInvokerProxyFactoryBean extends JmsInvokerClientInterceptor
 	@Nullable
 	private Object serviceProxy;
 
-
 	/**
 	 * Set the interface that the proxy must implement.
-	 * @param serviceInterface the interface that the proxy must implement
-	 * @throws IllegalArgumentException if the supplied {@code serviceInterface}
-	 * is not an interface type
+	 * 
+	 * @param serviceInterface
+	 *            the interface that the proxy must implement
+	 * @throws IllegalArgumentException
+	 *             if the supplied {@code serviceInterface}
+	 *             is not an interface type
 	 */
-	public void setServiceInterface(Class<?> serviceInterface) {
+	public void setServiceInterface(Class<?> serviceInterface)
+	{
 		Assert.notNull(serviceInterface, "'serviceInterface' must not be null");
 		Assert.isTrue(serviceInterface.isInterface(), "'serviceInterface' must be an interface");
 		this.serviceInterface = serviceInterface;
 	}
 
 	@Override
-	public void setBeanClassLoader(ClassLoader classLoader) {
+	public void setBeanClassLoader(ClassLoader classLoader)
+	{
 		this.beanClassLoader = classLoader;
 	}
 
 	@Override
-	public void afterPropertiesSet() {
+	public void afterPropertiesSet()
+	{
 		super.afterPropertiesSet();
 		Assert.notNull(this.serviceInterface, "Property 'serviceInterface' is required");
 		this.serviceProxy = new ProxyFactory(this.serviceInterface, this).getProxy(this.beanClassLoader);
 	}
 
-
 	@Override
 	@Nullable
-	public Object getObject() {
+	public Object getObject()
+	{
 		return this.serviceProxy;
 	}
 
 	@Override
-	public Class<?> getObjectType() {
+	public Class<?> getObjectType()
+	{
 		return this.serviceInterface;
 	}
 
 	@Override
-	public boolean isSingleton() {
+	public boolean isSingleton()
+	{
 		return true;
 	}
 

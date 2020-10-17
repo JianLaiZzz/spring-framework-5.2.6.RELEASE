@@ -27,9 +27,11 @@ import org.springframework.jms.connection.JmsResourceHolder;
  * @author Juergen Hoeller
  * @since 2.5.2
  */
-class LocallyExposedJmsResourceHolder extends JmsResourceHolder {
+class LocallyExposedJmsResourceHolder extends JmsResourceHolder
+{
 
-	public LocallyExposedJmsResourceHolder(Session session) {
+	public LocallyExposedJmsResourceHolder(Session session)
+	{
 		super(session);
 	}
 

@@ -27,17 +27,20 @@ import org.springframework.lang.Nullable;
 /**
  * Metadata interface for a Spring-managed JPA {@link EntityManagerFactory}.
  *
- * <p>This facility can be obtained from Spring-managed EntityManagerFactory
+ * <p>
+ * This facility can be obtained from Spring-managed EntityManagerFactory
  * proxies through casting the EntityManagerFactory handle to this interface.
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @since 2.0
  */
-public interface EntityManagerFactoryInfo {
+public interface EntityManagerFactoryInfo
+{
 
 	/**
 	 * Return the raw underlying EntityManagerFactory.
+	 * 
 	 * @return the unadorned EntityManagerFactory (never {@code null})
 	 */
 	EntityManagerFactory getNativeEntityManagerFactory();
@@ -45,9 +48,10 @@ public interface EntityManagerFactoryInfo {
 	/**
 	 * Return the underlying PersistenceProvider that the underlying
 	 * EntityManagerFactory was created with.
+	 * 
 	 * @return the PersistenceProvider used to create this EntityManagerFactory,
-	 * or {@code null} if the standard JPA provider autodetection process
-	 * was used to configure the EntityManagerFactory
+	 *         or {@code null} if the standard JPA provider autodetection process
+	 *         was used to configure the EntityManagerFactory
 	 */
 	@Nullable
 	PersistenceProvider getPersistenceProvider();
@@ -55,9 +59,10 @@ public interface EntityManagerFactoryInfo {
 	/**
 	 * Return the PersistenceUnitInfo used to create this
 	 * EntityManagerFactory, if the in-container API was used.
+	 * 
 	 * @return the PersistenceUnitInfo used to create this EntityManagerFactory,
-	 * or {@code null} if the in-container contract was not used to
-	 * configure the EntityManagerFactory
+	 *         or {@code null} if the in-container contract was not used to
+	 *         configure the EntityManagerFactory
 	 */
 	@Nullable
 	PersistenceUnitInfo getPersistenceUnitInfo();
@@ -65,9 +70,11 @@ public interface EntityManagerFactoryInfo {
 	/**
 	 * Return the name of the persistence unit used to create this
 	 * EntityManagerFactory, or {@code null} if it is an unnamed default.
-	 * <p>If {@code getPersistenceUnitInfo()} returns non-null, the result of
+	 * <p>
+	 * If {@code getPersistenceUnitInfo()} returns non-null, the result of
 	 * {@code getPersistenceUnitName()} must be equal to the value returned by
 	 * {@code PersistenceUnitInfo.getPersistenceUnitName()}.
+	 * 
 	 * @see #getPersistenceUnitInfo()
 	 * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceUnitName()
 	 */
@@ -77,6 +84,7 @@ public interface EntityManagerFactoryInfo {
 	/**
 	 * Return the JDBC DataSource that this EntityManagerFactory
 	 * obtains its JDBC Connections from.
+	 * 
 	 * @return the JDBC DataSource, or {@code null} if not known
 	 */
 	@Nullable
@@ -85,7 +93,8 @@ public interface EntityManagerFactoryInfo {
 	/**
 	 * Return the (potentially vendor-specific) EntityManager interface
 	 * that this factory's EntityManagers will implement.
-	 * <p>A {@code null} return value suggests that autodetection is supposed
+	 * <p>
+	 * A {@code null} return value suggests that autodetection is supposed
 	 * to happen: either based on a target {@code EntityManager} instance
 	 * or simply defaulting to {@code javax.persistence.EntityManager}.
 	 */
@@ -101,7 +110,8 @@ public interface EntityManagerFactoryInfo {
 
 	/**
 	 * Return the ClassLoader that the application's beans are loaded with.
-	 * <p>Proxies will be generated in this ClassLoader.
+	 * <p>
+	 * Proxies will be generated in this ClassLoader.
 	 */
 	ClassLoader getBeanClassLoader();
 

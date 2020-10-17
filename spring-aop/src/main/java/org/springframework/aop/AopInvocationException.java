@@ -26,22 +26,30 @@ import org.springframework.core.NestedRuntimeException;
  * @since 2.0
  */
 @SuppressWarnings("serial")
-public class AopInvocationException extends NestedRuntimeException {
+public class AopInvocationException extends NestedRuntimeException
+{
 
 	/**
 	 * Constructor for AopInvocationException.
-	 * @param msg the detail message
+	 * 
+	 * @param msg
+	 *            the detail message
 	 */
-	public AopInvocationException(String msg) {
+	public AopInvocationException(String msg)
+	{
 		super(msg);
 	}
 
 	/**
 	 * Constructor for AopInvocationException.
-	 * @param msg the detail message
-	 * @param cause the root cause
+	 * 
+	 * @param msg
+	 *            the detail message
+	 * @param cause
+	 *            the root cause
 	 */
-	public AopInvocationException(String msg, Throwable cause) {
+	public AopInvocationException(String msg, Throwable cause)
+	{
 		super(msg, cause);
 	}
 
