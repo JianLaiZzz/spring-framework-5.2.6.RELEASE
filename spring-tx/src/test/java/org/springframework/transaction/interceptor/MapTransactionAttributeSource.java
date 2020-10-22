@@ -26,30 +26,25 @@ import java.util.Map;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
-public class MapTransactionAttributeSource extends AbstractFallbackTransactionAttributeSource
-{
+public class MapTransactionAttributeSource extends AbstractFallbackTransactionAttributeSource {
 
 	private final Map<Object, TransactionAttribute> attributeMap = new HashMap<>();
 
-	public void register(Class<?> clazz, TransactionAttribute txAttr)
-	{
+	public void register(Class<?> clazz, TransactionAttribute txAttr) {
 		this.attributeMap.put(clazz, txAttr);
 	}
 
-	public void register(Method method, TransactionAttribute txAttr)
-	{
+	public void register(Method method, TransactionAttribute txAttr) {
 		this.attributeMap.put(method, txAttr);
 	}
 
 	@Override
-	protected TransactionAttribute findTransactionAttribute(Class<?> clazz)
-	{
+	protected TransactionAttribute findTransactionAttribute(Class<?> clazz) {
 		return this.attributeMap.get(clazz);
 	}
 
 	@Override
-	protected TransactionAttribute findTransactionAttribute(Method method)
-	{
+	protected TransactionAttribute findTransactionAttribute(Method method) {
 		return this.attributeMap.get(method);
 	}
 

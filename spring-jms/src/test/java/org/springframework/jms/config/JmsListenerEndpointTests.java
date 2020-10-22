@@ -16,11 +16,6 @@
 
 package org.springframework.jms.config;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-
-import javax.jms.MessageListener;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
@@ -30,15 +25,18 @@ import org.springframework.jms.listener.adapter.MessageListenerAdapter;
 import org.springframework.jms.listener.endpoint.JmsActivationSpecConfig;
 import org.springframework.jms.listener.endpoint.JmsMessageEndpointManager;
 
+import javax.jms.MessageListener;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+
 /**
  * @author Stephane Nicoll
  */
-public class JmsListenerEndpointTests
-{
+public class JmsListenerEndpointTests {
 
 	@Test
-	public void setupJmsMessageContainerFullConfig()
-	{
+	public void setupJmsMessageContainerFullConfig() {
 		DefaultMessageListenerContainer container = new DefaultMessageListenerContainer();
 		MessageListener messageListener = new MessageListenerAdapter();
 		SimpleJmsListenerEndpoint endpoint = new SimpleJmsListenerEndpoint();
@@ -58,8 +56,7 @@ public class JmsListenerEndpointTests
 	}
 
 	@Test
-	public void setupJcaMessageContainerFullConfig()
-	{
+	public void setupJcaMessageContainerFullConfig() {
 		JmsMessageEndpointManager container = new JmsMessageEndpointManager();
 		MessageListener messageListener = new MessageListenerAdapter();
 		SimpleJmsListenerEndpoint endpoint = new SimpleJmsListenerEndpoint();
@@ -79,8 +76,7 @@ public class JmsListenerEndpointTests
 	}
 
 	@Test
-	public void setupConcurrencySimpleContainer()
-	{
+	public void setupConcurrencySimpleContainer() {
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		MessageListener messageListener = new MessageListenerAdapter();
 		SimpleJmsListenerEndpoint endpoint = new SimpleJmsListenerEndpoint();
@@ -93,8 +89,7 @@ public class JmsListenerEndpointTests
 	}
 
 	@Test
-	public void setupMessageContainerNoListener()
-	{
+	public void setupMessageContainerNoListener() {
 		DefaultMessageListenerContainer container = new DefaultMessageListenerContainer();
 		SimpleJmsListenerEndpoint endpoint = new SimpleJmsListenerEndpoint();
 
@@ -102,8 +97,7 @@ public class JmsListenerEndpointTests
 	}
 
 	@Test
-	public void setupMessageContainerUnsupportedContainer()
-	{
+	public void setupMessageContainerUnsupportedContainer() {
 		MessageListenerContainer container = mock(MessageListenerContainer.class);
 		SimpleJmsListenerEndpoint endpoint = new SimpleJmsListenerEndpoint();
 		endpoint.setMessageListener(new MessageListenerAdapter());

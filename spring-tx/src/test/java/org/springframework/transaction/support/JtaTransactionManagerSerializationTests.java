@@ -16,26 +16,24 @@
 
 package org.springframework.transaction.support;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.context.testfixture.jndi.SimpleNamingContextBuilder;
 import org.springframework.core.testfixture.io.SerializationTestUtils;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
+import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 /**
  * @author Rod Johnson
  */
-public class JtaTransactionManagerSerializationTests
-{
+public class JtaTransactionManagerSerializationTests {
 
 	@Test
-	public void serializable() throws Exception
-	{
+	public void serializable() throws Exception {
 		UserTransaction ut1 = mock(UserTransaction.class);
 		UserTransaction ut2 = mock(UserTransaction.class);
 		TransactionManager tm = mock(TransactionManager.class);

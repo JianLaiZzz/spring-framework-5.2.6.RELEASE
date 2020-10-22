@@ -15,17 +15,17 @@
  */
 package org.springframework.web.method;
 
-import java.util.function.Predicate;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests for {@link HandlerTypePredicate}.
+ *
  * @author Rossen Stoyanchev
  */
 public class HandlerTypePredicateTests {
@@ -53,14 +53,18 @@ public class HandlerTypePredicateTests {
 
 
 	@Controller
-	private static class HtmlController {}
+	private static class HtmlController {
+	}
 
 	@RestController
-	private static class ApiController {}
+	private static class ApiController {
+	}
 
 	@RestController
-	private static class AnotherApiController implements Special {}
+	private static class AnotherApiController implements Special {
+	}
 
-	interface Special {}
+	interface Special {
+	}
 
 }

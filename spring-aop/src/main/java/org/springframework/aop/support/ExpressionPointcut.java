@@ -25,8 +25,7 @@ import org.springframework.lang.Nullable;
  * @author Rob Harrop
  * @since 2.0
  */
-public interface ExpressionPointcut extends Pointcut
-{
+public interface ExpressionPointcut extends Pointcut {
 
 	/**
 	 * Return the String expression for this pointcut.

@@ -16,17 +16,16 @@
 
 package org.springframework.web.reactive.resource;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
-
-import reactor.core.publisher.Mono;
-
 import org.springframework.core.io.Resource;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Default immutable implementation of {@link ResourceResolverChain}.
@@ -69,7 +68,7 @@ class DefaultResourceResolverChain implements ResourceResolverChain {
 
 	@Override
 	public Mono<Resource> resolveResource(@Nullable ServerWebExchange exchange, String requestPath,
-			List<? extends Resource> locations) {
+										  List<? extends Resource> locations) {
 
 		return (this.resolver != null && this.nextChain != null ?
 				this.resolver.resolveResource(exchange, requestPath, locations, this.nextChain) :

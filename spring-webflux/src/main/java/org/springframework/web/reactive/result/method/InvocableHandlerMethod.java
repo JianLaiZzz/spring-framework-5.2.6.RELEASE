@@ -16,23 +16,7 @@
 
 package org.springframework.web.reactive.result.method;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
-import reactor.core.publisher.Mono;
-
-import org.springframework.core.CoroutinesUtils;
-import org.springframework.core.DefaultParameterNameDiscoverer;
-import org.springframework.core.KotlinDetector;
-import org.springframework.core.MethodParameter;
-import org.springframework.core.ParameterNameDiscoverer;
-import org.springframework.core.ReactiveAdapter;
-import org.springframework.core.ReactiveAdapterRegistry;
+import org.springframework.core.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.lang.Nullable;
@@ -42,6 +26,15 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.reactive.BindingContext;
 import org.springframework.web.reactive.HandlerResult;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Extension of {@link HandlerMethod} that invokes the underlying method with
@@ -125,9 +118,10 @@ public class InvocableHandlerMethod extends HandlerMethod {
 
 	/**
 	 * Invoke the method for the given exchange.
-	 * @param exchange the current exchange
+	 *
+	 * @param exchange       the current exchange
 	 * @param bindingContext the binding context to use
-	 * @param providedArgs optional list of argument values to match by type
+	 * @param providedArgs   optional list of argument values to match by type
 	 * @return a Mono with a {@link HandlerResult}
 	 */
 	@SuppressWarnings("KotlinInternalInJava")
@@ -142,20 +136,16 @@ public class InvocableHandlerMethod extends HandlerMethod {
 				if (KotlinDetector.isKotlinReflectPresent() && KotlinDetector.isKotlinType(method.getDeclaringClass())
 						&& CoroutinesUtils.isSuspendingFunction(method)) {
 					value = CoroutinesUtils.invokeSuspendingFunction(method, getBean(), args);
-				}
-				else {
+				} else {
 					value = method.invoke(getBean(), args);
 				}
-			}
-			catch (IllegalArgumentException ex) {
+			} catch (IllegalArgumentException ex) {
 				assertTargetBean(getBridgedMethod(), getBean(), args);
 				String text = (ex.getMessage() != null ? ex.getMessage() : "Illegal argument");
 				return Mono.error(new IllegalStateException(formatInvokeError(text, args), ex));
-			}
-			catch (InvocationTargetException ex) {
+			} catch (InvocationTargetException ex) {
 				return Mono.error(ex.getTargetException());
-			}
-			catch (Throwable ex) {
+			} catch (Throwable ex) {
 				// Unlikely to ever get here, but it must be handled...
 				return Mono.error(new IllegalStateException(formatInvokeError("Invocation failure", args), ex));
 			}
@@ -201,8 +191,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 				argMonos.add(this.resolvers.resolveArgument(parameter, bindingContext, exchange)
 						.defaultIfEmpty(NO_ARG_VALUE)
 						.doOnError(ex -> logArgumentErrorIfNecessary(exchange, parameter, ex)));
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				logArgumentErrorIfNecessary(exchange, parameter, ex);
 				argMonos.add(Mono.error(ex));
 			}

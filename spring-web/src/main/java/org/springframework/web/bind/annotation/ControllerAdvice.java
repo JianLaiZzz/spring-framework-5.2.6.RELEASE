@@ -16,10 +16,10 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.lang.annotation.*;
-
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
+
+import java.lang.annotation.*;
 
 /**
  * Specialization of {@link Component @Component} for classes that declare
@@ -66,16 +66,15 @@ import org.springframework.stereotype.Component;
  * @author Rossen Stoyanchev
  * @author Brian Clozel
  * @author Sam Brannen
- * @since 3.2
  * @see org.springframework.stereotype.Controller
  * @see RestControllerAdvice
+ * @since 3.2
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Component
-public @interface ControllerAdvice
-{
+public @interface ControllerAdvice {
 
 	/**
 	 * Alias for the {@link #basePackages} attribute.
@@ -83,9 +82,9 @@ public @interface ControllerAdvice
 	 * Allows for more concise annotation declarations &mdash; for example,
 	 * {@code @ControllerAdvice("org.my.pkg")} is equivalent to
 	 * {@code @ControllerAdvice(basePackages = "org.my.pkg")}.
-	 * 
-	 * @since 4.0
+	 *
 	 * @see #basePackages
+	 * @since 4.0
 	 */
 	@AliasFor("basePackages")
 	String[] value() default {};
@@ -103,7 +102,7 @@ public @interface ControllerAdvice
 	 * <p>
 	 * Also consider using {@link #basePackageClasses} as a type-safe
 	 * alternative to String-based package names.
-	 * 
+	 *
 	 * @since 4.0
 	 */
 	@AliasFor("value")
@@ -116,7 +115,7 @@ public @interface ControllerAdvice
 	 * <p>
 	 * Consider creating a special no-op marker class or interface in each package
 	 * that serves no purpose other than being referenced by this attribute.
-	 * 
+	 *
 	 * @since 4.0
 	 */
 	Class<?>[] basePackageClasses() default {};
@@ -126,7 +125,7 @@ public @interface ControllerAdvice
 	 * <p>
 	 * Controllers that are assignable to at least one of the given types
 	 * will be advised by the {@code @ControllerAdvice} annotated class.
-	 * 
+	 *
 	 * @since 4.0
 	 */
 	Class<?>[] assignableTypes() default {};
@@ -139,7 +138,7 @@ public @interface ControllerAdvice
 	 * <p>
 	 * Consider creating a custom composed annotation or use a predefined one,
 	 * like {@link RestController @RestController}.
-	 * 
+	 *
 	 * @since 4.0
 	 */
 	Class<? extends Annotation>[] annotations() default {};

@@ -16,16 +16,8 @@
 
 package org.springframework.http.server.reactive;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
-
 import org.apache.commons.logging.Log;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -39,6 +31,13 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 /**
  * Base class for {@link ServerHttpResponse} implementations.
@@ -98,8 +97,7 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
 	public boolean setStatusCode(@Nullable HttpStatus status) {
 		if (this.state.get() == State.COMMITTED) {
 			return false;
-		}
-		else {
+		} else {
 			this.statusCode = (status != null ? status.value() : null);
 			return true;
 		}
@@ -115,8 +113,7 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
 	public boolean setRawStatusCode(@Nullable Integer statusCode) {
 		if (this.state.get() == State.COMMITTED) {
 			return false;
-		}
-		else {
+		} else {
 			this.statusCode = statusCode;
 			return true;
 		}
@@ -130,6 +127,7 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
 
 	/**
 	 * Set the HTTP status code of the response.
+	 *
 	 * @param statusCode the HTTP status as an integer value
 	 * @since 5.0.1
 	 * @deprecated as of 5.2.4 in favor of {@link ServerHttpResponse#setRawStatusCode(Integer)}.
@@ -143,6 +141,7 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
 
 	/**
 	 * Return the HTTP status code of the response.
+	 *
 	 * @return the HTTP status as an integer value
 	 * @since 5.0.1
 	 * @deprecated as of 5.2.4 in favor of {@link ServerHttpResponse#getRawStatusCode()}.
@@ -172,8 +171,7 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
 		if (this.state.get() == State.COMMITTED) {
 			throw new IllegalStateException("Can't add the cookie " + cookie +
 					"because the HTTP response has already been committed");
-		}
-		else {
+		} else {
 			getCookies().add(cookie.getName(), cookie);
 		}
 	}
@@ -207,8 +205,7 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
 							writeWithInternal(Mono.fromCallable(() -> buffer)
 									.doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release))))
 					.doOnError(t -> getHeaders().clearContentHeaders());
-		}
-		else {
+		} else {
 			return new ChannelSendOperator<>(body, inner -> doCommit(() -> writeWithInternal(inner)))
 					.doOnError(t -> getHeaders().clearContentHeaders());
 		}
@@ -227,6 +224,7 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
 
 	/**
 	 * A variant of {@link #doCommit(Supplier)} for a response without no body.
+	 *
 	 * @return a completion publisher
 	 */
 	protected Mono<Void> doCommit() {
@@ -236,6 +234,7 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
 	/**
 	 * Apply {@link #beforeCommit(Supplier) beforeCommit} actions, apply the
 	 * response status and headers/cookies, and write the response body.
+	 *
 	 * @param writeAction the action to write the response body (may be {@code null})
 	 * @return a completion publisher
 	 */
@@ -272,12 +271,14 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
 
 	/**
 	 * Write to the underlying the response.
+	 *
 	 * @param body the publisher to write with
 	 */
 	protected abstract Mono<Void> writeWithInternal(Publisher<? extends DataBuffer> body);
 
 	/**
 	 * Write to the underlying the response, and flush after each {@code Publisher<DataBuffer>}.
+	 *
 	 * @param body the publisher to write and flush with
 	 */
 	protected abstract Mono<Void> writeAndFlushWithInternal(Publisher<? extends Publisher<? extends DataBuffer>> body);

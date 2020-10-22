@@ -16,19 +16,18 @@
 
 package org.springframework.jca.cci.object;
 
-import java.sql.SQLException;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jca.cci.core.RecordCreator;
+import org.springframework.jca.cci.core.RecordExtractor;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 
 import javax.resource.ResourceException;
 import javax.resource.cci.ConnectionFactory;
 import javax.resource.cci.InteractionSpec;
 import javax.resource.cci.Record;
 import javax.resource.cci.RecordFactory;
-
-import org.springframework.dao.DataAccessException;
-import org.springframework.jca.cci.core.RecordCreator;
-import org.springframework.jca.cci.core.RecordExtractor;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
+import java.sql.SQLException;
 
 /**
  * EIS operation object that expects mapped input and output objects,
@@ -43,29 +42,25 @@ import org.springframework.util.Assert;
  *
  * @author Thierry Templier
  * @author Juergen Hoeller
- * @since 1.2
  * @see #createInputRecord(javax.resource.cci.RecordFactory, Object)
  * @see #extractOutputData(javax.resource.cci.Record)
+ * @since 1.2
  */
-public abstract class MappingRecordOperation extends EisOperation
-{
+public abstract class MappingRecordOperation extends EisOperation {
 
 	/**
 	 * Constructor that allows use as a JavaBean.
 	 */
-	public MappingRecordOperation()
-	{
+	public MappingRecordOperation() {
 	}
 
 	/**
 	 * Convenient constructor with ConnectionFactory and specifications
 	 * (connection and interaction).
-	 * 
-	 * @param connectionFactory
-	 *            the ConnectionFactory to use to obtain connections
+	 *
+	 * @param connectionFactory the ConnectionFactory to use to obtain connections
 	 */
-	public MappingRecordOperation(ConnectionFactory connectionFactory, InteractionSpec interactionSpec)
-	{
+	public MappingRecordOperation(ConnectionFactory connectionFactory, InteractionSpec interactionSpec) {
 		getCciTemplate().setConnectionFactory(connectionFactory);
 		setInteractionSpec(interactionSpec);
 	}
@@ -79,31 +74,27 @@ public abstract class MappingRecordOperation extends EisOperation
 	 * Specify a RecordCreator here if you always need to call CCI's
 	 * {@code Interaction.execute} variant with a passed-in output Record.
 	 * This RecordCreator will then be invoked to create a default output Record instance.
-	 * 
+	 *
 	 * @see javax.resource.cci.Interaction#execute(javax.resource.cci.InteractionSpec, Record)
 	 * @see javax.resource.cci.Interaction#execute(javax.resource.cci.InteractionSpec, Record, Record)
 	 * @see org.springframework.jca.cci.core.CciTemplate#setOutputRecordCreator
 	 */
-	public void setOutputRecordCreator(RecordCreator creator)
-	{
+	public void setOutputRecordCreator(RecordCreator creator) {
 		getCciTemplate().setOutputRecordCreator(creator);
 	}
 
 	/**
 	 * Execute the interaction encapsulated by this operation object.
-	 * 
-	 * @param inputObject
-	 *            the input data, to be converted to a Record
-	 *            by the {@code createInputRecord} method
+	 *
+	 * @param inputObject the input data, to be converted to a Record
+	 *                    by the {@code createInputRecord} method
 	 * @return the output data extracted with the {@code extractOutputData} method
-	 * @throws DataAccessException
-	 *             if there is any problem
+	 * @throws DataAccessException if there is any problem
 	 * @see #createInputRecord
 	 * @see #extractOutputData
 	 */
 	@Nullable
-	public Object execute(Object inputObject) throws DataAccessException
-	{
+	public Object execute(Object inputObject) throws DataAccessException {
 		InteractionSpec interactionSpec = getInteractionSpec();
 		Assert.state(interactionSpec != null, "No InteractionSpec set");
 		return getCciTemplate().execute(interactionSpec, new RecordCreatorImpl(inputObject),
@@ -113,13 +104,11 @@ public abstract class MappingRecordOperation extends EisOperation
 	/**
 	 * Subclasses must implement this method to generate an input Record
 	 * from an input object passed into the {@code execute} method.
-	 * 
-	 * @param inputObject
-	 *            the passed-in input object
+	 *
+	 * @param inputObject the passed-in input object
 	 * @return the CCI input Record
-	 * @throws ResourceException
-	 *             if thrown by a CCI method, to be auto-converted
-	 *             to a DataAccessException
+	 * @throws ResourceException if thrown by a CCI method, to be auto-converted
+	 *                           to a DataAccessException
 	 * @see #execute(Object)
 	 */
 	protected abstract Record createInputRecord(RecordFactory recordFactory, Object inputObject)
@@ -128,13 +117,11 @@ public abstract class MappingRecordOperation extends EisOperation
 	/**
 	 * Subclasses must implement this method to convert the Record returned
 	 * by CCI execution into a result object for the {@code execute} method.
-	 * 
-	 * @param outputRecord
-	 *            the Record returned by CCI execution
+	 *
+	 * @param outputRecord the Record returned by CCI execution
 	 * @return the result object
-	 * @throws ResourceException
-	 *             if thrown by a CCI method, to be auto-converted
-	 *             to a DataAccessException
+	 * @throws ResourceException if thrown by a CCI method, to be auto-converted
+	 *                           to a DataAccessException
 	 * @see #execute(Object)
 	 */
 	protected abstract Object extractOutputData(Record outputRecord)
@@ -144,20 +131,17 @@ public abstract class MappingRecordOperation extends EisOperation
 	 * Implementation of RecordCreator that calls the enclosing
 	 * class's {@code createInputRecord} method.
 	 */
-	protected class RecordCreatorImpl implements RecordCreator
-	{
+	protected class RecordCreatorImpl implements RecordCreator {
 
 		private final Object inputObject;
 
-		public RecordCreatorImpl(Object inObject)
-		{
+		public RecordCreatorImpl(Object inObject) {
 			this.inputObject = inObject;
 		}
 
 		@Override
 		public Record createRecord(RecordFactory recordFactory)
-				throws ResourceException, DataAccessException
-		{
+				throws ResourceException, DataAccessException {
 			return createInputRecord(recordFactory, this.inputObject);
 		}
 	}
@@ -166,13 +150,11 @@ public abstract class MappingRecordOperation extends EisOperation
 	 * Implementation of RecordExtractor that calls the enclosing
 	 * class's {@code extractOutputData} method.
 	 */
-	protected class RecordExtractorImpl implements RecordExtractor<Object>
-	{
+	protected class RecordExtractorImpl implements RecordExtractor<Object> {
 
 		@Override
 		public Object extractData(Record record)
-				throws ResourceException, SQLException, DataAccessException
-		{
+				throws ResourceException, SQLException, DataAccessException {
 			return extractOutputData(record);
 		}
 	}

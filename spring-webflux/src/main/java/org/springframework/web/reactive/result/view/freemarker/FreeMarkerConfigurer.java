@@ -16,19 +16,18 @@
 
 package org.springframework.web.reactive.result.view.freemarker;
 
-import java.io.IOException;
-import java.util.List;
-
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
-
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.lang.Nullable;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 import org.springframework.util.Assert;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Configures FreeMarker for web usage via the "configLocation" and/or
@@ -53,7 +52,7 @@ import org.springframework.util.Assert;
  * &lt;#import "/spring.ftl" as spring/&gt;
  * &lt;@spring.bind "person.age"/&gt;
  * age is ${spring.status.value}</pre>
- *
+ * <p>
  * Note: Spring's FreeMarker support requires FreeMarker 2.3 or higher.
  *
  * @author Rossen Stoyanchev
@@ -86,6 +85,7 @@ public class FreeMarkerConfigurer extends FreeMarkerConfigurationFactory
 	 * Initialize FreeMarkerConfigurationFactory's Configuration
 	 * if not overridden by a pre-configured FreeMarker Configuration.
 	 * <p>Sets up a ClassTemplateLoader to use for loading Spring macros.
+	 *
 	 * @see #createConfiguration
 	 * @see #setConfiguration
 	 */

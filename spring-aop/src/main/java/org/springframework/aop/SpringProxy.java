@@ -21,10 +21,9 @@ package org.springframework.aop;
  * whether or not objects are Spring-generated proxies.
  *
  * @author Rob Harrop
- * @since 2.0.1
  * @see org.springframework.aop.support.AopUtils#isAopProxy(Object)
+ * @since 2.0.1
  */
-public interface SpringProxy
-{
+public interface SpringProxy {
 
 }

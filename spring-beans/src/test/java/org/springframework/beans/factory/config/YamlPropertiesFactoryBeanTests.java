@@ -16,19 +16,18 @@
 
 package org.springframework.beans.factory.config;
 
-import java.util.Map;
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.DuplicateKeyException;
-import org.yaml.snakeyaml.scanner.ScannerException;
-
 import org.springframework.beans.factory.config.YamlProcessor.DocumentMatcher;
 import org.springframework.beans.factory.config.YamlProcessor.MatchStatus;
 import org.springframework.beans.factory.config.YamlProcessor.ResolutionMethod;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.DuplicateKeyException;
+import org.yaml.snakeyaml.scanner.ScannerException;
+
+import java.util.Map;
+import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -55,8 +54,8 @@ public class YamlPropertiesFactoryBeanTests {
 		YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
 		factory.setResources(new ByteArrayResource("foo: bar\ncd\nspam:\n  foo: baz".getBytes()));
 		assertThatExceptionOfType(ScannerException.class)
-			.isThrownBy(factory::getObject)
-			.withMessageContaining("line 3, column 1");
+				.isThrownBy(factory::getObject)
+				.withMessageContaining("line 3, column 1");
 	}
 
 	@Test

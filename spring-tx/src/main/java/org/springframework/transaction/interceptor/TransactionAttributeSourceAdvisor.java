@@ -38,18 +38,15 @@ import org.springframework.util.Assert;
  * @see TransactionProxyFactoryBean
  */
 @SuppressWarnings("serial")
-public class TransactionAttributeSourceAdvisor extends AbstractPointcutAdvisor
-{
+public class TransactionAttributeSourceAdvisor extends AbstractPointcutAdvisor {
 
 	@Nullable
 	private TransactionInterceptor transactionInterceptor;
 
-	private final TransactionAttributeSourcePointcut pointcut = new TransactionAttributeSourcePointcut()
-	{
+	private final TransactionAttributeSourcePointcut pointcut = new TransactionAttributeSourcePointcut() {
 		@Override
 		@Nullable
-		protected TransactionAttributeSource getTransactionAttributeSource()
-		{
+		protected TransactionAttributeSource getTransactionAttributeSource() {
 			return (transactionInterceptor != null
 					? transactionInterceptor.getTransactionAttributeSource()
 					: null);
@@ -59,26 +56,22 @@ public class TransactionAttributeSourceAdvisor extends AbstractPointcutAdvisor
 	/**
 	 * Create a new TransactionAttributeSourceAdvisor.
 	 */
-	public TransactionAttributeSourceAdvisor()
-	{
+	public TransactionAttributeSourceAdvisor() {
 	}
 
 	/**
 	 * Create a new TransactionAttributeSourceAdvisor.
-	 * 
-	 * @param interceptor
-	 *            the transaction interceptor to use for this advisor
+	 *
+	 * @param interceptor the transaction interceptor to use for this advisor
 	 */
-	public TransactionAttributeSourceAdvisor(TransactionInterceptor interceptor)
-	{
+	public TransactionAttributeSourceAdvisor(TransactionInterceptor interceptor) {
 		setTransactionInterceptor(interceptor);
 	}
 
 	/**
 	 * Set the transaction interceptor to use for this advisor.
 	 */
-	public void setTransactionInterceptor(TransactionInterceptor interceptor)
-	{
+	public void setTransactionInterceptor(TransactionInterceptor interceptor) {
 		this.transactionInterceptor = interceptor;
 	}
 
@@ -86,21 +79,18 @@ public class TransactionAttributeSourceAdvisor extends AbstractPointcutAdvisor
 	 * Set the {@link ClassFilter} to use for this pointcut.
 	 * Default is {@link ClassFilter#TRUE}.
 	 */
-	public void setClassFilter(ClassFilter classFilter)
-	{
+	public void setClassFilter(ClassFilter classFilter) {
 		this.pointcut.setClassFilter(classFilter);
 	}
 
 	@Override
-	public Advice getAdvice()
-	{
+	public Advice getAdvice() {
 		Assert.state(this.transactionInterceptor != null, "No TransactionInterceptor set");
 		return this.transactionInterceptor;
 	}
 
 	@Override
-	public Pointcut getPointcut()
-	{
+	public Pointcut getPointcut() {
 		return this.pointcut;
 	}
 

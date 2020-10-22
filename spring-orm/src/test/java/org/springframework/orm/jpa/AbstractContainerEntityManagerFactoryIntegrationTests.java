@@ -16,20 +16,19 @@
 
 package org.springframework.orm.jpa;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.lang.reflect.Proxy;
-import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.core.testfixture.io.SerializationTestUtils;
+import org.springframework.orm.jpa.domain.DriversLicense;
+import org.springframework.orm.jpa.domain.Person;
 
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import java.lang.reflect.Proxy;
+import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.core.testfixture.io.SerializationTestUtils;
-import org.springframework.orm.jpa.domain.DriversLicense;
-import org.springframework.orm.jpa.domain.Person;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * Integration tests for LocalContainerEntityManagerFactoryBean.
@@ -39,12 +38,10 @@ import org.springframework.orm.jpa.domain.Person;
  * @author Juergen Hoeller
  */
 public abstract class AbstractContainerEntityManagerFactoryIntegrationTests
-		extends AbstractEntityManagerFactoryIntegrationTests
-{
+		extends AbstractEntityManagerFactoryIntegrationTests {
 
 	@Test
-	public void testEntityManagerFactoryImplementsEntityManagerFactoryInfo()
-	{
+	public void testEntityManagerFactoryImplementsEntityManagerFactoryInfo() {
 		boolean condition = entityManagerFactory instanceof EntityManagerFactoryInfo;
 		assertThat(condition).as("Must have introduced config interface").isTrue();
 		EntityManagerFactoryInfo emfi = (EntityManagerFactoryInfo) entityManagerFactory;
@@ -55,41 +52,35 @@ public abstract class AbstractContainerEntityManagerFactoryIntegrationTests
 	}
 
 	@Test
-	public void testStateClean()
-	{
+	public void testStateClean() {
 		assertThat(countRowsInTable("person")).as("Should be no people from previous transactions")
 				.isEqualTo(0);
 	}
 
 	@Test
-	public void testJdbcTx1_1()
-	{
+	public void testJdbcTx1_1() {
 		testJdbcTx2();
 	}
 
 	@Test
-	public void testJdbcTx1_2()
-	{
+	public void testJdbcTx1_2() {
 		testJdbcTx2();
 	}
 
 	@Test
-	public void testJdbcTx1_3()
-	{
+	public void testJdbcTx1_3() {
 		testJdbcTx2();
 	}
 
 	@Test
-	public void testJdbcTx2()
-	{
+	public void testJdbcTx2() {
 		assertThat(countRowsInTable("person")).as("Any previous tx must have been rolled back")
 				.isEqualTo(0);
 		executeSqlScript("/org/springframework/orm/jpa/insertPerson.sql");
 	}
 
 	@Test
-	public void testEntityManagerProxyIsProxy()
-	{
+	public void testEntityManagerProxyIsProxy() {
 		assertThat(Proxy.isProxyClass(sharedEntityManager.getClass())).isTrue();
 		Query q = sharedEntityManager.createQuery("select p from Person as p");
 		q.getResultList();
@@ -100,8 +91,7 @@ public abstract class AbstractContainerEntityManagerFactoryIntegrationTests
 	}
 
 	@Test
-	public void testBogusQuery()
-	{
+	public void testBogusQuery() {
 		assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
 		{
 			Query query = sharedEntityManager.createQuery("It's raining toads");
@@ -111,8 +101,7 @@ public abstract class AbstractContainerEntityManagerFactoryIntegrationTests
 	}
 
 	@Test
-	public void testGetReferenceWhenNoRow()
-	{
+	public void testGetReferenceWhenNoRow() {
 		assertThatExceptionOfType(Exception.class).isThrownBy(() ->
 		{
 			Person notThere = sharedEntityManager.getReference(Person.class, 666);
@@ -123,10 +112,8 @@ public abstract class AbstractContainerEntityManagerFactoryIntegrationTests
 	}
 
 	@Test
-	public void testLazyLoading()
-	{
-		try
-		{
+	public void testLazyLoading() {
+		try {
 			Person tony = new Person();
 			tony.setFirstName("Tony");
 			tony.setLastName("Blair");
@@ -145,17 +132,14 @@ public abstract class AbstractContainerEntityManagerFactoryIntegrationTests
 			assertThat(newTony.getDriversLicense()).isNotNull();
 
 			newTony.getDriversLicense().getSerialNumber();
-		}
-		finally
-		{
+		} finally {
 			deleteFromTables("person", "drivers_license");
 		}
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testMultipleResults()
-	{
+	public void testMultipleResults() {
 		// Add with JDBC
 		String firstName = "Tony";
 		insertPerson(firstName);
@@ -168,28 +152,24 @@ public abstract class AbstractContainerEntityManagerFactoryIntegrationTests
 		assertThat(people.get(0).getFirstName()).isEqualTo(firstName);
 	}
 
-	protected void insertPerson(String firstName)
-	{
+	protected void insertPerson(String firstName) {
 		String INSERT_PERSON = "INSERT INTO PERSON (ID, FIRST_NAME, LAST_NAME) VALUES (?, ?, ?)";
 		jdbcTemplate.update(INSERT_PERSON, 1, firstName, "Blair");
 	}
 
 	@Test
-	public void testEntityManagerProxyRejectsProgrammaticTxManagement()
-	{
+	public void testEntityManagerProxyRejectsProgrammaticTxManagement() {
 		assertThatIllegalStateException()
 				.as("Should not be able to create transactions on container managed EntityManager")
 				.isThrownBy(sharedEntityManager::getTransaction);
 	}
 
 	@Test
-	public void testInstantiateAndSaveWithSharedEmProxy()
-	{
+	public void testInstantiateAndSaveWithSharedEmProxy() {
 		testInstantiateAndSave(sharedEntityManager);
 	}
 
-	protected void testInstantiateAndSave(EntityManager em)
-	{
+	protected void testInstantiateAndSave(EntityManager em) {
 		assertThat(countRowsInTable("person")).as("Should be no people from previous transactions")
 				.isEqualTo(0);
 		Person p = new Person();
@@ -203,8 +183,7 @@ public abstract class AbstractContainerEntityManagerFactoryIntegrationTests
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testQueryNoPersons()
-	{
+	public void testQueryNoPersons() {
 		EntityManager em = entityManagerFactory.createEntityManager();
 		Query q = em.createQuery("select p from Person as p");
 		List<Person> people = q.getResultList();
@@ -214,8 +193,7 @@ public abstract class AbstractContainerEntityManagerFactoryIntegrationTests
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testQueryNoPersonsNotTransactional()
-	{
+	public void testQueryNoPersonsNotTransactional() {
 		endTransaction();
 
 		EntityManager em = entityManagerFactory.createEntityManager();
@@ -227,8 +205,7 @@ public abstract class AbstractContainerEntityManagerFactoryIntegrationTests
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testQueryNoPersonsShared()
-	{
+	public void testQueryNoPersonsShared() {
 		Query q = this.sharedEntityManager.createQuery("select p from Person as p");
 		q.setFlushMode(FlushModeType.AUTO);
 		List<Person> people = q.getResultList();
@@ -238,8 +215,7 @@ public abstract class AbstractContainerEntityManagerFactoryIntegrationTests
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testQueryNoPersonsSharedNotTransactional()
-	{
+	public void testQueryNoPersonsSharedNotTransactional() {
 		endTransaction();
 
 		EntityManager em = this.sharedEntityManager;
@@ -258,8 +234,7 @@ public abstract class AbstractContainerEntityManagerFactoryIntegrationTests
 	}
 
 	@Test
-	public void testCanSerializeProxies() throws Exception
-	{
+	public void testCanSerializeProxies() throws Exception {
 		assertThat(SerializationTestUtils.serializeAndDeserialize(entityManagerFactory)).isNotNull();
 		assertThat(SerializationTestUtils.serializeAndDeserialize(sharedEntityManager)).isNotNull();
 	}

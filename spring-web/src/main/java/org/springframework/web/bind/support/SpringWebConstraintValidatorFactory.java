@@ -16,11 +16,11 @@
 
 package org.springframework.web.bind.support;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorFactory;
-
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorFactory;
 
 /**
  * JSR-303 {@link ConstraintValidatorFactory} implementation that delegates to
@@ -34,23 +34,20 @@ import org.springframework.web.context.WebApplicationContext;
  * e.g. in combination with JAX-RS or JAX-WS.
  *
  * @author Juergen Hoeller
- * @since 4.2.1
  * @see ContextLoader#getCurrentWebApplicationContext()
  * @see org.springframework.validation.beanvalidation.SpringConstraintValidatorFactory
+ * @since 4.2.1
  */
-public class SpringWebConstraintValidatorFactory implements ConstraintValidatorFactory
-{
+public class SpringWebConstraintValidatorFactory implements ConstraintValidatorFactory {
 
 	@Override
-	public <T extends ConstraintValidator<?, ?>> T getInstance(Class<T> key)
-	{
+	public <T extends ConstraintValidator<?, ?>> T getInstance(Class<T> key) {
 		return getWebApplicationContext().getAutowireCapableBeanFactory().createBean(key);
 	}
 
 	// Bean Validation 1.1 releaseInstance method
 	@Override
-	public void releaseInstance(ConstraintValidator<?, ?> instance)
-	{
+	public void releaseInstance(ConstraintValidator<?, ?> instance) {
 		getWebApplicationContext().getAutowireCapableBeanFactory().destroyBean(instance);
 	}
 
@@ -58,15 +55,13 @@ public class SpringWebConstraintValidatorFactory implements ConstraintValidatorF
 	 * Retrieve the Spring {@link WebApplicationContext} to use.
 	 * The default implementation returns the current {@link WebApplicationContext}
 	 * as registered for the thread context class loader.
-	 * 
+	 *
 	 * @return the current WebApplicationContext (never {@code null})
 	 * @see ContextLoader#getCurrentWebApplicationContext()
 	 */
-	protected WebApplicationContext getWebApplicationContext()
-	{
+	protected WebApplicationContext getWebApplicationContext() {
 		WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
-		if (wac == null)
-		{
+		if (wac == null) {
 			throw new IllegalStateException("No WebApplicationContext registered for current thread - "
 					+ "consider overriding SpringWebConstraintValidatorFactory.getWebApplicationContext()");
 		}

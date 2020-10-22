@@ -16,9 +16,9 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.lang.annotation.*;
-
 import org.springframework.core.annotation.AliasFor;
+
+import java.lang.annotation.*;
 
 /**
  * Annotation which indicates that a method parameter should be bound to a
@@ -43,8 +43,7 @@ import org.springframework.core.annotation.AliasFor;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface MatrixVariable
-{
+public @interface MatrixVariable {
 
 	/**
 	 * Alias for {@link #name}.
@@ -54,9 +53,9 @@ public @interface MatrixVariable
 
 	/**
 	 * The name of the matrix variable.
-	 * 
-	 * @since 4.2
+	 *
 	 * @see #value
+	 * @since 4.2
 	 */
 	@AliasFor("value")
 	String name() default "";

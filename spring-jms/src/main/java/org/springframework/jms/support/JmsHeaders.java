@@ -24,13 +24,12 @@ package org.springframework.jms.support;
  * @author Stephane Nicoll
  * @since 4.1
  */
-public interface JmsHeaders
-{
+public interface JmsHeaders {
 
 	/**
 	 * Prefix used for JMS API related headers in order to distinguish from
 	 * user-defined headers and other internal headers (e.g. correlationId).
-	 * 
+	 *
 	 * @see SimpleJmsHeaderMapper
 	 */
 	String PREFIX = "jms_";
@@ -39,7 +38,7 @@ public interface JmsHeaders
 	 * Correlation ID for the message. This may be the {@link #MESSAGE_ID} of
 	 * the message that this message replies to. It may also be an
 	 * application-specific identifier.
-	 * 
+	 *
 	 * @see javax.jms.Message#getJMSCorrelationID()
 	 */
 	String CORRELATION_ID = PREFIX + "correlationId";
@@ -48,7 +47,7 @@ public interface JmsHeaders
 	 * Name of the destination (topic or queue) of the message.
 	 * <p>
 	 * Read-only value.
-	 * 
+	 *
 	 * @see javax.jms.Message#getJMSDestination()
 	 * @see javax.jms.Destination
 	 * @see javax.jms.Queue
@@ -60,7 +59,7 @@ public interface JmsHeaders
 	 * Distribution mode.
 	 * <p>
 	 * Read-only value.
-	 * 
+	 *
 	 * @see javax.jms.Message#getJMSDeliveryMode()
 	 * @see javax.jms.DeliveryMode
 	 */
@@ -70,7 +69,7 @@ public interface JmsHeaders
 	 * Message expiration date and time.
 	 * <p>
 	 * Read-only value.
-	 * 
+	 *
 	 * @see javax.jms.Message#getJMSExpiration()
 	 */
 	String EXPIRATION = PREFIX + "expiration";
@@ -79,7 +78,7 @@ public interface JmsHeaders
 	 * Unique identifier for a message.
 	 * <p>
 	 * Read-only value.
-	 * 
+	 *
 	 * @see javax.jms.Message#getJMSMessageID()
 	 */
 	String MESSAGE_ID = PREFIX + "messageId";
@@ -88,7 +87,7 @@ public interface JmsHeaders
 	 * The message priority level.
 	 * <p>
 	 * Read-only value.
-	 * 
+	 *
 	 * @see javax.jms.Message#getJMSPriority()
 	 */
 	String PRIORITY = PREFIX + "priority";
@@ -96,7 +95,7 @@ public interface JmsHeaders
 	/**
 	 * Name of the destination (topic or queue) the message replies should
 	 * be sent to.
-	 * 
+	 *
 	 * @see javax.jms.Message#getJMSReplyTo()
 	 */
 	String REPLY_TO = PREFIX + "replyTo";
@@ -106,7 +105,7 @@ public interface JmsHeaders
 	 * consumer fails to acknowledge the message reception.
 	 * <p>
 	 * Read-only value.
-	 * 
+	 *
 	 * @see javax.jms.Message#getJMSRedelivered()
 	 */
 	String REDELIVERED = PREFIX + "redelivered";
@@ -114,7 +113,7 @@ public interface JmsHeaders
 	/**
 	 * Message type label. This type is a string value describing the message
 	 * in a functional manner.
-	 * 
+	 *
 	 * @see javax.jms.Message#getJMSType()
 	 */
 	String TYPE = PREFIX + "type";
@@ -123,7 +122,7 @@ public interface JmsHeaders
 	 * Date and time of the message sending operation.
 	 * <p>
 	 * Read-only value.
-	 * 
+	 *
 	 * @see javax.jms.Message#getJMSTimestamp()
 	 */
 	String TIMESTAMP = PREFIX + "timestamp";

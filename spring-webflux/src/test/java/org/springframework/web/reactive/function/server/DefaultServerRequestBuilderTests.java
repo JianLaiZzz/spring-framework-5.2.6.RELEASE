@@ -16,12 +16,7 @@
 
 package org.springframework.web.reactive.function.server;
 
-import java.nio.charset.StandardCharsets;
-
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
@@ -29,6 +24,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
+
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

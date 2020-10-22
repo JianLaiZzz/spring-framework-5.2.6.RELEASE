@@ -16,13 +16,6 @@
 
 package org.springframework.jms.connection;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-
-import javax.jms.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.lang.Nullable;
@@ -31,6 +24,12 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
+
+import javax.jms.*;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Resource holder wrapping a JMS {@link Connection} and a JMS {@link Session}.
@@ -41,12 +40,11 @@ import org.springframework.util.ReflectionUtils;
  * Note: This is an SPI class, not intended to be used by applications.
  *
  * @author Juergen Hoeller
- * @since 1.1
  * @see JmsTransactionManager
  * @see org.springframework.jms.core.JmsTemplate
+ * @since 1.1
  */
-public class JmsResourceHolder extends ResourceHolderSupport
-{
+public class JmsResourceHolder extends ResourceHolderSupport {
 
 	private static final Log logger = LogFactory.getLog(JmsResourceHolder.class);
 
@@ -63,48 +61,40 @@ public class JmsResourceHolder extends ResourceHolderSupport
 
 	/**
 	 * Create a new JmsResourceHolder that is open for resources to be added.
-	 * 
+	 *
 	 * @see #addConnection
 	 * @see #addSession
 	 */
-	public JmsResourceHolder()
-	{
+	public JmsResourceHolder() {
 	}
 
 	/**
 	 * Create a new JmsResourceHolder that is open for resources to be added.
-	 * 
-	 * @param connectionFactory
-	 *            the JMS ConnectionFactory that this
-	 *            resource holder is associated with (may be {@code null})
+	 *
+	 * @param connectionFactory the JMS ConnectionFactory that this
+	 *                          resource holder is associated with (may be {@code null})
 	 */
-	public JmsResourceHolder(@Nullable ConnectionFactory connectionFactory)
-	{
+	public JmsResourceHolder(@Nullable ConnectionFactory connectionFactory) {
 		this.connectionFactory = connectionFactory;
 	}
 
 	/**
 	 * Create a new JmsResourceHolder for the given JMS Session.
-	 * 
-	 * @param session
-	 *            the JMS Session
+	 *
+	 * @param session the JMS Session
 	 */
-	public JmsResourceHolder(Session session)
-	{
+	public JmsResourceHolder(Session session) {
 		addSession(session);
 		this.frozen = true;
 	}
 
 	/**
 	 * Create a new JmsResourceHolder for the given JMS resources.
-	 * 
-	 * @param connection
-	 *            the JMS Connection
-	 * @param session
-	 *            the JMS Session
+	 *
+	 * @param connection the JMS Connection
+	 * @param session    the JMS Session
 	 */
-	public JmsResourceHolder(Connection connection, Session session)
-	{
+	public JmsResourceHolder(Connection connection, Session session) {
 		addConnection(connection);
 		addSession(session, connection);
 		this.frozen = true;
@@ -112,18 +102,14 @@ public class JmsResourceHolder extends ResourceHolderSupport
 
 	/**
 	 * Create a new JmsResourceHolder for the given JMS resources.
-	 * 
-	 * @param connectionFactory
-	 *            the JMS ConnectionFactory that this
-	 *            resource holder is associated with (may be {@code null})
-	 * @param connection
-	 *            the JMS Connection
-	 * @param session
-	 *            the JMS Session
+	 *
+	 * @param connectionFactory the JMS ConnectionFactory that this
+	 *                          resource holder is associated with (may be {@code null})
+	 * @param connection        the JMS Connection
+	 * @param session           the JMS Session
 	 */
 	public JmsResourceHolder(@Nullable ConnectionFactory connectionFactory, Connection connection,
-			Session session)
-	{
+							 Session session) {
 		this.connectionFactory = connectionFactory;
 		addConnection(connection);
 		addSession(session, connection);
@@ -133,24 +119,21 @@ public class JmsResourceHolder extends ResourceHolderSupport
 	/**
 	 * Return whether this resource holder is frozen, i.e. does not
 	 * allow for adding further Connections and Sessions to it.
-	 * 
+	 *
 	 * @see #addConnection
 	 * @see #addSession
 	 */
-	public final boolean isFrozen()
-	{
+	public final boolean isFrozen() {
 		return this.frozen;
 	}
 
 	/**
 	 * Add the given Connection to this resource holder.
 	 */
-	public final void addConnection(Connection connection)
-	{
+	public final void addConnection(Connection connection) {
 		Assert.isTrue(!this.frozen, "Cannot add Connection because JmsResourceHolder is frozen");
 		Assert.notNull(connection, "Connection must not be null");
-		if (!this.connections.contains(connection))
-		{
+		if (!this.connections.contains(connection)) {
 			this.connections.add(connection);
 		}
 	}
@@ -158,8 +141,7 @@ public class JmsResourceHolder extends ResourceHolderSupport
 	/**
 	 * Add the given Session to this resource holder.
 	 */
-	public final void addSession(Session session)
-	{
+	public final void addSession(Session session) {
 		addSession(session, null);
 	}
 
@@ -167,15 +149,12 @@ public class JmsResourceHolder extends ResourceHolderSupport
 	 * Add the given Session to this resource holder,
 	 * registered for a specific Connection.
 	 */
-	public final void addSession(Session session, @Nullable Connection connection)
-	{
+	public final void addSession(Session session, @Nullable Connection connection) {
 		Assert.isTrue(!this.frozen, "Cannot add Session because JmsResourceHolder is frozen");
 		Assert.notNull(session, "Session must not be null");
-		if (!this.sessions.contains(session))
-		{
+		if (!this.sessions.contains(session)) {
 			this.sessions.add(session);
-			if (connection != null)
-			{
+			if (connection != null) {
 				LinkedList<Session> sessions = this.sessionsPerConnection.computeIfAbsent(connection,
 						k -> new LinkedList<>());
 				sessions.add(session);
@@ -187,8 +166,7 @@ public class JmsResourceHolder extends ResourceHolderSupport
 	 * Determine whether the given Session is registered
 	 * with this resource holder.
 	 */
-	public boolean containsSession(Session session)
-	{
+	public boolean containsSession(Session session) {
 		return this.sessions.contains(session);
 	}
 
@@ -197,8 +175,7 @@ public class JmsResourceHolder extends ResourceHolderSupport
 	 * or {@code null} if none.
 	 */
 	@Nullable
-	public Connection getConnection()
-	{
+	public Connection getConnection() {
 		return this.connections.peek();
 	}
 
@@ -207,8 +184,7 @@ public class JmsResourceHolder extends ResourceHolderSupport
 	 * or {@code null} if none.
 	 */
 	@Nullable
-	public <C extends Connection> C getConnection(Class<C> connectionType)
-	{
+	public <C extends Connection> C getConnection(Class<C> connectionType) {
 		return CollectionUtils.findValueOfType(this.connections, connectionType);
 	}
 
@@ -219,8 +195,7 @@ public class JmsResourceHolder extends ResourceHolderSupport
 	 * a new Session, not even in {@link JmsResourceHolder} subclasses.
 	 */
 	@Nullable
-	Session getOriginalSession()
-	{
+	Session getOriginalSession() {
 		return this.sessions.peek();
 	}
 
@@ -229,8 +204,7 @@ public class JmsResourceHolder extends ResourceHolderSupport
 	 * or {@code null} if none.
 	 */
 	@Nullable
-	public Session getSession()
-	{
+	public Session getSession() {
 		return this.sessions.peek();
 	}
 
@@ -239,8 +213,7 @@ public class JmsResourceHolder extends ResourceHolderSupport
 	 * or {@code null} if none.
 	 */
 	@Nullable
-	public <S extends Session> S getSession(Class<S> sessionType)
-	{
+	public <S extends Session> S getSession(Class<S> sessionType) {
 		return getSession(sessionType, null);
 	}
 
@@ -249,8 +222,7 @@ public class JmsResourceHolder extends ResourceHolderSupport
 	 * for the given connection, or {@code null} if none.
 	 */
 	@Nullable
-	public <S extends Session> S getSession(Class<S> sessionType, @Nullable Connection connection)
-	{
+	public <S extends Session> S getSession(Class<S> sessionType, @Nullable Connection connection) {
 		LinkedList<Session> sessions = (connection != null ? this.sessionsPerConnection.get(connection)
 				: this.sessions);
 		return CollectionUtils.findValueOfType(sessions, sessionType);
@@ -258,58 +230,40 @@ public class JmsResourceHolder extends ResourceHolderSupport
 
 	/**
 	 * Commit all of this resource holder's Sessions.
-	 * 
-	 * @throws JMSException
-	 *             if thrown from a Session commit attempt
+	 *
+	 * @throws JMSException if thrown from a Session commit attempt
 	 * @see Session#commit()
 	 */
-	public void commitAll() throws JMSException
-	{
-		for (Session session : this.sessions)
-		{
-			try
-			{
+	public void commitAll() throws JMSException {
+		for (Session session : this.sessions) {
+			try {
 				session.commit();
-			}
-			catch (TransactionInProgressException ex)
-			{
+			} catch (TransactionInProgressException ex) {
 				// Ignore -> can only happen in case of a JTA transaction.
-			}
-			catch (javax.jms.IllegalStateException ex)
-			{
-				if (this.connectionFactory != null)
-				{
-					try
-					{
+			} catch (javax.jms.IllegalStateException ex) {
+				if (this.connectionFactory != null) {
+					try {
 						Method getDataSourceMethod = this.connectionFactory.getClass()
 								.getMethod("getDataSource");
 						Object ds = ReflectionUtils.invokeMethod(getDataSourceMethod,
 								this.connectionFactory);
-						while (ds != null)
-						{
-							if (TransactionSynchronizationManager.hasResource(ds))
-							{
+						while (ds != null) {
+							if (TransactionSynchronizationManager.hasResource(ds)) {
 								// IllegalStateException from sharing the underlying JDBC Connection
 								// which typically gets committed first, e.g. with Oracle AQ --> ignore
 								return;
 							}
-							try
-							{
+							try {
 								// Check for decorated DataSource a la Spring's DelegatingDataSource
 								Method getTargetDataSourceMethod = ds.getClass()
 										.getMethod("getTargetDataSource");
 								ds = ReflectionUtils.invokeMethod(getTargetDataSourceMethod, ds);
-							}
-							catch (NoSuchMethodException nsme)
-							{
+							} catch (NoSuchMethodException nsme) {
 								ds = null;
 							}
 						}
-					}
-					catch (Throwable ex2)
-					{
-						if (logger.isDebugEnabled())
-						{
+					} catch (Throwable ex2) {
+						if (logger.isDebugEnabled()) {
 							logger.debug(
 									"No working getDataSource method found on ConnectionFactory: " + ex2);
 						}
@@ -323,24 +277,18 @@ public class JmsResourceHolder extends ResourceHolderSupport
 
 	/**
 	 * Close all of this resource holder's Sessions and clear its state.
-	 * 
+	 *
 	 * @see Session#close()
 	 */
-	public void closeAll()
-	{
-		for (Session session : this.sessions)
-		{
-			try
-			{
+	public void closeAll() {
+		for (Session session : this.sessions) {
+			try {
 				session.close();
-			}
-			catch (Throwable ex)
-			{
+			} catch (Throwable ex) {
 				logger.debug("Could not close synchronized JMS Session after transaction", ex);
 			}
 		}
-		for (Connection con : this.connections)
-		{
+		for (Connection con : this.connections) {
 			ConnectionFactoryUtils.releaseConnection(con, this.connectionFactory, true);
 		}
 		this.connections.clear();

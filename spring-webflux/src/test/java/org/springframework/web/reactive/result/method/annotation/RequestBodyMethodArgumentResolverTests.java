@@ -16,22 +16,9 @@
 
 package org.springframework.web.reactive.result.method.annotation;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-
 import io.reactivex.Maybe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-import rx.Observable;
-import rx.RxReactiveStreams;
-import rx.Single;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.core.codec.StringDecoder;
@@ -44,6 +31,18 @@ import org.springframework.web.server.ServerWebInputException;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.method.ResolvableMethod;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+import rx.Observable;
+import rx.RxReactiveStreams;
+import rx.Single;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -263,6 +262,7 @@ public class RequestBodyMethodArgumentResolverTests {
 			@RequestBody(required = false) io.reactivex.Observable<String> rxjava2ObsNotRequired,
 			@RequestBody(required = false) CompletableFuture<String> futureNotRequired,
 			@RequestBody(required = false) Map<?, ?> mapNotRequired,
-			String notAnnotated) {}
+			String notAnnotated) {
+	}
 
 }

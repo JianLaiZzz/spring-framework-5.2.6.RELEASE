@@ -16,11 +16,11 @@
 
 package org.springframework.transaction.annotation;
 
-import java.lang.annotation.*;
-
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
+
+import java.lang.annotation.*;
 
 /**
  * Enables Spring's annotation-driven transaction management capability, similar to
@@ -36,22 +36,22 @@ import org.springframework.core.Ordered;
  *
  * 	&#064;Bean
  * 	public FooRepository fooRepository()
- * 	{
+ *    {
  * 		// configure and return a class having &#064;Transactional methods
  * 		return new JdbcFooRepository(dataSource());
- * 	}
+ *    }
  *
  * 	&#064;Bean
  * 	public DataSource dataSource()
- * 	{
+ *    {
  * 		// configure and return the necessary JDBC DataSource
- * 	}
+ *    }
  *
  * 	&#064;Bean
  * 	public PlatformTransactionManager txManager()
- * 	{
+ *    {
  * 		return new DataSourceTransactionManager(dataSource());
- * 	}
+ *    }
  * }
  * </pre>
  *
@@ -76,7 +76,7 @@ import org.springframework.core.Ordered;
  *
  * &lt;/beans&gt;
  * </pre>
- *
+ * <p>
  * In both of the scenarios above, {@code @EnableTransactionManagement} and {@code
  * <tx:annotation-driven/>} are responsible for registering the necessary Spring
  * components that power annotation-driven transaction management, such as the
@@ -108,31 +108,31 @@ import org.springframework.core.Ordered;
  *
  * 	&#064;Bean
  * 	public FooRepository fooRepository()
- * 	{
+ *    {
  * 		// configure and return a class having &#064;Transactional methods
  * 		return new JdbcFooRepository(dataSource());
- * 	}
+ *    }
  *
  * 	&#064;Bean
  * 	public DataSource dataSource()
- * 	{
+ *    {
  * 		// configure and return the necessary JDBC DataSource
- * 	}
+ *    }
  *
  * 	&#064;Bean
  * 	public PlatformTransactionManager txManager()
- * 	{
+ *    {
  * 		return new DataSourceTransactionManager(dataSource());
- * 	}
+ *    }
  *
  * 	&#064;Override
  * 	public PlatformTransactionManager annotationDrivenTransactionManager()
- * 	{
+ *    {
  * 		return txManager();
- * 	}
+ *    }
  * }
  * </pre>
- *
+ * <p>
  * This approach may be desirable simply because it is more explicit, or it may be
  * necessary in order to distinguish between two {@code PlatformTransactionManager} beans
  * present in the same container. As the name suggests, the
@@ -155,18 +155,17 @@ import org.springframework.core.Ordered;
  *
  * @author Chris Beams
  * @author Juergen Hoeller
- * @since 3.1
  * @see TransactionManagementConfigurer
  * @see TransactionManagementConfigurationSelector
  * @see ProxyTransactionManagementConfiguration
  * @see org.springframework.transaction.aspectj.AspectJTransactionManagementConfiguration
+ * @since 3.1
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import(TransactionManagementConfigurationSelector.class)
-public @interface EnableTransactionManagement
-{
+public @interface EnableTransactionManagement {
 
 	/**
 	 * Indicate whether subclass-based (CGLIB) proxies are to be created ({@code true}) as

@@ -16,9 +16,9 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.lang.annotation.*;
-
 import org.springframework.core.annotation.AliasFor;
+
+import java.lang.annotation.*;
 
 /**
  * Annotation that indicates the session attributes that a specific handler uses.
@@ -54,12 +54,11 @@ import org.springframework.core.annotation.AliasFor;
  * @author Sam Brannen
  * @since 2.5
  */
-@Target({ ElementType.TYPE })
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface SessionAttributes
-{
+public @interface SessionAttributes {
 
 	/**
 	 * Alias for {@link #names}.
@@ -75,7 +74,7 @@ public @interface SessionAttributes
 	 * The <em>session attribute names</em> may or may not match the model attribute
 	 * names. Applications should therefore not rely on the session attribute
 	 * names but rather operate on the model only.
-	 * 
+	 *
 	 * @since 4.2
 	 */
 	@AliasFor("value")

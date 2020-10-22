@@ -27,8 +27,7 @@ import org.springframework.web.util.pattern.PathPattern.MatchingContext;
  * @author Andy Clement
  * @since 5.0
  */
-abstract class PathElement
-{
+abstract class PathElement {
 
 	// Score related
 	protected static final int WILDCARD_WEIGHT = 100;
@@ -53,32 +52,27 @@ abstract class PathElement
 
 	/**
 	 * Create a new path element.
-	 * 
-	 * @param pos
-	 *            the position where this path element starts in the pattern data
-	 * @param separator
-	 *            the separator in use in the path pattern
+	 *
+	 * @param pos       the position where this path element starts in the pattern data
+	 * @param separator the separator in use in the path pattern
 	 */
-	PathElement(int pos, char separator)
-	{
+	PathElement(int pos, char separator) {
 		this.pos = pos;
 		this.separator = separator;
 	}
 
 	/**
 	 * Attempt to match this path element.
-	 * 
-	 * @param candidatePos
-	 *            the current position within the candidate path
-	 * @param matchingContext
-	 *            encapsulates context for the match including the candidate
+	 *
+	 * @param candidatePos    the current position within the candidate path
+	 * @param matchingContext encapsulates context for the match including the candidate
 	 * @return {@code true} if it matches, otherwise {@code false}
 	 */
 	public abstract boolean matches(int candidatePos, MatchingContext matchingContext);
 
 	/**
 	 * Return the length of the path element where captures are considered to be one character long.
-	 * 
+	 *
 	 * @return the normalized length
 	 */
 	public abstract int getNormalizedLength();
@@ -88,34 +82,30 @@ abstract class PathElement
 	/**
 	 * Return the number of variables captured by the path element.
 	 */
-	public int getCaptureCount()
-	{
+	public int getCaptureCount() {
 		return 0;
 	}
 
 	/**
 	 * Return the number of wildcard elements (*, ?) in the path element.
 	 */
-	public int getWildcardCount()
-	{
+	public int getWildcardCount() {
 		return 0;
 	}
 
 	/**
 	 * Return the score for this PathElement, combined score is used to compare parsed patterns.
 	 */
-	public int getScore()
-	{
+	public int getScore() {
 		return 0;
 	}
 
 	/**
 	 * Return if the there are no more PathElements in the pattern.
-	 * 
+	 *
 	 * @return {@code true} if the there are no more elements
 	 */
-	protected final boolean isNoMorePattern()
-	{
+	protected final boolean isNoMorePattern() {
 		return this.next == null;
 	}
 

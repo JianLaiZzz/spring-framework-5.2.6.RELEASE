@@ -16,19 +16,6 @@
 
 package org.springframework.test.web.servlet.htmlunit;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpSession;
-
 import com.gargoylesoftware.htmlunit.FormEncodingType;
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -38,13 +25,20 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -850,8 +844,8 @@ public class HtmlUnitRequestBuilderTests {
 		String headerName = "PARENT";
 		String headerValue = "VALUE";
 		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(new HelloController())
-					.defaultRequest(get("/").header(headerName, headerValue))
-					.build();
+				.defaultRequest(get("/").header(headerName, headerValue))
+				.build();
 
 		assertThat(mockMvc.perform(requestBuilder).andReturn().getRequest().getHeader(headerName)).isEqualTo(headerValue);
 	}

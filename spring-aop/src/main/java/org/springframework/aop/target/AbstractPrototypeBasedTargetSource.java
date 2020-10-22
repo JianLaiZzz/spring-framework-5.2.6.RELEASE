@@ -16,16 +16,16 @@
 
 package org.springframework.aop.target;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamException;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
 
 /**
  * Base class for dynamic {@link org.springframework.aop.TargetSource} implementations
@@ -45,17 +45,14 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  * @see CommonsPool2TargetSource
  */
 @SuppressWarnings("serial")
-public abstract class AbstractPrototypeBasedTargetSource extends AbstractBeanFactoryBasedTargetSource
-{
+public abstract class AbstractPrototypeBasedTargetSource extends AbstractBeanFactoryBasedTargetSource {
 
 	@Override
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException
-	{
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 		super.setBeanFactory(beanFactory);
 
 		// Check whether the target bean is defined as prototype.
-		if (!beanFactory.isPrototype(getTargetBeanName()))
-		{
+		if (!beanFactory.isPrototype(getTargetBeanName())) {
 			throw new BeanDefinitionStoreException(
 					"Cannot use prototype-based TargetSource against non-prototype bean with name '"
 							+ getTargetBeanName() + "': instances would not be independent");
@@ -64,14 +61,11 @@ public abstract class AbstractPrototypeBasedTargetSource extends AbstractBeanFac
 
 	/**
 	 * Subclasses should call this method to create a new prototype instance.
-	 * 
-	 * @throws BeansException
-	 *             if bean creation failed
+	 *
+	 * @throws BeansException if bean creation failed
 	 */
-	protected Object newPrototypeInstance() throws BeansException
-	{
-		if (logger.isDebugEnabled())
-		{
+	protected Object newPrototypeInstance() throws BeansException {
+		if (logger.isDebugEnabled()) {
 			logger.debug("Creating new instance of bean '" + getTargetBeanName() + "'");
 		}
 		return getBeanFactory().getBean(getTargetBeanName());
@@ -79,28 +73,19 @@ public abstract class AbstractPrototypeBasedTargetSource extends AbstractBeanFac
 
 	/**
 	 * Subclasses should call this method to destroy an obsolete prototype instance.
-	 * 
-	 * @param target
-	 *            the bean instance to destroy
+	 *
+	 * @param target the bean instance to destroy
 	 */
-	protected void destroyPrototypeInstance(Object target)
-	{
-		if (logger.isDebugEnabled())
-		{
+	protected void destroyPrototypeInstance(Object target) {
+		if (logger.isDebugEnabled()) {
 			logger.debug("Destroying instance of bean '" + getTargetBeanName() + "'");
 		}
-		if (getBeanFactory() instanceof ConfigurableBeanFactory)
-		{
+		if (getBeanFactory() instanceof ConfigurableBeanFactory) {
 			((ConfigurableBeanFactory) getBeanFactory()).destroyBean(getTargetBeanName(), target);
-		}
-		else if (target instanceof DisposableBean)
-		{
-			try
-			{
+		} else if (target instanceof DisposableBean) {
+			try {
 				((DisposableBean) target).destroy();
-			}
-			catch (Throwable ex)
-			{
+			} catch (Throwable ex) {
 				logger.warn("Destroy method on bean with name '" + getTargetBeanName()
 						+ "' threw an exception", ex);
 			}
@@ -111,8 +96,7 @@ public abstract class AbstractPrototypeBasedTargetSource extends AbstractBeanFac
 	// Serialization support
 	//---------------------------------------------------------------------
 
-	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException
-	{
+	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
 		throw new NotSerializableException(
 				"A prototype-based TargetSource itself is not deserializable - "
 						+ "just a disconnected SingletonTargetSource or EmptyTargetSource is");
@@ -127,21 +111,16 @@ public abstract class AbstractPrototypeBasedTargetSource extends AbstractBeanFac
 	 * With this implementation of this method, there is no need to mark
 	 * non-serializable fields in this class or subclasses as transient.
 	 */
-	protected Object writeReplace() throws ObjectStreamException
-	{
-		if (logger.isDebugEnabled())
-		{
+	protected Object writeReplace() throws ObjectStreamException {
+		if (logger.isDebugEnabled()) {
 			logger.debug("Disconnecting TargetSource [" + this + "]");
 		}
-		try
-		{
+		try {
 			// Create disconnected SingletonTargetSource/EmptyTargetSource.
 			Object target = getTarget();
 			return (target != null ? new SingletonTargetSource(target)
 					: EmptyTargetSource.forClass(getTargetClass()));
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			String msg = "Cannot get target for disconnecting TargetSource [" + this + "]";
 			logger.error(msg, ex);
 			throw new NotSerializableException(msg + ": " + ex);

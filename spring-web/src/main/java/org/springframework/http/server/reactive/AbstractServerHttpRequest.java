@@ -16,24 +16,19 @@
 
 package org.springframework.http.server.reactive;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.logging.Log;
-
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpLogging;
 import org.springframework.http.server.RequestPath;
 import org.springframework.lang.Nullable;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
+import org.springframework.util.*;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Common base class for {@link ServerHttpRequest} implementations.
@@ -72,9 +67,10 @@ public abstract class AbstractServerHttpRequest implements ServerHttpRequest {
 
 	/**
 	 * Constructor with the URI and headers for the request.
-	 * @param uri the URI for the request
+	 *
+	 * @param uri         the URI for the request
 	 * @param contextPath the context path for the request
-	 * @param headers the headers for the request
+	 * @param headers     the headers for the request
 	 */
 	public AbstractServerHttpRequest(URI uri, @Nullable String contextPath, HttpHeaders headers) {
 		this.uri = uri;
@@ -97,6 +93,7 @@ public abstract class AbstractServerHttpRequest implements ServerHttpRequest {
 	/**
 	 * Obtain the request id to use, or {@code null} in which case the Object
 	 * identity of this request instance is used.
+	 *
 	 * @since 5.1
 	 */
 	@Nullable
@@ -154,8 +151,7 @@ public abstract class AbstractServerHttpRequest implements ServerHttpRequest {
 	private String decodeQueryParam(String value) {
 		try {
 			return URLDecoder.decode(value, "UTF-8");
-		}
-		catch (UnsupportedEncodingException ex) {
+		} catch (UnsupportedEncodingException ex) {
 			if (logger.isWarnEnabled()) {
 				logger.warn(getLogPrefix() + "Could not decode query value [" + value + "] as 'UTF-8'. " +
 						"Falling back on default encoding: " + ex.getMessage());
@@ -194,6 +190,7 @@ public abstract class AbstractServerHttpRequest implements ServerHttpRequest {
 
 	/**
 	 * Obtain SSL session information from the underlying "native" request.
+	 *
 	 * @return the session information, or {@code null} if none available
 	 * @since 5.0.2
 	 */
@@ -209,6 +206,7 @@ public abstract class AbstractServerHttpRequest implements ServerHttpRequest {
 
 	/**
 	 * For internal use in logging at the HTTP adapter layer.
+	 *
 	 * @since 5.1
 	 */
 	String getLogPrefix() {

@@ -38,8 +38,7 @@ import org.w3c.dom.Element;
  * @author Juergen Hoeller
  * @since 2.0
  */
-class SpringConfiguredBeanDefinitionParser implements BeanDefinitionParser
-{
+class SpringConfiguredBeanDefinitionParser implements BeanDefinitionParser {
 
 	/**
 	 * The bean name of the internally managed bean configurer aspect.
@@ -49,10 +48,8 @@ class SpringConfiguredBeanDefinitionParser implements BeanDefinitionParser
 	private static final String BEAN_CONFIGURER_ASPECT_CLASS_NAME = "org.springframework.beans.factory.aspectj.AnnotationBeanConfigurerAspect";
 
 	@Override
-	public BeanDefinition parse(Element element, ParserContext parserContext)
-	{
-		if (!parserContext.getRegistry().containsBeanDefinition(BEAN_CONFIGURER_ASPECT_BEAN_NAME))
-		{
+	public BeanDefinition parse(Element element, ParserContext parserContext) {
+		if (!parserContext.getRegistry().containsBeanDefinition(BEAN_CONFIGURER_ASPECT_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition();
 			def.setBeanClassName(BEAN_CONFIGURER_ASPECT_CLASS_NAME);
 			def.setFactoryMethodName("aspectOf");

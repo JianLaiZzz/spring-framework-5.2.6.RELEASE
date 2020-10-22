@@ -16,10 +16,10 @@
 
 package org.springframework.aop.scope;
 
-import java.io.Serializable;
-
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.util.Assert;
+
+import java.io.Serializable;
 
 /**
  * Default implementation of the {@link ScopedObject} interface.
@@ -31,13 +31,12 @@ import org.springframework.util.Assert;
  * {@link ConfigurableBeanFactory#destroyScopedBean(String)}).
  *
  * @author Juergen Hoeller
- * @since 2.0
  * @see org.springframework.beans.factory.BeanFactory#getBean
  * @see org.springframework.beans.factory.config.ConfigurableBeanFactory#destroyScopedBean
+ * @since 2.0
  */
 @SuppressWarnings("serial")
-public class DefaultScopedObject implements ScopedObject, Serializable
-{
+public class DefaultScopedObject implements ScopedObject, Serializable {
 
 	private final ConfigurableBeanFactory beanFactory;
 
@@ -45,14 +44,11 @@ public class DefaultScopedObject implements ScopedObject, Serializable
 
 	/**
 	 * Creates a new instance of the {@link DefaultScopedObject} class.
-	 * 
-	 * @param beanFactory
-	 *            the {@link ConfigurableBeanFactory} that holds the scoped target object
-	 * @param targetBeanName
-	 *            the name of the target bean
+	 *
+	 * @param beanFactory    the {@link ConfigurableBeanFactory} that holds the scoped target object
+	 * @param targetBeanName the name of the target bean
 	 */
-	public DefaultScopedObject(ConfigurableBeanFactory beanFactory, String targetBeanName)
-	{
+	public DefaultScopedObject(ConfigurableBeanFactory beanFactory, String targetBeanName) {
 		Assert.notNull(beanFactory, "BeanFactory must not be null");
 		Assert.hasText(targetBeanName, "'targetBeanName' must not be empty");
 		this.beanFactory = beanFactory;
@@ -60,14 +56,12 @@ public class DefaultScopedObject implements ScopedObject, Serializable
 	}
 
 	@Override
-	public Object getTargetObject()
-	{
+	public Object getTargetObject() {
 		return this.beanFactory.getBean(this.targetBeanName);
 	}
 
 	@Override
-	public void removeFromScope()
-	{
+	public void removeFromScope() {
 		this.beanFactory.destroyScopedBean(this.targetBeanName);
 	}
 

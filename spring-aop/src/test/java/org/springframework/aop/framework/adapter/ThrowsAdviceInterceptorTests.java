@@ -16,35 +16,32 @@
 
 package org.springframework.aop.framework.adapter;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import org.aopalliance.intercept.MethodInvocation;
+import org.junit.jupiter.api.Test;
+import org.springframework.aop.testfixture.advice.MyThrowsHandler;
 
 import java.io.FileNotFoundException;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 
-import org.aopalliance.intercept.MethodInvocation;
-import org.junit.jupiter.api.Test;
-import org.springframework.aop.testfixture.advice.MyThrowsHandler;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Rod Johnson
  * @author Chris Beams
  */
-public class ThrowsAdviceInterceptorTests
-{
+public class ThrowsAdviceInterceptorTests {
 
 	@Test
-	public void testNoHandlerMethods()
-	{
+	public void testNoHandlerMethods() {
 		// should require one handler method at least
 		assertThatIllegalArgumentException().isThrownBy(() -> new ThrowsAdviceInterceptor(new Object()));
 	}
 
 	@Test
-	public void testNotInvoked() throws Throwable
-	{
+	public void testNotInvoked() throws Throwable {
 		MyThrowsHandler th = new MyThrowsHandler();
 		ThrowsAdviceInterceptor ti = new ThrowsAdviceInterceptor(th);
 		Object ret = new Object();
@@ -55,8 +52,7 @@ public class ThrowsAdviceInterceptorTests
 	}
 
 	@Test
-	public void testNoHandlerMethodForThrowable() throws Throwable
-	{
+	public void testNoHandlerMethodForThrowable() throws Throwable {
 		MyThrowsHandler th = new MyThrowsHandler();
 		ThrowsAdviceInterceptor ti = new ThrowsAdviceInterceptor(th);
 		assertThat(ti.getHandlerMethodCount()).isEqualTo(2);
@@ -68,8 +64,7 @@ public class ThrowsAdviceInterceptorTests
 	}
 
 	@Test
-	public void testCorrectHandlerUsed() throws Throwable
-	{
+	public void testCorrectHandlerUsed() throws Throwable {
 		MyThrowsHandler th = new MyThrowsHandler();
 		ThrowsAdviceInterceptor ti = new ThrowsAdviceInterceptor(th);
 		FileNotFoundException ex = new FileNotFoundException();
@@ -84,8 +79,7 @@ public class ThrowsAdviceInterceptorTests
 	}
 
 	@Test
-	public void testCorrectHandlerUsedForSubclass() throws Throwable
-	{
+	public void testCorrectHandlerUsedForSubclass() throws Throwable {
 		MyThrowsHandler th = new MyThrowsHandler();
 		ThrowsAdviceInterceptor ti = new ThrowsAdviceInterceptor(th);
 		// Extends RemoteException
@@ -98,16 +92,13 @@ public class ThrowsAdviceInterceptorTests
 	}
 
 	@Test
-	public void testHandlerMethodThrowsException() throws Throwable
-	{
+	public void testHandlerMethodThrowsException() throws Throwable {
 		final Throwable t = new Throwable();
 
 		@SuppressWarnings("serial")
-		MyThrowsHandler th = new MyThrowsHandler()
-		{
+		MyThrowsHandler th = new MyThrowsHandler() {
 			@Override
-			public void afterThrowing(RemoteException ex) throws Throwable
-			{
+			public void afterThrowing(RemoteException ex) throws Throwable {
 				super.afterThrowing(ex);
 				throw t;
 			}

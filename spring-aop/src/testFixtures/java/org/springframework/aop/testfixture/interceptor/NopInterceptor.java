@@ -24,45 +24,37 @@ import org.aopalliance.intercept.MethodInvocation;
  *
  * @author Rod Johnson
  */
-public class NopInterceptor implements MethodInterceptor
-{
+public class NopInterceptor implements MethodInterceptor {
 
 	private int count;
 
 	@Override
-	public Object invoke(MethodInvocation invocation) throws Throwable
-	{
+	public Object invoke(MethodInvocation invocation) throws Throwable {
 		increment();
 		return invocation.proceed();
 	}
 
-	protected void increment()
-	{
+	protected void increment() {
 		this.count++;
 	}
 
-	public int getCount()
-	{
+	public int getCount() {
 		return this.count;
 	}
 
 	@Override
-	public boolean equals(Object other)
-	{
-		if (!(other instanceof NopInterceptor))
-		{
+	public boolean equals(Object other) {
+		if (!(other instanceof NopInterceptor)) {
 			return false;
 		}
-		if (this == other)
-		{
+		if (this == other) {
 			return true;
 		}
 		return this.count == ((NopInterceptor) other).count;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return NopInterceptor.class.hashCode();
 	}
 

@@ -16,14 +16,13 @@
 
 package org.springframework.web.reactive.handler;
 
-import java.time.Duration;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 import org.springframework.web.testfixture.server.handler.AbstractResponseStatusExceptionHandlerTests;
+
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

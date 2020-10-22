@@ -23,15 +23,14 @@ import org.springframework.transaction.support.TransactionSynchronization;
  *
  * @author Stephane Nicoll
  * @author Juergen Hoeller
- * @since 4.2
  * @see TransactionalEventListener
+ * @since 4.2
  */
-public enum TransactionPhase
-{
+public enum TransactionPhase {
 
 	/**
 	 * Fire the event before transaction commit.
-	 * 
+	 *
 	 * @see TransactionSynchronization#beforeCommit(boolean)
 	 */
 	BEFORE_COMMIT,
@@ -42,7 +41,7 @@ public enum TransactionPhase
 	 * Note: This is a specialization of {@link #AFTER_COMPLETION} and
 	 * therefore executes in the same after-completion sequence of events,
 	 * (and not in {@link TransactionSynchronization#afterCommit()}).
-	 * 
+	 *
 	 * @see TransactionSynchronization#afterCompletion(int)
 	 * @see TransactionSynchronization#STATUS_COMMITTED
 	 */
@@ -53,7 +52,7 @@ public enum TransactionPhase
 	 * <p>
 	 * Note: This is a specialization of {@link #AFTER_COMPLETION} and
 	 * therefore executes in the same after-completion sequence of events.
-	 * 
+	 *
 	 * @see TransactionSynchronization#afterCompletion(int)
 	 * @see TransactionSynchronization#STATUS_ROLLED_BACK
 	 */
@@ -65,7 +64,7 @@ public enum TransactionPhase
 	 * For more fine-grained events, use {@link #AFTER_COMMIT} or
 	 * {@link #AFTER_ROLLBACK} to intercept transaction commit
 	 * or rollback, respectively.
-	 * 
+	 *
 	 * @see TransactionSynchronization#afterCompletion(int)
 	 */
 	AFTER_COMPLETION

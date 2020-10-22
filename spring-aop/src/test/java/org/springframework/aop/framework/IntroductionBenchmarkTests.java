@@ -24,40 +24,37 @@ import org.springframework.util.StopWatch;
 
 /**
  * Benchmarks for introductions.
- *
+ * <p>
  * NOTE: No assertions!
  *
  * @author Rod Johnson
  * @author Chris Beams
  * @since 2.0
  */
-public class IntroductionBenchmarkTests
-{
+public class IntroductionBenchmarkTests {
 
 	private static final int EXPECTED_COMPARE = 13;
 
-	/** Increase this if you want meaningful results! */
+	/**
+	 * Increase this if you want meaningful results!
+	 */
 	private static final int INVOCATIONS = 100000;
 
 	@SuppressWarnings("serial")
 	public static class SimpleCounterIntroduction extends DelegatingIntroductionInterceptor
-			implements Counter
-	{
+			implements Counter {
 		@Override
-		public int getCount()
-		{
+		public int getCount() {
 			return EXPECTED_COMPARE;
 		}
 	}
 
-	public static interface Counter
-	{
+	public static interface Counter {
 		int getCount();
 	}
 
 	@Test
-	public void timeManyInvocations()
-	{
+	public void timeManyInvocations() {
 		StopWatch sw = new StopWatch();
 
 		TestBean target = new TestBean();
@@ -69,22 +66,19 @@ public class IntroductionBenchmarkTests
 		Counter counter = (Counter) proxy;
 
 		sw.start(INVOCATIONS + " invocations on proxy, not hitting introduction");
-		for (int i = 0; i < INVOCATIONS; i++)
-		{
+		for (int i = 0; i < INVOCATIONS; i++) {
 			proxy.getAge();
 		}
 		sw.stop();
 
 		sw.start(INVOCATIONS + " invocations on proxy, hitting introduction");
-		for (int i = 0; i < INVOCATIONS; i++)
-		{
+		for (int i = 0; i < INVOCATIONS; i++) {
 			counter.getCount();
 		}
 		sw.stop();
 
 		sw.start(INVOCATIONS + " invocations on target");
-		for (int i = 0; i < INVOCATIONS; i++)
-		{
+		for (int i = 0; i < INVOCATIONS; i++) {
 			target.getAge();
 		}
 		sw.stop();

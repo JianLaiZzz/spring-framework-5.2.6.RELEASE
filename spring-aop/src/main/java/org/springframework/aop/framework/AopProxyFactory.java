@@ -43,18 +43,15 @@ package org.springframework.aop.framework;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
-public interface AopProxyFactory
-{
+public interface AopProxyFactory {
 
 	/**
 	 * Create an {@link AopProxy} for the given AOP configuration.
-	 * 
-	 * @param config
-	 *            the AOP configuration in the form of an
-	 *            AdvisedSupport object
+	 *
+	 * @param config the AOP configuration in the form of an
+	 *               AdvisedSupport object
 	 * @return the corresponding AOP proxy
-	 * @throws AopConfigException
-	 *             if the configuration is invalid
+	 * @throws AopConfigException if the configuration is invalid
 	 */
 	AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException;
 

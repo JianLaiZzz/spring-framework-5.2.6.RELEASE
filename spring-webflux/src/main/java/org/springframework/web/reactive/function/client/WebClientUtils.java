@@ -16,13 +16,12 @@
 
 package org.springframework.web.reactive.function.client;
 
-import java.util.List;
-
 import org.reactivestreams.Publisher;
+import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.http.ResponseEntity;
+import java.util.List;
 
 /**
  * Internal methods shared between {@link DefaultWebClient} and {@link DefaultClientResponse}.

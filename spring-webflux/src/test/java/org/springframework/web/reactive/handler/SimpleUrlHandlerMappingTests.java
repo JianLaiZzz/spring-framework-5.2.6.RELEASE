@@ -16,10 +16,7 @@
 
 package org.springframework.web.reactive.handler;
 
-import java.net.URI;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +27,8 @@ import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
+
+import java.net.URI;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.web.reactive.HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE;
@@ -109,8 +108,7 @@ public class SimpleUrlHandlerMappingTests {
 			PathContainer path = exchange.getAttribute(PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 			assertThat(path).isNotNull();
 			assertThat(path.value()).isEqualTo(pathWithinMapping);
-		}
-		else {
+		} else {
 			assertThat(actual).isNull();
 		}
 	}
@@ -119,7 +117,8 @@ public class SimpleUrlHandlerMappingTests {
 	@Configuration
 	static class WebConfig {
 
-		@Bean @SuppressWarnings("unused")
+		@Bean
+		@SuppressWarnings("unused")
 		public SimpleUrlHandlerMapping handlerMapping() {
 			SimpleUrlHandlerMapping hm = new SimpleUrlHandlerMapping();
 			hm.registerHandler("/welcome*", otherController());

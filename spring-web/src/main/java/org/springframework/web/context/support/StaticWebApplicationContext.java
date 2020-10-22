@@ -16,9 +16,6 @@
 
 package org.springframework.web.context.support;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -32,6 +29,9 @@ import org.springframework.util.Assert;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 
 /**
  * Static {@link org.springframework.web.context.WebApplicationContext}
@@ -120,6 +120,7 @@ public class StaticWebApplicationContext extends StaticApplicationContext
 
 	/**
 	 * The {@link StaticWebApplicationContext} class does not support this method.
+	 *
 	 * @throws UnsupportedOperationException <b>always</b>
 	 */
 	@Override
@@ -129,6 +130,7 @@ public class StaticWebApplicationContext extends StaticApplicationContext
 
 	/**
 	 * The {@link StaticWebApplicationContext} class does not support this method.
+	 *
 	 * @throws UnsupportedOperationException <b>always</b>
 	 */
 	@Override
@@ -157,6 +159,7 @@ public class StaticWebApplicationContext extends StaticApplicationContext
 
 	/**
 	 * This implementation supports file paths beneath the root of the ServletContext.
+	 *
 	 * @see ServletContextResource
 	 */
 	@Override
@@ -167,6 +170,7 @@ public class StaticWebApplicationContext extends StaticApplicationContext
 
 	/**
 	 * This implementation supports pattern matching in unexpanded WARs too.
+	 *
 	 * @see ServletContextResourcePatternResolver
 	 */
 	@Override

@@ -16,17 +16,7 @@
 
 package org.springframework.web.reactive.function.client;
 
-import java.net.URI;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
-
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.codec.Hints;
 import org.springframework.http.HttpCookie;
@@ -35,13 +25,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.client.reactive.ClientHttpRequest;
 import org.springframework.http.codec.HttpMessageWriter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.ObjectUtils;
+import org.springframework.util.*;
 import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.BodyInserters;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Default implementation of {@link ClientRequest.Builder}.
@@ -179,8 +170,8 @@ final class DefaultClientRequestBuilder implements ClientRequest.Builder {
 		private final String logPrefix;
 
 		public BodyInserterRequest(HttpMethod method, URI url, HttpHeaders headers,
-				MultiValueMap<String, String> cookies, BodyInserter<?, ? super ClientHttpRequest> body,
-				Map<String, Object> attributes) {
+								   MultiValueMap<String, String> cookies, BodyInserter<?, ? super ClientHttpRequest> body,
+								   Map<String, Object> attributes) {
 
 			this.method = method;
 			this.url = url;
@@ -251,10 +242,12 @@ final class DefaultClientRequestBuilder implements ClientRequest.Builder {
 				public List<HttpMessageWriter<?>> messageWriters() {
 					return strategies.messageWriters();
 				}
+
 				@Override
 				public Optional<ServerHttpRequest> serverRequest() {
 					return Optional.empty();
 				}
+
 				@Override
 				public Map<String, Object> hints() {
 					return Hints.from(Hints.LOG_PREFIX_HINT, logPrefix());

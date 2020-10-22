@@ -24,25 +24,21 @@ import org.springframework.beans.factory.parsing.ParseState;
  * @author Mark Fisher
  * @since 2.0
  */
-public class AdviceEntry implements ParseState.Entry
-{
+public class AdviceEntry implements ParseState.Entry {
 
 	private final String kind;
 
 	/**
 	 * Creates a new instance of the {@link AdviceEntry} class.
-	 * 
-	 * @param kind
-	 *            the kind of advice represented by this entry (before, after, around, etc.)
+	 *
+	 * @param kind the kind of advice represented by this entry (before, after, around, etc.)
 	 */
-	public AdviceEntry(String kind)
-	{
+	public AdviceEntry(String kind) {
 		this.kind = kind;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Advice (" + this.kind + ")";
 	}
 

@@ -16,17 +16,17 @@
 
 package org.springframework.orm.hibernate5;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import org.hibernate.Filter;
 import org.hibernate.LockMode;
 import org.hibernate.ReplicationMode;
 import org.hibernate.criterion.DetachedCriteria;
 import org.springframework.dao.DataAccessException;
 import org.springframework.lang.Nullable;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Interface that specifies a common set of Hibernate operations as well as
@@ -65,13 +65,12 @@ import org.springframework.lang.Nullable;
  * ORM 5.0-5.2 but may not work with Hibernate ORM 5.3 and higher anymore.</b>
  *
  * @author Juergen Hoeller
- * @since 4.2
  * @see HibernateTemplate
  * @see org.hibernate.Session
  * @see HibernateTransactionManager
+ * @since 4.2
  */
-public interface HibernateOperations
-{
+public interface HibernateOperations {
 
 	/**
 	 * Execute the action specified by the given action object within a
@@ -87,12 +86,10 @@ public interface HibernateOperations
 	 * {@link HibernateTransactionManager}. Generally, callback code must not
 	 * touch any {@code Session} lifecycle methods, like close,
 	 * disconnect, or reconnect, to let the template do its work.
-	 * 
-	 * @param action
-	 *            callback object that specifies the Hibernate action
+	 *
+	 * @param action callback object that specifies the Hibernate action
 	 * @return a result object returned by the action, or {@code null}
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see HibernateTransactionManager
 	 * @see org.hibernate.Session
 	 */
@@ -111,14 +108,11 @@ public interface HibernateOperations
 	 * {@link org.hibernate.Session#get(Class, Serializable)} for convenience.
 	 * For an explanation of the exact semantics of this method, please do refer to
 	 * the Hibernate API documentation in the first instance.
-	 * 
-	 * @param entityClass
-	 *            a persistent class
-	 * @param id
-	 *            the identifier of the persistent instance
+	 *
+	 * @param entityClass a persistent class
+	 * @param id          the identifier of the persistent instance
 	 * @return the persistent instance, or {@code null} if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#get(Class, Serializable)
 	 */
 	@Nullable
@@ -134,16 +128,12 @@ public interface HibernateOperations
 	 * {@link org.hibernate.Session#get(Class, Serializable, LockMode)} for convenience.
 	 * For an explanation of the exact semantics of this method, please do refer to
 	 * the Hibernate API documentation in the first instance.
-	 * 
-	 * @param entityClass
-	 *            a persistent class
-	 * @param id
-	 *            the identifier of the persistent instance
-	 * @param lockMode
-	 *            the lock mode to obtain
+	 *
+	 * @param entityClass a persistent class
+	 * @param id          the identifier of the persistent instance
+	 * @param lockMode    the lock mode to obtain
 	 * @return the persistent instance, or {@code null} if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#get(Class, Serializable, LockMode)
 	 */
 	@Nullable
@@ -157,14 +147,11 @@ public interface HibernateOperations
 	 * {@link org.hibernate.Session#get(String, Serializable)} for convenience.
 	 * For an explanation of the exact semantics of this method, please do refer to
 	 * the Hibernate API documentation in the first instance.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param id
-	 *            the identifier of the persistent instance
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param id         the identifier of the persistent instance
 	 * @return the persistent instance, or {@code null} if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#get(Class, Serializable)
 	 */
 	@Nullable
@@ -179,16 +166,12 @@ public interface HibernateOperations
 	 * {@link org.hibernate.Session#get(String, Serializable, LockMode)} for convenience.
 	 * For an explanation of the exact semantics of this method, please do refer to
 	 * the Hibernate API documentation in the first instance.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param id
-	 *            the identifier of the persistent instance
-	 * @param lockMode
-	 *            the lock mode to obtain
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param id         the identifier of the persistent instance
+	 * @param lockMode   the lock mode to obtain
 	 * @return the persistent instance, or {@code null} if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#get(Class, Serializable, LockMode)
 	 */
 	@Nullable
@@ -202,16 +185,12 @@ public interface HibernateOperations
 	 * {@link org.hibernate.Session#load(Class, Serializable)} for convenience.
 	 * For an explanation of the exact semantics of this method, please do refer to
 	 * the Hibernate API documentation in the first instance.
-	 * 
-	 * @param entityClass
-	 *            a persistent class
-	 * @param id
-	 *            the identifier of the persistent instance
+	 *
+	 * @param entityClass a persistent class
+	 * @param id          the identifier of the persistent instance
 	 * @return the persistent instance
-	 * @throws org.springframework.orm.ObjectRetrievalFailureException
-	 *             if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws org.springframework.orm.ObjectRetrievalFailureException if not found
+	 * @throws DataAccessException                                     in case of Hibernate errors
 	 * @see org.hibernate.Session#load(Class, Serializable)
 	 */
 	<T> T load(Class<T> entityClass, Serializable id) throws DataAccessException;
@@ -225,18 +204,13 @@ public interface HibernateOperations
 	 * {@link org.hibernate.Session#load(Class, Serializable, LockMode)} for convenience.
 	 * For an explanation of the exact semantics of this method, please do refer to
 	 * the Hibernate API documentation in the first instance.
-	 * 
-	 * @param entityClass
-	 *            a persistent class
-	 * @param id
-	 *            the identifier of the persistent instance
-	 * @param lockMode
-	 *            the lock mode to obtain
+	 *
+	 * @param entityClass a persistent class
+	 * @param id          the identifier of the persistent instance
+	 * @param lockMode    the lock mode to obtain
 	 * @return the persistent instance
-	 * @throws org.springframework.orm.ObjectRetrievalFailureException
-	 *             if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws org.springframework.orm.ObjectRetrievalFailureException if not found
+	 * @throws DataAccessException                                     in case of Hibernate errors
 	 * @see org.hibernate.Session#load(Class, Serializable)
 	 */
 	<T> T load(Class<T> entityClass, Serializable id, LockMode lockMode) throws DataAccessException;
@@ -249,16 +223,12 @@ public interface HibernateOperations
 	 * {@link org.hibernate.Session#load(String, Serializable)} for convenience.
 	 * For an explanation of the exact semantics of this method, please do refer to
 	 * the Hibernate API documentation in the first instance.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param id
-	 *            the identifier of the persistent instance
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param id         the identifier of the persistent instance
 	 * @return the persistent instance
-	 * @throws org.springframework.orm.ObjectRetrievalFailureException
-	 *             if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws org.springframework.orm.ObjectRetrievalFailureException if not found
+	 * @throws DataAccessException                                     in case of Hibernate errors
 	 * @see org.hibernate.Session#load(Class, Serializable)
 	 */
 	Object load(String entityName, Serializable id) throws DataAccessException;
@@ -273,18 +243,13 @@ public interface HibernateOperations
 	 * {@link org.hibernate.Session#load(String, Serializable, LockMode)} for convenience.
 	 * For an explanation of the exact semantics of this method, please do refer to
 	 * the Hibernate API documentation in the first instance.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param id
-	 *            the identifier of the persistent instance
-	 * @param lockMode
-	 *            the lock mode to obtain
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param id         the identifier of the persistent instance
+	 * @param lockMode   the lock mode to obtain
 	 * @return the persistent instance
-	 * @throws org.springframework.orm.ObjectRetrievalFailureException
-	 *             if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws org.springframework.orm.ObjectRetrievalFailureException if not found
+	 * @throws DataAccessException                                     in case of Hibernate errors
 	 * @see org.hibernate.Session#load(Class, Serializable)
 	 */
 	Object load(String entityName, Serializable id, LockMode lockMode) throws DataAccessException;
@@ -292,12 +257,10 @@ public interface HibernateOperations
 	/**
 	 * Return all persistent instances of the given entity class.
 	 * Note: Use queries or criteria for retrieving a specific subset.
-	 * 
-	 * @param entityClass
-	 *            a persistent class
+	 *
+	 * @param entityClass a persistent class
 	 * @return a {@link List} containing 0 or more persistent instances
-	 * @throws DataAccessException
-	 *             if there is a Hibernate error
+	 * @throws DataAccessException if there is a Hibernate error
 	 * @see org.hibernate.Session#createCriteria
 	 */
 	<T> List<T> loadAll(Class<T> entityClass) throws DataAccessException;
@@ -310,26 +273,20 @@ public interface HibernateOperations
 	 * {@link org.hibernate.Session#load(Object, Serializable)} for convenience.
 	 * For an explanation of the exact semantics of this method, please do refer to
 	 * the Hibernate API documentation in the first instance.
-	 * 
-	 * @param entity
-	 *            the object (of the target class) to load into
-	 * @param id
-	 *            the identifier of the persistent instance
-	 * @throws org.springframework.orm.ObjectRetrievalFailureException
-	 *             if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entity the object (of the target class) to load into
+	 * @param id     the identifier of the persistent instance
+	 * @throws org.springframework.orm.ObjectRetrievalFailureException if not found
+	 * @throws DataAccessException                                     in case of Hibernate errors
 	 * @see org.hibernate.Session#load(Object, Serializable)
 	 */
 	void load(Object entity, Serializable id) throws DataAccessException;
 
 	/**
 	 * Re-read the state of the given persistent instance.
-	 * 
-	 * @param entity
-	 *            the persistent instance to re-read
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entity the persistent instance to re-read
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#refresh(Object)
 	 */
 	void refresh(Object entity) throws DataAccessException;
@@ -337,48 +294,39 @@ public interface HibernateOperations
 	/**
 	 * Re-read the state of the given persistent instance.
 	 * Obtains the specified lock mode for the instance.
-	 * 
-	 * @param entity
-	 *            the persistent instance to re-read
-	 * @param lockMode
-	 *            the lock mode to obtain
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entity   the persistent instance to re-read
+	 * @param lockMode the lock mode to obtain
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#refresh(Object, LockMode)
 	 */
 	void refresh(Object entity, LockMode lockMode) throws DataAccessException;
 
 	/**
 	 * Check whether the given object is in the Session cache.
-	 * 
-	 * @param entity
-	 *            the persistence instance to check
+	 *
+	 * @param entity the persistence instance to check
 	 * @return whether the given object is in the Session cache
-	 * @throws DataAccessException
-	 *             if there is a Hibernate error
+	 * @throws DataAccessException if there is a Hibernate error
 	 * @see org.hibernate.Session#contains
 	 */
 	boolean contains(Object entity) throws DataAccessException;
 
 	/**
 	 * Remove the given object from the {@link org.hibernate.Session} cache.
-	 * 
-	 * @param entity
-	 *            the persistent instance to evict
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entity the persistent instance to evict
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#evict
 	 */
 	void evict(Object entity) throws DataAccessException;
 
 	/**
 	 * Force initialization of a Hibernate proxy or persistent collection.
-	 * 
-	 * @param proxy
-	 *            a proxy for a persistent object or a persistent collection
-	 * @throws DataAccessException
-	 *             if we can't initialize the proxy, for example
-	 *             because it is not associated with an active Session
+	 *
+	 * @param proxy a proxy for a persistent object or a persistent collection
+	 * @throws DataAccessException if we can't initialize the proxy, for example
+	 *                             because it is not associated with an active Session
 	 * @see org.hibernate.Hibernate#initialize
 	 */
 	void initialize(Object proxy) throws DataAccessException;
@@ -386,14 +334,12 @@ public interface HibernateOperations
 	/**
 	 * Return an enabled Hibernate {@link Filter} for the given filter name.
 	 * The returned {@code Filter} instance can be used to set filter parameters.
-	 * 
-	 * @param filterName
-	 *            the name of the filter
+	 *
+	 * @param filterName the name of the filter
 	 * @return the enabled Hibernate {@code Filter} (either already
-	 *         enabled or enabled on the fly by this operation)
-	 * @throws IllegalStateException
-	 *             if we are not running within a
-	 *             transactional Session (in which case this operation does not make sense)
+	 * enabled or enabled on the fly by this operation)
+	 * @throws IllegalStateException if we are not running within a
+	 *                               transactional Session (in which case this operation does not make sense)
 	 */
 	Filter enableFilter(String filterName) throws IllegalStateException;
 
@@ -404,15 +350,11 @@ public interface HibernateOperations
 	/**
 	 * Obtain the specified lock level upon the given object, implicitly
 	 * checking whether the corresponding database entry still exists.
-	 * 
-	 * @param entity
-	 *            the persistent instance to lock
-	 * @param lockMode
-	 *            the lock mode to obtain
-	 * @throws org.springframework.orm.ObjectOptimisticLockingFailureException
-	 *             if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entity   the persistent instance to lock
+	 * @param lockMode the lock mode to obtain
+	 * @throws org.springframework.orm.ObjectOptimisticLockingFailureException if not found
+	 * @throws DataAccessException                                             in case of Hibernate errors
 	 * @see org.hibernate.Session#lock(Object, LockMode)
 	 */
 	void lock(Object entity, LockMode lockMode) throws DataAccessException;
@@ -420,43 +362,33 @@ public interface HibernateOperations
 	/**
 	 * Obtain the specified lock level upon the given object, implicitly
 	 * checking whether the corresponding database entry still exists.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param entity
-	 *            the persistent instance to lock
-	 * @param lockMode
-	 *            the lock mode to obtain
-	 * @throws org.springframework.orm.ObjectOptimisticLockingFailureException
-	 *             if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param entity     the persistent instance to lock
+	 * @param lockMode   the lock mode to obtain
+	 * @throws org.springframework.orm.ObjectOptimisticLockingFailureException if not found
+	 * @throws DataAccessException                                             in case of Hibernate errors
 	 * @see org.hibernate.Session#lock(String, Object, LockMode)
 	 */
 	void lock(String entityName, Object entity, LockMode lockMode) throws DataAccessException;
 
 	/**
 	 * Persist the given transient instance.
-	 * 
-	 * @param entity
-	 *            the transient instance to persist
+	 *
+	 * @param entity the transient instance to persist
 	 * @return the generated identifier
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#save(Object)
 	 */
 	Serializable save(Object entity) throws DataAccessException;
 
 	/**
 	 * Persist the given transient instance.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param entity
-	 *            the transient instance to persist
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param entity     the transient instance to persist
 	 * @return the generated identifier
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#save(String, Object)
 	 */
 	Serializable save(String entityName, Object entity) throws DataAccessException;
@@ -464,11 +396,9 @@ public interface HibernateOperations
 	/**
 	 * Update the given persistent instance,
 	 * associating it with the current Hibernate {@link org.hibernate.Session}.
-	 * 
-	 * @param entity
-	 *            the persistent instance to update
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entity the persistent instance to update
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#update(Object)
 	 */
 	void update(Object entity) throws DataAccessException;
@@ -479,15 +409,11 @@ public interface HibernateOperations
 	 * <p>
 	 * Obtains the specified lock mode if the instance exists, implicitly
 	 * checking whether the corresponding database entry still exists.
-	 * 
-	 * @param entity
-	 *            the persistent instance to update
-	 * @param lockMode
-	 *            the lock mode to obtain
-	 * @throws org.springframework.orm.ObjectOptimisticLockingFailureException
-	 *             if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entity   the persistent instance to update
+	 * @param lockMode the lock mode to obtain
+	 * @throws org.springframework.orm.ObjectOptimisticLockingFailureException if not found
+	 * @throws DataAccessException                                             in case of Hibernate errors
 	 * @see org.hibernate.Session#update(Object)
 	 */
 	void update(Object entity, LockMode lockMode) throws DataAccessException;
@@ -495,13 +421,10 @@ public interface HibernateOperations
 	/**
 	 * Update the given persistent instance,
 	 * associating it with the current Hibernate {@link org.hibernate.Session}.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param entity
-	 *            the persistent instance to update
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param entity     the persistent instance to update
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#update(String, Object)
 	 */
 	void update(String entityName, Object entity) throws DataAccessException;
@@ -512,17 +435,12 @@ public interface HibernateOperations
 	 * <p>
 	 * Obtains the specified lock mode if the instance exists, implicitly
 	 * checking whether the corresponding database entry still exists.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param entity
-	 *            the persistent instance to update
-	 * @param lockMode
-	 *            the lock mode to obtain
-	 * @throws org.springframework.orm.ObjectOptimisticLockingFailureException
-	 *             if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param entity     the persistent instance to update
+	 * @param lockMode   the lock mode to obtain
+	 * @throws org.springframework.orm.ObjectOptimisticLockingFailureException if not found
+	 * @throws DataAccessException                                             in case of Hibernate errors
 	 * @see org.hibernate.Session#update(String, Object)
 	 */
 	void update(String entityName, Object entity, LockMode lockMode) throws DataAccessException;
@@ -531,12 +449,10 @@ public interface HibernateOperations
 	 * Save or update the given persistent instance,
 	 * according to its id (matching the configured "unsaved-value"?).
 	 * Associates the instance with the current Hibernate {@link org.hibernate.Session}.
-	 * 
-	 * @param entity
-	 *            the persistent instance to save or update
-	 *            (to be associated with the Hibernate {@code Session})
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entity the persistent instance to save or update
+	 *               (to be associated with the Hibernate {@code Session})
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#saveOrUpdate(Object)
 	 */
 	void saveOrUpdate(Object entity) throws DataAccessException;
@@ -545,14 +461,11 @@ public interface HibernateOperations
 	 * Save or update the given persistent instance,
 	 * according to its id (matching the configured "unsaved-value"?).
 	 * Associates the instance with the current Hibernate {@code Session}.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param entity
-	 *            the persistent instance to save or update
-	 *            (to be associated with the Hibernate {@code Session})
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param entity     the persistent instance to save or update
+	 *                   (to be associated with the Hibernate {@code Session})
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#saveOrUpdate(String, Object)
 	 */
 	void saveOrUpdate(String entityName, Object entity) throws DataAccessException;
@@ -560,13 +473,10 @@ public interface HibernateOperations
 	/**
 	 * Persist the state of the given detached instance according to the
 	 * given replication mode, reusing the current identifier value.
-	 * 
-	 * @param entity
-	 *            the persistent object to replicate
-	 * @param replicationMode
-	 *            the Hibernate ReplicationMode
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entity          the persistent object to replicate
+	 * @param replicationMode the Hibernate ReplicationMode
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#replicate(Object, ReplicationMode)
 	 */
 	void replicate(Object entity, ReplicationMode replicationMode) throws DataAccessException;
@@ -574,15 +484,11 @@ public interface HibernateOperations
 	/**
 	 * Persist the state of the given detached instance according to the
 	 * given replication mode, reusing the current identifier value.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param entity
-	 *            the persistent object to replicate
-	 * @param replicationMode
-	 *            the Hibernate ReplicationMode
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entityName      the name of the persistent entity
+	 * @param entity          the persistent object to replicate
+	 * @param replicationMode the Hibernate ReplicationMode
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#replicate(String, Object, ReplicationMode)
 	 */
 	void replicate(String entityName, Object entity, ReplicationMode replicationMode)
@@ -593,11 +499,9 @@ public interface HibernateOperations
 	 * <p>
 	 * Similar to {@code save}, associating the given object
 	 * with the current Hibernate {@link org.hibernate.Session}.
-	 * 
-	 * @param entity
-	 *            the persistent instance to persist
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entity the persistent instance to persist
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#persist(Object)
 	 * @see #save
 	 */
@@ -608,13 +512,10 @@ public interface HibernateOperations
 	 * <p>
 	 * Similar to {@code save}, associating the given object
 	 * with the current Hibernate {@link org.hibernate.Session}.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param entity
-	 *            the persistent instance to persist
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param entity     the persistent instance to persist
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#persist(String, Object)
 	 * @see #save
 	 */
@@ -633,12 +534,10 @@ public interface HibernateOperations
 	 * registering Spring's {@code IdTransferringMergeEventListener} if
 	 * you would like to have newly assigned ids transferred to the original
 	 * object graph too.
-	 * 
-	 * @param entity
-	 *            the object to merge with the corresponding persistence instance
+	 *
+	 * @param entity the object to merge with the corresponding persistence instance
 	 * @return the updated, registered persistent instance
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#merge(Object)
 	 * @see #saveOrUpdate
 	 */
@@ -657,14 +556,11 @@ public interface HibernateOperations
 	 * registering Spring's {@code IdTransferringMergeEventListener}
 	 * if you would like to have newly assigned ids transferred to the
 	 * original object graph too.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param entity
-	 *            the object to merge with the corresponding persistence instance
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param entity     the object to merge with the corresponding persistence instance
 	 * @return the updated, registered persistent instance
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#merge(String, Object)
 	 * @see #saveOrUpdate
 	 */
@@ -672,11 +568,9 @@ public interface HibernateOperations
 
 	/**
 	 * Delete the given persistent instance.
-	 * 
-	 * @param entity
-	 *            the persistent instance to delete
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entity the persistent instance to delete
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#delete(Object)
 	 */
 	void delete(Object entity) throws DataAccessException;
@@ -686,28 +580,21 @@ public interface HibernateOperations
 	 * <p>
 	 * Obtains the specified lock mode if the instance exists, implicitly
 	 * checking whether the corresponding database entry still exists.
-	 * 
-	 * @param entity
-	 *            the persistent instance to delete
-	 * @param lockMode
-	 *            the lock mode to obtain
-	 * @throws org.springframework.orm.ObjectOptimisticLockingFailureException
-	 *             if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entity   the persistent instance to delete
+	 * @param lockMode the lock mode to obtain
+	 * @throws org.springframework.orm.ObjectOptimisticLockingFailureException if not found
+	 * @throws DataAccessException                                             in case of Hibernate errors
 	 * @see org.hibernate.Session#delete(Object)
 	 */
 	void delete(Object entity, LockMode lockMode) throws DataAccessException;
 
 	/**
 	 * Delete the given persistent instance.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param entity
-	 *            the persistent instance to delete
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param entity     the persistent instance to delete
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#delete(Object)
 	 */
 	void delete(String entityName, Object entity) throws DataAccessException;
@@ -717,17 +604,12 @@ public interface HibernateOperations
 	 * <p>
 	 * Obtains the specified lock mode if the instance exists, implicitly
 	 * checking whether the corresponding database entry still exists.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param entity
-	 *            the persistent instance to delete
-	 * @param lockMode
-	 *            the lock mode to obtain
-	 * @throws org.springframework.orm.ObjectOptimisticLockingFailureException
-	 *             if not found
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entityName the name of the persistent entity
+	 * @param entity     the persistent instance to delete
+	 * @param lockMode   the lock mode to obtain
+	 * @throws org.springframework.orm.ObjectOptimisticLockingFailureException if not found
+	 * @throws DataAccessException                                             in case of Hibernate errors
 	 * @see org.hibernate.Session#delete(Object)
 	 */
 	void delete(String entityName, Object entity, LockMode lockMode) throws DataAccessException;
@@ -737,11 +619,9 @@ public interface HibernateOperations
 	 * <p>
 	 * This can be combined with any of the find methods to delete by query
 	 * in two lines of code.
-	 * 
-	 * @param entities
-	 *            the persistent instances to delete
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @param entities the persistent instances to delete
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#delete(Object)
 	 */
 	void deleteAll(Collection<?> entities) throws DataAccessException;
@@ -753,9 +633,8 @@ public interface HibernateOperations
 	 * JDBC code needs to see certain changes within the same transaction.
 	 * Else, it is preferable to rely on auto-flushing at transaction
 	 * completion.
-	 * 
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#flush
 	 */
 	void flush() throws DataAccessException;
@@ -763,9 +642,8 @@ public interface HibernateOperations
 	/**
 	 * Remove all objects from the {@link org.hibernate.Session} cache, and
 	 * cancel all pending saves, updates and deletes.
-	 * 
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 *
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#clear
 	 */
 	void clear() throws DataAccessException;
@@ -776,34 +654,28 @@ public interface HibernateOperations
 
 	/**
 	 * Execute a query based on a given Hibernate criteria object.
-	 * 
-	 * @param criteria
-	 *            the detached Hibernate criteria object.
-	 *            <b>Note: Do not reuse criteria objects! They need to recreated per execution,
-	 *            due to the suboptimal design of Hibernate's criteria facility.</b>
+	 *
+	 * @param criteria the detached Hibernate criteria object.
+	 *                 <b>Note: Do not reuse criteria objects! They need to recreated per execution,
+	 *                 due to the suboptimal design of Hibernate's criteria facility.</b>
 	 * @return a {@link List} containing 0 or more persistent instances
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see DetachedCriteria#getExecutableCriteria(org.hibernate.Session)
 	 */
 	List<?> findByCriteria(DetachedCriteria criteria) throws DataAccessException;
 
 	/**
 	 * Execute a query based on the given Hibernate criteria object.
-	 * 
-	 * @param criteria
-	 *            the detached Hibernate criteria object.
-	 *            <b>Note: Do not reuse criteria objects! They need to recreated per execution,
-	 *            due to the suboptimal design of Hibernate's criteria facility.</b>
-	 * @param firstResult
-	 *            the index of the first result object to be retrieved
-	 *            (numbered from 0)
-	 * @param maxResults
-	 *            the maximum number of result objects to retrieve
-	 *            (or <=0 for no limit)
+	 *
+	 * @param criteria    the detached Hibernate criteria object.
+	 *                    <b>Note: Do not reuse criteria objects! They need to recreated per execution,
+	 *                    due to the suboptimal design of Hibernate's criteria facility.</b>
+	 * @param firstResult the index of the first result object to be retrieved
+	 *                    (numbered from 0)
+	 * @param maxResults  the maximum number of result objects to retrieve
+	 *                    (or <=0 for no limit)
 	 * @return a {@link List} containing 0 or more persistent instances
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see DetachedCriteria#getExecutableCriteria(org.hibernate.Session)
 	 * @see org.hibernate.Criteria#setFirstResult(int)
 	 * @see org.hibernate.Criteria#setMaxResults(int)
@@ -813,47 +685,38 @@ public interface HibernateOperations
 
 	/**
 	 * Execute a query based on the given example entity object.
-	 * 
-	 * @param exampleEntity
-	 *            an instance of the desired entity,
-	 *            serving as example for "query-by-example"
+	 *
+	 * @param exampleEntity an instance of the desired entity,
+	 *                      serving as example for "query-by-example"
 	 * @return a {@link List} containing 0 or more persistent instances
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.criterion.Example#create(Object)
 	 */
 	<T> List<T> findByExample(T exampleEntity) throws DataAccessException;
 
 	/**
 	 * Execute a query based on the given example entity object.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param exampleEntity
-	 *            an instance of the desired entity,
-	 *            serving as example for "query-by-example"
+	 *
+	 * @param entityName    the name of the persistent entity
+	 * @param exampleEntity an instance of the desired entity,
+	 *                      serving as example for "query-by-example"
 	 * @return a {@link List} containing 0 or more persistent instances
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.criterion.Example#create(Object)
 	 */
 	<T> List<T> findByExample(String entityName, T exampleEntity) throws DataAccessException;
 
 	/**
 	 * Execute a query based on a given example entity object.
-	 * 
-	 * @param exampleEntity
-	 *            an instance of the desired entity,
-	 *            serving as example for "query-by-example"
-	 * @param firstResult
-	 *            the index of the first result object to be retrieved
-	 *            (numbered from 0)
-	 * @param maxResults
-	 *            the maximum number of result objects to retrieve
-	 *            (or <=0 for no limit)
+	 *
+	 * @param exampleEntity an instance of the desired entity,
+	 *                      serving as example for "query-by-example"
+	 * @param firstResult   the index of the first result object to be retrieved
+	 *                      (numbered from 0)
+	 * @param maxResults    the maximum number of result objects to retrieve
+	 *                      (or <=0 for no limit)
 	 * @return a {@link List} containing 0 or more persistent instances
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.criterion.Example#create(Object)
 	 * @see org.hibernate.Criteria#setFirstResult(int)
 	 * @see org.hibernate.Criteria#setMaxResults(int)
@@ -863,21 +726,16 @@ public interface HibernateOperations
 
 	/**
 	 * Execute a query based on a given example entity object.
-	 * 
-	 * @param entityName
-	 *            the name of the persistent entity
-	 * @param exampleEntity
-	 *            an instance of the desired entity,
-	 *            serving as example for "query-by-example"
-	 * @param firstResult
-	 *            the index of the first result object to be retrieved
-	 *            (numbered from 0)
-	 * @param maxResults
-	 *            the maximum number of result objects to retrieve
-	 *            (or <=0 for no limit)
+	 *
+	 * @param entityName    the name of the persistent entity
+	 * @param exampleEntity an instance of the desired entity,
+	 *                      serving as example for "query-by-example"
+	 * @param firstResult   the index of the first result object to be retrieved
+	 *                      (numbered from 0)
+	 * @param maxResults    the maximum number of result objects to retrieve
+	 *                      (or <=0 for no limit)
 	 * @return a {@link List} containing 0 or more persistent instances
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.criterion.Example#create(Object)
 	 * @see org.hibernate.Criteria#setFirstResult(int)
 	 * @see org.hibernate.Criteria#setMaxResults(int)
@@ -892,17 +750,14 @@ public interface HibernateOperations
 	/**
 	 * Execute an HQL query, binding a number of values to "?" parameters
 	 * in the query string.
-	 * 
-	 * @param queryString
-	 *            a query expressed in Hibernate's query language
-	 * @param values
-	 *            the values of the parameters
+	 *
+	 * @param queryString a query expressed in Hibernate's query language
+	 * @param values      the values of the parameters
 	 * @return a {@link List} containing the results of the query execution
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#createQuery
 	 * @deprecated as of 5.0.4, in favor of a custom {@link HibernateCallback}
-	 *             lambda code block passed to the general {@link #execute} method
+	 * lambda code block passed to the general {@link #execute} method
 	 */
 	@Deprecated
 	List<?> find(String queryString, Object... values) throws DataAccessException;
@@ -910,19 +765,15 @@ public interface HibernateOperations
 	/**
 	 * Execute an HQL query, binding one value to a ":" named parameter
 	 * in the query string.
-	 * 
-	 * @param queryString
-	 *            a query expressed in Hibernate's query language
-	 * @param paramName
-	 *            the name of the parameter
-	 * @param value
-	 *            the value of the parameter
+	 *
+	 * @param queryString a query expressed in Hibernate's query language
+	 * @param paramName   the name of the parameter
+	 * @param value       the value of the parameter
 	 * @return a {@link List} containing the results of the query execution
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#getNamedQuery(String)
 	 * @deprecated as of 5.0.4, in favor of a custom {@link HibernateCallback}
-	 *             lambda code block passed to the general {@link #execute} method
+	 * lambda code block passed to the general {@link #execute} method
 	 */
 	@Deprecated
 	List<?> findByNamedParam(String queryString, String paramName, Object value)
@@ -931,19 +782,15 @@ public interface HibernateOperations
 	/**
 	 * Execute an HQL query, binding a number of values to ":" named
 	 * parameters in the query string.
-	 * 
-	 * @param queryString
-	 *            a query expressed in Hibernate's query language
-	 * @param paramNames
-	 *            the names of the parameters
-	 * @param values
-	 *            the values of the parameters
+	 *
+	 * @param queryString a query expressed in Hibernate's query language
+	 * @param paramNames  the names of the parameters
+	 * @param values      the values of the parameters
 	 * @return a {@link List} containing the results of the query execution
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#getNamedQuery(String)
 	 * @deprecated as of 5.0.4, in favor of a custom {@link HibernateCallback}
-	 *             lambda code block passed to the general {@link #execute} method
+	 * lambda code block passed to the general {@link #execute} method
 	 */
 	@Deprecated
 	List<?> findByNamedParam(String queryString, String[] paramNames, Object[] values)
@@ -952,18 +799,15 @@ public interface HibernateOperations
 	/**
 	 * Execute an HQL query, binding the properties of the given bean to
 	 * <i>named</i> parameters in the query string.
-	 * 
-	 * @param queryString
-	 *            a query expressed in Hibernate's query language
-	 * @param valueBean
-	 *            the values of the parameters
+	 *
+	 * @param queryString a query expressed in Hibernate's query language
+	 * @param valueBean   the values of the parameters
 	 * @return a {@link List} containing the results of the query execution
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Query#setProperties
 	 * @see org.hibernate.Session#createQuery
 	 * @deprecated as of 5.0.4, in favor of a custom {@link HibernateCallback}
-	 *             lambda code block passed to the general {@link #execute} method
+	 * lambda code block passed to the general {@link #execute} method
 	 */
 	@Deprecated
 	List<?> findByValueBean(String queryString, Object valueBean) throws DataAccessException;
@@ -977,17 +821,14 @@ public interface HibernateOperations
 	 * in the query string.
 	 * <p>
 	 * A named query is defined in a Hibernate mapping file.
-	 * 
-	 * @param queryName
-	 *            the name of a Hibernate query in a mapping file
-	 * @param values
-	 *            the values of the parameters
+	 *
+	 * @param queryName the name of a Hibernate query in a mapping file
+	 * @param values    the values of the parameters
 	 * @return a {@link List} containing the results of the query execution
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#getNamedQuery(String)
 	 * @deprecated as of 5.0.4, in favor of a custom {@link HibernateCallback}
-	 *             lambda code block passed to the general {@link #execute} method
+	 * lambda code block passed to the general {@link #execute} method
 	 */
 	@Deprecated
 	List<?> findByNamedQuery(String queryName, Object... values) throws DataAccessException;
@@ -997,19 +838,15 @@ public interface HibernateOperations
 	 * in the query string.
 	 * <p>
 	 * A named query is defined in a Hibernate mapping file.
-	 * 
-	 * @param queryName
-	 *            the name of a Hibernate query in a mapping file
-	 * @param paramName
-	 *            the name of parameter
-	 * @param value
-	 *            the value of the parameter
+	 *
+	 * @param queryName the name of a Hibernate query in a mapping file
+	 * @param paramName the name of parameter
+	 * @param value     the value of the parameter
 	 * @return a {@link List} containing the results of the query execution
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#getNamedQuery(String)
 	 * @deprecated as of 5.0.4, in favor of a custom {@link HibernateCallback}
-	 *             lambda code block passed to the general {@link #execute} method
+	 * lambda code block passed to the general {@link #execute} method
 	 */
 	@Deprecated
 	List<?> findByNamedQueryAndNamedParam(String queryName, String paramName, Object value)
@@ -1020,19 +857,15 @@ public interface HibernateOperations
 	 * parameters in the query string.
 	 * <p>
 	 * A named query is defined in a Hibernate mapping file.
-	 * 
-	 * @param queryName
-	 *            the name of a Hibernate query in a mapping file
-	 * @param paramNames
-	 *            the names of the parameters
-	 * @param values
-	 *            the values of the parameters
+	 *
+	 * @param queryName  the name of a Hibernate query in a mapping file
+	 * @param paramNames the names of the parameters
+	 * @param values     the values of the parameters
 	 * @return a {@link List} containing the results of the query execution
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#getNamedQuery(String)
 	 * @deprecated as of 5.0.4, in favor of a custom {@link HibernateCallback}
-	 *             lambda code block passed to the general {@link #execute} method
+	 * lambda code block passed to the general {@link #execute} method
 	 */
 	@Deprecated
 	List<?> findByNamedQueryAndNamedParam(String queryName, String[] paramNames, Object[] values)
@@ -1043,18 +876,15 @@ public interface HibernateOperations
 	 * ":" named parameters in the query string.
 	 * <p>
 	 * A named query is defined in a Hibernate mapping file.
-	 * 
-	 * @param queryName
-	 *            the name of a Hibernate query in a mapping file
-	 * @param valueBean
-	 *            the values of the parameters
+	 *
+	 * @param queryName the name of a Hibernate query in a mapping file
+	 * @param valueBean the values of the parameters
 	 * @return a {@link List} containing the results of the query execution
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Query#setProperties
 	 * @see org.hibernate.Session#getNamedQuery(String)
 	 * @deprecated as of 5.0.4, in favor of a custom {@link HibernateCallback}
-	 *             lambda code block passed to the general {@link #execute} method
+	 * lambda code block passed to the general {@link #execute} method
 	 */
 	@Deprecated
 	List<?> findByNamedQueryAndValueBean(String queryName, Object valueBean) throws DataAccessException;
@@ -1069,18 +899,15 @@ public interface HibernateOperations
 	 * <p>
 	 * Returns the results as an {@link Iterator}. Entities returned are
 	 * initialized on demand. See the Hibernate API documentation for details.
-	 * 
-	 * @param queryString
-	 *            a query expressed in Hibernate's query language
-	 * @param values
-	 *            the values of the parameters
+	 *
+	 * @param queryString a query expressed in Hibernate's query language
+	 * @param values      the values of the parameters
 	 * @return an {@link Iterator} containing 0 or more persistent instances
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#createQuery
 	 * @see org.hibernate.Query#iterate
 	 * @deprecated as of 5.0.4, in favor of a custom {@link HibernateCallback}
-	 *             lambda code block passed to the general {@link #execute} method
+	 * lambda code block passed to the general {@link #execute} method
 	 */
 	@Deprecated
 	Iterator<?> iterate(String queryString, Object... values) throws DataAccessException;
@@ -1089,14 +916,12 @@ public interface HibernateOperations
 	 * Immediately close an {@link Iterator} created by any of the various
 	 * {@code iterate(..)} operations, instead of waiting until the
 	 * session is closed or disconnected.
-	 * 
-	 * @param it
-	 *            the {@code Iterator} to close
-	 * @throws DataAccessException
-	 *             if the {@code Iterator} could not be closed
+	 *
+	 * @param it the {@code Iterator} to close
+	 * @throws DataAccessException if the {@code Iterator} could not be closed
 	 * @see org.hibernate.Hibernate#close
 	 * @deprecated as of 5.0.4, in favor of a custom {@link HibernateCallback}
-	 *             lambda code block passed to the general {@link #execute} method
+	 * lambda code block passed to the general {@link #execute} method
 	 */
 	@Deprecated
 	void closeIterator(Iterator<?> it) throws DataAccessException;
@@ -1104,18 +929,15 @@ public interface HibernateOperations
 	/**
 	 * Update/delete all objects according to the given query, binding a number of
 	 * values to "?" parameters in the query string.
-	 * 
-	 * @param queryString
-	 *            an update/delete query expressed in Hibernate's query language
-	 * @param values
-	 *            the values of the parameters
+	 *
+	 * @param queryString an update/delete query expressed in Hibernate's query language
+	 * @param values      the values of the parameters
 	 * @return the number of instances updated/deleted
-	 * @throws DataAccessException
-	 *             in case of Hibernate errors
+	 * @throws DataAccessException in case of Hibernate errors
 	 * @see org.hibernate.Session#createQuery
 	 * @see org.hibernate.Query#executeUpdate
 	 * @deprecated as of 5.0.4, in favor of a custom {@link HibernateCallback}
-	 *             lambda code block passed to the general {@link #execute} method
+	 * lambda code block passed to the general {@link #execute} method
 	 */
 	@Deprecated
 	int bulkUpdate(String queryString, Object... values) throws DataAccessException;

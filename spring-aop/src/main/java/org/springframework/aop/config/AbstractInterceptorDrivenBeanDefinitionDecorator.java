@@ -16,8 +16,6 @@
 
 package org.springframework.aop.config;
 
-import java.util.List;
-
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -28,6 +26,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Node;
+
+import java.util.List;
 
 /**
  * Base implementation for
@@ -52,16 +52,14 @@ import org.w3c.dom.Node;
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
- * @since 2.0
  * @see org.aopalliance.intercept.MethodInterceptor
+ * @since 2.0
  */
-public abstract class AbstractInterceptorDrivenBeanDefinitionDecorator implements BeanDefinitionDecorator
-{
+public abstract class AbstractInterceptorDrivenBeanDefinitionDecorator implements BeanDefinitionDecorator {
 
 	@Override
 	public final BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definitionHolder,
-			ParserContext parserContext)
-	{
+											   ParserContext parserContext) {
 		BeanDefinitionRegistry registry = parserContext.getRegistry();
 
 		// get the root bean name - will be the name of the generated proxy factory bean
@@ -80,8 +78,7 @@ public abstract class AbstractInterceptorDrivenBeanDefinitionDecorator implement
 
 		BeanDefinitionHolder result = definitionHolder;
 
-		if (!isProxyFactoryBeanDefinition(targetDefinition))
-		{
+		if (!isProxyFactoryBeanDefinition(targetDefinition)) {
 			// create the proxy definition
 			RootBeanDefinition proxyDefinition = new RootBeanDefinition();
 			// create proxy factory bean definition
@@ -96,8 +93,7 @@ public abstract class AbstractInterceptorDrivenBeanDefinitionDecorator implement
 			// copy autowire settings from original bean definition.
 			proxyDefinition.setAutowireCandidate(targetDefinition.isAutowireCandidate());
 			proxyDefinition.setPrimary(targetDefinition.isPrimary());
-			if (targetDefinition instanceof AbstractBeanDefinition)
-			{
+			if (targetDefinition instanceof AbstractBeanDefinition) {
 				proxyDefinition.copyQualifiersFrom((AbstractBeanDefinition) targetDefinition);
 			}
 			// wrap it in a BeanDefinitionHolder with bean name
@@ -109,20 +105,17 @@ public abstract class AbstractInterceptorDrivenBeanDefinitionDecorator implement
 	}
 
 	@SuppressWarnings("unchecked")
-	private void addInterceptorNameToList(String interceptorName, BeanDefinition beanDefinition)
-	{
+	private void addInterceptorNameToList(String interceptorName, BeanDefinition beanDefinition) {
 		List<String> list = (List<String>) beanDefinition.getPropertyValues().get("interceptorNames");
 		Assert.state(list != null, "Missing 'interceptorNames' property");
 		list.add(interceptorName);
 	}
 
-	private boolean isProxyFactoryBeanDefinition(BeanDefinition existingDefinition)
-	{
+	private boolean isProxyFactoryBeanDefinition(BeanDefinition existingDefinition) {
 		return ProxyFactoryBean.class.getName().equals(existingDefinition.getBeanClassName());
 	}
 
-	protected String getInterceptorNameSuffix(BeanDefinition interceptorDefinition)
-	{
+	protected String getInterceptorNameSuffix(BeanDefinition interceptorDefinition) {
 		String beanClassName = interceptorDefinition.getBeanClassName();
 		return (StringUtils.hasLength(beanClassName)
 				? StringUtils.uncapitalize(ClassUtils.getShortName(beanClassName))

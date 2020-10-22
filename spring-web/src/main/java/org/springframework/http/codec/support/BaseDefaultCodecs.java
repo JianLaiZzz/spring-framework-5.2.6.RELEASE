@@ -16,38 +16,9 @@
 
 package org.springframework.http.codec.support;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.core.codec.AbstractDataBufferDecoder;
-import org.springframework.core.codec.ByteArrayDecoder;
-import org.springframework.core.codec.ByteArrayEncoder;
-import org.springframework.core.codec.ByteBufferDecoder;
-import org.springframework.core.codec.ByteBufferEncoder;
-import org.springframework.core.codec.CharSequenceEncoder;
-import org.springframework.core.codec.DataBufferDecoder;
-import org.springframework.core.codec.DataBufferEncoder;
-import org.springframework.core.codec.Decoder;
-import org.springframework.core.codec.Encoder;
-import org.springframework.core.codec.ResourceDecoder;
-import org.springframework.core.codec.StringDecoder;
-import org.springframework.http.codec.CodecConfigurer;
-import org.springframework.http.codec.DecoderHttpMessageReader;
-import org.springframework.http.codec.EncoderHttpMessageWriter;
-import org.springframework.http.codec.FormHttpMessageReader;
-import org.springframework.http.codec.FormHttpMessageWriter;
-import org.springframework.http.codec.HttpMessageReader;
-import org.springframework.http.codec.HttpMessageWriter;
-import org.springframework.http.codec.ResourceHttpMessageReader;
-import org.springframework.http.codec.ResourceHttpMessageWriter;
-import org.springframework.http.codec.ServerSentEventHttpMessageReader;
-import org.springframework.http.codec.json.AbstractJackson2Decoder;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
-import org.springframework.http.codec.json.Jackson2SmileDecoder;
-import org.springframework.http.codec.json.Jackson2SmileEncoder;
+import org.springframework.core.codec.*;
+import org.springframework.http.codec.*;
+import org.springframework.http.codec.json.*;
 import org.springframework.http.codec.multipart.MultipartHttpMessageReader;
 import org.springframework.http.codec.multipart.MultipartHttpMessageWriter;
 import org.springframework.http.codec.multipart.SynchronossPartHttpMessageReader;
@@ -58,6 +29,11 @@ import org.springframework.http.codec.xml.Jaxb2XmlDecoder;
 import org.springframework.http.codec.xml.Jaxb2XmlEncoder;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Default implementation of {@link CodecConfigurer.DefaultCodecs} that serves
@@ -81,7 +57,7 @@ class BaseDefaultCodecs implements CodecConfigurer.DefaultCodecs, CodecConfigure
 	static {
 		ClassLoader classLoader = BaseCodecConfigurer.class.getClassLoader();
 		jackson2Present = ClassUtils.isPresent("com.fasterxml.jackson.databind.ObjectMapper", classLoader) &&
-						ClassUtils.isPresent("com.fasterxml.jackson.core.JsonGenerator", classLoader);
+				ClassUtils.isPresent("com.fasterxml.jackson.core.JsonGenerator", classLoader);
 		jackson2SmilePresent = ClassUtils.isPresent("com.fasterxml.jackson.dataformat.smile.SmileFactory", classLoader);
 		jaxb2Present = ClassUtils.isPresent("javax.xml.bind.Binder", classLoader);
 		protobufPresent = ClassUtils.isPresent("com.google.protobuf.Message", classLoader);
@@ -239,6 +215,7 @@ class BaseDefaultCodecs implements CodecConfigurer.DefaultCodecs, CodecConfigure
 
 	/**
 	 * Initialize a codec and add it to the List.
+	 *
 	 * @since 5.1.13
 	 */
 	protected <T> void addCodec(List<T> codecs, T codec) {
@@ -318,8 +295,7 @@ class BaseDefaultCodecs implements CodecConfigurer.DefaultCodecs, CodecConfigure
 
 		if (codec instanceof MultipartHttpMessageReader) {
 			initCodec(((MultipartHttpMessageReader) codec).getPartReader());
-		}
-		else if (codec instanceof MultipartHttpMessageWriter) {
+		} else if (codec instanceof MultipartHttpMessageWriter) {
 			initCodec(((MultipartHttpMessageWriter) codec).getFormWriter());
 		}
 	}
@@ -377,7 +353,7 @@ class BaseDefaultCodecs implements CodecConfigurer.DefaultCodecs, CodecConfigure
 	/**
 	 * Return all writers that support specific types.
 	 */
-	@SuppressWarnings({"rawtypes" })
+	@SuppressWarnings({"rawtypes"})
 	final List<HttpMessageWriter<?>> getTypedWriters() {
 		if (!this.registerDefaults) {
 			return Collections.emptyList();

@@ -16,16 +16,9 @@
 
 package org.springframework.web.servlet.config.annotation;
 
-import java.security.Principal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.testfixture.beans.TestBean;
 import org.springframework.core.Ordered;
@@ -41,11 +34,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.DefaultMessageCodesResolver;
-import org.springframework.validation.Errors;
-import org.springframework.validation.MessageCodesResolver;
-import org.springframework.validation.Validator;
+import org.springframework.validation.*;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,11 +55,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.handler.AbstractHandlerMapping;
-import org.springframework.web.servlet.handler.ConversionServiceExposingInterceptor;
-import org.springframework.web.servlet.handler.HandlerExceptionResolverComposite;
-import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
-import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.servlet.handler.*;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -86,18 +71,22 @@ import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockServletContext;
 import org.springframework.web.util.UrlPathHelper;
 
+import java.security.Principal;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.MapperFeature.DEFAULT_VIEW_INCLUSION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.springframework.http.MediaType.APPLICATION_ATOM_XML;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.APPLICATION_XML;
+import static org.springframework.http.MediaType.*;
 
 /**
  * A test fixture with a sub-class of {@link WebMvcConfigurationSupport} that also
  * implements the various {@link WebMvcConfigurer} extension points.
- *
+ * <p>
  * The former doesn't implement the latter but the two must have compatible
  * callback method signatures to support moving from simple to advanced
  * configuration -- i.e. dropping @EnableWebMvc + WebMvcConfigurer and extending
@@ -451,7 +440,7 @@ public class WebMvcConfigurationSupportExtensionTests {
 			return new DefaultMessageCodesResolver() {
 				@Override
 				public String[] resolveMessageCodes(String errorCode, String objectName) {
-					return new String[] {"custom." + errorCode};
+					return new String[]{"custom." + errorCode};
 				}
 			};
 		}

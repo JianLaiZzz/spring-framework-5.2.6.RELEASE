@@ -31,13 +31,12 @@ package org.springframework.transaction;
  * but is independent from any specific persistence technology.
  *
  * @author Juergen Hoeller
- * @since 1.1
  * @see TransactionStatus
  * @see TransactionDefinition#PROPAGATION_NESTED
  * @see java.sql.Savepoint
+ * @since 1.1
  */
-public interface SavepointManager
-{
+public interface SavepointManager {
 
 	/**
 	 * Create a new savepoint. You can roll back to a specific savepoint
@@ -46,15 +45,13 @@ public interface SavepointManager
 	 * <p>
 	 * Note that most transaction managers will automatically release
 	 * savepoints at transaction completion.
-	 * 
+	 *
 	 * @return a savepoint object, to be passed into
-	 *         {@link #rollbackToSavepoint} or {@link #releaseSavepoint}
-	 * @throws NestedTransactionNotSupportedException
-	 *             if the underlying
-	 *             transaction does not support savepoints
-	 * @throws TransactionException
-	 *             if the savepoint could not be created,
-	 *             for example because the transaction is not in an appropriate state
+	 * {@link #rollbackToSavepoint} or {@link #releaseSavepoint}
+	 * @throws NestedTransactionNotSupportedException if the underlying
+	 *                                                transaction does not support savepoints
+	 * @throws TransactionException                   if the savepoint could not be created,
+	 *                                                for example because the transaction is not in an appropriate state
 	 * @see java.sql.Connection#setSavepoint
 	 */
 	Object createSavepoint() throws TransactionException;
@@ -65,14 +62,11 @@ public interface SavepointManager
 	 * The savepoint will <i>not</i> be automatically released afterwards.
 	 * You may explicitly call {@link #releaseSavepoint(Object)} or rely on
 	 * automatic release on transaction completion.
-	 * 
-	 * @param savepoint
-	 *            the savepoint to roll back to
-	 * @throws NestedTransactionNotSupportedException
-	 *             if the underlying
-	 *             transaction does not support savepoints
-	 * @throws TransactionException
-	 *             if the rollback failed
+	 *
+	 * @param savepoint the savepoint to roll back to
+	 * @throws NestedTransactionNotSupportedException if the underlying
+	 *                                                transaction does not support savepoints
+	 * @throws TransactionException                   if the rollback failed
 	 * @see java.sql.Connection#rollback(java.sql.Savepoint)
 	 */
 	void rollbackToSavepoint(Object savepoint) throws TransactionException;
@@ -85,14 +79,11 @@ public interface SavepointManager
 	 * <p>
 	 * Implementations should fail as silently as possible if proper
 	 * resource cleanup will eventually happen at transaction completion.
-	 * 
-	 * @param savepoint
-	 *            the savepoint to release
-	 * @throws NestedTransactionNotSupportedException
-	 *             if the underlying
-	 *             transaction does not support savepoints
-	 * @throws TransactionException
-	 *             if the release failed
+	 *
+	 * @param savepoint the savepoint to release
+	 * @throws NestedTransactionNotSupportedException if the underlying
+	 *                                                transaction does not support savepoints
+	 * @throws TransactionException                   if the release failed
 	 * @see java.sql.Connection#releaseSavepoint
 	 */
 	void releaseSavepoint(Object savepoint) throws TransactionException;

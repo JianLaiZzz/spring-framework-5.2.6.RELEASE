@@ -16,25 +16,24 @@
 
 package org.springframework.http.server.reactive;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -62,7 +61,8 @@ public class ServerHttpResponseTests {
 		assertThat(new String(response.body.get(2).asByteBuffer().array(), StandardCharsets.UTF_8)).isEqualTo("c");
 	}
 
-	@Test  // SPR-14952
+	@Test
+		// SPR-14952
 	void writeAndFlushWithFluxOfDefaultDataBuffer() {
 		TestServerHttpResponse response = new TestServerHttpResponse();
 		Flux<Flux<DefaultDataBuffer>> flux = Flux.just(Flux.just(wrap("foo")));
@@ -150,7 +150,8 @@ public class ServerHttpResponseTests {
 		assertThat(response.getCookies().getFirst("ID")).isSameAs(cookie);
 	}
 
-	@Test // gh-24186
+	@Test
+		// gh-24186
 	void beforeCommitErrorShouldLeaveResponseNotCommitted() {
 
 		Consumer<Supplier<Mono<Void>>> tester = preCommitAction -> {
@@ -231,10 +232,10 @@ public class ServerHttpResponseTests {
 		protected Mono<Void> writeAndFlushWithInternal(
 				Publisher<? extends Publisher<? extends DataBuffer>> bodyWithFlush) {
 			return Flux.from(bodyWithFlush).flatMap(body ->
-				Flux.from(body).map(b -> {
-					this.body.add(b);
-					return b;
-				})
+					Flux.from(body).map(b -> {
+						this.body.add(b);
+						return b;
+					})
 			).then();
 		}
 	}

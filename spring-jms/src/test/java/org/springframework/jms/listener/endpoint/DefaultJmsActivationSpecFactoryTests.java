@@ -16,27 +16,25 @@
 
 package org.springframework.jms.listener.endpoint;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
-import javax.jms.Destination;
-import javax.jms.Session;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.jca.StubResourceAdapter;
 import org.springframework.jms.StubQueue;
 import org.springframework.jms.support.destination.DestinationResolver;
 
+import javax.jms.Destination;
+import javax.jms.Session;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 /**
  * @author Agim Emruli
  * @author Juergen Hoeller
  */
-public class DefaultJmsActivationSpecFactoryTests
-{
+public class DefaultJmsActivationSpecFactoryTests {
 
-	private final JmsActivationSpecConfig activationSpecConfig = new JmsActivationSpecConfig()
-	{
+	private final JmsActivationSpecConfig activationSpecConfig = new JmsActivationSpecConfig() {
 		{
 			setMaxConcurrency(5);
 			setPrefetchSize(3);
@@ -49,8 +47,7 @@ public class DefaultJmsActivationSpecFactoryTests
 	};
 
 	@Test
-	public void activeMQResourceAdapterSetup()
-	{
+	public void activeMQResourceAdapterSetup() {
 		activationSpecConfig.setAcknowledgeMode(Session.SESSION_TRANSACTED);
 		JmsActivationSpecFactory activationSpecFactory = new DefaultJmsActivationSpecFactory();
 		StubActiveMQActivationSpec spec = (StubActiveMQActivationSpec) activationSpecFactory
@@ -62,8 +59,7 @@ public class DefaultJmsActivationSpecFactoryTests
 	}
 
 	@Test
-	public void webSphereResourceAdapterSetup() throws Exception
-	{
+	public void webSphereResourceAdapterSetup() throws Exception {
 		Destination destination = new StubQueue();
 
 		DestinationResolver destinationResolver = mock(DestinationResolver.class);
@@ -81,17 +77,14 @@ public class DefaultJmsActivationSpecFactoryTests
 		assertThat(spec.getMaxBatchSize()).isEqualTo(3);
 	}
 
-	private static class StubActiveMQResourceAdapter extends StubResourceAdapter
-	{
+	private static class StubActiveMQResourceAdapter extends StubResourceAdapter {
 	}
 
-	private static class StubWebSphereResourceAdapterImpl extends StubResourceAdapter
-	{
+	private static class StubWebSphereResourceAdapterImpl extends StubResourceAdapter {
 	}
 
 	@SuppressWarnings("unused")
-	private static class StubActiveMQActivationSpec extends StubJmsActivationSpec
-	{
+	private static class StubActiveMQActivationSpec extends StubJmsActivationSpec {
 
 		private int maxSessions;
 
@@ -101,50 +94,41 @@ public class DefaultJmsActivationSpecFactoryTests
 
 		private boolean useRAManagedTransaction;
 
-		public void setMaxSessions(int maxSessions)
-		{
+		public void setMaxSessions(int maxSessions) {
 			this.maxSessions = maxSessions;
 		}
 
-		public void setMaxMessagesPerSessions(int maxMessagesPerSessions)
-		{
+		public void setMaxMessagesPerSessions(int maxMessagesPerSessions) {
 			this.maxMessagesPerSessions = maxMessagesPerSessions;
 		}
 
-		public int getMaxSessions()
-		{
+		public int getMaxSessions() {
 			return maxSessions;
 		}
 
-		public int getMaxMessagesPerSessions()
-		{
+		public int getMaxMessagesPerSessions() {
 			return maxMessagesPerSessions;
 		}
 
-		public String getDestination()
-		{
+		public String getDestination() {
 			return destination;
 		}
 
-		public void setDestination(String destination)
-		{
+		public void setDestination(String destination) {
 			this.destination = destination;
 		}
 
-		public boolean isUseRAManagedTransaction()
-		{
+		public boolean isUseRAManagedTransaction() {
 			return useRAManagedTransaction;
 		}
 
-		public void setUseRAManagedTransaction(boolean useRAManagedTransaction)
-		{
+		public void setUseRAManagedTransaction(boolean useRAManagedTransaction) {
 			this.useRAManagedTransaction = useRAManagedTransaction;
 		}
 	}
 
 	@SuppressWarnings("unused")
-	private static class StubWebSphereActivationSpecImpl extends StubJmsActivationSpec
-	{
+	private static class StubWebSphereActivationSpecImpl extends StubJmsActivationSpec {
 
 		private Destination destination;
 
@@ -152,33 +136,27 @@ public class DefaultJmsActivationSpecFactoryTests
 
 		private int maxBatchSize;
 
-		public void setDestination(Destination destination)
-		{
+		public void setDestination(Destination destination) {
 			this.destination = destination;
 		}
 
-		public Destination getDestination()
-		{
+		public Destination getDestination() {
 			return destination;
 		}
 
-		public int getMaxConcurrency()
-		{
+		public int getMaxConcurrency() {
 			return maxConcurrency;
 		}
 
-		public void setMaxConcurrency(int maxConcurrency)
-		{
+		public void setMaxConcurrency(int maxConcurrency) {
 			this.maxConcurrency = maxConcurrency;
 		}
 
-		public int getMaxBatchSize()
-		{
+		public int getMaxBatchSize() {
 			return maxBatchSize;
 		}
 
-		public void setMaxBatchSize(int maxBatchSize)
-		{
+		public void setMaxBatchSize(int maxBatchSize) {
 			this.maxBatchSize = maxBatchSize;
 		}
 	}

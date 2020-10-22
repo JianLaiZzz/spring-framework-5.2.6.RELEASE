@@ -16,19 +16,18 @@
 
 package org.springframework.web.reactive.function.server;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.function.Function;
-
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.function.Function;
 
 /**
  * @author Arjen Poutsma
@@ -50,8 +49,7 @@ public class PathResourceLookupFunctionTests {
 				.expectNextMatches(resource -> {
 					try {
 						return expected.equals(resource.getFile());
-					}
-					catch (IOException ex) {
+					} catch (IOException ex) {
 						return false;
 					}
 				})
@@ -73,8 +71,7 @@ public class PathResourceLookupFunctionTests {
 				.expectNextMatches(resource -> {
 					try {
 						return expected.equals(resource.getFile());
-					}
-					catch (IOException ex) {
+					} catch (IOException ex) {
 						return false;
 					}
 				})
@@ -105,7 +102,7 @@ public class PathResourceLookupFunctionTests {
 
 		Function<ServerRequest, Mono<Resource>> customLookupFunction =
 				lookupFunction.andThen(resourceMono -> resourceMono
-								.switchIfEmpty(Mono.just(defaultResource)));
+						.switchIfEmpty(Mono.just(defaultResource)));
 
 		MockServerHttpRequest mockRequest = MockServerHttpRequest.get("https://localhost/resources/foo").build();
 		ServerRequest request = new DefaultServerRequest(MockServerWebExchange.from(mockRequest), Collections.emptyList());
@@ -115,8 +112,7 @@ public class PathResourceLookupFunctionTests {
 				.expectNextMatches(resource -> {
 					try {
 						return defaultResource.getFile().equals(resource.getFile());
-					}
-					catch (IOException ex) {
+					} catch (IOException ex) {
 						return false;
 					}
 				})

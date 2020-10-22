@@ -16,6 +16,12 @@
 
 package org.springframework.core;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.asm.*;
+import org.springframework.lang.Nullable;
+import org.springframework.util.ClassUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -24,19 +30,6 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.springframework.asm.ClassReader;
-import org.springframework.asm.ClassVisitor;
-import org.springframework.asm.Label;
-import org.springframework.asm.MethodVisitor;
-import org.springframework.asm.Opcodes;
-import org.springframework.asm.SpringAsmInfo;
-import org.springframework.asm.Type;
-import org.springframework.lang.Nullable;
-import org.springframework.util.ClassUtils;
 
 /**
  * Implementation of {@link ParameterNameDiscoverer} that uses the LocalVariableTable
@@ -106,25 +99,21 @@ public class LocalVariableTableParameterNameDiscoverer implements ParameterNameD
 			Map<Executable, String[]> map = new ConcurrentHashMap<>(32);
 			classReader.accept(new ParameterNameDiscoveringVisitor(clazz, map), 0);
 			return map;
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Exception thrown while reading '.class' file for class [" + clazz +
 						"] - unable to determine constructor/method parameter names", ex);
 			}
-		}
-		catch (IllegalArgumentException ex) {
+		} catch (IllegalArgumentException ex) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("ASM ClassReader failed to parse class file [" + clazz +
 						"], probably due to a new Java class file version that isn't supported yet " +
 						"- unable to determine constructor/method parameter names", ex);
 			}
-		}
-		finally {
+		} finally {
 			try {
 				is.close();
-			}
-			catch (IOException ex) {
+			} catch (IOException ex) {
 				// ignore
 			}
 		}
@@ -237,8 +226,7 @@ public class LocalVariableTableParameterNameDiscoverer implements ParameterNameD
 					return this.clazz.getDeclaredConstructor(argTypes);
 				}
 				return this.clazz.getDeclaredMethod(this.name, argTypes);
-			}
-			catch (NoSuchMethodException ex) {
+			} catch (NoSuchMethodException ex) {
 				throw new IllegalStateException("Method [" + this.name +
 						"] was discovered in the .class file but cannot be resolved in the class object", ex);
 			}
@@ -251,8 +239,7 @@ public class LocalVariableTableParameterNameDiscoverer implements ParameterNameD
 				lvtIndex[i] = nextIndex;
 				if (isWideType(paramTypes[i])) {
 					nextIndex += 2;
-				}
-				else {
+				} else {
 					nextIndex++;
 				}
 			}

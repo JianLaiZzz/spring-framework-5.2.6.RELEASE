@@ -16,17 +16,16 @@
 
 package org.springframework.web.reactive.function.server;
 
-import java.time.Duration;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.HttpServer;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
@@ -99,17 +98,18 @@ class SseHandlerFunctionIntegrationTests extends AbstractRouterFunctionIntegrati
 				.uri("/event")
 				.accept(TEXT_EVENT_STREAM)
 				.retrieve()
-				.bodyToFlux(new ParameterizedTypeReference<ServerSentEvent<String>>() {});
+				.bodyToFlux(new ParameterizedTypeReference<ServerSentEvent<String>>() {
+				});
 
 		StepVerifier.create(result)
-				.consumeNextWith( event -> {
+				.consumeNextWith(event -> {
 					assertThat(event.id()).isEqualTo("0");
 					assertThat(event.data()).isEqualTo("foo");
 					assertThat(event.comment()).isEqualTo("bar");
 					assertThat(event.event()).isNull();
 					assertThat(event.retry()).isNull();
 				})
-				.consumeNextWith( event -> {
+				.consumeNextWith(event -> {
 					assertThat(event.id()).isEqualTo("1");
 					assertThat(event.data()).isEqualTo("foo");
 					assertThat(event.comment()).isEqualTo("bar");

@@ -16,9 +16,9 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.lang.annotation.*;
-
 import org.springframework.core.annotation.AliasFor;
+
+import java.lang.annotation.*;
 
 /**
  * Annotation for mapping HTTP {@code GET} requests onto specific handler
@@ -29,19 +29,18 @@ import org.springframework.core.annotation.AliasFor;
  * acts as a shortcut for {@code @RequestMapping(method = RequestMethod.GET)}.
  *
  * @author Sam Brannen
- * @since 4.3
  * @see PostMapping
  * @see PutMapping
  * @see DeleteMapping
  * @see PatchMapping
  * @see RequestMapping
+ * @since 4.3
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @RequestMapping(method = RequestMethod.GET)
-public @interface GetMapping
-{
+public @interface GetMapping {
 
 	/**
 	 * Alias for {@link RequestMapping#name}.
@@ -75,7 +74,7 @@ public @interface GetMapping
 
 	/**
 	 * Alias for {@link RequestMapping#consumes}.
-	 * 
+	 *
 	 * @since 4.3.5
 	 */
 	@AliasFor(annotation = RequestMapping.class)

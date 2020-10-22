@@ -16,10 +16,6 @@
 
 package org.springframework.aop.support;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.lang.reflect.Method;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.beans.testfixture.beans.IOther;
@@ -28,12 +24,15 @@ import org.springframework.beans.testfixture.beans.TestBean;
 import org.springframework.core.testfixture.io.SerializationTestUtils;
 import org.springframework.lang.Nullable;
 
+import java.lang.reflect.Method;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * @author Juergen Hoeller
  * @author Chris Beams
  */
-public class MethodMatchersTests
-{
+public class MethodMatchersTests {
 
 	private final Method EXCEPTION_GETMESSAGE;
 
@@ -43,8 +42,7 @@ public class MethodMatchersTests
 
 	private final Method IOTHER_ABSQUATULATE;
 
-	public MethodMatchersTests() throws Exception
-	{
+	public MethodMatchersTests() throws Exception {
 		EXCEPTION_GETMESSAGE = Exception.class.getMethod("getMessage");
 		ITESTBEAN_GETAGE = ITestBean.class.getMethod("getAge");
 		ITESTBEAN_SETAGE = ITestBean.class.getMethod("setAge", int.class);
@@ -52,23 +50,20 @@ public class MethodMatchersTests
 	}
 
 	@Test
-	public void testDefaultMatchesAll() throws Exception
-	{
+	public void testDefaultMatchesAll() throws Exception {
 		MethodMatcher defaultMm = MethodMatcher.TRUE;
 		assertThat(defaultMm.matches(EXCEPTION_GETMESSAGE, Exception.class)).isTrue();
 		assertThat(defaultMm.matches(ITESTBEAN_SETAGE, TestBean.class)).isTrue();
 	}
 
 	@Test
-	public void testMethodMatcherTrueSerializable() throws Exception
-	{
+	public void testMethodMatcherTrueSerializable() throws Exception {
 		assertThat(MethodMatcher.TRUE)
 				.isSameAs(SerializationTestUtils.serializeAndDeserialize(MethodMatcher.TRUE));
 	}
 
 	@Test
-	public void testSingle() throws Exception
-	{
+	public void testSingle() throws Exception {
 		MethodMatcher defaultMm = MethodMatcher.TRUE;
 		assertThat(defaultMm.matches(EXCEPTION_GETMESSAGE, Exception.class)).isTrue();
 		assertThat(defaultMm.matches(ITESTBEAN_SETAGE, TestBean.class)).isTrue();
@@ -79,8 +74,7 @@ public class MethodMatchersTests
 	}
 
 	@Test
-	public void testDynamicAndStaticMethodMatcherIntersection() throws Exception
-	{
+	public void testDynamicAndStaticMethodMatcherIntersection() throws Exception {
 		MethodMatcher mm1 = MethodMatcher.TRUE;
 		MethodMatcher mm2 = new TestDynamicMethodMatcherWhichMatches();
 		MethodMatcher intersection = MethodMatchers.intersection(mm1, mm2);
@@ -100,8 +94,7 @@ public class MethodMatchersTests
 	}
 
 	@Test
-	public void testStaticMethodMatcherUnion() throws Exception
-	{
+	public void testStaticMethodMatcherUnion() throws Exception {
 		MethodMatcher getterMatcher = new StartsWithMatcher("get");
 		MethodMatcher setterMatcher = new StartsWithMatcher("set");
 		MethodMatcher union = MethodMatchers.union(getterMatcher, setterMatcher);
@@ -114,8 +107,7 @@ public class MethodMatchersTests
 	}
 
 	@Test
-	public void testUnionEquals()
-	{
+	public void testUnionEquals() {
 		MethodMatcher first = MethodMatchers.union(MethodMatcher.TRUE, MethodMatcher.TRUE);
 		MethodMatcher second = new ComposablePointcut(MethodMatcher.TRUE)
 				.union(new ComposablePointcut(MethodMatcher.TRUE)).getMethodMatcher();
@@ -123,39 +115,32 @@ public class MethodMatchersTests
 		assertThat(second.equals(first)).isTrue();
 	}
 
-	public static class StartsWithMatcher extends StaticMethodMatcher
-	{
+	public static class StartsWithMatcher extends StaticMethodMatcher {
 
 		private final String prefix;
 
-		public StartsWithMatcher(String s)
-		{
+		public StartsWithMatcher(String s) {
 			this.prefix = s;
 		}
 
 		@Override
-		public boolean matches(Method m, @Nullable Class<?> targetClass)
-		{
+		public boolean matches(Method m, @Nullable Class<?> targetClass) {
 			return m.getName().startsWith(prefix);
 		}
 	}
 
-	private static class TestDynamicMethodMatcherWhichMatches extends DynamicMethodMatcher
-	{
+	private static class TestDynamicMethodMatcherWhichMatches extends DynamicMethodMatcher {
 
 		@Override
-		public boolean matches(Method m, @Nullable Class<?> targetClass, Object... args)
-		{
+		public boolean matches(Method m, @Nullable Class<?> targetClass, Object... args) {
 			return true;
 		}
 	}
 
-	private static class TestDynamicMethodMatcherWhichDoesNotMatch extends DynamicMethodMatcher
-	{
+	private static class TestDynamicMethodMatcherWhichDoesNotMatch extends DynamicMethodMatcher {
 
 		@Override
-		public boolean matches(Method m, @Nullable Class<?> targetClass, Object... args)
-		{
+		public boolean matches(Method m, @Nullable Class<?> targetClass, Object... args) {
 			return false;
 		}
 	}

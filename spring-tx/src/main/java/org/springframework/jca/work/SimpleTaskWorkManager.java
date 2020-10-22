@@ -16,11 +16,11 @@
 
 package org.springframework.jca.work;
 
-import javax.resource.spi.work.*;
-
 import org.springframework.core.task.*;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import javax.resource.spi.work.*;
 
 /**
  * Simple JCA 1.7 {@link javax.resource.spi.work.WorkManager} implementation that
@@ -47,12 +47,11 @@ import org.springframework.util.Assert;
  * JCA WorkListeners are fully supported in any case.
  *
  * @author Juergen Hoeller
- * @since 2.0.3
  * @see #setSyncTaskExecutor
  * @see #setAsyncTaskExecutor
+ * @since 2.0.3
  */
-public class SimpleTaskWorkManager implements WorkManager
-{
+public class SimpleTaskWorkManager implements WorkManager {
 
 	@Nullable
 	private TaskExecutor syncTaskExecutor = new SyncTaskExecutor();
@@ -66,8 +65,7 @@ public class SimpleTaskWorkManager implements WorkManager
 	 * <p>
 	 * Default is a {@link org.springframework.core.task.SyncTaskExecutor}.
 	 */
-	public void setSyncTaskExecutor(TaskExecutor syncTaskExecutor)
-	{
+	public void setSyncTaskExecutor(TaskExecutor syncTaskExecutor) {
 		this.syncTaskExecutor = syncTaskExecutor;
 	}
 
@@ -79,36 +77,31 @@ public class SimpleTaskWorkManager implements WorkManager
 	 * {@link org.springframework.core.task.AsyncTaskExecutor} implementation.
 	 * Default is a {@link org.springframework.core.task.SimpleAsyncTaskExecutor}.
 	 */
-	public void setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor)
-	{
+	public void setAsyncTaskExecutor(AsyncTaskExecutor asyncTaskExecutor) {
 		this.asyncTaskExecutor = asyncTaskExecutor;
 	}
 
 	@Override
-	public void doWork(Work work) throws WorkException
-	{
+	public void doWork(Work work) throws WorkException {
 		doWork(work, WorkManager.INDEFINITE, null, null);
 	}
 
 	@Override
 	public void doWork(Work work, long startTimeout, @Nullable ExecutionContext executionContext,
-			@Nullable WorkListener workListener) throws WorkException
-	{
+					   @Nullable WorkListener workListener) throws WorkException {
 
 		Assert.state(this.syncTaskExecutor != null, "No 'syncTaskExecutor' set");
 		executeWork(this.syncTaskExecutor, work, startTimeout, false, executionContext, workListener);
 	}
 
 	@Override
-	public long startWork(Work work) throws WorkException
-	{
+	public long startWork(Work work) throws WorkException {
 		return startWork(work, WorkManager.INDEFINITE, null, null);
 	}
 
 	@Override
 	public long startWork(Work work, long startTimeout, @Nullable ExecutionContext executionContext,
-			@Nullable WorkListener workListener) throws WorkException
-	{
+						  @Nullable WorkListener workListener) throws WorkException {
 
 		Assert.state(this.asyncTaskExecutor != null, "No 'asyncTaskExecutor' set");
 		return executeWork(this.asyncTaskExecutor, work, startTimeout, true, executionContext,
@@ -116,15 +109,13 @@ public class SimpleTaskWorkManager implements WorkManager
 	}
 
 	@Override
-	public void scheduleWork(Work work) throws WorkException
-	{
+	public void scheduleWork(Work work) throws WorkException {
 		scheduleWork(work, WorkManager.INDEFINITE, null, null);
 	}
 
 	@Override
 	public void scheduleWork(Work work, long startTimeout, @Nullable ExecutionContext executionContext,
-			@Nullable WorkListener workListener) throws WorkException
-	{
+							 @Nullable WorkListener workListener) throws WorkException {
 
 		Assert.state(this.asyncTaskExecutor != null, "No 'asyncTaskExecutor' set");
 		executeWork(this.asyncTaskExecutor, work, startTimeout, false, executionContext, workListener);
@@ -132,100 +123,71 @@ public class SimpleTaskWorkManager implements WorkManager
 
 	/**
 	 * Execute the given Work on the specified TaskExecutor.
-	 * 
-	 * @param taskExecutor
-	 *            the TaskExecutor to use
-	 * @param work
-	 *            the Work to execute
-	 * @param startTimeout
-	 *            the time duration within which the Work is supposed to start
-	 * @param blockUntilStarted
-	 *            whether to block until the Work has started
-	 * @param executionContext
-	 *            the JCA ExecutionContext for the given Work
-	 * @param workListener
-	 *            the WorkListener to clal for the given Work
+	 *
+	 * @param taskExecutor      the TaskExecutor to use
+	 * @param work              the Work to execute
+	 * @param startTimeout      the time duration within which the Work is supposed to start
+	 * @param blockUntilStarted whether to block until the Work has started
+	 * @param executionContext  the JCA ExecutionContext for the given Work
+	 * @param workListener      the WorkListener to clal for the given Work
 	 * @return the time elapsed from Work acceptance until start of execution
-	 *         (or -1 if not applicable or not known)
-	 * @throws WorkException
-	 *             if the TaskExecutor did not accept the Work
+	 * (or -1 if not applicable or not known)
+	 * @throws WorkException if the TaskExecutor did not accept the Work
 	 */
 	protected long executeWork(TaskExecutor taskExecutor, Work work, long startTimeout,
-			boolean blockUntilStarted, @Nullable ExecutionContext executionContext,
-			@Nullable WorkListener workListener) throws WorkException
-	{
+							   boolean blockUntilStarted, @Nullable ExecutionContext executionContext,
+							   @Nullable WorkListener workListener) throws WorkException {
 
-		if (executionContext != null && executionContext.getXid() != null)
-		{
+		if (executionContext != null && executionContext.getXid() != null) {
 			throw new WorkException("SimpleTaskWorkManager does not supported imported XIDs: "
 					+ executionContext.getXid());
 		}
 		WorkListener workListenerToUse = workListener;
-		if (workListenerToUse == null)
-		{
+		if (workListenerToUse == null) {
 			workListenerToUse = new WorkAdapter();
 		}
 
 		boolean isAsync = (taskExecutor instanceof AsyncTaskExecutor);
 		DelegatingWorkAdapter workHandle = new DelegatingWorkAdapter(work, workListenerToUse, !isAsync);
-		try
-		{
-			if (isAsync)
-			{
+		try {
+			if (isAsync) {
 				((AsyncTaskExecutor) taskExecutor).execute(workHandle, startTimeout);
-			}
-			else
-			{
+			} else {
 				taskExecutor.execute(workHandle);
 			}
-		}
-		catch (TaskTimeoutException ex)
-		{
+		} catch (TaskTimeoutException ex) {
 			WorkException wex = new WorkRejectedException(
 					"TaskExecutor rejected Work because of timeout: " + work, ex);
 			wex.setErrorCode(WorkException.START_TIMED_OUT);
 			workListenerToUse.workRejected(new WorkEvent(this, WorkEvent.WORK_REJECTED, work, wex));
 			throw wex;
-		}
-		catch (TaskRejectedException ex)
-		{
+		} catch (TaskRejectedException ex) {
 			WorkException wex = new WorkRejectedException("TaskExecutor rejected Work: " + work, ex);
 			wex.setErrorCode(WorkException.INTERNAL);
 			workListenerToUse.workRejected(new WorkEvent(this, WorkEvent.WORK_REJECTED, work, wex));
 			throw wex;
-		}
-		catch (Throwable ex)
-		{
+		} catch (Throwable ex) {
 			WorkException wex = new WorkException("TaskExecutor failed to execute Work: " + work, ex);
 			wex.setErrorCode(WorkException.INTERNAL);
 			throw wex;
 		}
-		if (isAsync)
-		{
+		if (isAsync) {
 			workListenerToUse.workAccepted(new WorkEvent(this, WorkEvent.WORK_ACCEPTED, work, null));
 		}
 
-		if (blockUntilStarted)
-		{
+		if (blockUntilStarted) {
 			long acceptanceTime = System.currentTimeMillis();
-			synchronized (workHandle.monitor)
-			{
-				try
-				{
-					while (!workHandle.started)
-					{
+			synchronized (workHandle.monitor) {
+				try {
+					while (!workHandle.started) {
 						workHandle.monitor.wait();
 					}
-				}
-				catch (InterruptedException ex)
-				{
+				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
 				}
 			}
 			return (System.currentTimeMillis() - acceptanceTime);
-		}
-		else
-		{
+		} else {
 			return WorkManager.UNKNOWN;
 		}
 	}
@@ -234,8 +196,7 @@ public class SimpleTaskWorkManager implements WorkManager
 	 * Work adapter that supports start timeouts and WorkListener callbacks
 	 * for a given Work that it delegates to.
 	 */
-	private static class DelegatingWorkAdapter implements Work
-	{
+	private static class DelegatingWorkAdapter implements Work {
 
 		private final Work work;
 
@@ -247,33 +208,26 @@ public class SimpleTaskWorkManager implements WorkManager
 
 		public boolean started = false;
 
-		public DelegatingWorkAdapter(Work work, WorkListener workListener, boolean acceptOnExecution)
-		{
+		public DelegatingWorkAdapter(Work work, WorkListener workListener, boolean acceptOnExecution) {
 			this.work = work;
 			this.workListener = workListener;
 			this.acceptOnExecution = acceptOnExecution;
 		}
 
 		@Override
-		public void run()
-		{
-			if (this.acceptOnExecution)
-			{
+		public void run() {
+			if (this.acceptOnExecution) {
 				this.workListener
 						.workAccepted(new WorkEvent(this, WorkEvent.WORK_ACCEPTED, this.work, null));
 			}
-			synchronized (this.monitor)
-			{
+			synchronized (this.monitor) {
 				this.started = true;
 				this.monitor.notify();
 			}
 			this.workListener.workStarted(new WorkEvent(this, WorkEvent.WORK_STARTED, this.work, null));
-			try
-			{
+			try {
 				this.work.run();
-			}
-			catch (RuntimeException | Error ex)
-			{
+			} catch (RuntimeException | Error ex) {
 				this.workListener.workCompleted(new WorkEvent(this, WorkEvent.WORK_COMPLETED, this.work,
 						new WorkCompletedException(ex)));
 				throw ex;
@@ -283,8 +237,7 @@ public class SimpleTaskWorkManager implements WorkManager
 		}
 
 		@Override
-		public void release()
-		{
+		public void release() {
 			this.work.release();
 		}
 	}

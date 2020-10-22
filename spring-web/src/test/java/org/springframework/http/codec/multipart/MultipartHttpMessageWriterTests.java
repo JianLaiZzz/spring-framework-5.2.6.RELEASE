@@ -16,18 +16,7 @@
 
 package org.springframework.http.codec.multipart;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.publisher.UnicastProcessor;
-
 import org.springframework.core.ResolvableType;
 import org.springframework.core.codec.StringDecoder;
 import org.springframework.core.io.ClassPathResource;
@@ -43,6 +32,16 @@ import org.springframework.http.codec.ClientCodecConfigurer;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpResponse;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.UnicastProcessor;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -204,8 +203,8 @@ public class MultipartHttpMessageWriterTests extends AbstractLeakCheckingTests {
 	@SuppressWarnings("ConstantConditions")
 	private String decodeToString(Part part) {
 		return StringDecoder.textPlainOnly().decodeToMono(part.content(),
-					ResolvableType.forClass(String.class), MediaType.TEXT_PLAIN,
-					Collections.emptyMap()).block(Duration.ZERO);
+				ResolvableType.forClass(String.class), MediaType.TEXT_PLAIN,
+				Collections.emptyMap()).block(Duration.ZERO);
 	}
 
 	@Test  // SPR-16402

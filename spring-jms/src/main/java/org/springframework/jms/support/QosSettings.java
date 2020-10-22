@@ -16,9 +16,9 @@
 
 package org.springframework.jms.support;
 
-import javax.jms.Message;
-
 import org.springframework.lang.Nullable;
+
+import javax.jms.Message;
 
 /**
  * Gather the Quality-of-Service settings that can be used when sending a message.
@@ -26,8 +26,7 @@ import org.springframework.lang.Nullable;
  * @author Stephane Nicoll
  * @since 5.0
  */
-public class QosSettings
-{
+public class QosSettings {
 
 	private int deliveryMode;
 
@@ -37,21 +36,19 @@ public class QosSettings
 
 	/**
 	 * Create a new instance with the default settings.
-	 * 
+	 *
 	 * @see Message#DEFAULT_DELIVERY_MODE
 	 * @see Message#DEFAULT_PRIORITY
 	 * @see Message#DEFAULT_TIME_TO_LIVE
 	 */
-	public QosSettings()
-	{
+	public QosSettings() {
 		this(Message.DEFAULT_DELIVERY_MODE, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
 	}
 
 	/**
 	 * Create a new instance with the specified settings.
 	 */
-	public QosSettings(int deliveryMode, int priority, long timeToLive)
-	{
+	public QosSettings(int deliveryMode, int priority, long timeToLive) {
 		this.deliveryMode = deliveryMode;
 		this.priority = priority;
 		this.timeToLive = timeToLive;
@@ -60,76 +57,65 @@ public class QosSettings
 	/**
 	 * Set the delivery mode to use when sending a message.
 	 * Default is the JMS Message default: "PERSISTENT".
-	 * 
-	 * @param deliveryMode
-	 *            the delivery mode to use
+	 *
+	 * @param deliveryMode the delivery mode to use
 	 * @see javax.jms.DeliveryMode#PERSISTENT
 	 * @see javax.jms.DeliveryMode#NON_PERSISTENT
 	 * @see javax.jms.Message#DEFAULT_DELIVERY_MODE
 	 * @see javax.jms.MessageProducer#send(javax.jms.Message, int, int, long)
 	 */
-	public void setDeliveryMode(int deliveryMode)
-	{
+	public void setDeliveryMode(int deliveryMode) {
 		this.deliveryMode = deliveryMode;
 	}
 
 	/**
 	 * Return the delivery mode to use when sending a message.
 	 */
-	public int getDeliveryMode()
-	{
+	public int getDeliveryMode() {
 		return this.deliveryMode;
 	}
 
 	/**
 	 * Set the priority of a message when sending.
-	 * 
+	 *
 	 * @see javax.jms.Message#DEFAULT_PRIORITY
 	 * @see javax.jms.MessageProducer#send(javax.jms.Message, int, int, long)
 	 */
-	public void setPriority(int priority)
-	{
+	public void setPriority(int priority) {
 		this.priority = priority;
 	}
 
 	/**
 	 * Return the priority of a message when sending.
 	 */
-	public int getPriority()
-	{
+	public int getPriority() {
 		return this.priority;
 	}
 
 	/**
 	 * Set the time-to-live of the message when sending.
-	 * 
-	 * @param timeToLive
-	 *            the message's lifetime (in milliseconds)
+	 *
+	 * @param timeToLive the message's lifetime (in milliseconds)
 	 * @see javax.jms.Message#DEFAULT_TIME_TO_LIVE
 	 * @see javax.jms.MessageProducer#send(javax.jms.Message, int, int, long)
 	 */
-	public void setTimeToLive(long timeToLive)
-	{
+	public void setTimeToLive(long timeToLive) {
 		this.timeToLive = timeToLive;
 	}
 
 	/**
 	 * Return the time-to-live of the message when sending.
 	 */
-	public long getTimeToLive()
-	{
+	public long getTimeToLive() {
 		return this.timeToLive;
 	}
 
 	@Override
-	public boolean equals(@Nullable Object other)
-	{
-		if (this == other)
-		{
+	public boolean equals(@Nullable Object other) {
+		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof QosSettings))
-		{
+		if (!(other instanceof QosSettings)) {
 			return false;
 		}
 
@@ -139,14 +125,12 @@ public class QosSettings
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return (this.deliveryMode * 31 + this.priority);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "QosSettings{" + "deliveryMode=" + this.deliveryMode + ", priority=" + this.priority
 				+ ", timeToLive=" + this.timeToLive + '}';
 	}

@@ -16,17 +16,16 @@
 
 package org.springframework.transaction.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
-import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * @author Juergen Hoeller
  */
 @Qualifier("noSynch")
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NoSynch
-{
+public @interface NoSynch {
 
 }

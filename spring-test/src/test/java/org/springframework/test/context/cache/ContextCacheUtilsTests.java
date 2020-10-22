@@ -19,7 +19,6 @@ package org.springframework.test.context.cache;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.core.SpringProperties;
 
 import static org.assertj.core.api.Assertions.assertThat;

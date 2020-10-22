@@ -16,22 +16,17 @@
 
 package org.springframework.test.web.reactive.server;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.http.*;
+import org.springframework.mock.http.client.reactive.MockClientHttpRequest;
+import org.springframework.mock.http.client.reactive.MockClientHttpResponse;
+import reactor.core.publisher.MonoProcessor;
+
 import java.net.URI;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
-
-import org.junit.jupiter.api.Test;
-import reactor.core.publisher.MonoProcessor;
-
-import org.springframework.http.CacheControl;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.mock.http.client.reactive.MockClientHttpRequest;
-import org.springframework.mock.http.client.reactive.MockClientHttpResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -40,6 +35,7 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Unit tests for {@link HeaderAssertions}.
+ *
  * @author Rossen Stoyanchev
  * @author Sam Brannen
  */
@@ -99,9 +95,9 @@ public class HeaderAssertionTests {
 		// Wrong pattern
 		assertThatExceptionOfType(AssertionError.class).isThrownBy(() ->
 				assertions.valueMatches("Content-Type", ".*ISO-8859-1.*"))
-			.satisfies(ex -> assertThat(ex.getCause()).hasMessage("Response header " +
-					"'Content-Type'=[application/json;charset=UTF-8] does not match " +
-					"[.*ISO-8859-1.*]"));
+				.satisfies(ex -> assertThat(ex.getCause()).hasMessage("Response header " +
+						"'Content-Type'=[application/json;charset=UTF-8] does not match " +
+						"[.*ISO-8859-1.*]"));
 	}
 
 	@Test
@@ -125,7 +121,7 @@ public class HeaderAssertionTests {
 		// Header should not exist
 		assertThatExceptionOfType(AssertionError.class).isThrownBy(() ->
 				assertions.exists("Framework"))
-			.satisfies(ex -> assertThat(ex.getCause()).hasMessage("Response header 'Framework' does not exist"));
+				.satisfies(ex -> assertThat(ex.getCause()).hasMessage("Response header 'Framework' does not exist"));
 	}
 
 	@Test
@@ -140,8 +136,8 @@ public class HeaderAssertionTests {
 		// Existing header
 		assertThatExceptionOfType(AssertionError.class).isThrownBy(() ->
 				assertions.doesNotExist("Content-Type"))
-			.satisfies(ex -> assertThat(ex.getCause()).hasMessage("Response header " +
-					"'Content-Type' exists with value=[application/json;charset=UTF-8]"));
+				.satisfies(ex -> assertThat(ex.getCause()).hasMessage("Response header " +
+						"'Content-Type' exists with value=[application/json;charset=UTF-8]"));
 	}
 
 	@Test
@@ -156,8 +152,8 @@ public class HeaderAssertionTests {
 		// MediaTypes not compatible
 		assertThatExceptionOfType(AssertionError.class).isThrownBy(() ->
 				assertions.contentTypeCompatibleWith(MediaType.TEXT_XML))
-			.satisfies(ex -> assertThat(ex.getCause()).hasMessage("Response header " +
-					"'Content-Type'=[application/xml] is not compatible with [text/xml]"));
+				.satisfies(ex -> assertThat(ex.getCause()).hasMessage("Response header " +
+						"'Content-Type'=[application/xml] is not compatible with [text/xml]"));
 	}
 
 	@Test

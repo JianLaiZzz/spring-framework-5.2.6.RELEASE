@@ -22,11 +22,10 @@ package org.springframework.aop.framework;
  * is not subject to auto-proxying, even if a pointcut would match.
  *
  * @author Juergen Hoeller
- * @since 2.0.3
  * @see org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator
  * @see org.springframework.aop.scope.ScopedProxyFactoryBean
+ * @since 2.0.3
  */
-public interface AopInfrastructureBean
-{
+public interface AopInfrastructureBean {
 
 }

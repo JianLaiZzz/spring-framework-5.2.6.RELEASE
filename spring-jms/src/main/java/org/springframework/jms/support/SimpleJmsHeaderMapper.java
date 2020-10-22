@@ -16,15 +16,14 @@
 
 package org.springframework.jms.support;
 
-import java.util.*;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.AbstractHeaderMapper;
+import org.springframework.util.StringUtils;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
-
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.support.AbstractHeaderMapper;
-import org.springframework.util.StringUtils;
+import java.util.*;
 
 /**
  * Simple implementation of {@link JmsHeaderMapper}.
@@ -51,85 +50,59 @@ import org.springframework.util.StringUtils;
  * @author Stephane Nicoll
  * @since 4.1
  */
-public class SimpleJmsHeaderMapper extends AbstractHeaderMapper<Message> implements JmsHeaderMapper
-{
+public class SimpleJmsHeaderMapper extends AbstractHeaderMapper<Message> implements JmsHeaderMapper {
 
 	private static final Set<Class<?>> SUPPORTED_PROPERTY_TYPES = new HashSet<>(
 			Arrays.asList(Boolean.class, Byte.class, Double.class, Float.class, Integer.class, Long.class,
 					Short.class, String.class));
 
 	@Override
-	public void fromHeaders(MessageHeaders headers, javax.jms.Message jmsMessage)
-	{
-		try
-		{
+	public void fromHeaders(MessageHeaders headers, javax.jms.Message jmsMessage) {
+		try {
 			Object jmsCorrelationId = headers.get(JmsHeaders.CORRELATION_ID);
-			if (jmsCorrelationId instanceof Number)
-			{
+			if (jmsCorrelationId instanceof Number) {
 				jmsCorrelationId = jmsCorrelationId.toString();
 			}
-			if (jmsCorrelationId instanceof String)
-			{
-				try
-				{
+			if (jmsCorrelationId instanceof String) {
+				try {
 					jmsMessage.setJMSCorrelationID((String) jmsCorrelationId);
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					logger.debug("Failed to set JMSCorrelationID - skipping", ex);
 				}
 			}
 			Destination jmsReplyTo = getHeaderIfAvailable(headers, JmsHeaders.REPLY_TO,
 					Destination.class);
-			if (jmsReplyTo != null)
-			{
-				try
-				{
+			if (jmsReplyTo != null) {
+				try {
 					jmsMessage.setJMSReplyTo(jmsReplyTo);
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					logger.debug("Failed to set JMSReplyTo - skipping", ex);
 				}
 			}
 			String jmsType = getHeaderIfAvailable(headers, JmsHeaders.TYPE, String.class);
-			if (jmsType != null)
-			{
-				try
-				{
+			if (jmsType != null) {
+				try {
 					jmsMessage.setJMSType(jmsType);
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					logger.debug("Failed to set JMSType - skipping", ex);
 				}
 			}
 			Set<Map.Entry<String, Object>> entries = headers.entrySet();
-			for (Map.Entry<String, Object> entry : entries)
-			{
+			for (Map.Entry<String, Object> entry : entries) {
 				String headerName = entry.getKey();
-				if (StringUtils.hasText(headerName) && !headerName.startsWith(JmsHeaders.PREFIX))
-				{
+				if (StringUtils.hasText(headerName) && !headerName.startsWith(JmsHeaders.PREFIX)) {
 					Object value = entry.getValue();
-					if (value != null && SUPPORTED_PROPERTY_TYPES.contains(value.getClass()))
-					{
-						try
-						{
+					if (value != null && SUPPORTED_PROPERTY_TYPES.contains(value.getClass())) {
+						try {
 							String propertyName = this.fromHeaderName(headerName);
 							jmsMessage.setObjectProperty(propertyName, value);
-						}
-						catch (Exception ex)
-						{
-							if (headerName.startsWith("JMSX"))
-							{
-								if (logger.isTraceEnabled())
-								{
+						} catch (Exception ex) {
+							if (headerName.startsWith("JMSX")) {
+								if (logger.isTraceEnabled()) {
 									logger.trace("Skipping reserved header '" + headerName
 											+ "' since it cannot be set by client");
 								}
-							}
-							else if (logger.isDebugEnabled())
-							{
+							} else if (logger.isDebugEnabled()) {
 								logger.debug("Failed to map message header '" + headerName
 										+ "' to JMS property", ex);
 							}
@@ -137,151 +110,102 @@ public class SimpleJmsHeaderMapper extends AbstractHeaderMapper<Message> impleme
 					}
 				}
 			}
-		}
-		catch (Exception ex)
-		{
-			if (logger.isDebugEnabled())
-			{
+		} catch (Exception ex) {
+			if (logger.isDebugEnabled()) {
 				logger.debug("Error occurred while mapping from MessageHeaders to JMS properties", ex);
 			}
 		}
 	}
 
 	@Override
-	public MessageHeaders toHeaders(javax.jms.Message jmsMessage)
-	{
+	public MessageHeaders toHeaders(javax.jms.Message jmsMessage) {
 		Map<String, Object> headers = new HashMap<>();
-		try
-		{
-			try
-			{
+		try {
+			try {
 				String correlationId = jmsMessage.getJMSCorrelationID();
-				if (correlationId != null)
-				{
+				if (correlationId != null) {
 					headers.put(JmsHeaders.CORRELATION_ID, correlationId);
 				}
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				logger.debug("Failed to read JMSCorrelationID property - skipping", ex);
 			}
-			try
-			{
+			try {
 				Destination destination = jmsMessage.getJMSDestination();
-				if (destination != null)
-				{
+				if (destination != null) {
 					headers.put(JmsHeaders.DESTINATION, destination);
 				}
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				logger.debug("Failed to read JMSDestination property - skipping", ex);
 			}
-			try
-			{
+			try {
 				int deliveryMode = jmsMessage.getJMSDeliveryMode();
 				headers.put(JmsHeaders.DELIVERY_MODE, deliveryMode);
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				logger.debug("Failed to read JMSDeliveryMode property - skipping", ex);
 			}
-			try
-			{
+			try {
 				long expiration = jmsMessage.getJMSExpiration();
 				headers.put(JmsHeaders.EXPIRATION, expiration);
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				logger.debug("Failed to read JMSExpiration property - skipping", ex);
 			}
-			try
-			{
+			try {
 				String messageId = jmsMessage.getJMSMessageID();
-				if (messageId != null)
-				{
+				if (messageId != null) {
 					headers.put(JmsHeaders.MESSAGE_ID, messageId);
 				}
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				logger.debug("Failed to read JMSMessageID property - skipping", ex);
 			}
-			try
-			{
+			try {
 				headers.put(JmsHeaders.PRIORITY, jmsMessage.getJMSPriority());
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				logger.debug("Failed to read JMSPriority property - skipping", ex);
 			}
-			try
-			{
+			try {
 				Destination replyTo = jmsMessage.getJMSReplyTo();
-				if (replyTo != null)
-				{
+				if (replyTo != null) {
 					headers.put(JmsHeaders.REPLY_TO, replyTo);
 				}
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				logger.debug("Failed to read JMSReplyTo property - skipping", ex);
 			}
-			try
-			{
+			try {
 				headers.put(JmsHeaders.REDELIVERED, jmsMessage.getJMSRedelivered());
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				logger.debug("Failed to read JMSRedelivered property - skipping", ex);
 			}
-			try
-			{
+			try {
 				String type = jmsMessage.getJMSType();
-				if (type != null)
-				{
+				if (type != null) {
 					headers.put(JmsHeaders.TYPE, type);
 				}
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				logger.debug("Failed to read JMSType property - skipping", ex);
 			}
-			try
-			{
+			try {
 				headers.put(JmsHeaders.TIMESTAMP, jmsMessage.getJMSTimestamp());
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				logger.debug("Failed to read JMSTimestamp property - skipping", ex);
 			}
 
 			Enumeration<?> jmsPropertyNames = jmsMessage.getPropertyNames();
-			if (jmsPropertyNames != null)
-			{
-				while (jmsPropertyNames.hasMoreElements())
-				{
+			if (jmsPropertyNames != null) {
+				while (jmsPropertyNames.hasMoreElements()) {
 					String propertyName = jmsPropertyNames.nextElement().toString();
-					try
-					{
+					try {
 						String headerName = this.toHeaderName(propertyName);
 						headers.put(headerName, jmsMessage.getObjectProperty(propertyName));
-					}
-					catch (Exception ex)
-					{
-						if (logger.isDebugEnabled())
-						{
+					} catch (Exception ex) {
+						if (logger.isDebugEnabled()) {
 							logger.debug("Error occurred while mapping JMS property '" + propertyName
 									+ "' to Message header", ex);
 						}
 					}
 				}
 			}
-		}
-		catch (JMSException ex)
-		{
-			if (logger.isDebugEnabled())
-			{
+		} catch (JMSException ex) {
+			if (logger.isDebugEnabled()) {
 				logger.debug("Error occurred while mapping from JMS properties to MessageHeaders", ex);
 			}
 		}
@@ -292,14 +216,12 @@ public class SimpleJmsHeaderMapper extends AbstractHeaderMapper<Message> impleme
 	 * Add the outbound prefix if necessary.
 	 * <p>
 	 * Convert {@link MessageHeaders#CONTENT_TYPE} to {@code content_type} for JMS compliance.
-	 * 
+	 *
 	 * @see #CONTENT_TYPE_PROPERTY
 	 */
 	@Override
-	protected String fromHeaderName(String headerName)
-	{
-		if (MessageHeaders.CONTENT_TYPE.equals(headerName))
-		{
+	protected String fromHeaderName(String headerName) {
+		if (MessageHeaders.CONTENT_TYPE.equals(headerName)) {
 			return CONTENT_TYPE_PROPERTY;
 		}
 		return super.fromHeaderName(headerName);
@@ -309,14 +231,12 @@ public class SimpleJmsHeaderMapper extends AbstractHeaderMapper<Message> impleme
 	 * Add the inbound prefix if necessary.
 	 * <p>
 	 * Convert the JMS-compliant {@code content_type} to {@link MessageHeaders#CONTENT_TYPE}.
-	 * 
+	 *
 	 * @see #CONTENT_TYPE_PROPERTY
 	 */
 	@Override
-	protected String toHeaderName(String propertyName)
-	{
-		if (CONTENT_TYPE_PROPERTY.equals(propertyName))
-		{
+	protected String toHeaderName(String propertyName) {
+		if (CONTENT_TYPE_PROPERTY.equals(propertyName)) {
 			return MessageHeaders.CONTENT_TYPE;
 		}
 		return super.toHeaderName(propertyName);

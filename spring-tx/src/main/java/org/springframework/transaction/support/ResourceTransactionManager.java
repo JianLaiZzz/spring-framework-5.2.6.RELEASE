@@ -31,11 +31,10 @@ import org.springframework.transaction.PlatformTransactionManager;
  * and on what concrete resource the transaction manager is operating on.
  *
  * @author Juergen Hoeller
- * @since 2.0.4
  * @see TransactionSynchronizationManager
+ * @since 2.0.4
  */
-public interface ResourceTransactionManager extends PlatformTransactionManager
-{
+public interface ResourceTransactionManager extends PlatformTransactionManager {
 
 	/**
 	 * Return the resource factory that this transaction manager operates on,
@@ -43,7 +42,7 @@ public interface ResourceTransactionManager extends PlatformTransactionManager
 	 * <p>
 	 * This target resource factory is usually used as resource key for
 	 * {@link TransactionSynchronizationManager}'s resource bindings per thread.
-	 * 
+	 *
 	 * @return the target resource factory (never {@code null})
 	 * @see TransactionSynchronizationManager#bindResource
 	 * @see TransactionSynchronizationManager#getResource

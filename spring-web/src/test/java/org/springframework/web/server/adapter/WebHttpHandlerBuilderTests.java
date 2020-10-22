@@ -16,13 +16,7 @@
 
 package org.springframework.web.server.adapter;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,12 +30,18 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebHandler;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpResponse;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 import static java.time.Duration.ofMillis;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests for {@link WebHttpHandlerBuilder}.
+ *
  * @author Rossen Stoyanchev
  */
 public class WebHttpHandlerBuilderTests {
@@ -128,12 +128,14 @@ public class WebHttpHandlerBuilderTests {
 
 		private static final String ATTRIBUTE = "attr";
 
-		@Bean @Order(2)
+		@Bean
+		@Order(2)
 		public WebFilter filterA() {
 			return createFilter("FilterA");
 		}
 
-		@Bean @Order(1)
+		@Bean
+		@Order(1)
 		public WebFilter filterB() {
 			return createFilter("FilterB");
 		}

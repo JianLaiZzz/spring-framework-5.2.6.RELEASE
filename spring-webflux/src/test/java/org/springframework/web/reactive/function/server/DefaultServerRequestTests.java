@@ -16,6 +16,30 @@
 
 package org.springframework.web.reactive.function.server;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.codec.StringDecoder;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DefaultDataBuffer;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
+import org.springframework.http.*;
+import org.springframework.http.codec.DecoderHttpMessageReader;
+import org.springframework.http.codec.HttpMessageReader;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.multipart.FormFieldPart;
+import org.springframework.http.codec.multipart.Part;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.server.ServerWebInputException;
+import org.springframework.web.server.UnsupportedMediaTypeStatusException;
+import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
+import org.springframework.web.testfixture.server.MockServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -28,42 +52,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalLong;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.codec.StringDecoder;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DefaultDataBuffer;
-import org.springframework.core.io.buffer.DefaultDataBufferFactory;
-import org.springframework.http.HttpCookie;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpRange;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.DecoderHttpMessageReader;
-import org.springframework.http.codec.HttpMessageReader;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.multipart.FormFieldPart;
-import org.springframework.http.codec.multipart.Part;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.server.ServerWebInputException;
-import org.springframework.web.server.UnsupportedMediaTypeStatusException;
-import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
-import org.springframework.web.testfixture.server.MockServerWebExchange;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -291,7 +280,8 @@ public class DefaultServerRequestTests {
 				.body(body);
 		DefaultServerRequest request = new DefaultServerRequest(MockServerWebExchange.from(mockRequest), messageReaders);
 
-		ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {};
+		ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {
+		};
 		Mono<String> resultMono = request.bodyToMono(typeReference);
 		assertThat(resultMono.block()).isEqualTo("foo");
 	}
@@ -312,7 +302,8 @@ public class DefaultServerRequestTests {
 		DefaultServerRequest request = new DefaultServerRequest(MockServerWebExchange.from(mockRequest), messageReaders);
 
 		Mono<Map<String, String>> resultMono = request.bodyToMono(
-				new ParameterizedTypeReference<Map<String, String>>() {});
+				new ParameterizedTypeReference<Map<String, String>>() {
+				});
 		StepVerifier.create(resultMono)
 				.expectError(ServerWebInputException.class)
 				.verify();
@@ -352,7 +343,8 @@ public class DefaultServerRequestTests {
 				.body(body);
 		DefaultServerRequest request = new DefaultServerRequest(MockServerWebExchange.from(mockRequest), messageReaders);
 
-		ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {};
+		ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {
+		};
 		Flux<String> resultFlux = request.bodyToFlux(typeReference);
 		assertThat(resultFlux.collectList().block()).isEqualTo(Collections.singletonList("foo"));
 	}

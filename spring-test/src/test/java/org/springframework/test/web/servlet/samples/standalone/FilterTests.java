@@ -16,26 +16,7 @@
 
 package org.springframework.test.web.servlet.samples.standalone;
 
-import java.io.IOException;
-import java.security.Principal;
-import java.util.concurrent.CompletableFuture;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.AsyncListener;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-import javax.validation.Valid;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.web.Person;
@@ -50,20 +31,24 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.security.Principal;
+import java.util.concurrent.CompletableFuture;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
  * Tests with {@link Filter}'s.
+ *
  * @author Rob Winch
  */
 public class FilterTests {
@@ -71,8 +56,8 @@ public class FilterTests {
 	@Test
 	public void whenFiltersCompleteMvcProcessesRequest() throws Exception {
 		standaloneSetup(new PersonController())
-			.addFilters(new ContinueFilter()).build()
-			.perform(post("/persons").param("name", "Andy"))
+				.addFilters(new ContinueFilter()).build()
+				.perform(post("/persons").param("name", "Andy"))
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/person/1"))
 				.andExpect(model().size(1))
@@ -84,32 +69,32 @@ public class FilterTests {
 	@Test
 	public void filtersProcessRequest() throws Exception {
 		standaloneSetup(new PersonController())
-			.addFilters(new ContinueFilter(), new RedirectFilter()).build()
-			.perform(post("/persons").param("name", "Andy"))
+				.addFilters(new ContinueFilter(), new RedirectFilter()).build()
+				.perform(post("/persons").param("name", "Andy"))
 				.andExpect(redirectedUrl("/login"));
 	}
 
 	@Test
 	public void filterMappedBySuffix() throws Exception {
 		standaloneSetup(new PersonController())
-			.addFilter(new RedirectFilter(), "*.html").build()
-			.perform(post("/persons.html").param("name", "Andy"))
+				.addFilter(new RedirectFilter(), "*.html").build()
+				.perform(post("/persons.html").param("name", "Andy"))
 				.andExpect(redirectedUrl("/login"));
 	}
 
 	@Test
 	public void filterWithExactMapping() throws Exception {
 		standaloneSetup(new PersonController())
-			.addFilter(new RedirectFilter(), "/p", "/persons").build()
-			.perform(post("/persons").param("name", "Andy"))
+				.addFilter(new RedirectFilter(), "/p", "/persons").build()
+				.perform(post("/persons").param("name", "Andy"))
 				.andExpect(redirectedUrl("/login"));
 	}
 
 	@Test
 	public void filterSkipped() throws Exception {
 		standaloneSetup(new PersonController())
-			.addFilter(new RedirectFilter(), "/p", "/person").build()
-			.perform(post("/persons").param("name", "Andy"))
+				.addFilter(new RedirectFilter(), "/p", "/person").build()
+				.perform(post("/persons").param("name", "Andy"))
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl("/person/1"))
 				.andExpect(model().size(1))
@@ -121,8 +106,8 @@ public class FilterTests {
 	@Test
 	public void filterWrapsRequestResponse() throws Exception {
 		standaloneSetup(new PersonController())
-			.addFilters(new WrappingRequestResponseFilter()).build()
-			.perform(post("/user"))
+				.addFilters(new WrappingRequestResponseFilter()).build()
+				.perform(post("/user"))
 				.andExpect(model().attribute("principal", WrappingRequestResponseFilter.PRINCIPAL_NAME));
 	}
 
@@ -148,7 +133,7 @@ public class FilterTests {
 	@Controller
 	private static class PersonController {
 
-		@PostMapping(path="/persons")
+		@PostMapping(path = "/persons")
 		public String save(@Valid Person person, Errors errors, RedirectAttributes redirectAttrs) {
 			if (errors.hasErrors()) {
 				return "person/add";
@@ -179,7 +164,7 @@ public class FilterTests {
 
 		@Override
 		protected void doFilterInternal(HttpServletRequest request,
-				HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+										HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
 			filterChain.doFilter(request, response);
 		}
@@ -192,7 +177,7 @@ public class FilterTests {
 
 		@Override
 		protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-				FilterChain filterChain) throws ServletException, IOException {
+										FilterChain filterChain) throws ServletException, IOException {
 
 			filterChain.doFilter(new HttpServletRequestWrapper(request) {
 
@@ -217,7 +202,7 @@ public class FilterTests {
 
 		@Override
 		protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-				FilterChain filterChain) throws ServletException, IOException {
+										FilterChain filterChain) throws ServletException, IOException {
 
 			response.sendRedirect("/login");
 		}

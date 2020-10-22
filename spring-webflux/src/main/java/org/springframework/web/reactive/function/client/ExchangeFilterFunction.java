@@ -16,11 +16,10 @@
 
 package org.springframework.web.reactive.function.client;
 
-import java.util.function.Function;
-
+import org.springframework.util.Assert;
 import reactor.core.publisher.Mono;
 
-import org.springframework.util.Assert;
+import java.util.function.Function;
 
 /**
  * Represents a function that filters an {@linkplain ExchangeFunction exchange function}.
@@ -39,8 +38,9 @@ public interface ExchangeFilterFunction {
 	 * in the chain, to be invoked via
 	 * {@linkplain ExchangeFunction#exchange(ClientRequest) invoked} in order to
 	 * proceed with the exchange, or not invoked to shortcut the chain.
+	 *
 	 * @param request the current request
-	 * @param next the next exchange function in the chain
+	 * @param next    the next exchange function in the chain
 	 * @return the filtered response
 	 */
 	Mono<ClientResponse> filter(ClientRequest request, ExchangeFunction next);
@@ -48,6 +48,7 @@ public interface ExchangeFilterFunction {
 	/**
 	 * Return a composed filter function that first applies this filter, and
 	 * then applies the given {@code "after"} filter.
+	 *
 	 * @param afterFilter the filter to apply after this filter
 	 * @return the composed filter
 	 */
@@ -60,6 +61,7 @@ public interface ExchangeFilterFunction {
 	/**
 	 * Apply this filter to the given {@linkplain ExchangeFunction}, resulting
 	 * in a filtered exchange function.
+	 *
 	 * @param exchange the exchange function to filter
 	 * @return the filtered exchange function
 	 */
@@ -71,6 +73,7 @@ public interface ExchangeFilterFunction {
 	/**
 	 * Adapt the given request processor function to a filter function that only
 	 * operates on the {@code ClientRequest}.
+	 *
 	 * @param processor the request processor
 	 * @return the resulting filter adapter
 	 */
@@ -82,6 +85,7 @@ public interface ExchangeFilterFunction {
 	/**
 	 * Adapt the given response processor function to a filter function that
 	 * only operates on the {@code ClientResponse}.
+	 *
 	 * @param processor the response processor
 	 * @return the resulting filter adapter
 	 */

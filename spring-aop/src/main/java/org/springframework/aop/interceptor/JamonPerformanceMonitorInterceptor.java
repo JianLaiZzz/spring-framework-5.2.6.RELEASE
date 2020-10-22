@@ -16,13 +16,12 @@
 
 package org.springframework.aop.interceptor;
 
-import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.logging.Log;
-
 import com.jamonapi.MonKey;
 import com.jamonapi.MonKeyImp;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.logging.Log;
 
 /**
  * Performance monitor interceptor that uses <b>JAMon</b> library to perform the
@@ -37,49 +36,42 @@ import com.jamonapi.MonitorFactory;
  * @author Juergen Hoeller
  * @author Rob Harrop
  * @author Steve Souza
- * @since 1.1.3
  * @see com.jamonapi.MonitorFactory
  * @see PerformanceMonitorInterceptor
+ * @since 1.1.3
  */
 @SuppressWarnings("serial")
-public class JamonPerformanceMonitorInterceptor extends AbstractMonitoringInterceptor
-{
+public class JamonPerformanceMonitorInterceptor extends AbstractMonitoringInterceptor {
 
 	private boolean trackAllInvocations = false;
 
 	/**
 	 * Create a new JamonPerformanceMonitorInterceptor with a static logger.
 	 */
-	public JamonPerformanceMonitorInterceptor()
-	{
+	public JamonPerformanceMonitorInterceptor() {
 	}
 
 	/**
 	 * Create a new JamonPerformanceMonitorInterceptor with a dynamic or static logger,
 	 * according to the given flag.
-	 * 
-	 * @param useDynamicLogger
-	 *            whether to use a dynamic logger or a static logger
+	 *
+	 * @param useDynamicLogger whether to use a dynamic logger or a static logger
 	 * @see #setUseDynamicLogger
 	 */
-	public JamonPerformanceMonitorInterceptor(boolean useDynamicLogger)
-	{
+	public JamonPerformanceMonitorInterceptor(boolean useDynamicLogger) {
 		setUseDynamicLogger(useDynamicLogger);
 	}
 
 	/**
 	 * Create a new JamonPerformanceMonitorInterceptor with a dynamic or static logger,
 	 * according to the given flag.
-	 * 
-	 * @param useDynamicLogger
-	 *            whether to use a dynamic logger or a static logger
-	 * @param trackAllInvocations
-	 *            whether to track all invocations that go through
-	 *            this interceptor, or just invocations with trace logging enabled
+	 *
+	 * @param useDynamicLogger    whether to use a dynamic logger or a static logger
+	 * @param trackAllInvocations whether to track all invocations that go through
+	 *                            this interceptor, or just invocations with trace logging enabled
 	 * @see #setUseDynamicLogger
 	 */
-	public JamonPerformanceMonitorInterceptor(boolean useDynamicLogger, boolean trackAllInvocations)
-	{
+	public JamonPerformanceMonitorInterceptor(boolean useDynamicLogger, boolean trackAllInvocations) {
 		setUseDynamicLogger(useDynamicLogger);
 		setTrackAllInvocations(trackAllInvocations);
 	}
@@ -92,52 +84,43 @@ public class JamonPerformanceMonitorInterceptor extends AbstractMonitoringInterc
 	 * be monitored. Specify "true" to let JAMon track all invocations,
 	 * gathering statistics even when trace logging is disabled.
 	 */
-	public void setTrackAllInvocations(boolean trackAllInvocations)
-	{
+	public void setTrackAllInvocations(boolean trackAllInvocations) {
 		this.trackAllInvocations = trackAllInvocations;
 	}
 
 	/**
 	 * Always applies the interceptor if the "trackAllInvocations" flag has been set;
 	 * else just kicks in if the log is enabled.
-	 * 
+	 *
 	 * @see #setTrackAllInvocations
 	 * @see #isLogEnabled
 	 */
 	@Override
-	protected boolean isInterceptorEnabled(MethodInvocation invocation, Log logger)
-	{
+	protected boolean isInterceptorEnabled(MethodInvocation invocation, Log logger) {
 		return (this.trackAllInvocations || isLogEnabled(logger));
 	}
 
 	/**
 	 * Wraps the invocation with a JAMon Monitor and writes the current
 	 * performance statistics to the log (if enabled).
-	 * 
+	 *
 	 * @see com.jamonapi.MonitorFactory#start
 	 * @see com.jamonapi.Monitor#stop
 	 */
 	@Override
-	protected Object invokeUnderTrace(MethodInvocation invocation, Log logger) throws Throwable
-	{
+	protected Object invokeUnderTrace(MethodInvocation invocation, Log logger) throws Throwable {
 		String name = createInvocationTraceName(invocation);
 		MonKey key = new MonKeyImp(name, name, "ms.");
 
 		Monitor monitor = MonitorFactory.start(key);
-		try
-		{
+		try {
 			return invocation.proceed();
-		}
-		catch (Throwable ex)
-		{
+		} catch (Throwable ex) {
 			trackException(key, ex);
 			throw ex;
-		}
-		finally
-		{
+		} finally {
 			monitor.stop();
-			if (!this.trackAllInvocations || isLogEnabled(logger))
-			{
+			if (!this.trackAllInvocations || isLogEnabled(logger)) {
 				writeToLog(logger, "JAMon performance statistics for method [" + name + "]:\n" + monitor);
 			}
 		}
@@ -147,9 +130,8 @@ public class JamonPerformanceMonitorInterceptor extends AbstractMonitoringInterc
 	 * Count the thrown exception and put the stack trace in the details portion of the key.
 	 * This will allow the stack trace to be viewed in the JAMon web application.
 	 */
-	protected void trackException(MonKey key, Throwable ex)
-	{
- 	String stackTrace = "stackTrace=";
+	protected void trackException(MonKey key, Throwable ex) {
+		String stackTrace = "stackTrace=";
 // 	+ Misc.getExceptionTrace(ex);
 		key.setDetails(stackTrace);
 

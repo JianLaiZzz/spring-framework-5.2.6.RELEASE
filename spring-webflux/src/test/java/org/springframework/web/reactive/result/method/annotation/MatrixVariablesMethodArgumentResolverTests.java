@@ -15,15 +15,8 @@
  */
 package org.springframework.web.reactive.result.method.annotation;
 
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.util.LinkedMultiValueMap;
@@ -36,6 +29,12 @@ import org.springframework.web.server.ServerWebInputException;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.method.ResolvableMethod;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;

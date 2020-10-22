@@ -17,12 +17,7 @@
 package org.springframework.beans.testfixture.beans;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
 /**
@@ -78,6 +73,7 @@ public class DummyFactory
 
 	/**
 	 * Return if the bean managed by this factory is a singleton.
+	 *
 	 * @see FactoryBean#isSingleton()
 	 */
 	@Override
@@ -152,14 +148,14 @@ public class DummyFactory
 	/**
 	 * Return the managed object, supporting both singleton
 	 * and prototype mode.
+	 *
 	 * @see FactoryBean#getObject()
 	 */
 	@Override
 	public Object getObject() throws BeansException {
 		if (isSingleton()) {
 			return this.testBean;
-		}
-		else {
+		} else {
 			TestBean prototype = new TestBean("prototype created at " + System.currentTimeMillis(), 11);
 			if (this.beanFactory != null) {
 				this.beanFactory.applyBeanPostProcessorsBeforeInitialization(prototype, this.beanName);

@@ -16,26 +16,8 @@
 
 package org.springframework.remoting.httpinvoker;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.testfixture.beans.ITestBean;
 import org.springframework.beans.testfixture.beans.TestBean;
@@ -47,9 +29,16 @@ import org.springframework.remoting.support.RemoteInvocationResult;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
+
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * @author Juergen Hoeller
@@ -102,20 +91,20 @@ public class HttpInvokerTests {
 		assertThat(proxy.getAge()).isEqualTo(99);
 		proxy.setAge(50);
 		assertThat(proxy.getAge()).isEqualTo(50);
-		proxy.setStringArray(new String[] {"str1", "str2"});
-		assertThat(Arrays.equals(new String[] {"str1", "str2"}, proxy.getStringArray())).isTrue();
-		proxy.setSomeIntegerArray(new Integer[] {1, 2, 3});
-		assertThat(Arrays.equals(new Integer[] {1, 2, 3}, proxy.getSomeIntegerArray())).isTrue();
-		proxy.setNestedIntegerArray(new Integer[][] {{1, 2, 3}, {4, 5, 6}});
+		proxy.setStringArray(new String[]{"str1", "str2"});
+		assertThat(Arrays.equals(new String[]{"str1", "str2"}, proxy.getStringArray())).isTrue();
+		proxy.setSomeIntegerArray(new Integer[]{1, 2, 3});
+		assertThat(Arrays.equals(new Integer[]{1, 2, 3}, proxy.getSomeIntegerArray())).isTrue();
+		proxy.setNestedIntegerArray(new Integer[][]{{1, 2, 3}, {4, 5, 6}});
 		Integer[][] integerArray = proxy.getNestedIntegerArray();
-		assertThat(Arrays.equals(new Integer[] {1, 2, 3}, integerArray[0])).isTrue();
-		assertThat(Arrays.equals(new Integer[] {4, 5, 6}, integerArray[1])).isTrue();
-		proxy.setSomeIntArray(new int[] {1, 2, 3});
-		assertThat(Arrays.equals(new int[] {1, 2, 3}, proxy.getSomeIntArray())).isTrue();
-		proxy.setNestedIntArray(new int[][] {{1, 2, 3}, {4, 5, 6}});
+		assertThat(Arrays.equals(new Integer[]{1, 2, 3}, integerArray[0])).isTrue();
+		assertThat(Arrays.equals(new Integer[]{4, 5, 6}, integerArray[1])).isTrue();
+		proxy.setSomeIntArray(new int[]{1, 2, 3});
+		assertThat(Arrays.equals(new int[]{1, 2, 3}, proxy.getSomeIntArray())).isTrue();
+		proxy.setNestedIntArray(new int[][]{{1, 2, 3}, {4, 5, 6}});
 		int[][] intArray = proxy.getNestedIntArray();
-		assertThat(Arrays.equals(new int[] {1, 2, 3}, intArray[0])).isTrue();
-		assertThat(Arrays.equals(new int[] {4, 5, 6}, intArray[1])).isTrue();
+		assertThat(Arrays.equals(new int[]{1, 2, 3}, intArray[0])).isTrue();
+		assertThat(Arrays.equals(new int[]{4, 5, 6}, intArray[1])).isTrue();
 
 		assertThatIllegalStateException().isThrownBy(() ->
 				proxy.exceptional(new IllegalStateException()));
@@ -148,7 +137,7 @@ public class HttpInvokerTests {
 		ITestBean proxy = (ITestBean) pfb.getObject();
 		assertThatExceptionOfType(RemoteAccessException.class).isThrownBy(() ->
 				proxy.setAge(50))
-			.withCauseInstanceOf(IOException.class);
+				.withCauseInstanceOf(IOException.class);
 	}
 
 	@Test
@@ -160,18 +149,17 @@ public class HttpInvokerTests {
 			protected InputStream decorateInputStream(HttpServletRequest request, InputStream is) throws IOException {
 				if ("gzip".equals(request.getHeader("Compression"))) {
 					return new GZIPInputStream(is);
-				}
-				else {
+				} else {
 					return is;
 				}
 			}
+
 			@Override
 			protected OutputStream decorateOutputStream(
 					HttpServletRequest request, HttpServletResponse response, OutputStream os) throws IOException {
 				if ("gzip".equals(request.getHeader("Compression"))) {
 					return new GZIPOutputStream(os);
-				}
-				else {
+				} else {
 					return os;
 				}
 			}
@@ -196,17 +184,18 @@ public class HttpInvokerTests {
 				request.setContent(baos.toByteArray());
 				try {
 					exporter.handleRequest(request, response);
-				}
-				catch (ServletException ex) {
+				} catch (ServletException ex) {
 					throw new IOException(ex.toString());
 				}
 				return readRemoteInvocationResult(
 						new ByteArrayInputStream(response.getContentAsByteArray()), config.getCodebaseUrl());
 			}
+
 			@Override
 			protected OutputStream decorateOutputStream(OutputStream os) throws IOException {
 				return new GZIPOutputStream(os);
 			}
+
 			@Override
 			protected InputStream decorateInputStream(InputStream is) throws IOException {
 				return new GZIPInputStream(is);
@@ -241,6 +230,7 @@ public class HttpInvokerTests {
 				}
 				return ((TestRemoteInvocationWrapper) obj).remoteInvocation;
 			}
+
 			@Override
 			protected void doWriteRemoteInvocationResult(RemoteInvocationResult result, ObjectOutputStream oos)
 					throws IOException {
@@ -267,10 +257,12 @@ public class HttpInvokerTests {
 				return readRemoteInvocationResult(
 						new ByteArrayInputStream(response.getContentAsByteArray()), config.getCodebaseUrl());
 			}
+
 			@Override
 			protected void doWriteRemoteInvocation(RemoteInvocation invocation, ObjectOutputStream oos) throws IOException {
 				oos.writeObject(new TestRemoteInvocationWrapper(invocation));
 			}
+
 			@Override
 			protected RemoteInvocationResult doReadRemoteInvocationResult(ObjectInputStream ois)
 					throws IOException, ClassNotFoundException {
@@ -435,7 +427,7 @@ public class HttpInvokerTests {
 
 		assertThatExceptionOfType(RemoteAccessException.class).isThrownBy(() ->
 				proxy.setAge(50))
-			.withCauseInstanceOf(IOException.class);
+				.withCauseInstanceOf(IOException.class);
 	}
 
 

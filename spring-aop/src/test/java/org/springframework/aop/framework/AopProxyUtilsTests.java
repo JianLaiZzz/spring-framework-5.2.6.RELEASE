@@ -16,28 +16,26 @@
 
 package org.springframework.aop.framework;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-
-import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.SpringProxy;
 import org.springframework.beans.testfixture.beans.ITestBean;
 import org.springframework.beans.testfixture.beans.TestBean;
 
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+
 /**
  * @author Rod Johnson
  * @author Chris Beams
  */
-public class AopProxyUtilsTests
-{
+public class AopProxyUtilsTests {
 
 	@Test
-	public void testCompleteProxiedInterfacesWorksWithNull()
-	{
+	public void testCompleteProxiedInterfacesWorksWithNull() {
 		AdvisedSupport as = new AdvisedSupport();
 		Class<?>[] completedInterfaces = AopProxyUtils.completeProxiedInterfaces(as);
 		assertThat(completedInterfaces.length).isEqualTo(2);
@@ -47,8 +45,7 @@ public class AopProxyUtilsTests
 	}
 
 	@Test
-	public void testCompleteProxiedInterfacesWorksWithNullOpaque()
-	{
+	public void testCompleteProxiedInterfacesWorksWithNullOpaque() {
 		AdvisedSupport as = new AdvisedSupport();
 		as.setOpaque(true);
 		Class<?>[] completedInterfaces = AopProxyUtils.completeProxiedInterfaces(as);
@@ -56,8 +53,7 @@ public class AopProxyUtilsTests
 	}
 
 	@Test
-	public void testCompleteProxiedInterfacesAdvisedNotIncluded()
-	{
+	public void testCompleteProxiedInterfacesAdvisedNotIncluded() {
 		AdvisedSupport as = new AdvisedSupport();
 		as.addInterface(ITestBean.class);
 		as.addInterface(Comparable.class);
@@ -72,8 +68,7 @@ public class AopProxyUtilsTests
 	}
 
 	@Test
-	public void testCompleteProxiedInterfacesAdvisedIncluded()
-	{
+	public void testCompleteProxiedInterfacesAdvisedIncluded() {
 		AdvisedSupport as = new AdvisedSupport();
 		as.addInterface(ITestBean.class);
 		as.addInterface(Comparable.class);
@@ -89,8 +84,7 @@ public class AopProxyUtilsTests
 	}
 
 	@Test
-	public void testCompleteProxiedInterfacesAdvisedNotIncludedOpaque()
-	{
+	public void testCompleteProxiedInterfacesAdvisedNotIncludedOpaque() {
 		AdvisedSupport as = new AdvisedSupport();
 		as.setOpaque(true);
 		as.addInterface(ITestBean.class);
@@ -106,8 +100,7 @@ public class AopProxyUtilsTests
 	}
 
 	@Test
-	public void testProxiedUserInterfacesWithSingleInterface()
-	{
+	public void testProxiedUserInterfacesWithSingleInterface() {
 		ProxyFactory pf = new ProxyFactory();
 		pf.setTarget(new TestBean());
 		pf.addInterface(ITestBean.class);
@@ -118,8 +111,7 @@ public class AopProxyUtilsTests
 	}
 
 	@Test
-	public void testProxiedUserInterfacesWithMultipleInterfaces()
-	{
+	public void testProxiedUserInterfacesWithMultipleInterfaces() {
 		ProxyFactory pf = new ProxyFactory();
 		pf.setTarget(new TestBean());
 		pf.addInterface(ITestBean.class);
@@ -132,8 +124,7 @@ public class AopProxyUtilsTests
 	}
 
 	@Test
-	public void testProxiedUserInterfacesWithNoInterface()
-	{
+	public void testProxiedUserInterfacesWithNoInterface() {
 		Object proxy = Proxy.newProxyInstance(getClass().getClassLoader(), new Class[0],
 				(proxy1, method, args) -> null);
 		assertThatIllegalArgumentException().isThrownBy(() -> AopProxyUtils.proxiedUserInterfaces(proxy));

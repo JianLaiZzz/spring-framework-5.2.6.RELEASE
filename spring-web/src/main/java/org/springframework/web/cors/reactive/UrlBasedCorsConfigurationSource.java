@@ -16,15 +16,15 @@
 
 package org.springframework.web.cors.reactive;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.springframework.http.server.PathContainer;
 import org.springframework.lang.Nullable;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.pattern.PathPattern;
 import org.springframework.web.util.pattern.PathPatternParser;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Provide a per reactive request {@link CorsConfiguration} instance based on a
@@ -38,8 +38,7 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @author Brian Clozel
  * @since 5.0
  */
-public class UrlBasedCorsConfigurationSource implements CorsConfigurationSource
-{
+public class UrlBasedCorsConfigurationSource implements CorsConfigurationSource {
 
 	private final Map<PathPattern, CorsConfiguration> corsConfigurations;
 
@@ -48,11 +47,10 @@ public class UrlBasedCorsConfigurationSource implements CorsConfigurationSource
 	/**
 	 * Construct a new {@code UrlBasedCorsConfigurationSource} instance with default
 	 * {@code PathPatternParser}.
-	 * 
+	 *
 	 * @since 5.0.6
 	 */
-	public UrlBasedCorsConfigurationSource()
-	{
+	public UrlBasedCorsConfigurationSource() {
 		this(new PathPatternParser());
 	}
 
@@ -60,8 +58,7 @@ public class UrlBasedCorsConfigurationSource implements CorsConfigurationSource
 	 * Construct a new {@code UrlBasedCorsConfigurationSource} instance from the supplied
 	 * {@code PathPatternParser}.
 	 */
-	public UrlBasedCorsConfigurationSource(PathPatternParser patternParser)
-	{
+	public UrlBasedCorsConfigurationSource(PathPatternParser patternParser) {
 		this.corsConfigurations = new LinkedHashMap<>();
 		this.patternParser = patternParser;
 	}
@@ -69,11 +66,9 @@ public class UrlBasedCorsConfigurationSource implements CorsConfigurationSource
 	/**
 	 * Set CORS configuration based on URL patterns.
 	 */
-	public void setCorsConfigurations(@Nullable Map<String, CorsConfiguration> corsConfigurations)
-	{
+	public void setCorsConfigurations(@Nullable Map<String, CorsConfiguration> corsConfigurations) {
 		this.corsConfigurations.clear();
-		if (corsConfigurations != null)
-		{
+		if (corsConfigurations != null) {
 			corsConfigurations.forEach(this::registerCorsConfiguration);
 		}
 	}
@@ -81,15 +76,13 @@ public class UrlBasedCorsConfigurationSource implements CorsConfigurationSource
 	/**
 	 * Register a {@link CorsConfiguration} for the specified path pattern.
 	 */
-	public void registerCorsConfiguration(String path, CorsConfiguration config)
-	{
+	public void registerCorsConfiguration(String path, CorsConfiguration config) {
 		this.corsConfigurations.put(this.patternParser.parse(path), config);
 	}
 
 	@Override
 	@Nullable
-	public CorsConfiguration getCorsConfiguration(ServerWebExchange exchange)
-	{
+	public CorsConfiguration getCorsConfiguration(ServerWebExchange exchange) {
 		PathContainer lookupPath = exchange.getRequest().getPath().pathWithinApplication();
 		return this.corsConfigurations.entrySet().stream()
 				.filter(entry -> entry.getKey().matches(lookupPath)).map(Map.Entry::getValue).findFirst()

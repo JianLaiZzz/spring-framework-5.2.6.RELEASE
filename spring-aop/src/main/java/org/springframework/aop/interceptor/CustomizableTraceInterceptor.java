@@ -16,10 +16,6 @@
 
 package org.springframework.aop.interceptor;
 
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
 import org.springframework.core.Constants;
@@ -28,6 +24,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StopWatch;
 import org.springframework.util.StringUtils;
+
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * {@code MethodInterceptor} implementation that allows for highly customizable
@@ -64,15 +64,14 @@ import org.springframework.util.StringUtils;
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
- * @since 1.2
  * @see #setEnterMessage
  * @see #setExitMessage
  * @see #setExceptionMessage
  * @see SimpleTraceInterceptor
+ * @since 1.2
  */
 @SuppressWarnings("serial")
-public class CustomizableTraceInterceptor extends AbstractTraceInterceptor
-{
+public class CustomizableTraceInterceptor extends AbstractTraceInterceptor {
 
 	/**
 	 * The {@code $[methodName]} placeholder.
@@ -183,8 +182,7 @@ public class CustomizableTraceInterceptor extends AbstractTraceInterceptor
 	 * <li>{@code $[arguments]}</li>
 	 * </ul>
 	 */
-	public void setEnterMessage(String enterMessage) throws IllegalArgumentException
-	{
+	public void setEnterMessage(String enterMessage) throws IllegalArgumentException {
 		Assert.hasText(enterMessage, "enterMessage must not be empty");
 		checkForInvalidPlaceholders(enterMessage);
 		Assert.doesNotContain(enterMessage, PLACEHOLDER_RETURN_VALUE,
@@ -208,8 +206,7 @@ public class CustomizableTraceInterceptor extends AbstractTraceInterceptor
 	 * <li>{@code $[invocationTime]}</li>
 	 * </ul>
 	 */
-	public void setExitMessage(String exitMessage)
-	{
+	public void setExitMessage(String exitMessage) {
 		Assert.hasText(exitMessage, "exitMessage must not be empty");
 		checkForInvalidPlaceholders(exitMessage);
 		Assert.doesNotContain(exitMessage, PLACEHOLDER_EXCEPTION,
@@ -228,8 +225,7 @@ public class CustomizableTraceInterceptor extends AbstractTraceInterceptor
 	 * <li>{@code $[exception]}</li>
 	 * </ul>
 	 */
-	public void setExceptionMessage(String exceptionMessage)
-	{
+	public void setExceptionMessage(String exceptionMessage) {
 		Assert.hasText(exceptionMessage, "exceptionMessage must not be empty");
 		checkForInvalidPlaceholders(exceptionMessage);
 		Assert.doesNotContain(exceptionMessage, PLACEHOLDER_RETURN_VALUE,
@@ -242,42 +238,33 @@ public class CustomizableTraceInterceptor extends AbstractTraceInterceptor
 	 * If the invocation succeeds, then a log message is written on exit based on the value
 	 * {@code exitMessage}. If an exception occurs during invocation, then a message is
 	 * written based on the value of {@code exceptionMessage}.
-	 * 
+	 *
 	 * @see #setEnterMessage
 	 * @see #setExitMessage
 	 * @see #setExceptionMessage
 	 */
 	@Override
-	protected Object invokeUnderTrace(MethodInvocation invocation, Log logger) throws Throwable
-	{
+	protected Object invokeUnderTrace(MethodInvocation invocation, Log logger) throws Throwable {
 		String name = ClassUtils.getQualifiedMethodName(invocation.getMethod());
 		StopWatch stopWatch = new StopWatch(name);
 		Object returnValue = null;
 		boolean exitThroughException = false;
-		try
-		{
+		try {
 			stopWatch.start(name);
 			writeToLog(logger, replacePlaceholders(this.enterMessage, invocation, null, null, -1));
 			returnValue = invocation.proceed();
 			return returnValue;
-		}
-		catch (Throwable ex)
-		{
-			if (stopWatch.isRunning())
-			{
+		} catch (Throwable ex) {
+			if (stopWatch.isRunning()) {
 				stopWatch.stop();
 			}
 			exitThroughException = true;
 			writeToLog(logger, replacePlaceholders(this.exceptionMessage, invocation, null, ex,
 					stopWatch.getTotalTimeMillis()), ex);
 			throw ex;
-		}
-		finally
-		{
-			if (!exitThroughException)
-			{
-				if (stopWatch.isRunning())
-				{
+		} finally {
+			if (!exitThroughException) {
+				if (stopWatch.isRunning()) {
 					stopWatch.stop();
 				}
 				writeToLog(logger, replacePlaceholders(this.exitMessage, invocation, returnValue, null,
@@ -289,74 +276,50 @@ public class CustomizableTraceInterceptor extends AbstractTraceInterceptor
 	/**
 	 * Replace the placeholders in the given message with the supplied values,
 	 * or values derived from those supplied.
-	 * 
-	 * @param message
-	 *            the message template containing the placeholders to be replaced
-	 * @param methodInvocation
-	 *            the {@code MethodInvocation} being logged.
-	 *            Used to derive values for all placeholders except {@code $[exception]}
-	 *            and {@code $[returnValue]}.
-	 * @param returnValue
-	 *            any value returned by the invocation.
-	 *            Used to replace the {@code $[returnValue]} placeholder. May be {@code null}.
-	 * @param throwable
-	 *            any {@code Throwable} raised during the invocation.
-	 *            The value of {@code Throwable.toString()} is replaced for the
-	 *            {@code $[exception]} placeholder. May be {@code null}.
-	 * @param invocationTime
-	 *            the value to write in place of the
-	 *            {@code $[invocationTime]} placeholder
+	 *
+	 * @param message          the message template containing the placeholders to be replaced
+	 * @param methodInvocation the {@code MethodInvocation} being logged.
+	 *                         Used to derive values for all placeholders except {@code $[exception]}
+	 *                         and {@code $[returnValue]}.
+	 * @param returnValue      any value returned by the invocation.
+	 *                         Used to replace the {@code $[returnValue]} placeholder. May be {@code null}.
+	 * @param throwable        any {@code Throwable} raised during the invocation.
+	 *                         The value of {@code Throwable.toString()} is replaced for the
+	 *                         {@code $[exception]} placeholder. May be {@code null}.
+	 * @param invocationTime   the value to write in place of the
+	 *                         {@code $[invocationTime]} placeholder
 	 * @return the formatted output to write to the log
 	 */
 	protected String replacePlaceholders(String message, MethodInvocation methodInvocation,
-			@Nullable Object returnValue, @Nullable Throwable throwable, long invocationTime)
-	{
+										 @Nullable Object returnValue, @Nullable Throwable throwable, long invocationTime) {
 
 		Matcher matcher = PATTERN.matcher(message);
 
 		StringBuffer output = new StringBuffer();
-		while (matcher.find())
-		{
+		while (matcher.find()) {
 			String match = matcher.group();
-			if (PLACEHOLDER_METHOD_NAME.equals(match))
-			{
+			if (PLACEHOLDER_METHOD_NAME.equals(match)) {
 				matcher.appendReplacement(output,
 						Matcher.quoteReplacement(methodInvocation.getMethod().getName()));
-			}
-			else if (PLACEHOLDER_TARGET_CLASS_NAME.equals(match))
-			{
+			} else if (PLACEHOLDER_TARGET_CLASS_NAME.equals(match)) {
 				String className = getClassForLogging(methodInvocation.getThis()).getName();
 				matcher.appendReplacement(output, Matcher.quoteReplacement(className));
-			}
-			else if (PLACEHOLDER_TARGET_CLASS_SHORT_NAME.equals(match))
-			{
+			} else if (PLACEHOLDER_TARGET_CLASS_SHORT_NAME.equals(match)) {
 				String shortName = ClassUtils
 						.getShortName(getClassForLogging(methodInvocation.getThis()));
 				matcher.appendReplacement(output, Matcher.quoteReplacement(shortName));
-			}
-			else if (PLACEHOLDER_ARGUMENTS.equals(match))
-			{
+			} else if (PLACEHOLDER_ARGUMENTS.equals(match)) {
 				matcher.appendReplacement(output, Matcher.quoteReplacement(
 						StringUtils.arrayToCommaDelimitedString(methodInvocation.getArguments())));
-			}
-			else if (PLACEHOLDER_ARGUMENT_TYPES.equals(match))
-			{
+			} else if (PLACEHOLDER_ARGUMENT_TYPES.equals(match)) {
 				appendArgumentTypes(methodInvocation, matcher, output);
-			}
-			else if (PLACEHOLDER_RETURN_VALUE.equals(match))
-			{
+			} else if (PLACEHOLDER_RETURN_VALUE.equals(match)) {
 				appendReturnValue(methodInvocation, matcher, output, returnValue);
-			}
-			else if (throwable != null && PLACEHOLDER_EXCEPTION.equals(match))
-			{
+			} else if (throwable != null && PLACEHOLDER_EXCEPTION.equals(match)) {
 				matcher.appendReplacement(output, Matcher.quoteReplacement(throwable.toString()));
-			}
-			else if (PLACEHOLDER_INVOCATION_TIME.equals(match))
-			{
+			} else if (PLACEHOLDER_INVOCATION_TIME.equals(match)) {
 				matcher.appendReplacement(output, Long.toString(invocationTime));
-			}
-			else
-			{
+			} else {
 				// Should not happen since placeholders are checked earlier.
 				throw new IllegalArgumentException("Unknown placeholder [" + match + "]");
 			}
@@ -370,30 +333,20 @@ public class CustomizableTraceInterceptor extends AbstractTraceInterceptor
 	 * Adds the {@code String} representation of the method return value
 	 * to the supplied {@code StringBuffer}. Correctly handles
 	 * {@code null} and {@code void} results.
-	 * 
-	 * @param methodInvocation
-	 *            the {@code MethodInvocation} that returned the value
-	 * @param matcher
-	 *            the {@code Matcher} containing the matched placeholder
-	 * @param output
-	 *            the {@code StringBuffer} to write output to
-	 * @param returnValue
-	 *            the value returned by the method invocation.
+	 *
+	 * @param methodInvocation the {@code MethodInvocation} that returned the value
+	 * @param matcher          the {@code Matcher} containing the matched placeholder
+	 * @param output           the {@code StringBuffer} to write output to
+	 * @param returnValue      the value returned by the method invocation.
 	 */
 	private void appendReturnValue(MethodInvocation methodInvocation, Matcher matcher,
-			StringBuffer output, @Nullable Object returnValue)
-	{
+								   StringBuffer output, @Nullable Object returnValue) {
 
-		if (methodInvocation.getMethod().getReturnType() == void.class)
-		{
+		if (methodInvocation.getMethod().getReturnType() == void.class) {
 			matcher.appendReplacement(output, "void");
-		}
-		else if (returnValue == null)
-		{
+		} else if (returnValue == null) {
 			matcher.appendReplacement(output, "null");
-		}
-		else
-		{
+		} else {
 			matcher.appendReplacement(output, Matcher.quoteReplacement(returnValue.toString()));
 		}
 	}
@@ -403,22 +356,17 @@ public class CustomizableTraceInterceptor extends AbstractTraceInterceptor
 	 * method argument types to the output. For example, if a method has signature
 	 * {@code put(java.lang.String, java.lang.Object)} then the value returned
 	 * will be {@code String, Object}.
-	 * 
-	 * @param methodInvocation
-	 *            the {@code MethodInvocation} being logged.
-	 *            Arguments will be retrieved from the corresponding {@code Method}.
-	 * @param matcher
-	 *            the {@code Matcher} containing the state of the output
-	 * @param output
-	 *            the {@code StringBuffer} containing the output
+	 *
+	 * @param methodInvocation the {@code MethodInvocation} being logged.
+	 *                         Arguments will be retrieved from the corresponding {@code Method}.
+	 * @param matcher          the {@code Matcher} containing the state of the output
+	 * @param output           the {@code StringBuffer} containing the output
 	 */
 	private void appendArgumentTypes(MethodInvocation methodInvocation, Matcher matcher,
-			StringBuffer output)
-	{
+									 StringBuffer output) {
 		Class<?>[] argumentTypes = methodInvocation.getMethod().getParameterTypes();
 		String[] argumentTypeShortNames = new String[argumentTypes.length];
-		for (int i = 0; i < argumentTypeShortNames.length; i++)
-		{
+		for (int i = 0; i < argumentTypeShortNames.length; i++) {
 			argumentTypeShortNames[i] = ClassUtils.getShortName(argumentTypes[i]);
 		}
 		matcher.appendReplacement(output, Matcher
@@ -430,14 +378,11 @@ public class CustomizableTraceInterceptor extends AbstractTraceInterceptor
 	 * that are not specified as constants on this class and throws an
 	 * {@code IllegalArgumentException} if so.
 	 */
-	private void checkForInvalidPlaceholders(String message) throws IllegalArgumentException
-	{
+	private void checkForInvalidPlaceholders(String message) throws IllegalArgumentException {
 		Matcher matcher = PATTERN.matcher(message);
-		while (matcher.find())
-		{
+		while (matcher.find()) {
 			String match = matcher.group();
-			if (!ALLOWED_PLACEHOLDERS.contains(match))
-			{
+			if (!ALLOWED_PLACEHOLDERS.contains(match)) {
 				throw new IllegalArgumentException("Placeholder [" + match + "] is not valid");
 			}
 		}

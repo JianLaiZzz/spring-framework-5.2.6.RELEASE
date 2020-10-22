@@ -36,11 +36,10 @@ import org.springframework.beans.factory.NamedBean;
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
- * @since 2.0
  * @see org.springframework.beans.factory.NamedBean
+ * @since 2.0
  */
-public abstract class ExposeBeanNameAdvisors
-{
+public abstract class ExposeBeanNameAdvisors {
 
 	/**
 	 * Binding for the bean name of the bean which is currently being invoked
@@ -53,37 +52,30 @@ public abstract class ExposeBeanNameAdvisors
 	 * Find the bean name for the current invocation. Assumes that an ExposeBeanNameAdvisor
 	 * has been included in the interceptor chain, and that the invocation is exposed
 	 * with ExposeInvocationInterceptor.
-	 * 
+	 *
 	 * @return the bean name (never {@code null})
-	 * @throws IllegalStateException
-	 *             if the bean name has not been exposed
+	 * @throws IllegalStateException if the bean name has not been exposed
 	 */
-	public static String getBeanName() throws IllegalStateException
-	{
+	public static String getBeanName() throws IllegalStateException {
 		return getBeanName(ExposeInvocationInterceptor.currentInvocation());
 	}
 
 	/**
 	 * Find the bean name for the given invocation. Assumes that an ExposeBeanNameAdvisor
 	 * has been included in the interceptor chain.
-	 * 
-	 * @param mi
-	 *            the MethodInvocation that should contain the bean name as an attribute
+	 *
+	 * @param mi the MethodInvocation that should contain the bean name as an attribute
 	 * @return the bean name (never {@code null})
-	 * @throws IllegalStateException
-	 *             if the bean name has not been exposed
+	 * @throws IllegalStateException if the bean name has not been exposed
 	 */
-	public static String getBeanName(MethodInvocation mi) throws IllegalStateException
-	{
-		if (!(mi instanceof ProxyMethodInvocation))
-		{
+	public static String getBeanName(MethodInvocation mi) throws IllegalStateException {
+		if (!(mi instanceof ProxyMethodInvocation)) {
 			throw new IllegalArgumentException(
 					"MethodInvocation is not a Spring ProxyMethodInvocation: " + mi);
 		}
 		ProxyMethodInvocation pmi = (ProxyMethodInvocation) mi;
 		String beanName = (String) pmi.getUserAttribute(BEAN_NAME_ATTRIBUTE);
-		if (beanName == null)
-		{
+		if (beanName == null) {
 			throw new IllegalStateException("Cannot get bean name; not set on MethodInvocation: " + mi);
 		}
 		return beanName;
@@ -92,12 +84,10 @@ public abstract class ExposeBeanNameAdvisors
 	/**
 	 * Create a new advisor that will expose the given bean name,
 	 * with no introduction.
-	 * 
-	 * @param beanName
-	 *            bean name to expose
+	 *
+	 * @param beanName bean name to expose
 	 */
-	public static Advisor createAdvisorWithoutIntroduction(String beanName)
-	{
+	public static Advisor createAdvisorWithoutIntroduction(String beanName) {
 		return new DefaultPointcutAdvisor(new ExposeBeanNameInterceptor(beanName));
 	}
 
@@ -105,33 +95,27 @@ public abstract class ExposeBeanNameAdvisors
 	 * Create a new advisor that will expose the given bean name, introducing
 	 * the NamedBean interface to make the bean name accessible without forcing
 	 * the target object to be aware of this Spring IoC concept.
-	 * 
-	 * @param beanName
-	 *            the bean name to expose
+	 *
+	 * @param beanName the bean name to expose
 	 */
-	public static Advisor createAdvisorIntroducingNamedBean(String beanName)
-	{
+	public static Advisor createAdvisorIntroducingNamedBean(String beanName) {
 		return new DefaultIntroductionAdvisor(new ExposeBeanNameIntroduction(beanName));
 	}
 
 	/**
 	 * Interceptor that exposes the specified bean name as invocation attribute.
 	 */
-	private static class ExposeBeanNameInterceptor implements MethodInterceptor
-	{
+	private static class ExposeBeanNameInterceptor implements MethodInterceptor {
 
 		private final String beanName;
 
-		public ExposeBeanNameInterceptor(String beanName)
-		{
+		public ExposeBeanNameInterceptor(String beanName) {
 			this.beanName = beanName;
 		}
 
 		@Override
-		public Object invoke(MethodInvocation mi) throws Throwable
-		{
-			if (!(mi instanceof ProxyMethodInvocation))
-			{
+		public Object invoke(MethodInvocation mi) throws Throwable {
+			if (!(mi instanceof ProxyMethodInvocation)) {
 				throw new IllegalStateException(
 						"MethodInvocation is not a Spring ProxyMethodInvocation: " + mi);
 			}
@@ -146,21 +130,17 @@ public abstract class ExposeBeanNameAdvisors
 	 */
 	@SuppressWarnings("serial")
 	private static class ExposeBeanNameIntroduction extends DelegatingIntroductionInterceptor
-			implements NamedBean
-	{
+			implements NamedBean {
 
 		private final String beanName;
 
-		public ExposeBeanNameIntroduction(String beanName)
-		{
+		public ExposeBeanNameIntroduction(String beanName) {
 			this.beanName = beanName;
 		}
 
 		@Override
-		public Object invoke(MethodInvocation mi) throws Throwable
-		{
-			if (!(mi instanceof ProxyMethodInvocation))
-			{
+		public Object invoke(MethodInvocation mi) throws Throwable {
+			if (!(mi instanceof ProxyMethodInvocation)) {
 				throw new IllegalStateException(
 						"MethodInvocation is not a Spring ProxyMethodInvocation: " + mi);
 			}
@@ -170,8 +150,7 @@ public abstract class ExposeBeanNameAdvisors
 		}
 
 		@Override
-		public String getBeanName()
-		{
+		public String getBeanName() {
 			return this.beanName;
 		}
 	}

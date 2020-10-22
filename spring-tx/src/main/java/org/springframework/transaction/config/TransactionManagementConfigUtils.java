@@ -23,8 +23,7 @@ package org.springframework.transaction.config;
  * @author Stephane Nicoll
  * @since 3.1
  */
-public abstract class TransactionManagementConfigUtils
-{
+public abstract class TransactionManagementConfigUtils {
 
 	/**
 	 * The bean name of the internally managed transaction advisor (used when mode == PROXY).
@@ -48,21 +47,21 @@ public abstract class TransactionManagementConfigUtils
 
 	/**
 	 * The bean name of the internally managed JTA transaction aspect (used when mode == ASPECTJ).
-	 * 
+	 *
 	 * @since 5.1
 	 */
 	public static final String JTA_TRANSACTION_ASPECT_BEAN_NAME = "org.springframework.transaction.config.internalJtaTransactionAspect";
 
 	/**
 	 * The class name of the AspectJ transaction management aspect.
-	 * 
+	 *
 	 * @since 5.1
 	 */
 	public static final String JTA_TRANSACTION_ASPECT_CLASS_NAME = "org.springframework.transaction.aspectj.JtaAnnotationTransactionAspect";
 
 	/**
 	 * The name of the AspectJ transaction management @{@code Configuration} class for JTA.
-	 * 
+	 *
 	 * @since 5.1
 	 */
 	public static final String JTA_TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME = "org.springframework.transaction.aspectj.AspectJJtaTransactionManagementConfiguration";

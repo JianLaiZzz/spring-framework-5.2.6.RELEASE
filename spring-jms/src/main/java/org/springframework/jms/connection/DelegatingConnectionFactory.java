@@ -16,11 +16,11 @@
 
 package org.springframework.jms.connection;
 
-import javax.jms.*;
-
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import javax.jms.*;
 
 /**
  * {@link javax.jms.ConnectionFactory} implementation that delegates all calls
@@ -48,14 +48,13 @@ import org.springframework.util.Assert;
  * released connections to the pool, not stopping them while they sit in the pool.
  *
  * @author Juergen Hoeller
- * @since 2.0.2
  * @see #createConnection()
  * @see #setShouldStopConnections
  * @see ConnectionFactoryUtils#releaseConnection
+ * @since 2.0.2
  */
 public class DelegatingConnectionFactory implements SmartConnectionFactory, QueueConnectionFactory,
-		TopicConnectionFactory, InitializingBean
-{
+		TopicConnectionFactory, InitializingBean {
 
 	@Nullable
 	private ConnectionFactory targetConnectionFactory;
@@ -65,8 +64,7 @@ public class DelegatingConnectionFactory implements SmartConnectionFactory, Queu
 	/**
 	 * Set the target ConnectionFactory that this ConnectionFactory should delegate to.
 	 */
-	public void setTargetConnectionFactory(@Nullable ConnectionFactory targetConnectionFactory)
-	{
+	public void setTargetConnectionFactory(@Nullable ConnectionFactory targetConnectionFactory) {
 		this.targetConnectionFactory = targetConnectionFactory;
 	}
 
@@ -74,13 +72,11 @@ public class DelegatingConnectionFactory implements SmartConnectionFactory, Queu
 	 * Return the target ConnectionFactory that this ConnectionFactory delegates to.
 	 */
 	@Nullable
-	public ConnectionFactory getTargetConnectionFactory()
-	{
+	public ConnectionFactory getTargetConnectionFactory() {
 		return this.targetConnectionFactory;
 	}
 
-	private ConnectionFactory obtainTargetConnectionFactory()
-	{
+	private ConnectionFactory obtainTargetConnectionFactory() {
 		ConnectionFactory target = getTargetConnectionFactory();
 		Assert.state(target != null, "No 'targetConnectionFactory' set");
 		return target;
@@ -93,48 +89,38 @@ public class DelegatingConnectionFactory implements SmartConnectionFactory, Queu
 	 * released connections to the pool, not stopping them while they sit in the pool.
 	 * <p>
 	 * Default is "false", simply closing Connections.
-	 * 
+	 *
 	 * @see ConnectionFactoryUtils#releaseConnection
 	 */
-	public void setShouldStopConnections(boolean shouldStopConnections)
-	{
+	public void setShouldStopConnections(boolean shouldStopConnections) {
 		this.shouldStopConnections = shouldStopConnections;
 	}
 
 	@Override
-	public void afterPropertiesSet()
-	{
-		if (getTargetConnectionFactory() == null)
-		{
+	public void afterPropertiesSet() {
+		if (getTargetConnectionFactory() == null) {
 			throw new IllegalArgumentException("'targetConnectionFactory' is required");
 		}
 	}
 
 	@Override
-	public Connection createConnection() throws JMSException
-	{
+	public Connection createConnection() throws JMSException {
 		return obtainTargetConnectionFactory().createConnection();
 	}
 
 	@Override
-	public Connection createConnection(String username, String password) throws JMSException
-	{
+	public Connection createConnection(String username, String password) throws JMSException {
 		return obtainTargetConnectionFactory().createConnection(username, password);
 	}
 
 	@Override
-	public QueueConnection createQueueConnection() throws JMSException
-	{
+	public QueueConnection createQueueConnection() throws JMSException {
 		ConnectionFactory target = obtainTargetConnectionFactory();
-		if (target instanceof QueueConnectionFactory)
-		{
+		if (target instanceof QueueConnectionFactory) {
 			return ((QueueConnectionFactory) target).createQueueConnection();
-		}
-		else
-		{
+		} else {
 			Connection con = target.createConnection();
-			if (!(con instanceof QueueConnection))
-			{
+			if (!(con instanceof QueueConnection)) {
 				throw new javax.jms.IllegalStateException(
 						"'targetConnectionFactory' is not a QueueConnectionFactory");
 			}
@@ -143,18 +129,13 @@ public class DelegatingConnectionFactory implements SmartConnectionFactory, Queu
 	}
 
 	@Override
-	public QueueConnection createQueueConnection(String username, String password) throws JMSException
-	{
+	public QueueConnection createQueueConnection(String username, String password) throws JMSException {
 		ConnectionFactory target = obtainTargetConnectionFactory();
-		if (target instanceof QueueConnectionFactory)
-		{
+		if (target instanceof QueueConnectionFactory) {
 			return ((QueueConnectionFactory) target).createQueueConnection(username, password);
-		}
-		else
-		{
+		} else {
 			Connection con = target.createConnection(username, password);
-			if (!(con instanceof QueueConnection))
-			{
+			if (!(con instanceof QueueConnection)) {
 				throw new javax.jms.IllegalStateException(
 						"'targetConnectionFactory' is not a QueueConnectionFactory");
 			}
@@ -163,18 +144,13 @@ public class DelegatingConnectionFactory implements SmartConnectionFactory, Queu
 	}
 
 	@Override
-	public TopicConnection createTopicConnection() throws JMSException
-	{
+	public TopicConnection createTopicConnection() throws JMSException {
 		ConnectionFactory target = obtainTargetConnectionFactory();
-		if (target instanceof TopicConnectionFactory)
-		{
+		if (target instanceof TopicConnectionFactory) {
 			return ((TopicConnectionFactory) target).createTopicConnection();
-		}
-		else
-		{
+		} else {
 			Connection con = target.createConnection();
-			if (!(con instanceof TopicConnection))
-			{
+			if (!(con instanceof TopicConnection)) {
 				throw new javax.jms.IllegalStateException(
 						"'targetConnectionFactory' is not a TopicConnectionFactory");
 			}
@@ -183,18 +159,13 @@ public class DelegatingConnectionFactory implements SmartConnectionFactory, Queu
 	}
 
 	@Override
-	public TopicConnection createTopicConnection(String username, String password) throws JMSException
-	{
+	public TopicConnection createTopicConnection(String username, String password) throws JMSException {
 		ConnectionFactory target = obtainTargetConnectionFactory();
-		if (target instanceof TopicConnectionFactory)
-		{
+		if (target instanceof TopicConnectionFactory) {
 			return ((TopicConnectionFactory) target).createTopicConnection(username, password);
-		}
-		else
-		{
+		} else {
 			Connection con = target.createConnection(username, password);
-			if (!(con instanceof TopicConnection))
-			{
+			if (!(con instanceof TopicConnection)) {
 				throw new javax.jms.IllegalStateException(
 						"'targetConnectionFactory' is not a TopicConnectionFactory");
 			}
@@ -203,32 +174,27 @@ public class DelegatingConnectionFactory implements SmartConnectionFactory, Queu
 	}
 
 	@Override
-	public JMSContext createContext()
-	{
+	public JMSContext createContext() {
 		return obtainTargetConnectionFactory().createContext();
 	}
 
 	@Override
-	public JMSContext createContext(String userName, String password)
-	{
+	public JMSContext createContext(String userName, String password) {
 		return obtainTargetConnectionFactory().createContext(userName, password);
 	}
 
 	@Override
-	public JMSContext createContext(String userName, String password, int sessionMode)
-	{
+	public JMSContext createContext(String userName, String password, int sessionMode) {
 		return obtainTargetConnectionFactory().createContext(userName, password, sessionMode);
 	}
 
 	@Override
-	public JMSContext createContext(int sessionMode)
-	{
+	public JMSContext createContext(int sessionMode) {
 		return obtainTargetConnectionFactory().createContext(sessionMode);
 	}
 
 	@Override
-	public boolean shouldStop(Connection con)
-	{
+	public boolean shouldStop(Connection con) {
 		return this.shouldStopConnections;
 	}
 

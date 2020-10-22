@@ -32,8 +32,7 @@ import org.springframework.util.StringUtils;
  * @author Sam Brannen
  * @since 2.0
  */
-public class TypePatternClassFilter implements ClassFilter
-{
+public class TypePatternClassFilter implements ClassFilter {
 
 	private String typePattern = "";
 
@@ -48,19 +47,16 @@ public class TypePatternClassFilter implements ClassFilter
 	 * no doubt fatal {@link IllegalStateException} will be thrown
 	 * when the {@link #matches(Class)} method is first invoked.
 	 */
-	public TypePatternClassFilter()
-	{
+	public TypePatternClassFilter() {
 	}
 
 	/**
 	 * Create a fully configured {@link TypePatternClassFilter} using the
 	 * given type pattern.
-	 * 
-	 * @param typePattern
-	 *            the type pattern that AspectJ weaver should parse
+	 *
+	 * @param typePattern the type pattern that AspectJ weaver should parse
 	 */
-	public TypePatternClassFilter(String typePattern)
-	{
+	public TypePatternClassFilter(String typePattern) {
 		setTypePattern(typePattern);
 	}
 
@@ -79,12 +75,10 @@ public class TypePatternClassFilter implements ClassFilter
 	 * that implements it.
 	 * <p>
 	 * These conventions are established by AspectJ, not Spring AOP.
-	 * 
-	 * @param typePattern
-	 *            the type pattern that AspectJ weaver should parse
+	 *
+	 * @param typePattern the type pattern that AspectJ weaver should parse
 	 */
-	public void setTypePattern(String typePattern)
-	{
+	public void setTypePattern(String typePattern) {
 		Assert.notNull(typePattern, "Type pattern must not be null");
 		this.typePattern = typePattern;
 		this.aspectJTypePatternMatcher = PointcutParser
@@ -95,23 +89,19 @@ public class TypePatternClassFilter implements ClassFilter
 	/**
 	 * Return the AspectJ type pattern to match.
 	 */
-	public String getTypePattern()
-	{
+	public String getTypePattern() {
 		return this.typePattern;
 	}
 
 	/**
 	 * Should the pointcut apply to the given interface or target class?
-	 * 
-	 * @param clazz
-	 *            candidate target class
+	 *
+	 * @param clazz candidate target class
 	 * @return whether the advice should apply to this candidate target class
-	 * @throws IllegalStateException
-	 *             if no {@link #setTypePattern(String)} has been set
+	 * @throws IllegalStateException if no {@link #setTypePattern(String)} has been set
 	 */
 	@Override
-	public boolean matches(Class<?> clazz)
-	{
+	public boolean matches(Class<?> clazz) {
 		Assert.state(this.aspectJTypePatternMatcher != null, "No type pattern has been set");
 		return this.aspectJTypePatternMatcher.matches(clazz);
 	}
@@ -123,29 +113,25 @@ public class TypePatternClassFilter implements ClassFilter
 	 * <p>
 	 * This method converts back to {@code &&} for the AspectJ pointcut parser.
 	 */
-	private String replaceBooleanOperators(String pcExpr)
-	{
+	private String replaceBooleanOperators(String pcExpr) {
 		String result = StringUtils.replace(pcExpr, " and ", " && ");
 		result = StringUtils.replace(result, " or ", " || ");
 		return StringUtils.replace(result, " not ", " ! ");
 	}
 
 	@Override
-	public boolean equals(Object other)
-	{
+	public boolean equals(Object other) {
 		return (this == other || (other instanceof TypePatternClassFilter && ObjectUtils
 				.nullSafeEquals(this.typePattern, ((TypePatternClassFilter) other).typePattern)));
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return ObjectUtils.nullSafeHashCode(this.typePattern);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getClass().getName() + ": " + this.typePattern;
 	}
 

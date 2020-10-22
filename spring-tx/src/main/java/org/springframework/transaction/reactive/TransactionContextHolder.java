@@ -16,9 +16,9 @@
 
 package org.springframework.transaction.reactive;
 
-import java.util.Deque;
-
 import org.springframework.transaction.NoTransactionException;
+
+import java.util.Deque;
 
 /**
  * Mutable holder for reactive transaction {@link TransactionContext contexts}.
@@ -26,30 +26,25 @@ import org.springframework.transaction.NoTransactionException;
  *
  * @author Mark Paluch
  * @author Juergen Hoeller
- * @since 5.2
  * @see TransactionContext
+ * @since 5.2
  */
-final class TransactionContextHolder
-{
+final class TransactionContextHolder {
 
 	private final Deque<TransactionContext> transactionStack;
 
-	TransactionContextHolder(Deque<TransactionContext> transactionStack)
-	{
+	TransactionContextHolder(Deque<TransactionContext> transactionStack) {
 		this.transactionStack = transactionStack;
 	}
 
 	/**
 	 * Return the current {@link TransactionContext}.
-	 * 
-	 * @throws NoTransactionException
-	 *             if no transaction is ongoing
+	 *
+	 * @throws NoTransactionException if no transaction is ongoing
 	 */
-	TransactionContext currentContext()
-	{
+	TransactionContext currentContext() {
 		TransactionContext context = this.transactionStack.peek();
-		if (context == null)
-		{
+		if (context == null) {
 			throw new NoTransactionException("No transaction in context");
 		}
 		return context;
@@ -58,15 +53,11 @@ final class TransactionContextHolder
 	/**
 	 * Create a new {@link TransactionContext}.
 	 */
-	TransactionContext createContext()
-	{
+	TransactionContext createContext() {
 		TransactionContext context = this.transactionStack.peek();
-		if (context != null)
-		{
+		if (context != null) {
 			context = new TransactionContext(context);
-		}
-		else
-		{
+		} else {
 			context = new TransactionContext();
 		}
 		this.transactionStack.push(context);
@@ -75,11 +66,10 @@ final class TransactionContextHolder
 
 	/**
 	 * Check whether the holder has a {@link TransactionContext}.
-	 * 
+	 *
 	 * @return {@literal true} if a {@link TransactionContext} is associated
 	 */
-	boolean hasContext()
-	{
+	boolean hasContext() {
 		return !this.transactionStack.isEmpty();
 	}
 

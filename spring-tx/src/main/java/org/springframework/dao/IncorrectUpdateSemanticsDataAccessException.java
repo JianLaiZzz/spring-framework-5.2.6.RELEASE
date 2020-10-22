@@ -25,30 +25,24 @@ package org.springframework.dao;
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
-public class IncorrectUpdateSemanticsDataAccessException extends InvalidDataAccessResourceUsageException
-{
+public class IncorrectUpdateSemanticsDataAccessException extends InvalidDataAccessResourceUsageException {
 
 	/**
 	 * Constructor for IncorrectUpdateSemanticsDataAccessException.
-	 * 
-	 * @param msg
-	 *            the detail message
+	 *
+	 * @param msg the detail message
 	 */
-	public IncorrectUpdateSemanticsDataAccessException(String msg)
-	{
+	public IncorrectUpdateSemanticsDataAccessException(String msg) {
 		super(msg);
 	}
 
 	/**
 	 * Constructor for IncorrectUpdateSemanticsDataAccessException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the root cause from the underlying API, such as JDBC
+	 *
+	 * @param msg   the detail message
+	 * @param cause the root cause from the underlying API, such as JDBC
 	 */
-	public IncorrectUpdateSemanticsDataAccessException(String msg, Throwable cause)
-	{
+	public IncorrectUpdateSemanticsDataAccessException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 
@@ -59,8 +53,7 @@ public class IncorrectUpdateSemanticsDataAccessException extends InvalidDataAcce
 	 * The default implementation always returns true.
 	 * This can be overridden in subclasses.
 	 */
-	public boolean wasDataUpdated()
-	{
+	public boolean wasDataUpdated() {
 		return true;
 	}
 

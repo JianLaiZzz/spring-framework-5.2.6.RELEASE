@@ -16,30 +16,25 @@
 
 package org.springframework.oxm.jibx;
 
-public class FlightType
-{
+public class FlightType {
 
 	protected String airline;
 
 	protected long number;
 
-	public String getAirline()
-	{
+	public String getAirline() {
 		return this.airline;
 	}
 
-	public void setAirline(String airline)
-	{
+	public void setAirline(String airline) {
 		this.airline = airline;
 	}
 
-	public long getNumber()
-	{
+	public long getNumber() {
 		return this.number;
 	}
 
-	public void setNumber(long number)
-	{
+	public void setNumber(long number) {
 		this.number = number;
 	}
 }

@@ -16,9 +16,9 @@
 
 package org.springframework.jms.support;
 
-import javax.jms.Message;
-
 import org.springframework.messaging.support.HeaderMapper;
+
+import javax.jms.Message;
 
 /**
  * Strategy interface for mapping {@link org.springframework.messaging.Message}
@@ -30,8 +30,7 @@ import org.springframework.messaging.support.HeaderMapper;
  * @author Gary Russell
  * @since 4.1
  */
-public interface JmsHeaderMapper extends HeaderMapper<Message>
-{
+public interface JmsHeaderMapper extends HeaderMapper<Message> {
 
 	/**
 	 * The JMS-compliant {@code content_type} property.

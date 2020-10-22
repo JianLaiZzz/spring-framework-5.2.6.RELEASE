@@ -16,12 +16,12 @@
 
 package org.springframework.transaction.interceptor;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
 /**
  * Very simple implementation of TransactionAttributeSource which will always return
@@ -31,45 +31,38 @@ import org.springframework.util.ObjectUtils;
  * methods being handled by a transaction interceptor.
  *
  * @author Colin Sampaleanu
- * @since 15.10.2003
  * @see org.springframework.transaction.interceptor.TransactionProxyFactoryBean
  * @see org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator
+ * @since 15.10.2003
  */
 @SuppressWarnings("serial")
-public class MatchAlwaysTransactionAttributeSource implements TransactionAttributeSource, Serializable
-{
+public class MatchAlwaysTransactionAttributeSource implements TransactionAttributeSource, Serializable {
 
 	private TransactionAttribute transactionAttribute = new DefaultTransactionAttribute();
 
 	/**
 	 * Allows a transaction attribute to be specified, using the String form, for
 	 * example, "PROPAGATION_REQUIRED".
-	 * 
-	 * @param transactionAttribute
-	 *            the String form of the transactionAttribute to use.
+	 *
+	 * @param transactionAttribute the String form of the transactionAttribute to use.
 	 * @see org.springframework.transaction.interceptor.TransactionAttributeEditor
 	 */
-	public void setTransactionAttribute(TransactionAttribute transactionAttribute)
-	{
+	public void setTransactionAttribute(TransactionAttribute transactionAttribute) {
 		this.transactionAttribute = transactionAttribute;
 	}
 
 	@Override
 	@Nullable
-	public TransactionAttribute getTransactionAttribute(Method method, @Nullable Class<?> targetClass)
-	{
+	public TransactionAttribute getTransactionAttribute(Method method, @Nullable Class<?> targetClass) {
 		return (ClassUtils.isUserLevelMethod(method) ? this.transactionAttribute : null);
 	}
 
 	@Override
-	public boolean equals(@Nullable Object other)
-	{
-		if (this == other)
-		{
+	public boolean equals(@Nullable Object other) {
+		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof MatchAlwaysTransactionAttributeSource))
-		{
+		if (!(other instanceof MatchAlwaysTransactionAttributeSource)) {
 			return false;
 		}
 		MatchAlwaysTransactionAttributeSource otherTas = (MatchAlwaysTransactionAttributeSource) other;
@@ -77,14 +70,12 @@ public class MatchAlwaysTransactionAttributeSource implements TransactionAttribu
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return MatchAlwaysTransactionAttributeSource.class.hashCode();
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getClass().getName() + ": " + this.transactionAttribute;
 	}
 

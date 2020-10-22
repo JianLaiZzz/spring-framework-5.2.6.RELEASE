@@ -16,10 +16,9 @@
 
 package org.springframework.web.util;
 
-import java.io.Serializable;
-
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import java.io.Serializable;
 
 /**
  * Servlet HttpSessionListener that automatically exposes the session mutex
@@ -39,23 +38,20 @@ import javax.servlet.http.HttpSessionListener;
  * different servlet containers; the only 100% safe way is a session mutex.
  *
  * @author Juergen Hoeller
- * @since 1.2.7
  * @see WebUtils#SESSION_MUTEX_ATTRIBUTE
  * @see WebUtils#getSessionMutex(javax.servlet.http.HttpSession)
  * @see org.springframework.web.servlet.mvc.AbstractController#setSynchronizeOnSession
+ * @since 1.2.7
  */
-public class HttpSessionMutexListener implements HttpSessionListener
-{
+public class HttpSessionMutexListener implements HttpSessionListener {
 
 	@Override
-	public void sessionCreated(HttpSessionEvent event)
-	{
+	public void sessionCreated(HttpSessionEvent event) {
 		event.getSession().setAttribute(WebUtils.SESSION_MUTEX_ATTRIBUTE, new Mutex());
 	}
 
 	@Override
-	public void sessionDestroyed(HttpSessionEvent event)
-	{
+	public void sessionDestroyed(HttpSessionEvent event) {
 		event.getSession().removeAttribute(WebUtils.SESSION_MUTEX_ATTRIBUTE);
 	}
 
@@ -65,8 +61,7 @@ public class HttpSessionMutexListener implements HttpSessionListener
 	 * Should be serializable to allow for HttpSession persistence.
 	 */
 	@SuppressWarnings("serial")
-	private static class Mutex implements Serializable
-	{
+	private static class Mutex implements Serializable {
 	}
 
 }

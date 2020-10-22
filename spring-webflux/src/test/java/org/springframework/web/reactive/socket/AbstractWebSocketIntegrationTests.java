@@ -16,6 +16,34 @@
 
 package org.springframework.web.reactive.socket;
 
+import org.apache.tomcat.websocket.server.WsContextListener;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.Lifecycle;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.server.reactive.HttpHandler;
+import org.springframework.web.reactive.DispatcherHandler;
+import org.springframework.web.reactive.socket.client.*;
+import org.springframework.web.reactive.socket.server.RequestUpgradeStrategy;
+import org.springframework.web.reactive.socket.server.WebSocketService;
+import org.springframework.web.reactive.socket.server.support.HandshakeWebSocketService;
+import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
+import org.springframework.web.reactive.socket.server.upgrade.JettyRequestUpgradeStrategy;
+import org.springframework.web.reactive.socket.server.upgrade.ReactorNettyRequestUpgradeStrategy;
+import org.springframework.web.reactive.socket.server.upgrade.TomcatRequestUpgradeStrategy;
+import org.springframework.web.reactive.socket.server.upgrade.UndertowRequestUpgradeStrategy;
+import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
+import org.springframework.web.testfixture.http.server.reactive.bootstrap.*;
+import org.xnio.OptionMap;
+import org.xnio.Xnio;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple3;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.ElementType;
@@ -26,43 +54,6 @@ import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import org.apache.tomcat.websocket.server.WsContextListener;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.xnio.OptionMap;
-import org.xnio.Xnio;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple3;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.Lifecycle;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.server.reactive.HttpHandler;
-import org.springframework.web.reactive.DispatcherHandler;
-import org.springframework.web.reactive.socket.client.JettyWebSocketClient;
-import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
-import org.springframework.web.reactive.socket.client.TomcatWebSocketClient;
-import org.springframework.web.reactive.socket.client.UndertowWebSocketClient;
-import org.springframework.web.reactive.socket.client.WebSocketClient;
-import org.springframework.web.reactive.socket.server.RequestUpgradeStrategy;
-import org.springframework.web.reactive.socket.server.WebSocketService;
-import org.springframework.web.reactive.socket.server.support.HandshakeWebSocketService;
-import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
-import org.springframework.web.reactive.socket.server.upgrade.JettyRequestUpgradeStrategy;
-import org.springframework.web.reactive.socket.server.upgrade.ReactorNettyRequestUpgradeStrategy;
-import org.springframework.web.reactive.socket.server.upgrade.TomcatRequestUpgradeStrategy;
-import org.springframework.web.reactive.socket.server.upgrade.UndertowRequestUpgradeStrategy;
-import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
-import org.springframework.web.testfixture.http.server.reactive.bootstrap.HttpServer;
-import org.springframework.web.testfixture.http.server.reactive.bootstrap.JettyHttpServer;
-import org.springframework.web.testfixture.http.server.reactive.bootstrap.ReactorHttpServer;
-import org.springframework.web.testfixture.http.server.reactive.bootstrap.TomcatHttpServer;
-import org.springframework.web.testfixture.http.server.reactive.bootstrap.UndertowHttpServer;
 
 /**
  * Base class for WebSocket integration tests. Sub-classes must implement
@@ -86,7 +77,7 @@ abstract class AbstractWebSocketIntegrationTests {
 
 	static Stream<Object[]> arguments() throws IOException {
 
-		WebSocketClient[] clients = new WebSocketClient[] {
+		WebSocketClient[] clients = new WebSocketClient[]{
 				new TomcatWebSocketClient(),
 				new JettyWebSocketClient(),
 				new ReactorNettyWebSocketClient(),

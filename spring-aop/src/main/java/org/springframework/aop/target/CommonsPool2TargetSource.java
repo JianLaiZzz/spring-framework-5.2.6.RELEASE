@@ -56,7 +56,6 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @author Stephane Nicoll
  * @author Kazuki Shimizu
- * @since 4.2
  * @see GenericObjectPool
  * @see #createObjectPool()
  * @see #setMaxSize
@@ -65,11 +64,11 @@ import org.springframework.util.Assert;
  * @see #setMaxWait
  * @see #setTimeBetweenEvictionRunsMillis
  * @see #setMinEvictableIdleTimeMillis
+ * @since 4.2
  */
-@SuppressWarnings({ "rawtypes", "unchecked", "serial" })
+@SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class CommonsPool2TargetSource extends AbstractPoolingTargetSource
-		implements PooledObjectFactory<Object>
-{
+		implements PooledObjectFactory<Object> {
 
 	private int maxIdle = GenericObjectPoolConfig.DEFAULT_MAX_IDLE;
 
@@ -92,69 +91,62 @@ public class CommonsPool2TargetSource extends AbstractPoolingTargetSource
 	/**
 	 * Create a CommonsPoolTargetSource with default settings.
 	 * Default maximum size of the pool is 8.
-	 * 
+	 *
 	 * @see #setMaxSize
 	 * @see GenericObjectPoolConfig#setMaxTotal
 	 */
-	public CommonsPool2TargetSource()
-	{
+	public CommonsPool2TargetSource() {
 		setMaxSize(GenericObjectPoolConfig.DEFAULT_MAX_TOTAL);
 	}
 
 	/**
 	 * Set the maximum number of idle objects in the pool.
 	 * Default is 8.
-	 * 
+	 *
 	 * @see GenericObjectPool#setMaxIdle
 	 */
-	public void setMaxIdle(int maxIdle)
-	{
+	public void setMaxIdle(int maxIdle) {
 		this.maxIdle = maxIdle;
 	}
 
 	/**
 	 * Return the maximum number of idle objects in the pool.
 	 */
-	public int getMaxIdle()
-	{
+	public int getMaxIdle() {
 		return this.maxIdle;
 	}
 
 	/**
 	 * Set the minimum number of idle objects in the pool.
 	 * Default is 0.
-	 * 
+	 *
 	 * @see GenericObjectPool#setMinIdle
 	 */
-	public void setMinIdle(int minIdle)
-	{
+	public void setMinIdle(int minIdle) {
 		this.minIdle = minIdle;
 	}
 
 	/**
 	 * Return the minimum number of idle objects in the pool.
 	 */
-	public int getMinIdle()
-	{
+	public int getMinIdle() {
 		return this.minIdle;
 	}
 
 	/**
 	 * Set the maximum waiting time for fetching an object from the pool.
 	 * Default is -1, waiting forever.
-	 * 
+	 *
 	 * @see GenericObjectPool#setMaxWaitMillis
 	 */
-	public void setMaxWait(long maxWait)
-	{
+	public void setMaxWait(long maxWait) {
 		this.maxWait = maxWait;
 	}
 
 	/**
 	 * Return the maximum waiting time for fetching an object from the pool.
 	 */
-	public long getMaxWait()
-	{
+	public long getMaxWait() {
 		return this.maxWait;
 	}
 
@@ -162,19 +154,17 @@ public class CommonsPool2TargetSource extends AbstractPoolingTargetSource
 	 * Set the time between eviction runs that check idle objects whether
 	 * they have been idle for too long or have become invalid.
 	 * Default is -1, not performing any eviction.
-	 * 
+	 *
 	 * @see GenericObjectPool#setTimeBetweenEvictionRunsMillis
 	 */
-	public void setTimeBetweenEvictionRunsMillis(long timeBetweenEvictionRunsMillis)
-	{
+	public void setTimeBetweenEvictionRunsMillis(long timeBetweenEvictionRunsMillis) {
 		this.timeBetweenEvictionRunsMillis = timeBetweenEvictionRunsMillis;
 	}
 
 	/**
 	 * Return the time between eviction runs that check idle objects.
 	 */
-	public long getTimeBetweenEvictionRunsMillis()
-	{
+	public long getTimeBetweenEvictionRunsMillis() {
 		return this.timeBetweenEvictionRunsMillis;
 	}
 
@@ -184,47 +174,42 @@ public class CommonsPool2TargetSource extends AbstractPoolingTargetSource
 	 * <p>
 	 * Note that eviction runs need to be performed to take this
 	 * setting into effect.
-	 * 
+	 *
 	 * @see #setTimeBetweenEvictionRunsMillis
 	 * @see GenericObjectPool#setMinEvictableIdleTimeMillis
 	 */
-	public void setMinEvictableIdleTimeMillis(long minEvictableIdleTimeMillis)
-	{
+	public void setMinEvictableIdleTimeMillis(long minEvictableIdleTimeMillis) {
 		this.minEvictableIdleTimeMillis = minEvictableIdleTimeMillis;
 	}
 
 	/**
 	 * Return the minimum time that an idle object can sit in the pool.
 	 */
-	public long getMinEvictableIdleTimeMillis()
-	{
+	public long getMinEvictableIdleTimeMillis() {
 		return this.minEvictableIdleTimeMillis;
 	}
 
 	/**
 	 * Set whether the call should bock when the pool is exhausted.
 	 */
-	public void setBlockWhenExhausted(boolean blockWhenExhausted)
-	{
+	public void setBlockWhenExhausted(boolean blockWhenExhausted) {
 		this.blockWhenExhausted = blockWhenExhausted;
 	}
 
 	/**
 	 * Specify if the call should block when the pool is exhausted.
 	 */
-	public boolean isBlockWhenExhausted()
-	{
+	public boolean isBlockWhenExhausted() {
 		return this.blockWhenExhausted;
 	}
 
 	/**
 	 * Creates and holds an ObjectPool instance.
-	 * 
+	 *
 	 * @see #createObjectPool()
 	 */
 	@Override
-	protected final void createPool()
-	{
+	protected final void createPool() {
 		logger.debug("Creating Commons object pool");
 		this.pool = createObjectPool();
 	}
@@ -234,13 +219,12 @@ public class CommonsPool2TargetSource extends AbstractPoolingTargetSource
 	 * They should apply any configuration properties to the pool here.
 	 * <p>
 	 * Default is a GenericObjectPool instance with the given pool size.
-	 * 
+	 *
 	 * @return an empty Commons {@code ObjectPool}.
 	 * @see GenericObjectPool
 	 * @see #setMaxSize
 	 */
-	protected ObjectPool createObjectPool()
-	{
+	protected ObjectPool createObjectPool() {
 		GenericObjectPoolConfig config = new GenericObjectPoolConfig();
 		config.setMaxTotal(getMaxSize());
 		config.setMaxIdle(getMaxIdle());
@@ -256,8 +240,7 @@ public class CommonsPool2TargetSource extends AbstractPoolingTargetSource
 	 * Borrows an object from the {@code ObjectPool}.
 	 */
 	@Override
-	public Object getTarget() throws Exception
-	{
+	public Object getTarget() throws Exception {
 		Assert.state(this.pool != null, "No Commons ObjectPool available");
 		return this.pool.borrowObject();
 	}
@@ -266,23 +249,19 @@ public class CommonsPool2TargetSource extends AbstractPoolingTargetSource
 	 * Returns the specified object to the underlying {@code ObjectPool}.
 	 */
 	@Override
-	public void releaseTarget(Object target) throws Exception
-	{
-		if (this.pool != null)
-		{
+	public void releaseTarget(Object target) throws Exception {
+		if (this.pool != null) {
 			this.pool.returnObject(target);
 		}
 	}
 
 	@Override
-	public int getActiveCount() throws UnsupportedOperationException
-	{
+	public int getActiveCount() throws UnsupportedOperationException {
 		return (this.pool != null ? this.pool.getNumActive() : 0);
 	}
 
 	@Override
-	public int getIdleCount() throws UnsupportedOperationException
-	{
+	public int getIdleCount() throws UnsupportedOperationException {
 		return (this.pool != null ? this.pool.getNumIdle() : 0);
 	}
 
@@ -290,10 +269,8 @@ public class CommonsPool2TargetSource extends AbstractPoolingTargetSource
 	 * Closes the underlying {@code ObjectPool} when destroying this object.
 	 */
 	@Override
-	public void destroy() throws Exception
-	{
-		if (this.pool != null)
-		{
+	public void destroy() throws Exception {
+		if (this.pool != null) {
 			logger.debug("Closing Commons ObjectPool");
 			this.pool.close();
 		}
@@ -304,31 +281,26 @@ public class CommonsPool2TargetSource extends AbstractPoolingTargetSource
 	//----------------------------------------------------------------------------
 
 	@Override
-	public PooledObject<Object> makeObject() throws Exception
-	{
+	public PooledObject<Object> makeObject() throws Exception {
 		return new DefaultPooledObject<>(newPrototypeInstance());
 	}
 
 	@Override
-	public void destroyObject(PooledObject<Object> p) throws Exception
-	{
+	public void destroyObject(PooledObject<Object> p) throws Exception {
 		destroyPrototypeInstance(p.getObject());
 	}
 
 	@Override
-	public boolean validateObject(PooledObject<Object> p)
-	{
+	public boolean validateObject(PooledObject<Object> p) {
 		return true;
 	}
 
 	@Override
-	public void activateObject(PooledObject<Object> p) throws Exception
-	{
+	public void activateObject(PooledObject<Object> p) throws Exception {
 	}
 
 	@Override
-	public void passivateObject(PooledObject<Object> p) throws Exception
-	{
+	public void passivateObject(PooledObject<Object> p) throws Exception {
 	}
 
 }

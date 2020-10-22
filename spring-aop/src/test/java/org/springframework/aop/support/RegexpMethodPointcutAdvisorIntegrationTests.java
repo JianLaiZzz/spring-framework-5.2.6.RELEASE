@@ -16,9 +16,6 @@
 
 package org.springframework.aop.support;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.core.testfixture.io.ResourceTestUtils.qualifiedResource;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.testfixture.interceptor.NopInterceptor;
@@ -31,19 +28,20 @@ import org.springframework.beans.testfixture.beans.TestBean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.testfixture.io.SerializationTestUtils;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.core.testfixture.io.ResourceTestUtils.qualifiedResource;
+
 /**
  * @author Rod Johnson
  * @author Chris Beams
  */
-public class RegexpMethodPointcutAdvisorIntegrationTests
-{
+public class RegexpMethodPointcutAdvisorIntegrationTests {
 
 	private static final Resource CONTEXT = qualifiedResource(
 			RegexpMethodPointcutAdvisorIntegrationTests.class, "context.xml");
 
 	@Test
-	public void testSinglePattern() throws Throwable
-	{
+	public void testSinglePattern() throws Throwable {
 		DefaultListableBeanFactory bf = new DefaultListableBeanFactory();
 		new XmlBeanDefinitionReader(bf).loadBeanDefinitions(CONTEXT);
 		ITestBean advised = (ITestBean) bf.getBean("settersAdvised");
@@ -62,8 +60,7 @@ public class RegexpMethodPointcutAdvisorIntegrationTests
 	}
 
 	@Test
-	public void testMultiplePatterns() throws Throwable
-	{
+	public void testMultiplePatterns() throws Throwable {
 		DefaultListableBeanFactory bf = new DefaultListableBeanFactory();
 		new XmlBeanDefinitionReader(bf).loadBeanDefinitions(CONTEXT);
 		// This is a CGLIB proxy, so we can proxy it to the target class
@@ -87,8 +84,7 @@ public class RegexpMethodPointcutAdvisorIntegrationTests
 	}
 
 	@Test
-	public void testSerialization() throws Throwable
-	{
+	public void testSerialization() throws Throwable {
 		DefaultListableBeanFactory bf = new DefaultListableBeanFactory();
 		new XmlBeanDefinitionReader(bf).loadBeanDefinitions(CONTEXT);
 		// This is a CGLIB proxy, so we can proxy it to the target class

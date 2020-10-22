@@ -16,11 +16,6 @@
 
 package org.springframework.web.reactive.result.method.annotation;
 
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -32,9 +27,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.AbstractHttpHandlerIntegrationTests;
 
-import static org.springframework.http.RequestEntity.get;
-import static org.springframework.http.RequestEntity.options;
-import static org.springframework.http.RequestEntity.post;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import static org.springframework.http.RequestEntity.*;
 
 /**
  * Base class for integration tests with {@code @RequestMapping methods}.
@@ -102,17 +100,17 @@ public abstract class AbstractRequestMappingIntegrationTests extends AbstractHtt
 		if (out != null) {
 			headers.setAccept(Collections.singletonList(out));
 		}
-		return  getRestTemplate().exchange(preparePost(url, headers, body), type);
+		return getRestTemplate().exchange(preparePost(url, headers, body), type);
 	}
 
 	<T> ResponseEntity<T> performPost(String url, HttpHeaders headers, Object body,
-			Class<T> type) throws Exception {
+									  Class<T> type) throws Exception {
 
-		return  getRestTemplate().exchange(preparePost(url, headers, body), type);
+		return getRestTemplate().exchange(preparePost(url, headers, body), type);
 	}
 
 	<T> ResponseEntity<T> performPost(String url, MediaType in, Object body, MediaType out,
-			ParameterizedTypeReference<T> type) throws Exception {
+									  ParameterizedTypeReference<T> type) throws Exception {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(in);

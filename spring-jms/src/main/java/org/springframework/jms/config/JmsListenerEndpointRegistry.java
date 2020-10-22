@@ -16,13 +16,6 @@
 
 package org.springframework.jms.config;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanInitializationException;
@@ -36,6 +29,13 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Creates the necessary {@link MessageListenerContainer} instances for the
@@ -54,14 +54,13 @@ import org.springframework.util.Assert;
  *
  * @author Stephane Nicoll
  * @author Juergen Hoeller
- * @since 4.1
  * @see JmsListenerEndpoint
  * @see MessageListenerContainer
  * @see JmsListenerContainerFactory
+ * @since 4.1
  */
 public class JmsListenerEndpointRegistry implements DisposableBean, SmartLifecycle,
-		ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>
-{
+		ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -75,16 +74,13 @@ public class JmsListenerEndpointRegistry implements DisposableBean, SmartLifecyc
 	private boolean contextRefreshed;
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-	{
+	public void setApplicationContext(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
 
 	@Override
-	public void onApplicationEvent(ContextRefreshedEvent event)
-	{
-		if (event.getApplicationContext() == this.applicationContext)
-		{
+	public void onApplicationEvent(ContextRefreshedEvent event) {
+		if (event.getApplicationContext() == this.applicationContext) {
 			this.contextRefreshed = true;
 		}
 	}
@@ -92,36 +88,32 @@ public class JmsListenerEndpointRegistry implements DisposableBean, SmartLifecyc
 	/**
 	 * Return the {@link MessageListenerContainer} with the specified id or
 	 * {@code null} if no such container exists.
-	 * 
-	 * @param id
-	 *            the id of the container
+	 *
+	 * @param id the id of the container
 	 * @return the container or {@code null} if no container with that id exists
 	 * @see JmsListenerEndpoint#getId()
 	 * @see #getListenerContainerIds()
 	 */
 	@Nullable
-	public MessageListenerContainer getListenerContainer(String id)
-	{
+	public MessageListenerContainer getListenerContainer(String id) {
 		Assert.notNull(id, "Container identifier must not be null");
 		return this.listenerContainers.get(id);
 	}
 
 	/**
 	 * Return the ids of the managed {@link MessageListenerContainer} instance(s).
-	 * 
-	 * @since 4.2.3
+	 *
 	 * @see #getListenerContainer(String)
+	 * @since 4.2.3
 	 */
-	public Set<String> getListenerContainerIds()
-	{
+	public Set<String> getListenerContainerIds() {
 		return Collections.unmodifiableSet(this.listenerContainers.keySet());
 	}
 
 	/**
 	 * Return the managed {@link MessageListenerContainer} instance(s).
 	 */
-	public Collection<MessageListenerContainer> getListenerContainers()
-	{
+	public Collection<MessageListenerContainer> getListenerContainers() {
 		return Collections.unmodifiableCollection(this.listenerContainers.values());
 	}
 
@@ -133,36 +125,29 @@ public class JmsListenerEndpointRegistry implements DisposableBean, SmartLifecyc
 	 * <p>
 	 * The {@code startImmediately} flag determines if the container should be
 	 * started immediately.
-	 * 
-	 * @param endpoint
-	 *            the endpoint to add
-	 * @param factory
-	 *            the listener factory to use
-	 * @param startImmediately
-	 *            start the container immediately if necessary
+	 *
+	 * @param endpoint         the endpoint to add
+	 * @param factory          the listener factory to use
+	 * @param startImmediately start the container immediately if necessary
 	 * @see #getListenerContainers()
 	 * @see #getListenerContainer(String)
 	 */
 	public void registerListenerContainer(JmsListenerEndpoint endpoint,
-			JmsListenerContainerFactory<?> factory, boolean startImmediately)
-	{
+										  JmsListenerContainerFactory<?> factory, boolean startImmediately) {
 
 		Assert.notNull(endpoint, "Endpoint must not be null");
 		Assert.notNull(factory, "Factory must not be null");
 		String id = endpoint.getId();
 		Assert.hasText(id, "Endpoint id must be set");
 
-		synchronized (this.listenerContainers)
-		{
-			if (this.listenerContainers.containsKey(id))
-			{
+		synchronized (this.listenerContainers) {
+			if (this.listenerContainers.containsKey(id)) {
 				throw new IllegalStateException(
 						"Another endpoint is already registered with id '" + id + "'");
 			}
 			MessageListenerContainer container = createListenerContainer(endpoint, factory);
 			this.listenerContainers.put(id, container);
-			if (startImmediately)
-			{
+			if (startImmediately) {
 				startIfNecessary(container);
 			}
 		}
@@ -173,16 +158,13 @@ public class JmsListenerEndpointRegistry implements DisposableBean, SmartLifecyc
 	 * <p>
 	 * This create the necessary infrastructure to honor that endpoint
 	 * with regards to its configuration.
-	 * 
-	 * @param endpoint
-	 *            the endpoint to add
-	 * @param factory
-	 *            the listener factory to use
+	 *
+	 * @param endpoint the endpoint to add
+	 * @param factory  the listener factory to use
 	 * @see #registerListenerContainer(JmsListenerEndpoint, JmsListenerContainerFactory, boolean)
 	 */
 	public void registerListenerContainer(JmsListenerEndpoint endpoint,
-			JmsListenerContainerFactory<?> factory)
-	{
+										  JmsListenerContainerFactory<?> factory) {
 		registerListenerContainer(endpoint, factory, false);
 	}
 
@@ -190,29 +172,22 @@ public class JmsListenerEndpointRegistry implements DisposableBean, SmartLifecyc
 	 * Create and start a new container using the specified factory.
 	 */
 	protected MessageListenerContainer createListenerContainer(JmsListenerEndpoint endpoint,
-			JmsListenerContainerFactory<?> factory)
-	{
+															   JmsListenerContainerFactory<?> factory) {
 
 		MessageListenerContainer listenerContainer = factory.createListenerContainer(endpoint);
 
-		if (listenerContainer instanceof InitializingBean)
-		{
-			try
-			{
+		if (listenerContainer instanceof InitializingBean) {
+			try {
 				((InitializingBean) listenerContainer).afterPropertiesSet();
-			}
-			catch (Exception ex)
-			{
+			} catch (Exception ex) {
 				throw new BeanInitializationException("Failed to initialize message listener container",
 						ex);
 			}
 		}
 
 		int containerPhase = listenerContainer.getPhase();
-		if (containerPhase < Integer.MAX_VALUE)
-		{ // a custom phase value
-			if (this.phase < Integer.MAX_VALUE && this.phase != containerPhase)
-			{
+		if (containerPhase < Integer.MAX_VALUE) { // a custom phase value
+			if (this.phase < Integer.MAX_VALUE && this.phase != containerPhase) {
 				throw new IllegalStateException(
 						"Encountered phase mismatch between container factory definitions: " + this.phase
 								+ " vs " + containerPhase);
@@ -226,48 +201,38 @@ public class JmsListenerEndpointRegistry implements DisposableBean, SmartLifecyc
 	// Delegating implementation of SmartLifecycle
 
 	@Override
-	public int getPhase()
-	{
+	public int getPhase() {
 		return this.phase;
 	}
 
 	@Override
-	public void start()
-	{
-		for (MessageListenerContainer listenerContainer : getListenerContainers())
-		{
+	public void start() {
+		for (MessageListenerContainer listenerContainer : getListenerContainers()) {
 			startIfNecessary(listenerContainer);
 		}
 	}
 
 	@Override
-	public void stop()
-	{
-		for (MessageListenerContainer listenerContainer : getListenerContainers())
-		{
+	public void stop() {
+		for (MessageListenerContainer listenerContainer : getListenerContainers()) {
 			listenerContainer.stop();
 		}
 	}
 
 	@Override
-	public void stop(Runnable callback)
-	{
+	public void stop(Runnable callback) {
 		Collection<MessageListenerContainer> listenerContainers = getListenerContainers();
 		AggregatingCallback aggregatingCallback = new AggregatingCallback(listenerContainers.size(),
 				callback);
-		for (MessageListenerContainer listenerContainer : listenerContainers)
-		{
+		for (MessageListenerContainer listenerContainer : listenerContainers) {
 			listenerContainer.stop(aggregatingCallback);
 		}
 	}
 
 	@Override
-	public boolean isRunning()
-	{
-		for (MessageListenerContainer listenerContainer : getListenerContainers())
-		{
-			if (listenerContainer.isRunning())
-			{
+	public boolean isRunning() {
+		for (MessageListenerContainer listenerContainer : getListenerContainers()) {
+			if (listenerContainer.isRunning()) {
 				return true;
 			}
 		}
@@ -277,54 +242,42 @@ public class JmsListenerEndpointRegistry implements DisposableBean, SmartLifecyc
 	/**
 	 * Start the specified {@link MessageListenerContainer} if it should be started
 	 * on startup or when start is called explicitly after startup.
-	 * 
+	 *
 	 * @see MessageListenerContainer#isAutoStartup()
 	 */
-	private void startIfNecessary(MessageListenerContainer listenerContainer)
-	{
-		if (this.contextRefreshed || listenerContainer.isAutoStartup())
-		{
+	private void startIfNecessary(MessageListenerContainer listenerContainer) {
+		if (this.contextRefreshed || listenerContainer.isAutoStartup()) {
 			listenerContainer.start();
 		}
 	}
 
 	@Override
-	public void destroy()
-	{
-		for (MessageListenerContainer listenerContainer : getListenerContainers())
-		{
-			if (listenerContainer instanceof DisposableBean)
-			{
-				try
-				{
+	public void destroy() {
+		for (MessageListenerContainer listenerContainer : getListenerContainers()) {
+			if (listenerContainer instanceof DisposableBean) {
+				try {
 					((DisposableBean) listenerContainer).destroy();
-				}
-				catch (Throwable ex)
-				{
+				} catch (Throwable ex) {
 					logger.warn("Failed to destroy message listener container", ex);
 				}
 			}
 		}
 	}
 
-	private static class AggregatingCallback implements Runnable
-	{
+	private static class AggregatingCallback implements Runnable {
 
 		private final AtomicInteger count;
 
 		private final Runnable finishCallback;
 
-		public AggregatingCallback(int count, Runnable finishCallback)
-		{
+		public AggregatingCallback(int count, Runnable finishCallback) {
 			this.count = new AtomicInteger(count);
 			this.finishCallback = finishCallback;
 		}
 
 		@Override
-		public void run()
-		{
-			if (this.count.decrementAndGet() == 0)
-			{
+		public void run() {
+			if (this.count.decrementAndGet() == 0) {
 				this.finishCallback.run();
 			}
 		}

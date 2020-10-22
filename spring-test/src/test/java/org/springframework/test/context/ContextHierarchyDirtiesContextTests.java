@@ -23,7 +23,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -85,7 +84,7 @@ class ContextHierarchyDirtiesContextTests {
 	}
 
 	private void runTestAndVerifyHierarchies(Class<? extends FooTestCase> testClass, boolean isFooContextActive,
-			boolean isBarContextActive, boolean isBazContextActive) {
+											 boolean isBarContextActive, boolean isBazContextActive) {
 
 		JUnitCore jUnitCore = new JUnitCore();
 		Result result = jUnitCore.run(testClass);

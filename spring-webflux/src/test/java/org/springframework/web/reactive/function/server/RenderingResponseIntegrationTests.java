@@ -16,15 +16,6 @@
 
 package org.springframework.web.reactive.function.server;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import reactor.core.publisher.Mono;
-
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,6 +27,10 @@ import org.springframework.web.reactive.result.view.View;
 import org.springframework.web.reactive.result.view.ViewResolver;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.HttpServer;
+import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.web.reactive.function.server.HandlerFilterFunction.ofResponseProcessor;
@@ -147,7 +142,7 @@ class RenderingResponseIntegrationTests extends AbstractRouterFunctionIntegratio
 
 		@Override
 		public Mono<Void> render(@Nullable Map<String, ?> model, @Nullable MediaType contentType,
-				ServerWebExchange exchange) {
+								 ServerWebExchange exchange) {
 			StringBuilder builder = new StringBuilder();
 			builder.append("name=").append(this.name).append('\n');
 			for (Map.Entry<String, ?> entry : model.entrySet()) {

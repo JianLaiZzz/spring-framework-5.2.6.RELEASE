@@ -17,7 +17,6 @@
 package org.springframework.test.context.web;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -31,8 +30,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * JUnit-based integration tests for {@link ServletTestExecutionListener}.
  *
  * @author Sam Brannen
- * @since 3.2.9
  * @see org.springframework.test.context.testng.web.ServletTestExecutionListenerTestNGIntegrationTests
+ * @since 3.2.9
  */
 @SpringJUnitWebConfig
 class ServletTestExecutionListenerJUnitIntegrationTests {

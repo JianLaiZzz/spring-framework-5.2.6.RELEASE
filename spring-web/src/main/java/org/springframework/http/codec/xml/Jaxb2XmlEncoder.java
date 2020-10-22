@@ -16,20 +16,6 @@
 
 package org.springframework.http.codec.xml;
 
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.function.Function;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.MarshalException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import org.springframework.core.ResolvableType;
 import org.springframework.core.codec.AbstractSingleValueEncoder;
 import org.springframework.core.codec.CodecException;
@@ -43,6 +29,18 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.MarshalException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Encode from single value to a byte stream containing XML elements.
@@ -53,8 +51,8 @@ import org.springframework.util.MimeTypeUtils;
  *
  * @author Sebastien Deleuze
  * @author Arjen Poutsma
- * @since 5.0
  * @see Jaxb2XmlDecoder
+ * @since 5.0
  */
 public class Jaxb2XmlEncoder extends AbstractSingleValueEncoder<Object> {
 
@@ -70,6 +68,7 @@ public class Jaxb2XmlEncoder extends AbstractSingleValueEncoder<Object> {
 
 	/**
 	 * Configure a processor function to customize Marshaller instances.
+	 *
 	 * @param processor the function to use
 	 * @since 5.1.3
 	 */
@@ -79,6 +78,7 @@ public class Jaxb2XmlEncoder extends AbstractSingleValueEncoder<Object> {
 
 	/**
 	 * Return the configured processor for customizing Marshaller instances.
+	 *
 	 * @since 5.1.3
 	 */
 	public Function<Marshaller, Marshaller> getMarshallerProcessor() {
@@ -92,15 +92,14 @@ public class Jaxb2XmlEncoder extends AbstractSingleValueEncoder<Object> {
 			Class<?> outputClass = elementType.toClass();
 			return (outputClass.isAnnotationPresent(XmlRootElement.class) ||
 					outputClass.isAnnotationPresent(XmlType.class));
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
 
 	@Override
 	protected Flux<DataBuffer> encode(Object value, DataBufferFactory bufferFactory,
-			ResolvableType valueType, @Nullable MimeType mimeType, @Nullable Map<String, Object> hints) {
+									  ResolvableType valueType, @Nullable MimeType mimeType, @Nullable Map<String, Object> hints) {
 
 		// we're relying on doOnDiscard in base class
 		return Mono.fromCallable(() -> encodeValue(value, bufferFactory, valueType, mimeType, hints)).flux();
@@ -108,7 +107,7 @@ public class Jaxb2XmlEncoder extends AbstractSingleValueEncoder<Object> {
 
 	@Override
 	public DataBuffer encodeValue(Object value, DataBufferFactory bufferFactory,
-			ResolvableType valueType, @Nullable MimeType mimeType, @Nullable Map<String, Object> hints) {
+								  ResolvableType valueType, @Nullable MimeType mimeType, @Nullable Map<String, Object> hints) {
 
 		if (!Hints.isLoggingSuppressed(hints)) {
 			LogFormatUtils.traceDebug(logger, traceOn -> {
@@ -126,14 +125,11 @@ public class Jaxb2XmlEncoder extends AbstractSingleValueEncoder<Object> {
 			marshaller.marshal(value, outputStream);
 			release = false;
 			return buffer;
-		}
-		catch (MarshalException ex) {
+		} catch (MarshalException ex) {
 			throw new EncodingException("Could not marshal " + value.getClass() + " to XML", ex);
-		}
-		catch (JAXBException ex) {
+		} catch (JAXBException ex) {
 			throw new CodecException("Invalid JAXB configuration", ex);
-		}
-		finally {
+		} finally {
 			if (release) {
 				DataBufferUtils.release(buffer);
 			}

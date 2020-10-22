@@ -16,12 +16,7 @@
 
 package org.springframework.beans.factory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -29,6 +24,10 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.testfixture.stereotype.Component;
 import org.springframework.util.Assert;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.core.testfixture.io.ResourceTestUtils.qualifiedResource;
@@ -297,8 +296,7 @@ public class FactoryBeanTests {
 			AtomicInteger c = count.get(beanName);
 			if (c != null) {
 				return c.intValue();
-			}
-			else {
+			} else {
 				return 0;
 			}
 		}

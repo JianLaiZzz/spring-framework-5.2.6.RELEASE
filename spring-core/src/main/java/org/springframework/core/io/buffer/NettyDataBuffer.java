@@ -16,21 +16,20 @@
 
 package org.springframework.core.io.buffer;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+import io.netty.buffer.ByteBufUtil;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.function.IntPredicate;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-import io.netty.buffer.ByteBufUtil;
-
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
 
 /**
  * Implementation of the {@code DataBuffer} interface that wraps a Netty
@@ -49,6 +48,7 @@ public class NettyDataBuffer implements PooledDataBuffer {
 
 	/**
 	 * Create a new {@code NettyDataBuffer} based on the given {@code ByteBuff}.
+	 *
 	 * @param byteBuf the buffer to base this buffer on
 	 */
 	NettyDataBuffer(ByteBuf byteBuf, NettyDataBufferFactory dataBufferFactory) {
@@ -61,6 +61,7 @@ public class NettyDataBuffer implements PooledDataBuffer {
 
 	/**
 	 * Directly exposes the native {@code ByteBuf} that this buffer is based on.
+	 *
 	 * @return the wrapped byte buffer
 	 */
 	public ByteBuf getNativeBuffer() {
@@ -77,8 +78,7 @@ public class NettyDataBuffer implements PooledDataBuffer {
 		Assert.notNull(predicate, "IntPredicate must not be null");
 		if (fromIndex < 0) {
 			fromIndex = 0;
-		}
-		else if (fromIndex >= this.byteBuf.writerIndex()) {
+		} else if (fromIndex >= this.byteBuf.writerIndex()) {
 			return -1;
 		}
 		int length = this.byteBuf.writerIndex() - fromIndex;
@@ -193,8 +193,7 @@ public class NettyDataBuffer implements PooledDataBuffer {
 					nativeBuffers[i] = ((NettyDataBuffer) buffers[i]).getNativeBuffer();
 				}
 				write(nativeBuffers);
-			}
-			else {
+			} else {
 				ByteBuffer[] byteBuffers = new ByteBuffer[buffers.length];
 				for (int i = 0; i < buffers.length; i++) {
 					byteBuffers[i] = buffers[i].asByteBuffer();
@@ -228,6 +227,7 @@ public class NettyDataBuffer implements PooledDataBuffer {
 	/**
 	 * Writes one or more Netty {@link ByteBuf ByteBufs} to this buffer,
 	 * starting at the current writing position.
+	 *
 	 * @param byteBufs the buffers to write into this buffer
 	 * @return this buffer
 	 */
@@ -246,11 +246,9 @@ public class NettyDataBuffer implements PooledDataBuffer {
 		Assert.notNull(charset, "Charset must not be null");
 		if (StandardCharsets.UTF_8.equals(charset)) {
 			ByteBufUtil.writeUtf8(this.byteBuf, charSequence);
-		}
-		else if (StandardCharsets.US_ASCII.equals(charset)) {
+		} else if (StandardCharsets.US_ASCII.equals(charset)) {
 			ByteBufUtil.writeAscii(this.byteBuf, charSequence);
-		}
-		else {
+		} else {
 			return PooledDataBuffer.super.write(charSequence, charset);
 		}
 		return this;

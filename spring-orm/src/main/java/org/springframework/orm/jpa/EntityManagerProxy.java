@@ -30,8 +30,7 @@ import javax.persistence.EntityManager;
  * @author Juergen Hoeller
  * @since 2.5
  */
-public interface EntityManagerProxy extends EntityManager
-{
+public interface EntityManagerProxy extends EntityManager {
 
 	/**
 	 * Return the underlying EntityManager that this proxy will delegate to.
@@ -42,10 +41,9 @@ public interface EntityManagerProxy extends EntityManager
 	 * In case of a shared ("transactional") EntityManager, this will be
 	 * the raw EntityManager that is currently associated with the transaction.
 	 * Outside of a transaction, an IllegalStateException will be thrown.
-	 * 
+	 *
 	 * @return the underlying raw EntityManager (never {@code null})
-	 * @throws IllegalStateException
-	 *             if no underlying EntityManager is available
+	 * @throws IllegalStateException if no underlying EntityManager is available
 	 */
 	EntityManager getTargetEntityManager() throws IllegalStateException;
 

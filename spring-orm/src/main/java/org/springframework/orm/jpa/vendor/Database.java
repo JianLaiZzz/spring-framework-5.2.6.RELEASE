@@ -29,11 +29,10 @@ package org.springframework.orm.jpa.vendor;
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
- * @since 2.0
  * @see AbstractJpaVendorAdapter#setDatabase
+ * @since 2.0
  */
-public enum Database
-{
+public enum Database {
 
 	DEFAULT,
 
@@ -41,10 +40,14 @@ public enum Database
 
 	DERBY,
 
-	/** @since 2.5.5 */
+	/**
+	 * @since 2.5.5
+	 */
 	H2,
 
-	/** @since 5.1 */
+	/**
+	 * @since 5.1
+	 */
 	HANA,
 
 	HSQL,

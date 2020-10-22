@@ -16,12 +16,10 @@
 
 package org.springframework.jms.support.converter;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.oxm.Marshaller;
+import org.springframework.oxm.Unmarshaller;
 
 import javax.jms.BytesMessage;
 import javax.jms.Session;
@@ -29,16 +27,17 @@ import javax.jms.TextMessage;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.oxm.Marshaller;
-import org.springframework.oxm.Unmarshaller;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Arjen Poutsma
  */
-public class MarshallingMessageConverterTests
-{
+public class MarshallingMessageConverterTests {
 
 	private MarshallingMessageConverter converter;
 
@@ -49,8 +48,7 @@ public class MarshallingMessageConverterTests
 	private Session sessionMock;
 
 	@BeforeEach
-	public void setup() throws Exception
-	{
+	public void setup() throws Exception {
 		marshallerMock = mock(Marshaller.class);
 		unmarshallerMock = mock(Unmarshaller.class);
 		sessionMock = mock(Session.class);
@@ -58,8 +56,7 @@ public class MarshallingMessageConverterTests
 	}
 
 	@Test
-	public void toBytesMessage() throws Exception
-	{
+	public void toBytesMessage() throws Exception {
 		BytesMessage bytesMessageMock = mock(BytesMessage.class);
 		Object toBeMarshalled = new Object();
 		given(sessionMock.createBytesMessage()).willReturn(bytesMessageMock);
@@ -71,8 +68,7 @@ public class MarshallingMessageConverterTests
 	}
 
 	@Test
-	public void fromBytesMessage() throws Exception
-	{
+	public void fromBytesMessage() throws Exception {
 		BytesMessage bytesMessageMock = mock(BytesMessage.class);
 		Object unmarshalled = new Object();
 
@@ -85,8 +81,7 @@ public class MarshallingMessageConverterTests
 	}
 
 	@Test
-	public void toTextMessage() throws Exception
-	{
+	public void toTextMessage() throws Exception {
 		converter.setTargetType(MessageType.TEXT);
 		TextMessage textMessageMock = mock(TextMessage.class);
 		Object toBeMarshalled = new Object();
@@ -99,8 +94,7 @@ public class MarshallingMessageConverterTests
 	}
 
 	@Test
-	public void fromTextMessage() throws Exception
-	{
+	public void fromTextMessage() throws Exception {
 		TextMessage textMessageMock = mock(TextMessage.class);
 		Object unmarshalled = new Object();
 

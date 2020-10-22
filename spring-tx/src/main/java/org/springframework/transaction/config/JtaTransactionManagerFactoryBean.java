@@ -30,13 +30,12 @@ import org.springframework.util.ClassUtils;
  * {@link org.springframework.transaction.jta.JtaTransactionManager} subclass.
  *
  * @author Juergen Hoeller
- * @since 4.1.1
  * @see org.springframework.transaction.jta.WebLogicJtaTransactionManager
  * @see org.springframework.transaction.jta.WebSphereUowTransactionManager
+ * @since 4.1.1
  */
 public class JtaTransactionManagerFactoryBean
-		implements FactoryBean<JtaTransactionManager>, InitializingBean
-{
+		implements FactoryBean<JtaTransactionManager>, InitializingBean {
 
 	private static final String WEBLOGIC_JTA_TRANSACTION_MANAGER_CLASS_NAME = "org.springframework.transaction.jta.WebLogicJtaTransactionManager";
 
@@ -48,8 +47,7 @@ public class JtaTransactionManagerFactoryBean
 
 	private static final boolean webspherePresent;
 
-	static
-	{
+	static {
 		ClassLoader classLoader = JtaTransactionManagerFactoryBean.class.getClassLoader();
 		weblogicPresent = ClassUtils.isPresent("weblogic.transaction.UserTransaction", classLoader);
 		webspherePresent = ClassUtils.isPresent("com.ibm.wsspi.uow.UOWManager", classLoader);
@@ -58,59 +56,45 @@ public class JtaTransactionManagerFactoryBean
 	private final JtaTransactionManager transactionManager;
 
 	@SuppressWarnings("unchecked")
-	public JtaTransactionManagerFactoryBean()
-	{
+	public JtaTransactionManagerFactoryBean() {
 		String className = resolveJtaTransactionManagerClassName();
-		try
-		{
+		try {
 			Class<? extends JtaTransactionManager> clazz = (Class<? extends JtaTransactionManager>) ClassUtils
 					.forName(className, JtaTransactionManagerFactoryBean.class.getClassLoader());
 			this.transactionManager = BeanUtils.instantiateClass(clazz);
-		}
-		catch (ClassNotFoundException ex)
-		{
+		} catch (ClassNotFoundException ex) {
 			throw new IllegalStateException("Failed to load JtaTransactionManager class: " + className,
 					ex);
 		}
 	}
 
 	@Override
-	public void afterPropertiesSet() throws TransactionSystemException
-	{
+	public void afterPropertiesSet() throws TransactionSystemException {
 		this.transactionManager.afterPropertiesSet();
 	}
 
 	@Override
 	@Nullable
-	public JtaTransactionManager getObject()
-	{
+	public JtaTransactionManager getObject() {
 		return this.transactionManager;
 	}
 
 	@Override
-	public Class<?> getObjectType()
-	{
+	public Class<?> getObjectType() {
 		return this.transactionManager.getClass();
 	}
 
 	@Override
-	public boolean isSingleton()
-	{
+	public boolean isSingleton() {
 		return true;
 	}
 
-	static String resolveJtaTransactionManagerClassName()
-	{
-		if (weblogicPresent)
-		{
+	static String resolveJtaTransactionManagerClassName() {
+		if (weblogicPresent) {
 			return WEBLOGIC_JTA_TRANSACTION_MANAGER_CLASS_NAME;
-		}
-		else if (webspherePresent)
-		{
+		} else if (webspherePresent) {
 			return WEBSPHERE_TRANSACTION_MANAGER_CLASS_NAME;
-		}
-		else
-		{
+		} else {
 			return JTA_TRANSACTION_MANAGER_CLASS_NAME;
 		}
 	}

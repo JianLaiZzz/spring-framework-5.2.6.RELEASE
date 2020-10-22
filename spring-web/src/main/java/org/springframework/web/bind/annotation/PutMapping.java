@@ -16,9 +16,9 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.lang.annotation.*;
-
 import org.springframework.core.annotation.AliasFor;
+
+import java.lang.annotation.*;
 
 /**
  * Annotation for mapping HTTP {@code PUT} requests onto specific handler
@@ -29,19 +29,18 @@ import org.springframework.core.annotation.AliasFor;
  * acts as a shortcut for {@code @RequestMapping(method = RequestMethod.PUT)}.
  *
  * @author Sam Brannen
- * @since 4.3
  * @see GetMapping
  * @see PostMapping
  * @see DeleteMapping
  * @see PatchMapping
  * @see RequestMapping
+ * @since 4.3
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @RequestMapping(method = RequestMethod.PUT)
-public @interface PutMapping
-{
+public @interface PutMapping {
 
 	/**
 	 * Alias for {@link RequestMapping#name}.

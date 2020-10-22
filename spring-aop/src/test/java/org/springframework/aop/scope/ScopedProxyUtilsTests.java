@@ -16,10 +16,10 @@
 
 package org.springframework.aop.scope;
 
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link ScopedProxyUtils}.
@@ -27,12 +27,10 @@ import org.junit.jupiter.api.Test;
  * @author Sam Brannen
  * @since 5.1.10
  */
-class ScopedProxyUtilsTests
-{
+class ScopedProxyUtilsTests {
 
 	@Test
-	void getTargetBeanNameAndIsScopedTarget()
-	{
+	void getTargetBeanNameAndIsScopedTarget() {
 		String originalBeanName = "myBean";
 		String targetBeanName = ScopedProxyUtils.getTargetBeanName(originalBeanName);
 
@@ -42,8 +40,7 @@ class ScopedProxyUtilsTests
 	}
 
 	@Test
-	void getOriginalBeanNameAndIsScopedTarget()
-	{
+	void getOriginalBeanNameAndIsScopedTarget() {
 		String originalBeanName = "myBean";
 		String targetBeanName = ScopedProxyUtils.getTargetBeanName(originalBeanName);
 		String parsedOriginalBeanName = ScopedProxyUtils.getOriginalBeanName(targetBeanName);
@@ -54,15 +51,13 @@ class ScopedProxyUtilsTests
 	}
 
 	@Test
-	void getOriginalBeanNameForNullTargetBean()
-	{
+	void getOriginalBeanNameForNullTargetBean() {
 		assertThatIllegalArgumentException().isThrownBy(() -> ScopedProxyUtils.getOriginalBeanName(null))
 				.withMessage("bean name 'null' does not refer to the target of a scoped proxy");
 	}
 
 	@Test
-	void getOriginalBeanNameForNonScopedTarget()
-	{
+	void getOriginalBeanNameForNonScopedTarget() {
 		assertThatIllegalArgumentException()
 				.isThrownBy(() -> ScopedProxyUtils.getOriginalBeanName("myBean"))
 				.withMessage("bean name 'myBean' does not refer to the target of a scoped proxy");

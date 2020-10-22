@@ -15,12 +15,8 @@
  */
 package org.springframework.build.api;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
-
+import me.champeau.gradle.japicmp.JapicmpPlugin;
+import me.champeau.gradle.japicmp.JapicmpTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
@@ -31,8 +27,11 @@ import org.gradle.api.publish.maven.plugins.MavenPublishPlugin;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.jvm.tasks.Jar;
 
-import me.champeau.gradle.japicmp.JapicmpPlugin;
-import me.champeau.gradle.japicmp.JapicmpTask;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * {@link Plugin} that applies the {@code "japicmp-gradle-plugin"}
@@ -46,8 +45,7 @@ import me.champeau.gradle.japicmp.JapicmpTask;
  *
  * @author Brian Clozel
  */
-public class ApiDiffPlugin implements Plugin<Project>
-{
+public class ApiDiffPlugin implements Plugin<Project> {
 
 	public static final String TASK_NAME = "apiDiff";
 
@@ -57,26 +55,21 @@ public class ApiDiffPlugin implements Plugin<Project>
 			.singletonList("org.springframework.*");
 
 	@Override
-	public void apply(Project project)
-	{
-		if (project.hasProperty(BASELINE_VERSION_PROPERTY) && project.equals(project.getRootProject()))
-		{
+	public void apply(Project project) {
+		if (project.hasProperty(BASELINE_VERSION_PROPERTY) && project.equals(project.getRootProject())) {
 			project.getPluginManager().apply(JapicmpPlugin.class);
 			project.getPlugins().withType(JapicmpPlugin.class,
 					plugin -> applyApiDiffConventions(project));
 		}
 	}
 
-	private void applyApiDiffConventions(Project project)
-	{
+	private void applyApiDiffConventions(Project project) {
 		String baselineVersion = project.property(BASELINE_VERSION_PROPERTY).toString();
 		project.subprojects(subProject -> createApiDiffTask(baselineVersion, subProject));
 	}
 
-	private void createApiDiffTask(String baselineVersion, Project project)
-	{
-		if (isProjectEligible(project))
-		{
+	private void createApiDiffTask(String baselineVersion, Project project) {
+		if (isProjectEligible(project)) {
 			JapicmpTask apiDiff = project.getTasks().create(TASK_NAME, JapicmpTask.class);
 			apiDiff.setDescription("Generates an API diff report with japicmp");
 			apiDiff.setGroup(JavaBasePlugin.DOCUMENTATION_GROUP);
@@ -99,27 +92,23 @@ public class ApiDiffPlugin implements Plugin<Project>
 		}
 	}
 
-	private boolean isProjectEligible(Project project)
-	{
+	private boolean isProjectEligible(Project project) {
 		return project.getPlugins().hasPlugin(JavaPlugin.class)
 				&& project.getPlugins().hasPlugin(MavenPublishPlugin.class);
 	}
 
-	private Configuration createBaselineConfiguration(String baselineVersion, Project project)
-	{
+	private Configuration createBaselineConfiguration(String baselineVersion, Project project) {
 		String baseline = String.join(":", project.getGroup().toString(), project.getName(),
 				baselineVersion);
 		Dependency baselineDependency = project.getDependencies().create(baseline + "@jar");
 		return project.getRootProject().getConfigurations().detachedConfiguration(baselineDependency);
 	}
 
-	private Configuration getRuntimeClassPath(Project project)
-	{
+	private Configuration getRuntimeClassPath(Project project) {
 		return project.getConfigurations().getByName(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME);
 	}
 
-	private File getOutputFile(String baseLineVersion, Project project)
-	{
+	private File getOutputFile(String baseLineVersion, Project project) {
 		Path outDir = Paths.get(project.getRootProject().getBuildDir().getAbsolutePath(), "reports",
 				"api-diff", baseLineVersion + "_to_" + project.getRootProject().getVersion());
 		return project.file(outDir.resolve(project.getName() + ".html").toString());

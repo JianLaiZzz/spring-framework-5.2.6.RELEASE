@@ -16,12 +16,6 @@
 
 package org.springframework.aop.aspectj.annotation;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.reflect.Method;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -31,17 +25,21 @@ import org.springframework.aop.aspectj.AspectJAdviceParameterNameDiscoverer;
 import org.springframework.beans.testfixture.beans.ITestBean;
 import org.springframework.beans.testfixture.beans.TestBean;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Method;
+
+import static org.assertj.core.api.Assertions.*;
+
 /**
  * @author Adrian Colyer
  * @author Juergen Hoeller
  * @author Chris Beams
  */
-public class ArgumentBindingTests
-{
+public class ArgumentBindingTests {
 
 	@Test
-	public void testBindingInPointcutUsedByAdvice()
-	{
+	public void testBindingInPointcutUsedByAdvice() {
 		TestBean tb = new TestBean();
 		AspectJProxyFactory proxyFactory = new AspectJProxyFactory(tb);
 		proxyFactory.addAspect(NamedPointcutWithArgs.class);
@@ -52,8 +50,7 @@ public class ArgumentBindingTests
 	}
 
 	@Test
-	public void testAnnotationArgumentNameBinding()
-	{
+	public void testAnnotationArgumentNameBinding() {
 		TransactionalBean tb = new TransactionalBean();
 		AspectJProxyFactory proxyFactory = new AspectJProxyFactory(tb);
 		proxyFactory.addAspect(PointcutWithAnnotationArgument.class);
@@ -63,8 +60,7 @@ public class ArgumentBindingTests
 	}
 
 	@Test
-	public void testParameterNameDiscoverWithReferencePointcut() throws Exception
-	{
+	public void testParameterNameDiscoverWithReferencePointcut() throws Exception {
 		AspectJAdviceParameterNameDiscoverer discoverer = new AspectJAdviceParameterNameDiscoverer(
 				"somepc(formal) && set(* *)");
 		discoverer.setRaiseExceptions(true);
@@ -75,24 +71,20 @@ public class ArgumentBindingTests
 		assertThat(pnames[0]).isEqualTo("formal");
 	}
 
-	public void methodWithOneParam(String aParam)
-	{
+	public void methodWithOneParam(String aParam) {
 	}
 
-	public interface ITransactionalBean
-	{
+	public interface ITransactionalBean {
 
 		@Transactional
 		void doInTransaction();
 	}
 
-	public static class TransactionalBean implements ITransactionalBean
-	{
+	public static class TransactionalBean implements ITransactionalBean {
 
 		@Override
 		@Transactional
-		public void doInTransaction()
-		{
+		public void doInTransaction() {
 		}
 	}
 
@@ -102,17 +94,14 @@ public class ArgumentBindingTests
  * Represents Spring's Transactional annotation without actually introducing the dependency
  */
 @Retention(RetentionPolicy.RUNTIME)
-@interface Transactional
-{
+@interface Transactional {
 }
 
 @Aspect
-class PointcutWithAnnotationArgument
-{
+class PointcutWithAnnotationArgument {
 
 	@Around(value = "execution(* org.springframework..*.*(..)) && @annotation(transaction)")
-	public Object around(ProceedingJoinPoint pjp, Transactional transaction) throws Throwable
-	{
+	public Object around(ProceedingJoinPoint pjp, Transactional transaction) throws Throwable {
 		System.out.println("Invoked with transaction " + transaction);
 		throw new IllegalStateException();
 	}
@@ -120,17 +109,14 @@ class PointcutWithAnnotationArgument
 }
 
 @Aspect
-class NamedPointcutWithArgs
-{
+class NamedPointcutWithArgs {
 
 	@Pointcut("execution(* *(..)) && args(s,..)")
-	public void pointcutWithArgs(String s)
-	{
+	public void pointcutWithArgs(String s) {
 	}
 
 	@Around("pointcutWithArgs(aString)")
-	public Object doAround(ProceedingJoinPoint pjp, String aString) throws Throwable
-	{
+	public Object doAround(ProceedingJoinPoint pjp, String aString) throws Throwable {
 		System.out.println("got '" + aString + "' at '" + pjp + "'");
 		throw new IllegalArgumentException(aString);
 	}

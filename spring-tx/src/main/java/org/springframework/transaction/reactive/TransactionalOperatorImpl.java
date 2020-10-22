@@ -21,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.*;
 import org.springframework.util.Assert;
-
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -31,12 +30,11 @@ import reactor.core.publisher.Mono;
  *
  * @author Mark Paluch
  * @author Juergen Hoeller
- * @since 5.2
  * @see #execute
  * @see ReactiveTransactionManager
+ * @since 5.2
  */
-final class TransactionalOperatorImpl implements TransactionalOperator
-{
+final class TransactionalOperatorImpl implements TransactionalOperator {
 
 	private static final Log logger = LogFactory.getLog(TransactionalOperatorImpl.class);
 
@@ -47,16 +45,13 @@ final class TransactionalOperatorImpl implements TransactionalOperator
 	/**
 	 * Construct a new TransactionTemplate using the given transaction manager,
 	 * taking its default settings from the given transaction definition.
-	 * 
-	 * @param transactionManager
-	 *            the transaction management strategy to be used
-	 * @param transactionDefinition
-	 *            the transaction definition to copy the
-	 *            default settings from. Local properties can still be set to change values.
+	 *
+	 * @param transactionManager    the transaction management strategy to be used
+	 * @param transactionDefinition the transaction definition to copy the
+	 *                              default settings from. Local properties can still be set to change values.
 	 */
 	TransactionalOperatorImpl(ReactiveTransactionManager transactionManager,
-			TransactionDefinition transactionDefinition)
-	{
+							  TransactionDefinition transactionDefinition) {
 		Assert.notNull(transactionManager, "ReactiveTransactionManager must not be null");
 		Assert.notNull(transactionManager, "TransactionDefinition must not be null");
 		this.transactionManager = transactionManager;
@@ -66,14 +61,12 @@ final class TransactionalOperatorImpl implements TransactionalOperator
 	/**
 	 * Return the transaction management strategy to be used.
 	 */
-	public ReactiveTransactionManager getTransactionManager()
-	{
+	public ReactiveTransactionManager getTransactionManager() {
 		return this.transactionManager;
 	}
 
 	@Override
-	public <T> Mono<T> transactional(Mono<T> mono)
-	{
+	public <T> Mono<T> transactional(Mono<T> mono) {
 		return TransactionContextManager.currentContext().flatMap(context ->
 		{
 			Mono<ReactiveTransaction> status = this.transactionManager
@@ -91,8 +84,7 @@ final class TransactionalOperatorImpl implements TransactionalOperator
 	}
 
 	@Override
-	public <T> Flux<T> execute(TransactionCallback<T> action) throws TransactionException
-	{
+	public <T> Flux<T> execute(TransactionCallback<T> action) throws TransactionException {
 		return TransactionContextManager.currentContext().flatMapMany(context ->
 		{
 			Mono<ReactiveTransaction> status = this.transactionManager
@@ -111,23 +103,18 @@ final class TransactionalOperatorImpl implements TransactionalOperator
 
 	/**
 	 * Perform a rollback, handling rollback exceptions properly.
-	 * 
-	 * @param status
-	 *            object representing the transaction
-	 * @param ex
-	 *            the thrown application exception or error
-	 * @throws TransactionException
-	 *             in case of a rollback error
+	 *
+	 * @param status object representing the transaction
+	 * @param ex     the thrown application exception or error
+	 * @throws TransactionException in case of a rollback error
 	 */
 	private Mono<Void> rollbackOnException(ReactiveTransaction status, Throwable ex)
-			throws TransactionException
-	{
+			throws TransactionException {
 		logger.debug("Initiating transaction rollback on application exception", ex);
 		return this.transactionManager.rollback(status).onErrorMap(ex2 ->
 		{
 			logger.error("Application exception overridden by rollback exception", ex);
-			if (ex2 instanceof TransactionSystemException)
-			{
+			if (ex2 instanceof TransactionSystemException) {
 				((TransactionSystemException) ex2).initApplicationException(ex);
 			}
 			return ex2;
@@ -135,16 +122,14 @@ final class TransactionalOperatorImpl implements TransactionalOperator
 	}
 
 	@Override
-	public boolean equals(@Nullable Object other)
-	{
+	public boolean equals(@Nullable Object other) {
 		return (this == other || (super.equals(other) && (!(other instanceof TransactionalOperatorImpl)
 				|| getTransactionManager() == ((TransactionalOperatorImpl) other)
-						.getTransactionManager())));
+				.getTransactionManager())));
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return getTransactionManager().hashCode();
 	}
 

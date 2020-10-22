@@ -16,15 +16,6 @@
 
 package org.springframework.web.reactive.function;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
-
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -41,6 +32,14 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.HttpServer;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -106,8 +105,7 @@ class MultipartIntegrationTests extends AbstractRouterFunctionIntegrationTests {
 						byte[] actualBytes = Files.readAllBytes(Paths.get(location));
 						byte[] expectedBytes = FileCopyUtils.copyToByteArray(this.resource.getInputStream());
 						assertThat(actualBytes).isEqualTo(expectedBytes);
-					}
-					catch (IOException ex) {
+					} catch (IOException ex) {
 						fail("IOException", ex);
 					}
 				})
@@ -144,8 +142,7 @@ class MultipartIntegrationTests extends AbstractRouterFunctionIntegrationTests {
 							assertThat(((FilePart) parts.get("fooPart")).filename()).isEqualTo("foo.txt");
 							assertThat(((FormFieldPart) parts.get("barPart")).value()).isEqualTo("bar");
 							return ServerResponse.ok().build();
-						}
-						catch(Exception e) {
+						} catch (Exception e) {
 							return Mono.error(e);
 						}
 					});
@@ -159,8 +156,7 @@ class MultipartIntegrationTests extends AbstractRouterFunctionIntegrationTests {
 							assertThat(((FilePart) parts.get(0)).filename()).isEqualTo("foo.txt");
 							assertThat(((FormFieldPart) parts.get(1)).value()).isEqualTo("bar");
 							return ServerResponse.ok().build();
-						}
-						catch(Exception e) {
+						} catch (Exception e) {
 							return Mono.error(e);
 						}
 					});
@@ -177,8 +173,7 @@ class MultipartIntegrationTests extends AbstractRouterFunctionIntegrationTests {
 							return part.transferTo(tempFile)
 									.then(ServerResponse.ok()
 											.bodyValue(tempFile.toString()));
-						}
-						catch (Exception e) {
+						} catch (Exception e) {
 							return Mono.error(e);
 						}
 					});

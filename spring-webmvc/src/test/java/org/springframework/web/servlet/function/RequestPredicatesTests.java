@@ -16,16 +16,15 @@
 
 package org.springframework.web.servlet.function;
 
-import java.util.Collections;
-import java.util.function.Function;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.util.pattern.PathPatternParser;
+
+import java.util.Collections;
+import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;

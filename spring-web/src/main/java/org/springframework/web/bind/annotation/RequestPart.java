@@ -16,14 +16,14 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.beans.PropertyEditor;
-import java.lang.annotation.*;
-
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartResolver;
+
+import java.beans.PropertyEditor;
+import java.lang.annotation.*;
 
 /**
  * Annotation that can be used to associate the part of a "multipart/form-data" request
@@ -53,15 +53,14 @@ import org.springframework.web.multipart.MultipartResolver;
  * @author Rossen Stoyanchev
  * @author Arjen Poutsma
  * @author Sam Brannen
- * @since 3.1
  * @see RequestParam
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
+ * @since 3.1
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface RequestPart
-{
+public @interface RequestPart {
 
 	/**
 	 * Alias for {@link #name}.
@@ -71,7 +70,7 @@ public @interface RequestPart
 
 	/**
 	 * The name of the part in the {@code "multipart/form-data"} request to bind to.
-	 * 
+	 *
 	 * @since 4.2
 	 */
 	@AliasFor("value")

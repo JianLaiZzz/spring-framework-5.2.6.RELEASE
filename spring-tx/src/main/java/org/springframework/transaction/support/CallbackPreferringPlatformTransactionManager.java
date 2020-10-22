@@ -38,12 +38,11 @@ import org.springframework.transaction.TransactionException;
  * detect and use this PlatformTransactionManager variant automatically.
  *
  * @author Juergen Hoeller
- * @since 2.0
  * @see TransactionTemplate
  * @see org.springframework.transaction.interceptor.TransactionInterceptor
+ * @since 2.0
  */
-public interface CallbackPreferringPlatformTransactionManager extends PlatformTransactionManager
-{
+public interface CallbackPreferringPlatformTransactionManager extends PlatformTransactionManager {
 
 	/**
 	 * Execute the action specified by the given callback object within a transaction.
@@ -52,16 +51,12 @@ public interface CallbackPreferringPlatformTransactionManager extends PlatformTr
 	 * a domain object or a collection of domain objects. A RuntimeException thrown
 	 * by the callback is treated as a fatal exception that enforces a rollback.
 	 * Such an exception gets propagated to the caller of the template.
-	 * 
-	 * @param definition
-	 *            the definition for the transaction to wrap the callback in
-	 * @param callback
-	 *            the callback object that specifies the transactional action
+	 *
+	 * @param definition the definition for the transaction to wrap the callback in
+	 * @param callback   the callback object that specifies the transactional action
 	 * @return a result object returned by the callback, or {@code null} if none
-	 * @throws TransactionException
-	 *             in case of initialization, rollback, or system errors
-	 * @throws RuntimeException
-	 *             if thrown by the TransactionCallback
+	 * @throws TransactionException in case of initialization, rollback, or system errors
+	 * @throws RuntimeException     if thrown by the TransactionCallback
 	 */
 	@Nullable
 	<T> T execute(@Nullable TransactionDefinition definition, TransactionCallback<T> callback)

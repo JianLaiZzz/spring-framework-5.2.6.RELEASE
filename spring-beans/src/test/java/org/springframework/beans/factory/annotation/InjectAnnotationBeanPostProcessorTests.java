@@ -16,21 +16,9 @@
 
 package org.springframework.beans.factory.annotation;
 
-import java.io.Serializable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.FactoryBean;
@@ -45,6 +33,16 @@ import org.springframework.beans.testfixture.beans.IndexedTestBean;
 import org.springframework.beans.testfixture.beans.NestedTestBean;
 import org.springframework.beans.testfixture.beans.TestBean;
 import org.springframework.core.testfixture.io.SerializationTestUtils;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
+import java.io.Serializable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -84,8 +82,7 @@ public class InjectAnnotationBeanPostProcessorTests {
 		bf.registerBeanDefinition("testBean", new GenericBeanDefinition());
 		try {
 			bf.getBean("testBean");
-		}
-		catch (BeanCreationException ex) {
+		} catch (BeanCreationException ex) {
 			boolean condition = ex.getRootCause() instanceof IllegalStateException;
 			assertThat(condition).isTrue();
 		}
@@ -825,7 +822,7 @@ public class InjectAnnotationBeanPostProcessorTests {
 
 		@Inject
 		public ConstructorResourceInjectionBean(ITestBean testBean4, NestedTestBean nestedTestBean,
-				ConfigurableListableBeanFactory beanFactory) {
+												ConfigurableListableBeanFactory beanFactory) {
 			this.testBean4 = testBean4;
 			this.nestedTestBean = nestedTestBean;
 			this.beanFactory = beanFactory;
@@ -932,7 +929,7 @@ public class InjectAnnotationBeanPostProcessorTests {
 		}
 
 		public ConstructorsCollectionResourceInjectionBean(ITestBean testBean3, ITestBean testBean4,
-				NestedTestBean nestedTestBean) {
+														   NestedTestBean nestedTestBean) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -1152,12 +1149,14 @@ public class InjectAnnotationBeanPostProcessorTests {
 
 
 	@Retention(RetentionPolicy.RUNTIME)
-	public @interface Nullable {}
+	public @interface Nullable {
+	}
 
 
 	public static class NullableFieldInjectionBean {
 
-		@Inject @Nullable
+		@Inject
+		@Nullable
 		private TestBean testBean;
 
 		public TestBean getTestBean() {

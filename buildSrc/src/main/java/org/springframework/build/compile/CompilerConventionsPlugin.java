@@ -16,16 +16,16 @@
 
 package org.springframework.build.compile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.gradle.api.JavaVersion;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.compile.JavaCompile;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * {@link Plugin} that applies conventions for compiling Java sources in Spring Framework.
@@ -36,8 +36,7 @@ import org.gradle.api.tasks.compile.JavaCompile;
  * @author Brian Clozel
  * @author Sam Brannen
  */
-public class CompilerConventionsPlugin implements Plugin<Project>
-{
+public class CompilerConventionsPlugin implements Plugin<Project> {
 
 	/**
 	 * The project property that can be used to switch the Java source
@@ -51,8 +50,7 @@ public class CompilerConventionsPlugin implements Plugin<Project>
 
 	private static final List<String> TEST_COMPILER_ARGS;
 
-	static
-	{
+	static {
 		List<String> commonCompilerArgs = Arrays.asList("-Xlint:serial", "-Xlint:cast",
 				"-Xlint:classfile", "-Xlint:dep-ann", "-Xlint:divzero", "-Xlint:empty", "-Xlint:finally",
 				"-Xlint:overrides", "-Xlint:path", "-Xlint:processing", "-Xlint:static", "-Xlint:try",
@@ -68,8 +66,7 @@ public class CompilerConventionsPlugin implements Plugin<Project>
 	}
 
 	@Override
-	public void apply(Project project)
-	{
+	public void apply(Project project) {
 		project.getPlugins().withType(JavaPlugin.class,
 				javaPlugin -> applyJavaCompileConventions(project));
 	}
@@ -77,21 +74,16 @@ public class CompilerConventionsPlugin implements Plugin<Project>
 	/**
 	 * Applies the common Java compiler options for main sources, test fixture sources, and
 	 * test sources.
-	 * 
-	 * @param project
-	 *            the current project
+	 *
+	 * @param project the current project
 	 */
-	private void applyJavaCompileConventions(Project project)
-	{
+	private void applyJavaCompileConventions(Project project) {
 		JavaPluginConvention java = project.getConvention().getPlugin(JavaPluginConvention.class);
-		if (project.hasProperty(JAVA_SOURCE_VERSION_PROPERTY))
-		{
+		if (project.hasProperty(JAVA_SOURCE_VERSION_PROPERTY)) {
 			JavaVersion javaSourceVersion = JavaVersion
 					.toVersion(project.property(JAVA_SOURCE_VERSION_PROPERTY));
 			java.setSourceCompatibility(javaSourceVersion);
-		}
-		else
-		{
+		} else {
 			java.setSourceCompatibility(DEFAULT_COMPILER_VERSION);
 		}
 		java.setTargetCompatibility(DEFAULT_COMPILER_VERSION);

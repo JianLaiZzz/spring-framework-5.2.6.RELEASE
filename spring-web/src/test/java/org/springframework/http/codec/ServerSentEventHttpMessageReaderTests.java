@@ -16,15 +16,7 @@
 
 package org.springframework.http.codec;
 
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.Collections;
-
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.ResolvableType;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferLimitException;
@@ -33,6 +25,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.xml.Pojo;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -66,7 +65,7 @@ public class ServerSentEventHttpMessageReaderTests extends AbstractLeakCheckingT
 		MockServerHttpRequest request = MockServerHttpRequest.post("/")
 				.body(Mono.just(stringBuffer(
 						"id:c42\nevent:foo\nretry:123\n:bla\n:bla bla\n:bla bla bla\ndata:bar\n\n" +
-						"id:c43\nevent:bar\nretry:456\ndata:baz\n\n")));
+								"id:c43\nevent:bar\nretry:456\ndata:baz\n\n")));
 
 		Flux<ServerSentEvent> events = this.reader
 				.read(ResolvableType.forClassWithGenerics(ServerSentEvent.class, String.class),
@@ -161,7 +160,8 @@ public class ServerSentEventHttpMessageReaderTests extends AbstractLeakCheckingT
 				.verify();
 	}
 
-	@Test // gh-24389
+	@Test
+		// gh-24389
 	void readPojoWithCommentOnly() {
 		MockServerHttpRequest request = MockServerHttpRequest.post("/")
 				.body(Flux.just(stringBuffer(":ping\n"), stringBuffer("\n")));

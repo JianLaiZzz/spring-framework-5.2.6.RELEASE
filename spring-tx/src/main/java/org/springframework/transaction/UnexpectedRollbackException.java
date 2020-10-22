@@ -24,30 +24,24 @@ package org.springframework.transaction;
  * @since 17.03.2003
  */
 @SuppressWarnings("serial")
-public class UnexpectedRollbackException extends TransactionException
-{
+public class UnexpectedRollbackException extends TransactionException {
 
 	/**
 	 * Constructor for UnexpectedRollbackException.
-	 * 
-	 * @param msg
-	 *            the detail message
+	 *
+	 * @param msg the detail message
 	 */
-	public UnexpectedRollbackException(String msg)
-	{
+	public UnexpectedRollbackException(String msg) {
 		super(msg);
 	}
 
 	/**
 	 * Constructor for UnexpectedRollbackException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the root cause from the transaction API in use
+	 *
+	 * @param msg   the detail message
+	 * @param cause the root cause from the transaction API in use
 	 */
-	public UnexpectedRollbackException(String msg, Throwable cause)
-	{
+	public UnexpectedRollbackException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 

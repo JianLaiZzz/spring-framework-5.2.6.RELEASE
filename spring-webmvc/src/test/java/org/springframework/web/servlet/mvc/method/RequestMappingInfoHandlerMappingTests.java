@@ -16,18 +16,8 @@
 
 package org.springframework.web.servlet.mvc.method;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -50,14 +40,13 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.handler.MappedInterceptor;
-import org.springframework.web.servlet.mvc.condition.ConsumesRequestCondition;
-import org.springframework.web.servlet.mvc.condition.HeadersRequestCondition;
-import org.springframework.web.servlet.mvc.condition.ParamsRequestCondition;
-import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
-import org.springframework.web.servlet.mvc.condition.ProducesRequestCondition;
-import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
+import org.springframework.web.servlet.mvc.condition.*;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.util.UrlPathHelper;
+
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -147,7 +136,7 @@ public class RequestMappingInfoHandlerMappingTests {
 		MockHttpServletRequest request = new MockHttpServletRequest("POST", "/bar");
 		assertThatExceptionOfType(HttpRequestMethodNotSupportedException.class).isThrownBy(() ->
 				this.handlerMapping.getHandler(request))
-			.satisfies(ex -> assertThat(ex.getSupportedMethods()).containsExactly("GET", "HEAD"));
+				.satisfies(ex -> assertThat(ex.getSupportedMethods()).containsExactly("GET", "HEAD"));
 	}
 
 	@Test // SPR-9603
@@ -180,7 +169,7 @@ public class RequestMappingInfoHandlerMappingTests {
 		request.setContentType("bogus");
 		assertThatExceptionOfType(HttpMediaTypeNotSupportedException.class).isThrownBy(() ->
 				this.handlerMapping.getHandler(request))
-			.withMessage("Invalid mime type \"bogus\": does not contain '/'");
+				.withMessage("Invalid mime type \"bogus\": does not contain '/'");
 	}
 
 	@Test  // SPR-8462
@@ -195,8 +184,8 @@ public class RequestMappingInfoHandlerMappingTests {
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/params");
 		assertThatExceptionOfType(UnsatisfiedServletRequestParameterException.class).isThrownBy(() ->
 				this.handlerMapping.getHandler(request))
-			.satisfies(ex -> assertThat(ex.getParamConditionGroups().stream().map(group -> group[0]))
-					.containsExactlyInAnyOrder("foo=bar", "bar=baz"));
+				.satisfies(ex -> assertThat(ex.getParamConditionGroups().stream().map(group -> group[0]))
+						.containsExactlyInAnyOrder("foo=bar", "bar=baz"));
 	}
 
 	@Test
@@ -218,12 +207,13 @@ public class RequestMappingInfoHandlerMappingTests {
 	@Test
 	public void getHandlerMappedInterceptors() throws Exception {
 		String path = "/foo";
-		HandlerInterceptor interceptor = new HandlerInterceptorAdapter() {};
-		MappedInterceptor mappedInterceptor = new MappedInterceptor(new String[] {path}, interceptor);
+		HandlerInterceptor interceptor = new HandlerInterceptorAdapter() {
+		};
+		MappedInterceptor mappedInterceptor = new MappedInterceptor(new String[]{path}, interceptor);
 
 		TestRequestMappingInfoHandlerMapping mapping = new TestRequestMappingInfoHandlerMapping();
 		mapping.registerHandler(new TestController());
-		mapping.setInterceptors(new Object[] { mappedInterceptor });
+		mapping.setInterceptors(new Object[]{mappedInterceptor});
 		mapping.setApplicationContext(new StaticWebApplicationContext());
 
 		HandlerExecutionChain chain = mapping.getHandler(new MockHttpServletRequest("GET", path));
@@ -379,7 +369,7 @@ public class RequestMappingInfoHandlerMappingTests {
 		request.setContentType("application/json");
 		assertThatExceptionOfType(HttpMediaTypeNotSupportedException.class).isThrownBy(() ->
 				this.handlerMapping.getHandler(request))
-			.satisfies(ex -> assertThat(ex.getSupportedMediaTypes()).containsExactly(MediaType.APPLICATION_XML));
+				.satisfies(ex -> assertThat(ex.getSupportedMediaTypes()).containsExactly(MediaType.APPLICATION_XML));
 	}
 
 	private void testHttpOptions(String requestURI, String allowHeader) throws Exception {
@@ -400,7 +390,7 @@ public class RequestMappingInfoHandlerMappingTests {
 		request.addHeader("Accept", "application/json");
 		assertThatExceptionOfType(HttpMediaTypeNotAcceptableException.class).isThrownBy(() ->
 				this.handlerMapping.getHandler(request))
-			.satisfies(ex -> assertThat(ex.getSupportedMediaTypes()).containsExactly(MediaType.APPLICATION_XML));
+				.satisfies(ex -> assertThat(ex.getSupportedMediaTypes()).containsExactly(MediaType.APPLICATION_XML));
 	}
 
 	private void handleMatch(MockHttpServletRequest request, String pattern, String lookupPath) {
@@ -429,11 +419,11 @@ public class RequestMappingInfoHandlerMappingTests {
 		public void foo() {
 		}
 
-		@RequestMapping(value = "/foo", method = RequestMethod.GET, params="p")
+		@RequestMapping(value = "/foo", method = RequestMethod.GET, params = "p")
 		public void fooParam() {
 		}
 
-		@RequestMapping(value = "/ba*", method = { RequestMethod.GET, RequestMethod.HEAD })
+		@RequestMapping(value = "/ba*", method = {RequestMethod.GET, RequestMethod.HEAD})
 		public void bar() {
 		}
 
@@ -441,31 +431,31 @@ public class RequestMappingInfoHandlerMappingTests {
 		public void empty() {
 		}
 
-		@RequestMapping(value = "/person/{id}", method = RequestMethod.PUT, consumes="application/xml")
+		@RequestMapping(value = "/person/{id}", method = RequestMethod.PUT, consumes = "application/xml")
 		public void consumes(@RequestBody String text) {
 		}
 
-		@RequestMapping(value = "/persons", produces="application/xml")
+		@RequestMapping(value = "/persons", produces = "application/xml")
 		public String produces() {
 			return "";
 		}
 
-		@RequestMapping(value = "/params", params="foo=bar")
+		@RequestMapping(value = "/params", params = "foo=bar")
 		public String param() {
 			return "";
 		}
 
-		@RequestMapping(value = "/params", params="bar=baz")
+		@RequestMapping(value = "/params", params = "bar=baz")
 		public String param2() {
 			return "";
 		}
 
-		@RequestMapping(value = "/content", produces="application/xml")
+		@RequestMapping(value = "/content", produces = "application/xml")
 		public String xmlContent() {
 			return "";
 		}
 
-		@RequestMapping(value = "/content", produces="!application/xml")
+		@RequestMapping(value = "/content", produces = "!application/xml")
 		public String nonXmlContent() {
 			return "";
 		}
@@ -509,14 +499,13 @@ public class RequestMappingInfoHandlerMappingTests {
 			RequestMapping annot = AnnotationUtils.findAnnotation(method, RequestMapping.class);
 			if (annot != null) {
 				return new RequestMappingInfo(
-					new PatternsRequestCondition(annot.value(), getUrlPathHelper(), getPathMatcher(), true, true),
-					new RequestMethodsRequestCondition(annot.method()),
-					new ParamsRequestCondition(annot.params()),
-					new HeadersRequestCondition(annot.headers()),
-					new ConsumesRequestCondition(annot.consumes(), annot.headers()),
-					new ProducesRequestCondition(annot.produces(), annot.headers()), null);
-			}
-			else {
+						new PatternsRequestCondition(annot.value(), getUrlPathHelper(), getPathMatcher(), true, true),
+						new RequestMethodsRequestCondition(annot.method()),
+						new ParamsRequestCondition(annot.params()),
+						new HeadersRequestCondition(annot.headers()),
+						new ConsumesRequestCondition(annot.consumes(), annot.headers()),
+						new ProducesRequestCondition(annot.produces(), annot.headers()), null);
+			} else {
 				return null;
 			}
 		}

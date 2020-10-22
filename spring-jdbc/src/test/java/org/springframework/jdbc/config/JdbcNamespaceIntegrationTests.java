@@ -16,12 +16,7 @@
 
 package org.springframework.jdbc.config;
 
-import java.util.function.Predicate;
-
-import javax.sql.DataSource;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -35,6 +30,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactoryBean;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+
+import javax.sql.DataSource;
+import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -71,7 +69,7 @@ public class JdbcNamespaceIntegrationTests {
 	@Test
 	public void createWithAnonymousDataSourceAndDefaultDatabaseName() throws Exception {
 		assertCorrectSetupForSingleDataSource("jdbc-config-db-name-default-and-anonymous-datasource.xml",
-			url -> url.endsWith(DEFAULT_DATABASE_NAME));
+				url -> url.endsWith(DEFAULT_DATABASE_NAME));
 	}
 
 	@Test
@@ -113,8 +111,7 @@ public class JdbcNamespaceIntegrationTests {
 			// Table has been dropped
 			assertThatExceptionOfType(BadSqlGrammarException.class).isThrownBy(() ->
 					assertNumRowsInTestTable(template, 1));
-		}
-		finally {
+		} finally {
 			context.close();
 		}
 	}
@@ -130,8 +127,7 @@ public class JdbcNamespaceIntegrationTests {
 			// Table has been dropped
 			assertThatExceptionOfType(BadSqlGrammarException.class).isThrownBy(() ->
 					assertNumRowsInTestTable(template, 1));
-		}
-		finally {
+		} finally {
 			context.close();
 		}
 	}
@@ -144,11 +140,10 @@ public class JdbcNamespaceIntegrationTests {
 			JdbcTemplate template = new JdbcTemplate(dataSource);
 			assertNumRowsInTestTable(template, 1);
 			context.getBean(EmbeddedDatabaseFactoryBean.class).destroy();
-			 // Table has been dropped
+			// Table has been dropped
 			assertThatExceptionOfType(BadSqlGrammarException.class).isThrownBy(() ->
 					assertNumRowsInTestTable(template, 1));
-		}
-		finally {
+		} finally {
 			context.close();
 		}
 	}
@@ -157,7 +152,7 @@ public class JdbcNamespaceIntegrationTests {
 	public void multipleDataSourcesHaveDifferentDatabaseNames() throws Exception {
 		DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
 		new XmlBeanDefinitionReader(factory).loadBeanDefinitions(new ClassPathResource(
-			"jdbc-config-multiple-datasources.xml", getClass()));
+				"jdbc-config-multiple-datasources.xml", getClass()));
 		assertBeanPropertyValueOf("databaseName", "firstDataSource", factory);
 		assertBeanPropertyValueOf("databaseName", "secondDataSource", factory);
 	}
@@ -201,8 +196,7 @@ public class JdbcNamespaceIntegrationTests {
 				AbstractDriverBasedDataSource adbDataSource = (AbstractDriverBasedDataSource) dataSource;
 				assertThat(adbDataSource.getUrl()).contains(dataSourceName);
 			}
-		}
-		finally {
+		} finally {
 			context.close();
 		}
 	}
@@ -215,8 +209,7 @@ public class JdbcNamespaceIntegrationTests {
 			assertThat(dataSource instanceof AbstractDriverBasedDataSource).isTrue();
 			AbstractDriverBasedDataSource adbDataSource = (AbstractDriverBasedDataSource) dataSource;
 			assertThat(urlPredicate.test(adbDataSource.getUrl())).isTrue();
-		}
-		finally {
+		} finally {
 			context.close();
 		}
 	}

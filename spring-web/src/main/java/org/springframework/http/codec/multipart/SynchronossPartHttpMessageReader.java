@@ -16,6 +16,22 @@
 
 package org.springframework.http.codec.multipart;
 
+import org.springframework.core.ResolvableType;
+import org.springframework.core.codec.DecodingException;
+import org.springframework.core.codec.Hints;
+import org.springframework.core.io.buffer.*;
+import org.springframework.core.log.LogFormatUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ReactiveHttpInputMessage;
+import org.springframework.http.codec.HttpMessageReader;
+import org.springframework.http.codec.LoggingCodecSupport;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+import org.synchronoss.cloud.nio.multipart.*;
+import org.synchronoss.cloud.nio.stream.storage.StreamStorage;
+import reactor.core.publisher.*;
+
 import java.io.IOException;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -31,37 +47,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import org.synchronoss.cloud.nio.multipart.DefaultPartBodyStreamStorageFactory;
-import org.synchronoss.cloud.nio.multipart.Multipart;
-import org.synchronoss.cloud.nio.multipart.MultipartContext;
-import org.synchronoss.cloud.nio.multipart.MultipartUtils;
-import org.synchronoss.cloud.nio.multipart.NioMultipartParser;
-import org.synchronoss.cloud.nio.multipart.NioMultipartParserListener;
-import org.synchronoss.cloud.nio.multipart.PartBodyStreamStorageFactory;
-import org.synchronoss.cloud.nio.stream.storage.StreamStorage;
-import reactor.core.publisher.BaseSubscriber;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.FluxSink;
-import reactor.core.publisher.Mono;
-import reactor.core.publisher.SignalType;
-
-import org.springframework.core.ResolvableType;
-import org.springframework.core.codec.DecodingException;
-import org.springframework.core.codec.Hints;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.core.io.buffer.DataBufferLimitException;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.core.io.buffer.DefaultDataBufferFactory;
-import org.springframework.core.log.LogFormatUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ReactiveHttpInputMessage;
-import org.springframework.http.codec.HttpMessageReader;
-import org.springframework.http.codec.LoggingCodecSupport;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-
 /**
  * {@code HttpMessageReader} for parsing {@code "multipart/form-data"} requests
  * to a stream of {@link Part}'s using the Synchronoss NIO Multipart library.
@@ -73,9 +58,9 @@ import org.springframework.util.Assert;
  * @author Rossen Stoyanchev
  * @author Arjen Poutsma
  * @author Brian Clozel
- * @since 5.0
  * @see <a href="https://github.com/synchronoss/nio-multipart">Synchronoss NIO Multipart</a>
  * @see MultipartHttpMessageReader
+ * @since 5.0
  */
 public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implements HttpMessageReader<Part> {
 
@@ -98,9 +83,10 @@ public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implem
 	 * <li>non-file parts are rejected with {@link DataBufferLimitException}.
 	 * </ul>
 	 * <p>By default this is set to 256K.
+	 *
 	 * @param byteCount the in-memory limit in bytes; if set to -1 this limit is
-	 * not enforced, and all parts may be written to disk and are limited only
-	 * by the {@link #setMaxDiskUsagePerPart(long) maxDiskUsagePerPart} property.
+	 *                  not enforced, and all parts may be written to disk and are limited only
+	 *                  by the {@link #setMaxDiskUsagePerPart(long) maxDiskUsagePerPart} property.
 	 * @since 5.1.11
 	 */
 	public void setMaxInMemorySize(int byteCount) {
@@ -109,6 +95,7 @@ public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implem
 
 	/**
 	 * Get the {@link #setMaxInMemorySize configured} maximum in-memory size.
+	 *
 	 * @since 5.1.11
 	 */
 	public int getMaxInMemorySize() {
@@ -118,6 +105,7 @@ public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implem
 	/**
 	 * Configure the maximum amount of disk space allowed for file parts.
 	 * <p>By default this is set to -1.
+	 *
 	 * @param maxDiskUsagePerPart the disk limit in bytes, or -1 for unlimited
 	 * @since 5.1.11
 	 */
@@ -127,6 +115,7 @@ public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implem
 
 	/**
 	 * Get the {@link #setMaxDiskUsagePerPart configured} maximum disk usage.
+	 *
 	 * @since 5.1.11
 	 */
 	public long getMaxDiskUsagePerPart() {
@@ -135,6 +124,7 @@ public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implem
 
 	/**
 	 * Specify the maximum number of parts allowed in a given multipart request.
+	 *
 	 * @since 5.1.11
 	 */
 	public void setMaxParts(int maxParts) {
@@ -143,6 +133,7 @@ public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implem
 
 	/**
 	 * Return the {@link #setMaxParts configured} limit on the number of parts.
+	 *
 	 * @since 5.1.11
 	 */
 	public int getMaxParts() {
@@ -240,13 +231,11 @@ public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implem
 
 			try {
 				this.parser.write(resultBytes);
-			}
-			catch (IOException ex) {
+			} catch (IOException ex) {
 				cancel();
 				int index = this.storageFactory.getCurrentPartIndex();
 				this.listener.onError("Parser error for part [" + index + "]", ex);
-			}
-			finally {
+			} finally {
 				DataBufferUtils.release(buffer);
 			}
 		}
@@ -272,8 +261,7 @@ public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implem
 				if (this.parser != null) {
 					this.parser.close();
 				}
-			}
-			catch (IOException ex) {
+			} catch (IOException ex) {
 				// ignore
 			}
 		}
@@ -366,12 +354,10 @@ public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implem
 			String filename = MultipartUtils.getFileName(httpHeaders);
 			if (filename != null) {
 				return new SynchronossFilePart(httpHeaders, filename, storage);
-			}
-			else if (MultipartUtils.isFormField(httpHeaders, this.context)) {
+			} else if (MultipartUtils.isFormField(httpHeaders, this.context)) {
 				String value = MultipartUtils.readFormParameterValue(storage, httpHeaders);
 				return new SynchronossFormFieldPart(httpHeaders, value);
-			}
-			else {
+			} else {
 				return new SynchronossPart(httpHeaders, storage);
 			}
 		}
@@ -483,23 +469,19 @@ public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implem
 					}
 					totalWritten += written;
 				}
-			}
-			catch (IOException ex) {
+			} catch (IOException ex) {
 				return Mono.error(ex);
-			}
-			finally {
+			} finally {
 				if (input != null) {
 					try {
 						input.close();
-					}
-					catch (IOException ignored) {
+					} catch (IOException ignored) {
 					}
 				}
 				if (output != null) {
 					try {
 						output.close();
-					}
-					catch (IOException ignored) {
+					} catch (IOException ignored) {
 					}
 				}
 			}

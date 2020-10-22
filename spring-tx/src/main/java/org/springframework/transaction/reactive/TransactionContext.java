@@ -16,13 +16,13 @@
 
 package org.springframework.transaction.reactive;
 
+import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import org.springframework.lang.Nullable;
-import org.springframework.util.StringUtils;
 
 /**
  * Mutable transaction context that encapsulates transactional synchronizations and
@@ -32,14 +32,14 @@ import org.springframework.util.StringUtils;
  *
  * @author Mark Paluch
  * @author Juergen Hoeller
- * @since 5.2
  * @see TransactionContextManager
  * @see reactor.util.context.Context
+ * @since 5.2
  */
-public class TransactionContext
-{
+public class TransactionContext {
 
-	private final @Nullable TransactionContext parent;
+	private final @Nullable
+	TransactionContext parent;
 
 	private final UUID contextId = UUID.randomUUID();
 
@@ -48,104 +48,88 @@ public class TransactionContext
 	@Nullable
 	private Set<TransactionSynchronization> synchronizations;
 
-	private volatile @Nullable String currentTransactionName;
+	private volatile @Nullable
+	String currentTransactionName;
 
 	private volatile boolean currentTransactionReadOnly;
 
-	private volatile @Nullable Integer currentTransactionIsolationLevel;
+	private volatile @Nullable
+	Integer currentTransactionIsolationLevel;
 
 	private volatile boolean actualTransactionActive;
 
-	TransactionContext()
-	{
+	TransactionContext() {
 		this(null);
 	}
 
-	TransactionContext(@Nullable TransactionContext parent)
-	{
+	TransactionContext(@Nullable TransactionContext parent) {
 		this.parent = parent;
 	}
 
 	@Nullable
-	public TransactionContext getParent()
-	{
+	public TransactionContext getParent() {
 		return this.parent;
 	}
 
-	public String getName()
-	{
-		if (StringUtils.hasText(this.currentTransactionName))
-		{
+	public String getName() {
+		if (StringUtils.hasText(this.currentTransactionName)) {
 			return this.contextId + ": " + this.currentTransactionName;
 		}
 		return this.contextId.toString();
 	}
 
-	public UUID getContextId()
-	{
+	public UUID getContextId() {
 		return this.contextId;
 	}
 
-	public Map<Object, Object> getResources()
-	{
+	public Map<Object, Object> getResources() {
 		return this.resources;
 	}
 
-	public void setSynchronizations(@Nullable Set<TransactionSynchronization> synchronizations)
-	{
+	public void setSynchronizations(@Nullable Set<TransactionSynchronization> synchronizations) {
 		this.synchronizations = synchronizations;
 	}
 
 	@Nullable
-	public Set<TransactionSynchronization> getSynchronizations()
-	{
+	public Set<TransactionSynchronization> getSynchronizations() {
 		return this.synchronizations;
 	}
 
-	public void setCurrentTransactionName(@Nullable String currentTransactionName)
-	{
+	public void setCurrentTransactionName(@Nullable String currentTransactionName) {
 		this.currentTransactionName = currentTransactionName;
 	}
 
 	@Nullable
-	public String getCurrentTransactionName()
-	{
+	public String getCurrentTransactionName() {
 		return this.currentTransactionName;
 	}
 
-	public void setCurrentTransactionReadOnly(boolean currentTransactionReadOnly)
-	{
+	public void setCurrentTransactionReadOnly(boolean currentTransactionReadOnly) {
 		this.currentTransactionReadOnly = currentTransactionReadOnly;
 	}
 
-	public boolean isCurrentTransactionReadOnly()
-	{
+	public boolean isCurrentTransactionReadOnly() {
 		return this.currentTransactionReadOnly;
 	}
 
-	public void setCurrentTransactionIsolationLevel(@Nullable Integer currentTransactionIsolationLevel)
-	{
+	public void setCurrentTransactionIsolationLevel(@Nullable Integer currentTransactionIsolationLevel) {
 		this.currentTransactionIsolationLevel = currentTransactionIsolationLevel;
 	}
 
 	@Nullable
-	public Integer getCurrentTransactionIsolationLevel()
-	{
+	public Integer getCurrentTransactionIsolationLevel() {
 		return this.currentTransactionIsolationLevel;
 	}
 
-	public void setActualTransactionActive(boolean actualTransactionActive)
-	{
+	public void setActualTransactionActive(boolean actualTransactionActive) {
 		this.actualTransactionActive = actualTransactionActive;
 	}
 
-	public boolean isActualTransactionActive()
-	{
+	public boolean isActualTransactionActive() {
 		return this.actualTransactionActive;
 	}
 
-	public void clear()
-	{
+	public void clear() {
 		this.synchronizations = null;
 		this.currentTransactionName = null;
 		this.currentTransactionReadOnly = false;

@@ -16,19 +16,6 @@
 
 package org.springframework.jms.config;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.jms.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -60,12 +47,23 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.Validated;
 
+import javax.jms.*;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 /**
  * @author Stephane Nicoll
  * @author Sam Brannen
  */
-class MethodJmsListenerEndpointTests
-{
+class MethodJmsListenerEndpointTests {
 
 	private final DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
 
@@ -76,15 +74,13 @@ class MethodJmsListenerEndpointTests
 	private String methodName;
 
 	@BeforeEach
-	void setup(TestInfo testInfo)
-	{
+	void setup(TestInfo testInfo) {
 		this.methodName = testInfo.getTestMethod().get().getName();
 		initializeFactory(this.factory);
 	}
 
 	@Test
-	void createMessageListenerNoFactory()
-	{
+	void createMessageListenerNoFactory() {
 		MethodJmsListenerEndpoint endpoint = new MethodJmsListenerEndpoint();
 		endpoint.setBean(this);
 		endpoint.setMethod(getTestMethod());
@@ -94,8 +90,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void createMessageListener()
-	{
+	void createMessageListener() {
 		MethodJmsListenerEndpoint endpoint = new MethodJmsListenerEndpoint();
 		endpoint.setBean(this);
 		endpoint.setMethod(getTestMethod());
@@ -105,8 +100,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void setExtraCollaborators()
-	{
+	void setExtraCollaborators() {
 		MessageConverter messageConverter = mock(MessageConverter.class);
 		DestinationResolver destinationResolver = mock(DestinationResolver.class);
 		this.container.setMessageConverter(messageConverter);
@@ -120,8 +114,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void resolveMessageAndSession() throws JMSException
-	{
+	void resolveMessageAndSession() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(javax.jms.Message.class,
 				Session.class);
 
@@ -131,8 +124,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void resolveGenericMessage() throws JMSException
-	{
+	void resolveGenericMessage() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(Message.class);
 
 		Session session = mock(Session.class);
@@ -141,8 +133,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void resolveHeaderAndPayload() throws JMSException
-	{
+	void resolveHeaderAndPayload() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(String.class, int.class);
 
 		Session session = mock(Session.class);
@@ -153,8 +144,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void resolveCustomHeaderNameAndPayload() throws JMSException
-	{
+	void resolveCustomHeaderNameAndPayload() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(String.class, int.class);
 
 		Session session = mock(Session.class);
@@ -165,8 +155,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void resolveCustomHeaderNameAndPayloadWithHeaderNameSet() throws JMSException
-	{
+	void resolveCustomHeaderNameAndPayloadWithHeaderNameSet() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(String.class, int.class);
 
 		Session session = mock(Session.class);
@@ -177,8 +166,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void resolveHeaders() throws JMSException
-	{
+	void resolveHeaders() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(String.class, Map.class);
 
 		Session session = mock(Session.class);
@@ -190,8 +178,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void resolveMessageHeaders() throws JMSException
-	{
+	void resolveMessageHeaders() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(MessageHeaders.class);
 
 		Session session = mock(Session.class);
@@ -203,8 +190,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void resolveJmsMessageHeaderAccessor() throws JMSException
-	{
+	void resolveJmsMessageHeaderAccessor() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(JmsMessageHeaderAccessor.class);
 
 		Session session = mock(Session.class);
@@ -216,8 +202,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void resolveObjectPayload() throws JMSException
-	{
+	void resolveObjectPayload() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(MyBean.class);
 		MyBean myBean = new MyBean();
 		myBean.name = "myBean name";
@@ -231,8 +216,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void resolveConvertedPayload() throws JMSException
-	{
+	void resolveConvertedPayload() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(Integer.class);
 
 		Session session = mock(Session.class);
@@ -242,13 +226,11 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void processAndReply() throws JMSException
-	{
+	void processAndReply() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(String.class);
 		String body = "echo text";
 		String correlationId = "link-1234";
-		Destination replyDestination = new Destination()
-		{
+		Destination replyDestination = new Destination() {
 		};
 
 		TextMessage reply = mock(TextMessage.class);
@@ -269,8 +251,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void processAndReplyWithSendToQueue() throws JMSException
-	{
+	void processAndReplyWithSendToQueue() throws JMSException {
 		String methodName = "processAndReplyWithSendTo";
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		MessagingMessageListenerAdapter listener = createInstance(this.factory,
@@ -280,8 +261,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void processFromTopicAndReplyWithSendToQueue() throws JMSException
-	{
+	void processFromTopicAndReplyWithSendToQueue() throws JMSException {
 		String methodName = "processAndReplyWithSendTo";
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setPubSubDomain(true);
@@ -293,8 +273,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void processAndReplyWithSendToTopic() throws JMSException
-	{
+	void processAndReplyWithSendToTopic() throws JMSException {
 		String methodName = "processAndReplyWithSendTo";
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setPubSubDomain(true);
@@ -305,8 +284,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void processFromQueueAndReplyWithSendToTopic() throws JMSException
-	{
+	void processFromQueueAndReplyWithSendToTopic() throws JMSException {
 		String methodName = "processAndReplyWithSendTo";
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setReplyPubSubDomain(true);
@@ -317,16 +295,14 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void processAndReplyWithDefaultSendTo() throws JMSException
-	{
+	void processAndReplyWithDefaultSendTo() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(String.class);
 		processAndReplyWithSendTo(listener, "defaultReply", false);
 		assertDefaultListenerMethodInvocation();
 	}
 
 	@Test
-	void processAndReplyWithCustomReplyQosSettings() throws JMSException
-	{
+	void processAndReplyWithCustomReplyQosSettings() throws JMSException {
 		String methodName = "processAndReplyWithSendTo";
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		QosSettings replyQosSettings = new QosSettings(1, 6, 6000);
@@ -338,8 +314,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void processAndReplyWithNullReplyQosSettings() throws JMSException
-	{
+	void processAndReplyWithNullReplyQosSettings() throws JMSException {
 		String methodName = "processAndReplyWithSendTo";
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setReplyQosSettings(null);
@@ -350,19 +325,16 @@ class MethodJmsListenerEndpointTests
 	}
 
 	private void processAndReplyWithSendTo(MessagingMessageListenerAdapter listener,
-			String replyDestinationName, boolean pubSubDomain) throws JMSException
-	{
+										   String replyDestinationName, boolean pubSubDomain) throws JMSException {
 		processAndReplyWithSendTo(listener, replyDestinationName, pubSubDomain, null);
 	}
 
 	private void processAndReplyWithSendTo(MessagingMessageListenerAdapter listener,
-			String replyDestinationName, boolean pubSubDomain, QosSettings replyQosSettings)
-			throws JMSException
-	{
+										   String replyDestinationName, boolean pubSubDomain, QosSettings replyQosSettings)
+			throws JMSException {
 		String body = "echo text";
 		String correlationId = "link-1234";
-		Destination replyDestination = new Destination()
-		{
+		Destination replyDestination = new Destination() {
 		};
 
 		DestinationResolver destinationResolver = mock(DestinationResolver.class);
@@ -382,21 +354,17 @@ class MethodJmsListenerEndpointTests
 
 		verify(destinationResolver).resolveDestinationName(session, replyDestinationName, pubSubDomain);
 		verify(reply).setJMSCorrelationID(correlationId);
-		if (replyQosSettings != null)
-		{
+		if (replyQosSettings != null) {
 			verify(queueSender).send(reply, replyQosSettings.getDeliveryMode(),
 					replyQosSettings.getPriority(), replyQosSettings.getTimeToLive());
-		}
-		else
-		{
+		} else {
 			verify(queueSender).send(reply);
 		}
 		verify(queueSender).close();
 	}
 
 	@Test
-	void emptySendTo() throws JMSException
-	{
+	void emptySendTo() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(String.class);
 
 		TextMessage reply = mock(TextMessage.class);
@@ -409,15 +377,13 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void invalidSendTo()
-	{
+	void invalidSendTo() {
 		assertThatIllegalStateException().isThrownBy(() -> createDefaultInstance(String.class))
 				.withMessageContaining("firstDestination").withMessageContaining("secondDestination");
 	}
 
 	@Test
-	void validatePayloadValid() throws JMSException
-	{
+	void validatePayloadValid() throws JMSException {
 		String methodName = "validatePayload";
 
 		DefaultMessageHandlerMethodFactory customFactory = new DefaultMessageHandlerMethodFactory();
@@ -432,8 +398,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void validatePayloadInvalid() throws JMSException
-	{
+	void validatePayloadInvalid() throws JMSException {
 		DefaultMessageHandlerMethodFactory customFactory = new DefaultMessageHandlerMethodFactory();
 		customFactory.setValidator(testValidator("invalid value"));
 
@@ -450,8 +415,7 @@ class MethodJmsListenerEndpointTests
 	// failure scenario
 
 	@Test
-	void invalidPayloadType() throws JMSException
-	{
+	void invalidPayloadType() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(Integer.class);
 		Session session = mock(Session.class);
 
@@ -463,8 +427,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	@Test
-	void invalidMessagePayloadType() throws JMSException
-	{
+	void invalidMessagePayloadType() throws JMSException {
 		MessagingMessageListenerAdapter listener = createDefaultInstance(Message.class);
 		Session session = mock(Session.class);
 
@@ -475,8 +438,7 @@ class MethodJmsListenerEndpointTests
 	}
 
 	private MessagingMessageListenerAdapter createInstance(DefaultMessageHandlerMethodFactory factory,
-			Method method, MessageListenerContainer container)
-	{
+														   Method method, MessageListenerContainer container) {
 
 		MethodJmsListenerEndpoint endpoint = new MethodJmsListenerEndpoint();
 		endpoint.setBean(this.sample);
@@ -486,23 +448,19 @@ class MethodJmsListenerEndpointTests
 	}
 
 	private MessagingMessageListenerAdapter createInstance(DefaultMessageHandlerMethodFactory factory,
-			Method method)
-	{
+														   Method method) {
 		return createInstance(factory, method, new SimpleMessageListenerContainer());
 	}
 
-	private MessagingMessageListenerAdapter createDefaultInstance(Class<?>... parameterTypes)
-	{
+	private MessagingMessageListenerAdapter createDefaultInstance(Class<?>... parameterTypes) {
 		return createInstance(this.factory, getDefaultListenerMethod(parameterTypes));
 	}
 
-	private StubTextMessage createSimpleJmsTextMessage(String body)
-	{
+	private StubTextMessage createSimpleJmsTextMessage(String body) {
 		return new StubTextMessage(body);
 	}
 
-	private Method getListenerMethod(String methodName, Class<?>... parameterTypes)
-	{
+	private Method getListenerMethod(String methodName, Class<?>... parameterTypes) {
 		Method method = ReflectionUtils.findMethod(JmsEndpointSampleBean.class, methodName,
 				parameterTypes);
 		assertThat(("no method found with name " + methodName + " and parameters "
@@ -510,101 +468,84 @@ class MethodJmsListenerEndpointTests
 		return method;
 	}
 
-	private Method getDefaultListenerMethod(Class<?>... parameterTypes)
-	{
+	private Method getDefaultListenerMethod(Class<?>... parameterTypes) {
 		return getListenerMethod(this.methodName, parameterTypes);
 	}
 
-	private void assertDefaultListenerMethodInvocation()
-	{
+	private void assertDefaultListenerMethodInvocation() {
 		assertListenerMethodInvocation(this.sample, this.methodName);
 	}
 
-	private void assertListenerMethodInvocation(JmsEndpointSampleBean bean, String methodName)
-	{
+	private void assertListenerMethodInvocation(JmsEndpointSampleBean bean, String methodName) {
 		assertThat((boolean) bean.invocations.get(methodName))
 				.as("Method " + methodName + " should have been invoked").isTrue();
 	}
 
-	private void initializeFactory(DefaultMessageHandlerMethodFactory factory)
-	{
+	private void initializeFactory(DefaultMessageHandlerMethodFactory factory) {
 		factory.setBeanFactory(new StaticListableBeanFactory());
 		factory.afterPropertiesSet();
 	}
 
-	private Validator testValidator(final String invalidValue)
-	{
-		return new Validator()
-		{
+	private Validator testValidator(final String invalidValue) {
+		return new Validator() {
 			@Override
-			public boolean supports(Class<?> clazz)
-			{
+			public boolean supports(Class<?> clazz) {
 				return String.class.isAssignableFrom(clazz);
 			}
 
 			@Override
-			public void validate(@Nullable Object target, Errors errors)
-			{
+			public void validate(@Nullable Object target, Errors errors) {
 				String value = (String) target;
-				if (invalidValue.equals(value))
-				{
+				if (invalidValue.equals(value)) {
 					errors.reject("not a valid value");
 				}
 			}
 		};
 	}
 
-	private Method getTestMethod()
-	{
+	private Method getTestMethod() {
 		return ReflectionUtils.findMethod(MethodJmsListenerEndpointTests.class, this.methodName);
 	}
 
 	@SendTo("defaultReply")
 	@SuppressWarnings("unused")
-	static class JmsEndpointSampleBean
-	{
+	static class JmsEndpointSampleBean {
 
 		private final Map<String, Boolean> invocations = new HashMap<>();
 
-		public void resolveMessageAndSession(javax.jms.Message message, Session session)
-		{
+		public void resolveMessageAndSession(javax.jms.Message message, Session session) {
 			this.invocations.put("resolveMessageAndSession", true);
 			assertThat(message).as("Message not injected").isNotNull();
 			assertThat(session).as("Session not injected").isNotNull();
 		}
 
-		public void resolveGenericMessage(Message<String> message)
-		{
+		public void resolveGenericMessage(Message<String> message) {
 			this.invocations.put("resolveGenericMessage", true);
 			assertThat(message).as("Generic message not injected").isNotNull();
 			assertThat(message.getPayload()).as("Wrong message payload").isEqualTo("test");
 		}
 
-		public void resolveHeaderAndPayload(@Payload String content, @Header int myCounter)
-		{
+		public void resolveHeaderAndPayload(@Payload String content, @Header int myCounter) {
 			this.invocations.put("resolveHeaderAndPayload", true);
 			assertThat(content).as("Wrong @Payload resolution").isEqualTo("my payload");
 			assertThat(myCounter).as("Wrong @Header resolution").isEqualTo(55);
 		}
 
 		public void resolveCustomHeaderNameAndPayload(@Payload String content,
-				@Header("myCounter") int counter)
-		{
+													  @Header("myCounter") int counter) {
 			this.invocations.put("resolveCustomHeaderNameAndPayload", true);
 			assertThat(content).as("Wrong @Payload resolution").isEqualTo("my payload");
 			assertThat(counter).as("Wrong @Header resolution").isEqualTo(24);
 		}
 
 		public void resolveCustomHeaderNameAndPayloadWithHeaderNameSet(@Payload String content,
-				@Header(name = "myCounter") int counter)
-		{
+																	   @Header(name = "myCounter") int counter) {
 			this.invocations.put("resolveCustomHeaderNameAndPayloadWithHeaderNameSet", true);
 			assertThat(content).as("Wrong @Payload resolution").isEqualTo("my payload");
 			assertThat(counter).as("Wrong @Header resolution").isEqualTo(24);
 		}
 
-		public void resolveHeaders(String content, @Headers Map<String, Object> headers)
-		{
+		public void resolveHeaders(String content, @Headers Map<String, Object> headers) {
 			this.invocations.put("resolveHeaders", true);
 			assertThat(content).as("Wrong payload resolution").isEqualTo("my payload");
 			assertThat(headers).as("headers not injected").isNotNull();
@@ -613,8 +554,7 @@ class MethodJmsListenerEndpointTests
 			assertThat(headers.get("customInt")).as("Missing custom header").isEqualTo(1234);
 		}
 
-		public void resolveMessageHeaders(MessageHeaders headers)
-		{
+		public void resolveMessageHeaders(MessageHeaders headers) {
 			this.invocations.put("resolveMessageHeaders", true);
 			assertThat(headers).as("MessageHeaders not injected").isNotNull();
 			assertThat(headers.get(JmsHeaders.TYPE)).as("Missing JMS message type header")
@@ -622,8 +562,7 @@ class MethodJmsListenerEndpointTests
 			assertThat((long) headers.get("customLong")).as("Missing custom header").isEqualTo(4567);
 		}
 
-		public void resolveJmsMessageHeaderAccessor(JmsMessageHeaderAccessor headers)
-		{
+		public void resolveJmsMessageHeaderAccessor(JmsMessageHeaderAccessor headers) {
 			this.invocations.put("resolveJmsMessageHeaderAccessor", true);
 			assertThat(headers).as("MessageHeaders not injected").isNotNull();
 			assertThat(headers.getPriority()).as("Missing JMS message priority header")
@@ -631,73 +570,62 @@ class MethodJmsListenerEndpointTests
 			assertThat(headers.getHeader("customBoolean")).as("Missing custom header").isEqualTo(true);
 		}
 
-		public void resolveObjectPayload(MyBean bean)
-		{
+		public void resolveObjectPayload(MyBean bean) {
 			this.invocations.put("resolveObjectPayload", true);
 			assertThat(bean).as("Object payload not injected").isNotNull();
 			assertThat(bean.name).as("Wrong content for payload").isEqualTo("myBean name");
 		}
 
-		public void resolveConvertedPayload(Integer counter)
-		{
+		public void resolveConvertedPayload(Integer counter) {
 			this.invocations.put("resolveConvertedPayload", true);
 			assertThat(counter).as("Payload not injected").isNotNull();
 			assertThat(counter).as("Wrong content for payload").isEqualTo(Integer.valueOf(33));
 		}
 
-		public String processAndReply(@Payload String content)
-		{
+		public String processAndReply(@Payload String content) {
 			this.invocations.put("processAndReply", true);
 			return content;
 		}
 
 		@SendTo("replyDestination")
-		public String processAndReplyWithSendTo(String content)
-		{
+		public String processAndReplyWithSendTo(String content) {
 			this.invocations.put("processAndReplyWithSendTo", true);
 			return content;
 		}
 
-		public String processAndReplyWithDefaultSendTo(String content)
-		{
+		public String processAndReplyWithDefaultSendTo(String content) {
 			this.invocations.put("processAndReplyWithDefaultSendTo", true);
 			return content;
 		}
 
 		@SendTo("")
-		public String emptySendTo(String content)
-		{
+		public String emptySendTo(String content) {
 			this.invocations.put("emptySendTo", true);
 			return content;
 		}
 
-		@SendTo({ "firstDestination", "secondDestination" })
-		public String invalidSendTo(String content)
-		{
+		@SendTo({"firstDestination", "secondDestination"})
+		public String invalidSendTo(String content) {
 			this.invocations.put("invalidSendTo", true);
 			return content;
 		}
 
-		public void validatePayload(@Validated String payload)
-		{
+		public void validatePayload(@Validated String payload) {
 			this.invocations.put("validatePayload", true);
 		}
 
-		public void invalidPayloadType(@Payload Integer payload)
-		{
+		public void invalidPayloadType(@Payload Integer payload) {
 			throw new IllegalStateException("Should never be called.");
 		}
 
-		public void invalidMessagePayloadType(Message<Integer> message)
-		{
+		public void invalidMessagePayloadType(Message<Integer> message) {
 			throw new IllegalStateException("Should never be called.");
 		}
 
 	}
 
 	@SuppressWarnings("serial")
-	static class MyBean implements Serializable
-	{
+	static class MyBean implements Serializable {
 
 		private String name;
 	}

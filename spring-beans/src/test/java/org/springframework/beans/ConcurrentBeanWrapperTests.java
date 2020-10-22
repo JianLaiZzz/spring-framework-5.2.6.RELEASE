@@ -16,17 +16,13 @@
 
 package org.springframework.beans;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,8 +61,7 @@ public class ConcurrentBeanWrapperTests {
 			while (!set.isEmpty() && ex == null) {
 				try {
 					wait();
-				}
-				catch (InterruptedException e) {
+				} catch (InterruptedException e) {
 					logger.info(e.toString());
 				}
 				logger.info(set.size() + " threads still active.");
@@ -84,7 +79,7 @@ public class ConcurrentBeanWrapperTests {
 
 		assertThat(p.size() != 0).as("The System properties must not be empty").isTrue();
 
-		for (Iterator<?> i = p.entrySet().iterator(); i.hasNext();) {
+		for (Iterator<?> i = p.entrySet().iterator(); i.hasNext(); ) {
 			i.next();
 			if (Math.random() > 0.9) {
 				i.remove();
@@ -94,8 +89,7 @@ public class ConcurrentBeanWrapperTests {
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		try {
 			p.store(buffer, null);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			// ByteArrayOutputStream does not throw
 			// any IOException
 		}
@@ -121,11 +115,9 @@ public class ConcurrentBeanWrapperTests {
 				for (int i = 0; i < 100; i++) {
 					performSet();
 				}
-			}
-			catch (Throwable e) {
+			} catch (Throwable e) {
 				test.ex = e;
-			}
-			finally {
+			} finally {
 				synchronized (test) {
 					test.set.remove(this);
 					test.notifyAll();

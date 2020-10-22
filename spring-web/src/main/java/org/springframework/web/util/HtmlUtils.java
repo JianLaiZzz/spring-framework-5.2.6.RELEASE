@@ -41,8 +41,7 @@ import org.springframework.util.Assert;
  * @author Craig Andrews
  * @since 01.03.2003
  */
-public abstract class HtmlUtils
-{
+public abstract class HtmlUtils {
 
 	/**
 	 * Shared instance of pre-parsed HTML character entity references.
@@ -61,13 +60,11 @@ public abstract class HtmlUtils
 	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
 	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
-	 * 
-	 * @param input
-	 *            the (unescaped) input string
+	 *
+	 * @param input the (unescaped) input string
 	 * @return the escaped string
 	 */
-	public static String htmlEscape(String input)
-	{
+	public static String htmlEscape(String input) {
 		return htmlEscape(input, WebUtils.DEFAULT_CHARACTER_ENCODING);
 	}
 
@@ -85,29 +82,22 @@ public abstract class HtmlUtils
 	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
 	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
-	 * 
-	 * @param input
-	 *            the (unescaped) input string
-	 * @param encoding
-	 *            the name of a supported {@link java.nio.charset.Charset charset}
+	 *
+	 * @param input    the (unescaped) input string
+	 * @param encoding the name of a supported {@link java.nio.charset.Charset charset}
 	 * @return the escaped string
 	 * @since 4.1.2
 	 */
-	public static String htmlEscape(String input, String encoding)
-	{
+	public static String htmlEscape(String input, String encoding) {
 		Assert.notNull(input, "Input is required");
 		Assert.notNull(encoding, "Encoding is required");
 		StringBuilder escaped = new StringBuilder(input.length() * 2);
-		for (int i = 0; i < input.length(); i++)
-		{
+		for (int i = 0; i < input.length(); i++) {
 			char character = input.charAt(i);
 			String reference = characterEntityReferences.convertToReference(character, encoding);
-			if (reference != null)
-			{
+			if (reference != null) {
 				escaped.append(reference);
-			}
-			else
-			{
+			} else {
 				escaped.append(character);
 			}
 		}
@@ -126,13 +116,11 @@ public abstract class HtmlUtils
 	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
 	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
-	 * 
-	 * @param input
-	 *            the (unescaped) input string
+	 *
+	 * @param input the (unescaped) input string
 	 * @return the escaped string
 	 */
-	public static String htmlEscapeDecimal(String input)
-	{
+	public static String htmlEscapeDecimal(String input) {
 		return htmlEscapeDecimal(input, WebUtils.DEFAULT_CHARACTER_ENCODING);
 	}
 
@@ -150,30 +138,23 @@ public abstract class HtmlUtils
 	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
 	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
-	 * 
-	 * @param input
-	 *            the (unescaped) input string
-	 * @param encoding
-	 *            the name of a supported {@link java.nio.charset.Charset charset}
+	 *
+	 * @param input    the (unescaped) input string
+	 * @param encoding the name of a supported {@link java.nio.charset.Charset charset}
 	 * @return the escaped string
 	 * @since 4.1.2
 	 */
-	public static String htmlEscapeDecimal(String input, String encoding)
-	{
+	public static String htmlEscapeDecimal(String input, String encoding) {
 		Assert.notNull(input, "Input is required");
 		Assert.notNull(encoding, "Encoding is required");
 		StringBuilder escaped = new StringBuilder(input.length() * 2);
-		for (int i = 0; i < input.length(); i++)
-		{
+		for (int i = 0; i < input.length(); i++) {
 			char character = input.charAt(i);
-			if (characterEntityReferences.isMappedToReference(character, encoding))
-			{
+			if (characterEntityReferences.isMappedToReference(character, encoding)) {
 				escaped.append(HtmlCharacterEntityReferences.DECIMAL_REFERENCE_START);
 				escaped.append((int) character);
 				escaped.append(HtmlCharacterEntityReferences.REFERENCE_END);
-			}
-			else
-			{
+			} else {
 				escaped.append(character);
 			}
 		}
@@ -192,13 +173,11 @@ public abstract class HtmlUtils
 	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
 	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
-	 * 
-	 * @param input
-	 *            the (unescaped) input string
+	 *
+	 * @param input the (unescaped) input string
 	 * @return the escaped string
 	 */
-	public static String htmlEscapeHex(String input)
-	{
+	public static String htmlEscapeHex(String input) {
 		return htmlEscapeHex(input, WebUtils.DEFAULT_CHARACTER_ENCODING);
 	}
 
@@ -216,30 +195,23 @@ public abstract class HtmlUtils
 	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
 	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
-	 * 
-	 * @param input
-	 *            the (unescaped) input string
-	 * @param encoding
-	 *            the name of a supported {@link java.nio.charset.Charset charset}
+	 *
+	 * @param input    the (unescaped) input string
+	 * @param encoding the name of a supported {@link java.nio.charset.Charset charset}
 	 * @return the escaped string
 	 * @since 4.1.2
 	 */
-	public static String htmlEscapeHex(String input, String encoding)
-	{
+	public static String htmlEscapeHex(String input, String encoding) {
 		Assert.notNull(input, "Input is required");
 		Assert.notNull(encoding, "Encoding is required");
 		StringBuilder escaped = new StringBuilder(input.length() * 2);
-		for (int i = 0; i < input.length(); i++)
-		{
+		for (int i = 0; i < input.length(); i++) {
 			char character = input.charAt(i);
-			if (characterEntityReferences.isMappedToReference(character, encoding))
-			{
+			if (characterEntityReferences.isMappedToReference(character, encoding)) {
 				escaped.append(HtmlCharacterEntityReferences.HEX_REFERENCE_START);
 				escaped.append(Integer.toString(character, 16));
 				escaped.append(HtmlCharacterEntityReferences.REFERENCE_END);
-			}
-			else
-			{
+			} else {
 				escaped.append(character);
 			}
 		}
@@ -266,13 +238,11 @@ public abstract class HtmlUtils
 	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
 	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
-	 * 
-	 * @param input
-	 *            the (escaped) input string
+	 *
+	 * @param input the (escaped) input string
 	 * @return the unescaped string
 	 */
-	public static String htmlUnescape(String input)
-	{
+	public static String htmlUnescape(String input) {
 		return new HtmlCharacterEntityDecoder(characterEntityReferences, input).decode();
 	}
 

@@ -16,9 +16,6 @@
 
 package org.springframework.aop.framework.autoproxy;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.aop.TargetSource;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.FactoryBean;
@@ -26,6 +23,9 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Auto proxy creator that identifies beans to proxy via a list of names.
@@ -38,15 +38,14 @@ import org.springframework.util.StringUtils;
  * "interceptorNames" property.
  *
  * @author Juergen Hoeller
- * @since 10.10.2003
  * @see #setBeanNames
  * @see #isMatch
  * @see #setInterceptorNames
  * @see AbstractAutoProxyCreator
+ * @since 10.10.2003
  */
 @SuppressWarnings("serial")
-public class BeanNameAutoProxyCreator extends AbstractAutoProxyCreator
-{
+public class BeanNameAutoProxyCreator extends AbstractAutoProxyCreator {
 
 	@Nullable
 	private List<String> beanNames;
@@ -61,16 +60,14 @@ public class BeanNameAutoProxyCreator extends AbstractAutoProxyCreator
 	 * If you intend to proxy a FactoryBean instance itself (a rare use case, but
 	 * Spring 1.2's default behavior), specify the bean name of the FactoryBean
 	 * including the factory-bean prefix "&": e.g. "&myFactoryBean".
-	 * 
+	 *
 	 * @see org.springframework.beans.factory.FactoryBean
 	 * @see org.springframework.beans.factory.BeanFactory#FACTORY_BEAN_PREFIX
 	 */
-	public void setBeanNames(String... beanNames)
-	{
+	public void setBeanNames(String... beanNames) {
 		Assert.notEmpty(beanNames, "'beanNames' must not be empty");
 		this.beanNames = new ArrayList<>(beanNames.length);
-		for (String mappedName : beanNames)
-		{
+		for (String mappedName : beanNames) {
 			this.beanNames.add(StringUtils.trimWhitespace(mappedName));
 		}
 	}
@@ -81,33 +78,24 @@ public class BeanNameAutoProxyCreator extends AbstractAutoProxyCreator
 	@Override
 	@Nullable
 	protected Object[] getAdvicesAndAdvisorsForBean(Class<?> beanClass, String beanName,
-			@Nullable TargetSource targetSource)
-	{
+													@Nullable TargetSource targetSource) {
 
-		if (this.beanNames != null)
-		{
-			for (String mappedName : this.beanNames)
-			{
-				if (FactoryBean.class.isAssignableFrom(beanClass))
-				{
-					if (!mappedName.startsWith(BeanFactory.FACTORY_BEAN_PREFIX))
-					{
+		if (this.beanNames != null) {
+			for (String mappedName : this.beanNames) {
+				if (FactoryBean.class.isAssignableFrom(beanClass)) {
+					if (!mappedName.startsWith(BeanFactory.FACTORY_BEAN_PREFIX)) {
 						continue;
 					}
 					mappedName = mappedName.substring(BeanFactory.FACTORY_BEAN_PREFIX.length());
 				}
-				if (isMatch(beanName, mappedName))
-				{
+				if (isMatch(beanName, mappedName)) {
 					return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
 				}
 				BeanFactory beanFactory = getBeanFactory();
-				if (beanFactory != null)
-				{
+				if (beanFactory != null) {
 					String[] aliases = beanFactory.getAliases(beanName);
-					for (String alias : aliases)
-					{
-						if (isMatch(alias, mappedName))
-						{
+					for (String alias : aliases) {
+						if (isMatch(alias, mappedName)) {
 							return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
 						}
 					}
@@ -122,16 +110,13 @@ public class BeanNameAutoProxyCreator extends AbstractAutoProxyCreator
 	 * <p>
 	 * The default implementation checks for "xxx*", "*xxx" and "*xxx*" matches,
 	 * as well as direct equality. Can be overridden in subclasses.
-	 * 
-	 * @param beanName
-	 *            the bean name to check
-	 * @param mappedName
-	 *            the name in the configured list of names
+	 *
+	 * @param beanName   the bean name to check
+	 * @param mappedName the name in the configured list of names
 	 * @return if the names match
 	 * @see org.springframework.util.PatternMatchUtils#simpleMatch(String, String)
 	 */
-	protected boolean isMatch(String beanName, String mappedName)
-	{
+	protected boolean isMatch(String beanName, String mappedName) {
 		return PatternMatchUtils.simpleMatch(mappedName, beanName);
 	}
 

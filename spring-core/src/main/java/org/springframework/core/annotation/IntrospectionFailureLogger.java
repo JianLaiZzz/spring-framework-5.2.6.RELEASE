@@ -18,7 +18,6 @@ package org.springframework.core.annotation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.lang.Nullable;
 
 /**
@@ -37,6 +36,7 @@ enum IntrospectionFailureLogger {
 		public boolean isEnabled() {
 			return getLogger().isDebugEnabled();
 		}
+
 		@Override
 		public void log(String message) {
 			getLogger().debug(message);
@@ -48,6 +48,7 @@ enum IntrospectionFailureLogger {
 		public boolean isEnabled() {
 			return getLogger().isInfoEnabled();
 		}
+
 		@Override
 		public void log(String message) {
 			getLogger().info(message);

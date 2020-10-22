@@ -16,16 +16,15 @@
 
 package org.springframework.jms.listener;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.Executor;
-
-import javax.jms.*;
-
 import org.springframework.jms.support.JmsUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
+
+import javax.jms.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Executor;
 
 /**
  * Message listener container that uses the plain JMS client API's
@@ -54,14 +53,13 @@ import org.springframework.util.Assert;
  * see {@link DefaultMessageListenerContainer}.
  *
  * @author Juergen Hoeller
- * @since 2.0
  * @see javax.jms.MessageConsumer#setMessageListener
  * @see DefaultMessageListenerContainer
  * @see org.springframework.jms.listener.endpoint.JmsMessageEndpointManager
+ * @since 2.0
  */
 public class SimpleMessageListenerContainer extends AbstractMessageListenerContainer
-		implements ExceptionListener
-{
+		implements ExceptionListener {
 
 	private boolean connectLazily = false;
 
@@ -88,12 +86,11 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 	 * Default is "false": connecting early, i.e. during the bean initialization phase.
 	 * Set this flag to "true" in order to switch to lazy connecting if your target broker
 	 * is likely to not have started up yet and you prefer to not even try a connection.
-	 * 
+	 *
 	 * @see #start()
 	 * @see #initialize()
 	 */
-	public void setConnectLazily(boolean connectLazily)
-	{
+	public void setConnectLazily(boolean connectLazily) {
 		this.connectLazily = connectLazily;
 	}
 
@@ -105,13 +102,12 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 	 * consumers whenever the connection propagates an exception to its listener.
 	 * Set this flag to "false" in order to rely on automatic recovery within the
 	 * provider, holding on to the existing connection and consumer handles.
-	 * 
-	 * @since 5.1.8
+	 *
 	 * @see #onException(JMSException)
 	 * @see Connection#setExceptionListener
+	 * @since 5.1.8
 	 */
-	public void setRecoverOnException(boolean recoverOnException)
-	{
+	public void setRecoverOnException(boolean recoverOnException) {
 		this.recoverOnException = recoverOnException;
 	}
 
@@ -127,23 +123,16 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 	 * generally use {@link #setConcurrentConsumers} instead.
 	 */
 	@Override
-	public void setConcurrency(String concurrency)
-	{
-		try
-		{
+	public void setConcurrency(String concurrency) {
+		try {
 			int separatorIndex = concurrency.indexOf('-');
-			if (separatorIndex != -1)
-			{
+			if (separatorIndex != -1) {
 				setConcurrentConsumers(Integer
 						.parseInt(concurrency.substring(separatorIndex + 1, concurrency.length())));
-			}
-			else
-			{
+			} else {
 				setConcurrentConsumers(Integer.parseInt(concurrency));
 			}
-		}
-		catch (NumberFormatException ex)
-		{
+		} catch (NumberFormatException ex) {
 			throw new IllegalArgumentException("Invalid concurrency value [" + concurrency + "]: only "
 					+ "single maximum integer (e.g. \"5\") and minimum-maximum combo (e.g. \"3-5\") supported. "
 					+ "Note that SimpleMessageListenerContainer will effectively ignore the minimum value and "
@@ -163,8 +152,7 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 	 * This would lead to concurrent consumption of the same message,
 	 * which is hardly ever desirable.
 	 */
-	public void setConcurrentConsumers(int concurrentConsumers)
-	{
+	public void setConcurrentConsumers(int concurrentConsumers) {
 		Assert.isTrue(concurrentConsumers > 0, "'concurrentConsumers' value must be at least 1 (one)");
 		this.concurrentConsumers = concurrentConsumers;
 	}
@@ -193,22 +181,19 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 	 * this setting with a {@link SessionAwareMessageListener}, at least not
 	 * if the latter performs actual work on the given Session. A standard
 	 * {@link javax.jms.MessageListener} will work fine, in general.
-	 * 
+	 *
 	 * @see #setConcurrentConsumers
 	 * @see org.springframework.core.task.SimpleAsyncTaskExecutor
 	 * @see org.springframework.scheduling.commonj.WorkManagerTaskExecutor
 	 */
-	public void setTaskExecutor(Executor taskExecutor)
-	{
+	public void setTaskExecutor(Executor taskExecutor) {
 		this.taskExecutor = taskExecutor;
 	}
 
 	@Override
-	protected void validateConfiguration()
-	{
+	protected void validateConfiguration() {
 		super.validateConfiguration();
-		if (isSubscriptionDurable() && this.concurrentConsumers != 1)
-		{
+		if (isSubscriptionDurable() && this.concurrentConsumers != 1) {
 			throw new IllegalArgumentException(
 					"Only 1 concurrent consumer supported for durable subscription");
 		}
@@ -222,28 +207,22 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 	 * Always use a shared JMS Connection.
 	 */
 	@Override
-	protected final boolean sharedConnectionEnabled()
-	{
+	protected final boolean sharedConnectionEnabled() {
 		return true;
 	}
 
 	/**
 	 * Creates the specified number of concurrent consumers,
 	 * in the form of a JMS Session plus associated MessageConsumer.
-	 * 
+	 *
 	 * @see #createListenerConsumer
 	 */
 	@Override
-	protected void doInitialize() throws JMSException
-	{
-		if (!this.connectLazily)
-		{
-			try
-			{
+	protected void doInitialize() throws JMSException {
+		if (!this.connectLazily) {
+			try {
 				establishSharedConnection();
-			}
-			catch (JMSException ex)
-			{
+			} catch (JMSException ex) {
 				logger.debug("Could not connect on initialization - registering message consumers lazily",
 						ex);
 				return;
@@ -257,8 +236,7 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 	 * if not initialized already.
 	 */
 	@Override
-	protected void doStart() throws JMSException
-	{
+	protected void doStart() throws JMSException {
 		super.doStart();
 		initializeConsumers();
 	}
@@ -267,8 +245,7 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 	 * Registers this listener container as JMS ExceptionListener on the shared connection.
 	 */
 	@Override
-	protected void prepareSharedConnection(Connection connection) throws JMSException
-	{
+	protected void prepareSharedConnection(Connection connection) throws JMSException {
 		super.prepareSharedConnection(connection);
 		connection.setExceptionListener(this);
 	}
@@ -277,39 +254,31 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 	 * JMS ExceptionListener implementation, invoked by the JMS provider in
 	 * case of connection failures. Re-initializes this listener container's
 	 * shared connection and its sessions and consumers, if necessary.
-	 * 
-	 * @param ex
-	 *            the reported connection exception
+	 *
+	 * @param ex the reported connection exception
 	 * @see #setRecoverOnException
 	 * @see #refreshSharedConnection()
 	 * @see #initializeConsumers()
 	 */
 	@Override
-	public void onException(JMSException ex)
-	{
+	public void onException(JMSException ex) {
 		// First invoke the user-specific ExceptionListener, if any.
 		invokeExceptionListener(ex);
 
 		// Now try to recover the shared Connection and all consumers...
-		if (this.recoverOnException)
-		{
-			if (logger.isDebugEnabled())
-			{
+		if (this.recoverOnException) {
+			if (logger.isDebugEnabled()) {
 				logger.debug("Trying to recover from JMS Connection exception: " + ex);
 			}
-			try
-			{
-				synchronized (this.consumersMonitor)
-				{
+			try {
+				synchronized (this.consumersMonitor) {
 					this.sessions = null;
 					this.consumers = null;
 				}
 				refreshSharedConnection();
 				initializeConsumers();
 				logger.debug("Successfully refreshed JMS Connection");
-			}
-			catch (JMSException recoverEx)
-			{
+			} catch (JMSException recoverEx) {
 				logger.debug("Failed to recover JMS Connection", recoverEx);
 				logger.error("Encountered non-recoverable JMSException", ex);
 			}
@@ -318,22 +287,17 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 
 	/**
 	 * Initialize the JMS Sessions and MessageConsumers for this container.
-	 * 
-	 * @throws JMSException
-	 *             in case of setup failure
+	 *
+	 * @throws JMSException in case of setup failure
 	 */
-	protected void initializeConsumers() throws JMSException
-	{
+	protected void initializeConsumers() throws JMSException {
 		// Register Sessions and MessageConsumers.
-		synchronized (this.consumersMonitor)
-		{
-			if (this.consumers == null)
-			{
+		synchronized (this.consumersMonitor) {
+			if (this.consumers == null) {
 				this.sessions = new HashSet<>(this.concurrentConsumers);
 				this.consumers = new HashSet<>(this.concurrentConsumers);
 				Connection con = getSharedConnection();
-				for (int i = 0; i < this.concurrentConsumers; i++)
-				{
+				for (int i = 0; i < this.concurrentConsumers; i++) {
 					Session session = createSession(con);
 					MessageConsumer consumer = createListenerConsumer(session);
 					this.sessions.add(session);
@@ -346,32 +310,25 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 	/**
 	 * Create a MessageConsumer for the given JMS Session,
 	 * registering a MessageListener for the specified listener.
-	 * 
-	 * @param session
-	 *            the JMS Session to work on
+	 *
+	 * @param session the JMS Session to work on
 	 * @return the MessageConsumer
-	 * @throws JMSException
-	 *             if thrown by JMS methods
+	 * @throws JMSException if thrown by JMS methods
 	 * @see #executeListener
 	 */
-	protected MessageConsumer createListenerConsumer(final Session session) throws JMSException
-	{
+	protected MessageConsumer createListenerConsumer(final Session session) throws JMSException {
 		Destination destination = getDestination();
-		if (destination == null)
-		{
+		if (destination == null) {
 			String destinationName = getDestinationName();
 			Assert.state(destinationName != null, "No destination set");
 			destination = resolveDestinationName(session, destinationName);
 		}
 		MessageConsumer consumer = createConsumer(session, destination);
 
-		if (this.taskExecutor != null)
-		{
+		if (this.taskExecutor != null) {
 			consumer.setMessageListener(
 					message -> this.taskExecutor.execute(() -> processMessage(message, session)));
-		}
-		else
-		{
+		} else {
 			consumer.setMessageListener(message -> processMessage(message, session));
 		}
 
@@ -383,31 +340,23 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 	 * <p>
 	 * Executes the listener, exposing the current JMS Session as
 	 * thread-bound resource (if "exposeListenerSession" is "true").
-	 * 
-	 * @param message
-	 *            the received JMS Message
-	 * @param session
-	 *            the JMS Session to operate on
+	 *
+	 * @param message the received JMS Message
+	 * @param session the JMS Session to operate on
 	 * @see #executeListener
 	 * @see #setExposeListenerSession
 	 */
-	protected void processMessage(Message message, Session session)
-	{
+	protected void processMessage(Message message, Session session) {
 		ConnectionFactory connectionFactory = getConnectionFactory();
 		boolean exposeResource = (connectionFactory != null && isExposeListenerSession());
-		if (exposeResource)
-		{
+		if (exposeResource) {
 			TransactionSynchronizationManager.bindResource(connectionFactory,
 					new LocallyExposedJmsResourceHolder(session));
 		}
-		try
-		{
+		try {
 			executeListener(session, message);
-		}
-		finally
-		{
-			if (exposeResource)
-			{
+		} finally {
+			if (exposeResource) {
 				TransactionSynchronizationManager.unbindResource(getConnectionFactory());
 			}
 		}
@@ -417,22 +366,16 @@ public class SimpleMessageListenerContainer extends AbstractMessageListenerConta
 	 * Destroy the registered JMS Sessions and associated MessageConsumers.
 	 */
 	@Override
-	protected void doShutdown() throws JMSException
-	{
-		synchronized (this.consumersMonitor)
-		{
-			if (this.consumers != null)
-			{
+	protected void doShutdown() throws JMSException {
+		synchronized (this.consumersMonitor) {
+			if (this.consumers != null) {
 				logger.debug("Closing JMS MessageConsumers");
-				for (MessageConsumer consumer : this.consumers)
-				{
+				for (MessageConsumer consumer : this.consumers) {
 					JmsUtils.closeMessageConsumer(consumer);
 				}
-				if (this.sessions != null)
-				{
+				if (this.sessions != null) {
 					logger.debug("Closing JMS Sessions");
-					for (Session session : this.sessions)
-					{
+					for (Session session : this.sessions) {
 						JmsUtils.closeSession(session);
 					}
 				}

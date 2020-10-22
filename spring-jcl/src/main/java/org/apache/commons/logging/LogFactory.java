@@ -52,44 +52,37 @@ package org.apache.commons.logging;
  * @author Juergen Hoeller (for the {@code spring-jcl} variant)
  * @since 5.0
  */
-public abstract class LogFactory
-{
+public abstract class LogFactory {
 
 	/**
 	 * Convenience method to return a named logger.
-	 * 
-	 * @param clazz
-	 *            containing Class from which a log name will be derived
+	 *
+	 * @param clazz containing Class from which a log name will be derived
 	 */
-	public static Log getLog(Class<?> clazz)
-	{
+	public static Log getLog(Class<?> clazz) {
 		return getLog(clazz.getName());
 	}
 
 	/**
 	 * Convenience method to return a named logger.
-	 * 
-	 * @param name
-	 *            logical name of the <code>Log</code> instance to be returned
+	 *
+	 * @param name logical name of the <code>Log</code> instance to be returned
 	 */
-	public static Log getLog(String name)
-	{
+	public static Log getLog(String name) {
 		return LogAdapter.createLog(name);
 	}
 
 	/**
 	 * This method only exists for compatibility with unusual Commons Logging API
 	 * usage like e.g. {@code LogFactory.getFactory().getInstance(Class/String)}.
-	 * 
+	 *
 	 * @see #getInstance(Class)
 	 * @see #getInstance(String)
 	 * @deprecated in favor of {@link #getLog(Class)}/{@link #getLog(String)}
 	 */
 	@Deprecated
-	public static LogFactory getFactory()
-	{
-		return new LogFactory()
-		{
+	public static LogFactory getFactory() {
+		return new LogFactory() {
 		};
 	}
 
@@ -97,14 +90,12 @@ public abstract class LogFactory
 	 * Convenience method to return a named logger.
 	 * <p>
 	 * This variant just dispatches straight to {@link #getLog(Class)}.
-	 * 
-	 * @param clazz
-	 *            containing Class from which a log name will be derived
+	 *
+	 * @param clazz containing Class from which a log name will be derived
 	 * @deprecated in favor of {@link #getLog(Class)}
 	 */
 	@Deprecated
-	public Log getInstance(Class<?> clazz)
-	{
+	public Log getInstance(Class<?> clazz) {
 		return getLog(clazz);
 	}
 
@@ -112,14 +103,12 @@ public abstract class LogFactory
 	 * Convenience method to return a named logger.
 	 * <p>
 	 * This variant just dispatches straight to {@link #getLog(String)}.
-	 * 
-	 * @param name
-	 *            logical name of the <code>Log</code> instance to be returned
+	 *
+	 * @param name logical name of the <code>Log</code> instance to be returned
 	 * @deprecated in favor of {@link #getLog(String)}
 	 */
 	@Deprecated
-	public Log getInstance(String name)
-	{
+	public Log getInstance(String name) {
 		return getLog(name);
 	}
 

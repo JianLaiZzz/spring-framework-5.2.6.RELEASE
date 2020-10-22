@@ -31,7 +31,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * <p>
  * The {@code pointcut} tag allows for creation of named
  * {@link AspectJExpressionPointcut} beans using a simple syntax:
- * 
+ *
  * <pre class="code">
  * &lt;aop:pointcut id=&quot;getNameCalls&quot; expression=&quot;execution(* *..ITestBean.getName(..))&quot;/&gt;
  * </pre>
@@ -57,8 +57,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * @author Juergen Hoeller
  * @since 2.0
  */
-public class AopNamespaceHandler extends NamespaceHandlerSupport
-{
+public class AopNamespaceHandler extends NamespaceHandlerSupport {
 
 	/**
 	 * Register the {@link BeanDefinitionParser BeanDefinitionParsers} for the
@@ -66,8 +65,7 @@ public class AopNamespaceHandler extends NamespaceHandlerSupport
 	 * and '{@code scoped-proxy}' tags.
 	 */
 	@Override
-	public void init()
-	{
+	public void init() {
 		// In 2.0 XSD as well as in 2.1 XSD.
 		registerBeanDefinitionParser("config", new ConfigBeanDefinitionParser());
 		registerBeanDefinitionParser("aspectj-autoproxy", new AspectJAutoProxyBeanDefinitionParser());

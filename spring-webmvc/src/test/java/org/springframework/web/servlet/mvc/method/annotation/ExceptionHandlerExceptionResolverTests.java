@@ -16,15 +16,9 @@
 
 package org.springframework.web.servlet.mvc.method.annotation;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.util.Collections;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -49,6 +43,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
 import org.springframework.web.util.NestedServletException;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -343,7 +342,8 @@ public class ExceptionHandlerExceptionResolverTests {
 	@Controller
 	static class ModelAndViewController {
 
-		public void handle() {}
+		public void handle() {
+		}
 
 		@ExceptionHandler
 		public ModelAndView handle(Exception ex) throws IOException {
@@ -355,7 +355,8 @@ public class ExceptionHandlerExceptionResolverTests {
 	@Controller
 	static class ResponseWriterController {
 
-		public void handle() {}
+		public void handle() {
+		}
 
 		@ExceptionHandler
 		public void handleException(Exception ex, Writer writer) throws IOException {
@@ -378,7 +379,8 @@ public class ExceptionHandlerExceptionResolverTests {
 	static class ResponseBodyController extends WebApplicationObjectSupport implements ResponseBodyInterface {
 
 		@Override
-		public void handle() {}
+		public void handle() {
+		}
 
 		@Override
 		@ExceptionHandler
@@ -392,7 +394,8 @@ public class ExceptionHandlerExceptionResolverTests {
 	@Controller
 	static class IoExceptionController {
 
-		public void handle() {}
+		public void handle() {
+		}
 
 		@ExceptionHandler(value = IOException.class)
 		public void handleException() {
@@ -403,7 +406,8 @@ public class ExceptionHandlerExceptionResolverTests {
 	@Controller
 	static class ModelArgumentController {
 
-		public void handle() {}
+		public void handle() {
+		}
 
 		@ExceptionHandler
 		public void handleException(Exception ex, Model model) {
@@ -414,7 +418,8 @@ public class ExceptionHandlerExceptionResolverTests {
 	@Controller
 	static class RedirectAttributesController {
 
-		public void handle() {}
+		public void handle() {
+		}
 
 		@ExceptionHandler
 		public String handleException(Exception ex, RedirectAttributes redirectAttributes) {

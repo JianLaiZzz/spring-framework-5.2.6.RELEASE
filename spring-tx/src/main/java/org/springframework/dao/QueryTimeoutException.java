@@ -29,30 +29,24 @@ package org.springframework.dao;
  * @since 3.1
  */
 @SuppressWarnings("serial")
-public class QueryTimeoutException extends TransientDataAccessException
-{
+public class QueryTimeoutException extends TransientDataAccessException {
 
 	/**
 	 * Constructor for QueryTimeoutException.
-	 * 
-	 * @param msg
-	 *            the detail message
+	 *
+	 * @param msg the detail message
 	 */
-	public QueryTimeoutException(String msg)
-	{
+	public QueryTimeoutException(String msg) {
 		super(msg);
 	}
 
 	/**
 	 * Constructor for QueryTimeoutException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the root cause from the data access API in use
+	 *
+	 * @param msg   the detail message
+	 * @param cause the root cause from the data access API in use
 	 */
-	public QueryTimeoutException(String msg, Throwable cause)
-	{
+	public QueryTimeoutException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 

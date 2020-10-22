@@ -32,46 +32,40 @@ import org.springframework.lang.Nullable;
  * This post-processor is therefore aligned with {@link AbstractAutoProxyCreator}.
  *
  * @author Juergen Hoeller
- * @since 4.2.3
  * @see AutoProxyUtils#shouldProxyTargetClass
  * @see AutoProxyUtils#determineTargetClass
+ * @since 4.2.3
  */
 @SuppressWarnings("serial")
 public abstract class AbstractBeanFactoryAwareAdvisingPostProcessor
-		extends AbstractAdvisingBeanPostProcessor implements BeanFactoryAware
-{
+		extends AbstractAdvisingBeanPostProcessor implements BeanFactoryAware {
 
 	@Nullable
 	private ConfigurableListableBeanFactory beanFactory;
 
 	@Override
-	public void setBeanFactory(BeanFactory beanFactory)
-	{
+	public void setBeanFactory(BeanFactory beanFactory) {
 		this.beanFactory = (beanFactory instanceof ConfigurableListableBeanFactory
 				? (ConfigurableListableBeanFactory) beanFactory
 				: null);
 	}
 
 	@Override
-	protected ProxyFactory prepareProxyFactory(Object bean, String beanName)
-	{
-		if (this.beanFactory != null)
-		{
+	protected ProxyFactory prepareProxyFactory(Object bean, String beanName) {
+		if (this.beanFactory != null) {
 			AutoProxyUtils.exposeTargetClass(this.beanFactory, beanName, bean.getClass());
 		}
 
 		ProxyFactory proxyFactory = super.prepareProxyFactory(bean, beanName);
 		if (!proxyFactory.isProxyTargetClass() && this.beanFactory != null
-				&& AutoProxyUtils.shouldProxyTargetClass(this.beanFactory, beanName))
-		{
+				&& AutoProxyUtils.shouldProxyTargetClass(this.beanFactory, beanName)) {
 			proxyFactory.setProxyTargetClass(true);
 		}
 		return proxyFactory;
 	}
 
 	@Override
-	protected boolean isEligible(Object bean, String beanName)
-	{
+	protected boolean isEligible(Object bean, String beanName) {
 		return (!AutoProxyUtils.isOriginalInstance(beanName, bean.getClass())
 				&& super.isEligible(bean, beanName));
 	}

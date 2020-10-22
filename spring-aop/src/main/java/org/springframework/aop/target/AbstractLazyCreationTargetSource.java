@@ -37,25 +37,27 @@ import org.springframework.lang.Nullable;
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
- * @since 1.2.4
  * @see #isInitialized()
  * @see #createObject()
+ * @since 1.2.4
  */
-public abstract class AbstractLazyCreationTargetSource implements TargetSource
-{
+public abstract class AbstractLazyCreationTargetSource implements TargetSource {
 
-	/** Logger available to subclasses. */
+	/**
+	 * Logger available to subclasses.
+	 */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	/** The lazily initialized target object. */
+	/**
+	 * The lazily initialized target object.
+	 */
 	private Object lazyTarget;
 
 	/**
 	 * Return whether the lazy target object of this TargetSource
 	 * has already been fetched.
 	 */
-	public synchronized boolean isInitialized()
-	{
+	public synchronized boolean isInitialized() {
 		return (this.lazyTarget != null);
 	}
 
@@ -66,33 +68,29 @@ public abstract class AbstractLazyCreationTargetSource implements TargetSource
 	 * <p>
 	 * Subclasses may wish to override this method in order to provide
 	 * a meaningful value when the target is still {@code null}.
-	 * 
+	 *
 	 * @see #isInitialized()
 	 */
 	@Override
 	@Nullable
-	public synchronized Class<?> getTargetClass()
-	{
+	public synchronized Class<?> getTargetClass() {
 		return (this.lazyTarget != null ? this.lazyTarget.getClass() : null);
 	}
 
 	@Override
-	public boolean isStatic()
-	{
+	public boolean isStatic() {
 		return false;
 	}
 
 	/**
 	 * Returns the lazy-initialized target object,
 	 * creating it on-the-fly if it doesn't exist already.
-	 * 
+	 *
 	 * @see #createObject()
 	 */
 	@Override
-	public synchronized Object getTarget() throws Exception
-	{
-		if (this.lazyTarget == null)
-		{
+	public synchronized Object getTarget() throws Exception {
+		if (this.lazyTarget == null) {
 			logger.debug("Initializing lazy target object");
 			this.lazyTarget = createObject();
 		}
@@ -100,18 +98,16 @@ public abstract class AbstractLazyCreationTargetSource implements TargetSource
 	}
 
 	@Override
-	public void releaseTarget(Object target) throws Exception
-	{
+	public void releaseTarget(Object target) throws Exception {
 		// nothing to do
 	}
 
 	/**
 	 * Subclasses should implement this method to return the lazy initialized object.
 	 * Called the first time the proxy is invoked.
-	 * 
+	 *
 	 * @return the created object
-	 * @throws Exception
-	 *             if creation failed
+	 * @throws Exception if creation failed
 	 */
 	protected abstract Object createObject() throws Exception;
 

@@ -31,8 +31,7 @@ import org.w3c.dom.Element;
  * @author Stephane Nicoll
  * @since 2.5
  */
-class JcaListenerContainerParser extends AbstractListenerContainerParser
-{
+class JcaListenerContainerParser extends AbstractListenerContainerParser {
 
 	private static final String RESOURCE_ADAPTER_ATTRIBUTE = "resource-adapter";
 
@@ -40,9 +39,8 @@ class JcaListenerContainerParser extends AbstractListenerContainerParser
 
 	@Override
 	protected RootBeanDefinition createContainerFactory(String factoryId, Element containerEle,
-			ParserContext parserContext, PropertyValues commonContainerProperties,
-			PropertyValues specificContainerProperties)
-	{
+														ParserContext parserContext, PropertyValues commonContainerProperties,
+														PropertyValues specificContainerProperties) {
 
 		RootBeanDefinition factoryDef = new RootBeanDefinition();
 		factoryDef.setBeanClassName("org.springframework.jms.config.DefaultJcaListenerContainerFactory");
@@ -55,9 +53,8 @@ class JcaListenerContainerParser extends AbstractListenerContainerParser
 
 	@Override
 	protected RootBeanDefinition createContainer(Element containerEle, Element listenerEle,
-			ParserContext parserContext, PropertyValues commonContainerProperties,
-			PropertyValues specificContainerProperties)
-	{
+												 ParserContext parserContext, PropertyValues commonContainerProperties,
+												 PropertyValues specificContainerProperties) {
 
 		RootBeanDefinition containerDef = new RootBeanDefinition();
 		containerDef.setSource(parserContext.extractSource(containerEle));
@@ -78,26 +75,22 @@ class JcaListenerContainerParser extends AbstractListenerContainerParser
 
 	@Override
 	protected MutablePropertyValues parseCommonContainerProperties(Element containerEle,
-			ParserContext parserContext)
-	{
+																   ParserContext parserContext) {
 		MutablePropertyValues properties = super.parseCommonContainerProperties(containerEle,
 				parserContext);
 
 		Integer acknowledgeMode = parseAcknowledgeMode(containerEle, parserContext);
-		if (acknowledgeMode != null)
-		{
+		if (acknowledgeMode != null) {
 			properties.add("acknowledgeMode", acknowledgeMode);
 		}
 
 		String concurrency = containerEle.getAttribute(CONCURRENCY_ATTRIBUTE);
-		if (StringUtils.hasText(concurrency))
-		{
+		if (StringUtils.hasText(concurrency)) {
 			properties.add("concurrency", concurrency);
 		}
 
 		String prefetch = containerEle.getAttribute(PREFETCH_ATTRIBUTE);
-		if (StringUtils.hasText(prefetch))
-		{
+		if (StringUtils.hasText(prefetch)) {
 			properties.add("prefetchSize", Integer.valueOf(prefetch));
 		}
 
@@ -106,21 +99,16 @@ class JcaListenerContainerParser extends AbstractListenerContainerParser
 
 	@Override
 	protected MutablePropertyValues parseSpecificContainerProperties(Element containerEle,
-			ParserContext parserContext)
-	{
+																	 ParserContext parserContext) {
 		MutablePropertyValues properties = new MutablePropertyValues();
 
-		if (containerEle.hasAttribute(RESOURCE_ADAPTER_ATTRIBUTE))
-		{
+		if (containerEle.hasAttribute(RESOURCE_ADAPTER_ATTRIBUTE)) {
 			String resourceAdapterBeanName = containerEle.getAttribute(RESOURCE_ADAPTER_ATTRIBUTE);
-			if (!StringUtils.hasText(resourceAdapterBeanName))
-			{
+			if (!StringUtils.hasText(resourceAdapterBeanName)) {
 				parserContext.getReaderContext().error(
 						"Listener container 'resource-adapter' attribute contains empty value.",
 						containerEle);
-			}
-			else
-			{
+			} else {
 				properties.add("resourceAdapter", new RuntimeBeanReference(resourceAdapterBeanName));
 			}
 		}
@@ -128,10 +116,8 @@ class JcaListenerContainerParser extends AbstractListenerContainerParser
 		String activationSpecFactoryBeanName = containerEle
 				.getAttribute(ACTIVATION_SPEC_FACTORY_ATTRIBUTE);
 		String destinationResolverBeanName = containerEle.getAttribute(DESTINATION_RESOLVER_ATTRIBUTE);
-		if (StringUtils.hasText(activationSpecFactoryBeanName))
-		{
-			if (StringUtils.hasText(destinationResolverBeanName))
-			{
+		if (StringUtils.hasText(activationSpecFactoryBeanName)) {
+			if (StringUtils.hasText(destinationResolverBeanName)) {
 				parserContext.getReaderContext().error("Specify either 'activation-spec-factory' or "
 						+ "'destination-resolver', not both. If you define a dedicated JmsActivationSpecFactory bean, "
 						+ "specify the custom DestinationResolver there (if possible).", containerEle);
@@ -139,20 +125,17 @@ class JcaListenerContainerParser extends AbstractListenerContainerParser
 			properties.add("activationSpecFactory",
 					new RuntimeBeanReference(activationSpecFactoryBeanName));
 		}
-		if (StringUtils.hasText(destinationResolverBeanName))
-		{
+		if (StringUtils.hasText(destinationResolverBeanName)) {
 			properties.add("destinationResolver", new RuntimeBeanReference(destinationResolverBeanName));
 		}
 
 		String transactionManagerBeanName = containerEle.getAttribute(TRANSACTION_MANAGER_ATTRIBUTE);
-		if (StringUtils.hasText(transactionManagerBeanName))
-		{
+		if (StringUtils.hasText(transactionManagerBeanName)) {
 			properties.add("transactionManager", new RuntimeBeanReference(transactionManagerBeanName));
 		}
 
 		String phase = containerEle.getAttribute(PHASE_ATTRIBUTE);
-		if (StringUtils.hasText(phase))
-		{
+		if (StringUtils.hasText(phase)) {
 			properties.add("phase", phase);
 		}
 

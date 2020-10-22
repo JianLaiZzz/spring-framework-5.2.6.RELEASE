@@ -16,6 +16,10 @@
 
 package org.springframework.http;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -23,11 +27,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -155,7 +154,8 @@ public class RequestEntityTests {
 	public void types() throws URISyntaxException {
 		URI url = new URI("https://example.com");
 		List<String> body = Arrays.asList("foo", "bar");
-		ParameterizedTypeReference<?> typeReference = new ParameterizedTypeReference<List<String>>() {};
+		ParameterizedTypeReference<?> typeReference = new ParameterizedTypeReference<List<String>>() {
+		};
 
 		RequestEntity<?> entity = RequestEntity.post(url).body(body, typeReference.getType());
 		assertThat(entity.getType()).isEqualTo(typeReference.getType());

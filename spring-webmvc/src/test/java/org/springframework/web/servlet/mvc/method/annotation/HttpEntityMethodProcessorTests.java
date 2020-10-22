@@ -16,21 +16,10 @@
 
 package org.springframework.web.servlet.mvc.method.annotation;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -53,6 +42,15 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
+
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -192,7 +190,7 @@ public class HttpEntityMethodProcessorTests {
 
 	@Test  // SPR-13423
 	public void handleReturnValueCharSequence() throws Exception {
-		List<HttpMessageConverter<?>>converters = new ArrayList<>();
+		List<HttpMessageConverter<?>> converters = new ArrayList<>();
 		converters.add(new ByteArrayHttpMessageConverter());
 		converters.add(new StringHttpMessageConverter());
 
@@ -228,8 +226,7 @@ public class HttpEntityMethodProcessorTests {
 				assertThat(this.servletResponse.getContentAsString())
 						.as("Response body was cached? It should be written directly to the raw response")
 						.isEqualTo(content);
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				throw new IllegalStateException(ex);
 			}
 		};
@@ -273,7 +270,7 @@ public class HttpEntityMethodProcessorTests {
 	}
 
 
-	@SuppressWarnings({ "serial" })
+	@SuppressWarnings({"serial"})
 	private static class SimpleBean implements Identifiable {
 
 		private Long id;

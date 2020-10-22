@@ -19,12 +19,10 @@ package org.springframework.core.task;
 /**
  * @author Juergen Hoeller
  */
-public class StubTaskExecutor implements TaskExecutor
-{
+public class StubTaskExecutor implements TaskExecutor {
 
 	@Override
-	public void execute(Runnable task)
-	{
+	public void execute(Runnable task) {
 	}
 
 }

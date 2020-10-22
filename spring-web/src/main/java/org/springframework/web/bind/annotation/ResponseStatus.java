@@ -16,10 +16,10 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.lang.annotation.*;
-
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.http.HttpStatus;
+
+import java.lang.annotation.*;
 
 /**
  * Marks a method or exception class with the status {@link #code} and
@@ -50,15 +50,14 @@ import org.springframework.http.HttpStatus;
  *
  * @author Arjen Poutsma
  * @author Sam Brannen
- * @since 3.0
  * @see org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver
  * @see javax.servlet.http.HttpServletResponse#sendError(int, String)
+ * @since 3.0
  */
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ResponseStatus
-{
+public @interface ResponseStatus {
 
 	/**
 	 * Alias for {@link #code}.
@@ -71,17 +70,17 @@ public @interface ResponseStatus
 	 * <p>
 	 * Default is {@link HttpStatus#INTERNAL_SERVER_ERROR}, which should
 	 * typically be changed to something more appropriate.
-	 * 
-	 * @since 4.2
+	 *
 	 * @see javax.servlet.http.HttpServletResponse#setStatus(int)
 	 * @see javax.servlet.http.HttpServletResponse#sendError(int)
+	 * @since 4.2
 	 */
 	@AliasFor("value")
 	HttpStatus code() default HttpStatus.INTERNAL_SERVER_ERROR;
 
 	/**
 	 * The <em>reason</em> to be used for the response.
-	 * 
+	 *
 	 * @see javax.servlet.http.HttpServletResponse#sendError(int, String)
 	 */
 	String reason() default "";

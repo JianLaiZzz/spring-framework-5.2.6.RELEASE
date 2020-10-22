@@ -16,18 +16,14 @@
 
 package org.springframework.core.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import java.lang.annotation.*;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Set;
-
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.core.annotation.AnnotatedElementUtils.findAllMergedAnnotations;
@@ -40,10 +36,10 @@ import static org.springframework.core.annotation.AnnotatedElementUtils.getAllMe
  * <p>See <a href="https://jira.spring.io/browse/SPR-13486">SPR-13486</a>.
  *
  * @author Sam Brannen
- * @since 4.3
  * @see AnnotatedElementUtils
  * @see AnnotatedElementUtilsTests
  * @see ComposedRepeatableAnnotationsTests
+ * @since 4.3
  */
 class MultipleComposedAnnotationsOnSingleAnnotatedElementTests {
 
@@ -195,8 +191,7 @@ class MultipleComposedAnnotationsOnSingleAnnotatedElementTests {
 			if ("getFor".equals(method.getName()) && !method.getParameterTypes()[0].equals(Integer.class)) {
 				if (method.getReturnType().equals(Object.class)) {
 					bridgeMethod = method;
-				}
-				else {
+				} else {
 					bridgedMethod = method;
 				}
 			}
@@ -246,7 +241,7 @@ class MultipleComposedAnnotationsOnSingleAnnotatedElementTests {
 	/**
 	 * Mock of {@code org.springframework.cache.annotation.Cacheable}.
 	 */
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@Inherited
 	@interface Cacheable {
@@ -261,7 +256,7 @@ class MultipleComposedAnnotationsOnSingleAnnotatedElementTests {
 	}
 
 	@Cacheable("fooCache")
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@Inherited
 	@interface FooCache {
@@ -271,7 +266,7 @@ class MultipleComposedAnnotationsOnSingleAnnotatedElementTests {
 	}
 
 	@Cacheable("barCache")
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@Inherited
 	@interface BarCache {
@@ -281,7 +276,7 @@ class MultipleComposedAnnotationsOnSingleAnnotatedElementTests {
 	}
 
 	@Cacheable("noninheritedCache1")
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface NoninheritedCache1 {
 
@@ -290,7 +285,7 @@ class MultipleComposedAnnotationsOnSingleAnnotatedElementTests {
 	}
 
 	@Cacheable("noninheritedCache2")
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface NoninheritedCache2 {
 

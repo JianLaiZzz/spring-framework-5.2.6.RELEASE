@@ -16,14 +16,14 @@
 
 package org.springframework.jms.listener.endpoint;
 
+import org.springframework.jca.endpoint.AbstractMessageEndpointFactory;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.resource.ResourceException;
 import javax.resource.spi.UnavailableException;
-
-import org.springframework.jca.endpoint.AbstractMessageEndpointFactory;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
 
 /**
  * JMS-specific implementation of the JCA 1.7
@@ -44,13 +44,12 @@ import org.springframework.util.Assert;
  *
  * @author Juergen Hoeller
  * @author Stephane Nicoll
- * @since 2.5
  * @see #setMessageListener
  * @see #setTransactionManager
  * @see JmsMessageEndpointManager
+ * @since 2.5
  */
-public class JmsMessageEndpointFactory extends AbstractMessageEndpointFactory
-{
+public class JmsMessageEndpointFactory extends AbstractMessageEndpointFactory {
 
 	@Nullable
 	private MessageListener messageListener;
@@ -58,16 +57,14 @@ public class JmsMessageEndpointFactory extends AbstractMessageEndpointFactory
 	/**
 	 * Set the JMS MessageListener for this endpoint.
 	 */
-	public void setMessageListener(MessageListener messageListener)
-	{
+	public void setMessageListener(MessageListener messageListener) {
 		this.messageListener = messageListener;
 	}
 
 	/**
 	 * Return the JMS MessageListener for this endpoint.
 	 */
-	protected MessageListener getMessageListener()
-	{
+	protected MessageListener getMessageListener() {
 		Assert.state(this.messageListener != null, "No MessageListener set");
 		return this.messageListener;
 	}
@@ -76,55 +73,38 @@ public class JmsMessageEndpointFactory extends AbstractMessageEndpointFactory
 	 * Creates a concrete JMS message endpoint, internal to this factory.
 	 */
 	@Override
-	protected AbstractMessageEndpoint createEndpointInternal() throws UnavailableException
-	{
+	protected AbstractMessageEndpoint createEndpointInternal() throws UnavailableException {
 		return new JmsMessageEndpoint();
 	}
 
 	/**
 	 * Private inner class that implements the concrete JMS message endpoint.
 	 */
-	private class JmsMessageEndpoint extends AbstractMessageEndpoint implements MessageListener
-	{
+	private class JmsMessageEndpoint extends AbstractMessageEndpoint implements MessageListener {
 
 		@Override
-		public void onMessage(Message message)
-		{
+		public void onMessage(Message message) {
 			Throwable endpointEx = null;
 			boolean applyDeliveryCalls = !hasBeforeDeliveryBeenCalled();
-			if (applyDeliveryCalls)
-			{
-				try
-				{
+			if (applyDeliveryCalls) {
+				try {
 					beforeDelivery(null);
-				}
-				catch (ResourceException ex)
-				{
+				} catch (ResourceException ex) {
 					throw new JmsResourceException(ex);
 				}
 			}
-			try
-			{
+			try {
 				getMessageListener().onMessage(message);
-			}
-			catch (RuntimeException | Error ex)
-			{
+			} catch (RuntimeException | Error ex) {
 				endpointEx = ex;
 				onEndpointException(ex);
 				throw ex;
-			}
-			finally
-			{
-				if (applyDeliveryCalls)
-				{
-					try
-					{
+			} finally {
+				if (applyDeliveryCalls) {
+					try {
 						afterDelivery();
-					}
-					catch (ResourceException ex)
-					{
-						if (endpointEx == null)
-						{
+					} catch (ResourceException ex) {
+						if (endpointEx == null) {
 							throw new JmsResourceException(ex);
 						}
 					}
@@ -133,8 +113,7 @@ public class JmsMessageEndpointFactory extends AbstractMessageEndpointFactory
 		}
 
 		@Override
-		protected ClassLoader getEndpointClassLoader()
-		{
+		protected ClassLoader getEndpointClassLoader() {
 			return getMessageListener().getClass().getClassLoader();
 		}
 	}
@@ -149,11 +128,9 @@ public class JmsMessageEndpointFactory extends AbstractMessageEndpointFactory
 	 * and to handle any ResourceExceptions thrown from them.
 	 */
 	@SuppressWarnings("serial")
-	public static class JmsResourceException extends RuntimeException
-	{
+	public static class JmsResourceException extends RuntimeException {
 
-		public JmsResourceException(ResourceException cause)
-		{
+		public JmsResourceException(ResourceException cause) {
 			super(cause);
 		}
 	}

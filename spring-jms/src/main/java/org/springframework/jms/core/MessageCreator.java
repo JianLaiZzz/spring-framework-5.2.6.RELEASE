@@ -38,18 +38,15 @@ import javax.jms.Session;
  * @since 1.1
  */
 @FunctionalInterface
-public interface MessageCreator
-{
+public interface MessageCreator {
 
 	/**
 	 * Create a {@link Message} to be sent.
-	 * 
-	 * @param session
-	 *            the JMS {@link Session} to be used to create the
-	 *            {@code Message} (never {@code null})
+	 *
+	 * @param session the JMS {@link Session} to be used to create the
+	 *                {@code Message} (never {@code null})
 	 * @return the {@code Message} to be sent
-	 * @throws javax.jms.JMSException
-	 *             if thrown by JMS API methods
+	 * @throws javax.jms.JMSException if thrown by JMS API methods
 	 */
 	Message createMessage(Session session) throws JMSException;
 

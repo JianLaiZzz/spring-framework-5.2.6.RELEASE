@@ -16,20 +16,19 @@
 
 package org.springframework.web.util;
 
+import org.springframework.http.HttpMethod;
+import org.springframework.lang.Nullable;
+
+import javax.servlet.ReadListener;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.util.*;
-
-import javax.servlet.ReadListener;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-
-import org.springframework.http.HttpMethod;
-import org.springframework.lang.Nullable;
 
 /**
  * {@link javax.servlet.http.HttpServletRequest} wrapper that caches all content read from
@@ -42,11 +41,10 @@ import org.springframework.lang.Nullable;
  *
  * @author Juergen Hoeller
  * @author Brian Clozel
- * @since 4.1.3
  * @see ContentCachingResponseWrapper
+ * @since 4.1.3
  */
-public class ContentCachingRequestWrapper extends HttpServletRequestWrapper
-{
+public class ContentCachingRequestWrapper extends HttpServletRequestWrapper {
 
 	private static final String FORM_CONTENT_TYPE = "application/x-www-form-urlencoded";
 
@@ -63,12 +61,10 @@ public class ContentCachingRequestWrapper extends HttpServletRequestWrapper
 
 	/**
 	 * Create a new ContentCachingRequestWrapper for the given servlet request.
-	 * 
-	 * @param request
-	 *            the original servlet request
+	 *
+	 * @param request the original servlet request
 	 */
-	public ContentCachingRequestWrapper(HttpServletRequest request)
-	{
+	public ContentCachingRequestWrapper(HttpServletRequest request) {
 		super(request);
 		int contentLength = request.getContentLength();
 		this.cachedContent = new ByteArrayOutputStream(contentLength >= 0 ? contentLength : 1024);
@@ -77,43 +73,35 @@ public class ContentCachingRequestWrapper extends HttpServletRequestWrapper
 
 	/**
 	 * Create a new ContentCachingRequestWrapper for the given servlet request.
-	 * 
-	 * @param request
-	 *            the original servlet request
-	 * @param contentCacheLimit
-	 *            the maximum number of bytes to cache per request
-	 * @since 4.3.6
+	 *
+	 * @param request           the original servlet request
+	 * @param contentCacheLimit the maximum number of bytes to cache per request
 	 * @see #handleContentOverflow(int)
+	 * @since 4.3.6
 	 */
-	public ContentCachingRequestWrapper(HttpServletRequest request, int contentCacheLimit)
-	{
+	public ContentCachingRequestWrapper(HttpServletRequest request, int contentCacheLimit) {
 		super(request);
 		this.cachedContent = new ByteArrayOutputStream(contentCacheLimit);
 		this.contentCacheLimit = contentCacheLimit;
 	}
 
 	@Override
-	public ServletInputStream getInputStream() throws IOException
-	{
-		if (this.inputStream == null)
-		{
+	public ServletInputStream getInputStream() throws IOException {
+		if (this.inputStream == null) {
 			this.inputStream = new ContentCachingInputStream(getRequest().getInputStream());
 		}
 		return this.inputStream;
 	}
 
 	@Override
-	public String getCharacterEncoding()
-	{
+	public String getCharacterEncoding() {
 		String enc = super.getCharacterEncoding();
 		return (enc != null ? enc : WebUtils.DEFAULT_CHARACTER_ENCODING);
 	}
 
 	@Override
-	public BufferedReader getReader() throws IOException
-	{
-		if (this.reader == null)
-		{
+	public BufferedReader getReader() throws IOException {
+		if (this.reader == null) {
 			this.reader = new BufferedReader(
 					new InputStreamReader(getInputStream(), getCharacterEncoding()));
 		}
@@ -121,88 +109,69 @@ public class ContentCachingRequestWrapper extends HttpServletRequestWrapper
 	}
 
 	@Override
-	public String getParameter(String name)
-	{
-		if (this.cachedContent.size() == 0 && isFormPost())
-		{
+	public String getParameter(String name) {
+		if (this.cachedContent.size() == 0 && isFormPost()) {
 			writeRequestParametersToCachedContent();
 		}
 		return super.getParameter(name);
 	}
 
 	@Override
-	public Map<String, String[]> getParameterMap()
-	{
-		if (this.cachedContent.size() == 0 && isFormPost())
-		{
+	public Map<String, String[]> getParameterMap() {
+		if (this.cachedContent.size() == 0 && isFormPost()) {
 			writeRequestParametersToCachedContent();
 		}
 		return super.getParameterMap();
 	}
 
 	@Override
-	public Enumeration<String> getParameterNames()
-	{
-		if (this.cachedContent.size() == 0 && isFormPost())
-		{
+	public Enumeration<String> getParameterNames() {
+		if (this.cachedContent.size() == 0 && isFormPost()) {
 			writeRequestParametersToCachedContent();
 		}
 		return super.getParameterNames();
 	}
 
 	@Override
-	public String[] getParameterValues(String name)
-	{
-		if (this.cachedContent.size() == 0 && isFormPost())
-		{
+	public String[] getParameterValues(String name) {
+		if (this.cachedContent.size() == 0 && isFormPost()) {
 			writeRequestParametersToCachedContent();
 		}
 		return super.getParameterValues(name);
 	}
 
-	private boolean isFormPost()
-	{
+	private boolean isFormPost() {
 		String contentType = getContentType();
 		return (contentType != null && contentType.contains(FORM_CONTENT_TYPE)
 				&& HttpMethod.POST.matches(getMethod()));
 	}
 
-	private void writeRequestParametersToCachedContent()
-	{
-		try
-		{
-			if (this.cachedContent.size() == 0)
-			{
+	private void writeRequestParametersToCachedContent() {
+		try {
+			if (this.cachedContent.size() == 0) {
 				String requestEncoding = getCharacterEncoding();
 				Map<String, String[]> form = super.getParameterMap();
-				for (Iterator<String> nameIterator = form.keySet().iterator(); nameIterator.hasNext();)
-				{
+				for (Iterator<String> nameIterator = form.keySet().iterator(); nameIterator.hasNext(); ) {
 					String name = nameIterator.next();
 					List<String> values = Arrays.asList(form.get(name));
-					for (Iterator<String> valueIterator = values.iterator(); valueIterator.hasNext();)
-					{
+					for (Iterator<String> valueIterator = values.iterator(); valueIterator.hasNext(); ) {
 						String value = valueIterator.next();
 						this.cachedContent.write(URLEncoder.encode(name, requestEncoding).getBytes());
-						if (value != null)
-						{
+						if (value != null) {
 							this.cachedContent.write('=');
 							this.cachedContent
 									.write(URLEncoder.encode(value, requestEncoding).getBytes());
-							if (valueIterator.hasNext())
-							{
+							if (valueIterator.hasNext()) {
 								this.cachedContent.write('&');
 							}
 						}
 					}
-					if (nameIterator.hasNext())
-					{
+					if (nameIterator.hasNext()) {
 						this.cachedContent.write('&');
 					}
 				}
 			}
-		}
-		catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			throw new IllegalStateException("Failed to write request parameters to cached content", ex);
 		}
 	}
@@ -211,11 +180,10 @@ public class ContentCachingRequestWrapper extends HttpServletRequestWrapper
 	 * Return the cached request content as a byte array.
 	 * <p>
 	 * The returned array will never be larger than the content cache limit.
-	 * 
+	 *
 	 * @see #ContentCachingRequestWrapper(HttpServletRequest, int)
 	 */
-	public byte[] getContentAsByteArray()
-	{
+	public byte[] getContentAsByteArray() {
 		return this.cachedContent.toByteArray();
 	}
 
@@ -225,42 +193,33 @@ public class ContentCachingRequestWrapper extends HttpServletRequestWrapper
 	 * <p>
 	 * The default implementation is empty. Subclasses may override this to
 	 * throw a payload-too-large exception or the like.
-	 * 
-	 * @param contentCacheLimit
-	 *            the maximum number of bytes to cache per request
-	 *            which has just been exceeded
-	 * @since 4.3.6
+	 *
+	 * @param contentCacheLimit the maximum number of bytes to cache per request
+	 *                          which has just been exceeded
 	 * @see #ContentCachingRequestWrapper(HttpServletRequest, int)
+	 * @since 4.3.6
 	 */
-	protected void handleContentOverflow(int contentCacheLimit)
-	{
+	protected void handleContentOverflow(int contentCacheLimit) {
 	}
 
-	private class ContentCachingInputStream extends ServletInputStream
-	{
+	private class ContentCachingInputStream extends ServletInputStream {
 
 		private final ServletInputStream is;
 
 		private boolean overflow = false;
 
-		public ContentCachingInputStream(ServletInputStream is)
-		{
+		public ContentCachingInputStream(ServletInputStream is) {
 			this.is = is;
 		}
 
 		@Override
-		public int read() throws IOException
-		{
+		public int read() throws IOException {
 			int ch = this.is.read();
-			if (ch != -1 && !this.overflow)
-			{
-				if (contentCacheLimit != null && cachedContent.size() == contentCacheLimit)
-				{
+			if (ch != -1 && !this.overflow) {
+				if (contentCacheLimit != null && cachedContent.size() == contentCacheLimit) {
 					this.overflow = true;
 					handleContentOverflow(contentCacheLimit);
-				}
-				else
-				{
+				} else {
 					cachedContent.write(ch);
 				}
 			}
@@ -268,19 +227,15 @@ public class ContentCachingRequestWrapper extends HttpServletRequestWrapper
 		}
 
 		@Override
-		public int read(byte[] b) throws IOException
-		{
+		public int read(byte[] b) throws IOException {
 			int count = this.is.read(b);
 			writeToCache(b, 0, count);
 			return count;
 		}
 
-		private void writeToCache(final byte[] b, final int off, int count)
-		{
-			if (!this.overflow && count > 0)
-			{
-				if (contentCacheLimit != null && count + cachedContent.size() > contentCacheLimit)
-				{
+		private void writeToCache(final byte[] b, final int off, int count) {
+			if (!this.overflow && count > 0) {
+				if (contentCacheLimit != null && count + cachedContent.size() > contentCacheLimit) {
 					this.overflow = true;
 					cachedContent.write(b, off, contentCacheLimit - cachedContent.size());
 					handleContentOverflow(contentCacheLimit);
@@ -291,36 +246,31 @@ public class ContentCachingRequestWrapper extends HttpServletRequestWrapper
 		}
 
 		@Override
-		public int read(final byte[] b, final int off, final int len) throws IOException
-		{
+		public int read(final byte[] b, final int off, final int len) throws IOException {
 			int count = this.is.read(b, off, len);
 			writeToCache(b, off, count);
 			return count;
 		}
 
 		@Override
-		public int readLine(final byte[] b, final int off, final int len) throws IOException
-		{
+		public int readLine(final byte[] b, final int off, final int len) throws IOException {
 			int count = this.is.readLine(b, off, len);
 			writeToCache(b, off, count);
 			return count;
 		}
 
 		@Override
-		public boolean isFinished()
-		{
+		public boolean isFinished() {
 			return this.is.isFinished();
 		}
 
 		@Override
-		public boolean isReady()
-		{
+		public boolean isReady() {
 			return this.is.isReady();
 		}
 
 		@Override
-		public void setReadListener(ReadListener readListener)
-		{
+		public void setReadListener(ReadListener readListener) {
 			this.is.setReadListener(readListener);
 		}
 	}

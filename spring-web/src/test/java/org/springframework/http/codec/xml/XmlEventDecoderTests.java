@@ -16,19 +16,17 @@
 
 package org.springframework.http.codec.xml;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-
-import javax.xml.stream.events.XMLEvent;
-
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferLimitException;
+import org.springframework.core.testfixture.io.buffer.AbstractLeakCheckingTests;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferLimitException;
-import org.springframework.core.testfixture.io.buffer.AbstractLeakCheckingTests;
+import javax.xml.stream.events.XMLEvent;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

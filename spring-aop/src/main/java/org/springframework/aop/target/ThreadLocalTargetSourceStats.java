@@ -22,8 +22,7 @@ package org.springframework.aop.target;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
-public interface ThreadLocalTargetSourceStats
-{
+public interface ThreadLocalTargetSourceStats {
 
 	/**
 	 * Return the number of client invocations.

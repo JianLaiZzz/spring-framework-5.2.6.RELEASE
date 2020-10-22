@@ -26,14 +26,12 @@ import javax.jms.ConnectionFactory;
  * @author Juergen Hoeller
  * @since 2.0.2
  */
-public interface SmartConnectionFactory extends ConnectionFactory
-{
+public interface SmartConnectionFactory extends ConnectionFactory {
 
 	/**
 	 * Should we stop the Connection, obtained from this ConnectionFactory?
-	 * 
-	 * @param con
-	 *            the Connection to check
+	 *
+	 * @param con the Connection to check
 	 * @return whether a stop call is necessary
 	 * @see javax.jms.Connection#stop()
 	 */

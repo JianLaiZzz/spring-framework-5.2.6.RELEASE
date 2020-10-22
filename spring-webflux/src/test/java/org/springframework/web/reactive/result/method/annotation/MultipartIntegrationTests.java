@@ -16,19 +16,8 @@
 
 package org.springframework.web.reactive.result.method.annotation;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,11 +33,7 @@ import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.DispatcherHandler;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -56,6 +41,16 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.AbstractHttpHandlerIntegrationTests;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.HttpServer;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -208,8 +203,7 @@ class MultipartIntegrationTests extends AbstractHttpHandlerIntegrationTests {
 			// Use FileCopyUtils since the resource might reside in a JAR instead of in the file system.
 			byte[] resourceBytes = FileCopyUtils.copyToByteArray(resource.getInputStream());
 			assertThat(tempBytes).isEqualTo(resourceBytes);
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			throw new AssertionError(ex);
 		}
 	}
@@ -232,8 +226,8 @@ class MultipartIntegrationTests extends AbstractHttpHandlerIntegrationTests {
 
 		@PostMapping("/requestPart")
 		void requestPart(@RequestPart FormFieldPart fieldPart,
-				@RequestPart("fileParts") FilePart fileParts,
-				@RequestPart("jsonPart") Mono<Person> personMono) {
+						 @RequestPart("fileParts") FilePart fileParts,
+						 @RequestPart("jsonPart") Mono<Person> personMono) {
 
 			assertThat(fieldPart.value()).isEqualTo("fieldValue");
 			assertThat(partDescription(fileParts)).isEqualTo("fileParts:foo.txt");
@@ -271,8 +265,7 @@ class MultipartIntegrationTests extends AbstractHttpHandlerIntegrationTests {
 					return filePart.transferTo(tempFile)
 							.then(Mono.just(tempFile.toString() + "\n"));
 
-				}
-				catch (IOException e) {
+				} catch (IOException e) {
 					return Mono.error(e);
 				}
 			});

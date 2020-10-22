@@ -16,16 +16,16 @@
 
 package org.springframework.aop.aspectj.annotation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.autoproxy.AspectJAwareAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * {@link AspectJAwareAdvisorAutoProxyCreator} subclass that processes all AspectJ
@@ -46,12 +46,11 @@ import org.springframework.util.Assert;
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
- * @since 2.0
  * @see org.springframework.aop.aspectj.annotation.AspectJAdvisorFactory
+ * @since 2.0
  */
 @SuppressWarnings("serial")
-public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorAutoProxyCreator
-{
+public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorAutoProxyCreator {
 
 	@Nullable
 	private List<Pattern> includePatterns;
@@ -67,27 +66,22 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	 * <p>
 	 * Default is to consider all @AspectJ beans as eligible.
 	 */
-	public void setIncludePatterns(List<String> patterns)
-	{
+	public void setIncludePatterns(List<String> patterns) {
 		this.includePatterns = new ArrayList<>(patterns.size());
-		for (String patternText : patterns)
-		{
+		for (String patternText : patterns) {
 			this.includePatterns.add(Pattern.compile(patternText));
 		}
 	}
 
-	public void setAspectJAdvisorFactory(AspectJAdvisorFactory aspectJAdvisorFactory)
-	{
+	public void setAspectJAdvisorFactory(AspectJAdvisorFactory aspectJAdvisorFactory) {
 		Assert.notNull(aspectJAdvisorFactory, "AspectJAdvisorFactory must not be null");
 		this.aspectJAdvisorFactory = aspectJAdvisorFactory;
 	}
 
 	@Override
-	protected void initBeanFactory(ConfigurableListableBeanFactory beanFactory)
-	{
+	protected void initBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		super.initBeanFactory(beanFactory);
-		if (this.aspectJAdvisorFactory == null)
-		{
+		if (this.aspectJAdvisorFactory == null) {
 			this.aspectJAdvisorFactory = new ReflectiveAspectJAdvisorFactory(beanFactory);
 		}
 		this.aspectJAdvisorsBuilder = new BeanFactoryAspectJAdvisorsBuilderAdapter(beanFactory,
@@ -95,21 +89,18 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	}
 
 	@Override
-	protected List<Advisor> findCandidateAdvisors()
-	{
+	protected List<Advisor> findCandidateAdvisors() {
 		// Add all the Spring advisors found according to superclass rules.
 		List<Advisor> advisors = super.findCandidateAdvisors();
 		// Build Advisors for all AspectJ aspects in the bean factory.
-		if (this.aspectJAdvisorsBuilder != null)
-		{
+		if (this.aspectJAdvisorsBuilder != null) {
 			advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors());
 		}
 		return advisors;
 	}
 
 	@Override
-	protected boolean isInfrastructureClass(Class<?> beanClass)
-	{
+	protected boolean isInfrastructureClass(Class<?> beanClass) {
 		// Previously we setProxyTargetClass(true) in the constructor, but that has too
 		// broad an impact. Instead we now override isInfrastructureClass to avoid proxying
 		// aspects. I'm not entirely happy with that as there is no good reason not
@@ -129,18 +120,12 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	 * {@code null} and all beans are included. If "includePatterns" is non-null,
 	 * then one of the patterns must match.
 	 */
-	protected boolean isEligibleAspectBean(String beanName)
-	{
-		if (this.includePatterns == null)
-		{
+	protected boolean isEligibleAspectBean(String beanName) {
+		if (this.includePatterns == null) {
 			return true;
-		}
-		else
-		{
-			for (Pattern pattern : this.includePatterns)
-			{
-				if (pattern.matcher(beanName).matches())
-				{
+		} else {
+			for (Pattern pattern : this.includePatterns) {
+				if (pattern.matcher(beanName).matches()) {
 					return true;
 				}
 			}
@@ -152,19 +137,16 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	 * Subclass of BeanFactoryAspectJAdvisorsBuilderAdapter that delegates to
 	 * surrounding AnnotationAwareAspectJAutoProxyCreator facilities.
 	 */
-	private class BeanFactoryAspectJAdvisorsBuilderAdapter extends BeanFactoryAspectJAdvisorsBuilder
-	{
+	private class BeanFactoryAspectJAdvisorsBuilderAdapter extends BeanFactoryAspectJAdvisorsBuilder {
 
 		public BeanFactoryAspectJAdvisorsBuilderAdapter(ListableBeanFactory beanFactory,
-				AspectJAdvisorFactory advisorFactory)
-		{
+														AspectJAdvisorFactory advisorFactory) {
 
 			super(beanFactory, advisorFactory);
 		}
 
 		@Override
-		protected boolean isEligibleBean(String beanName)
-		{
+		protected boolean isEligibleBean(String beanName) {
 			return AnnotationAwareAspectJAutoProxyCreator.this.isEligibleAspectBean(beanName);
 		}
 	}

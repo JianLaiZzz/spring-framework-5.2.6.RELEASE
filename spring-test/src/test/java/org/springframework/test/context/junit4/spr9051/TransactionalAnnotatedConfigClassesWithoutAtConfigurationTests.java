@@ -16,10 +16,7 @@
 
 package org.springframework.test.context.junit4.spr9051;
 
-import javax.sql.DataSource;
-
 import org.junit.Before;
-
 import org.springframework.beans.testfixture.beans.Employee;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +28,8 @@ import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.sql.DataSource;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -40,9 +39,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * for details).
  *
  * @author Sam Brannen
- * @since 3.2
  * @see Bean
  * @see TransactionalAnnotatedConfigClassWithAtConfigurationTests
+ * @since 3.2
  */
 @ContextConfiguration(classes = TransactionalAnnotatedConfigClassesWithoutAtConfigurationTests.AnnotatedFactoryBeans.class)
 public class TransactionalAnnotatedConfigClassesWithoutAtConfigurationTests extends
@@ -84,8 +83,8 @@ public class TransactionalAnnotatedConfigClassesWithoutAtConfigurationTests exte
 		 * application context</li>
 		 * <li>and again when the {@link DataSource} is injected into the test
 		 * instance in {@link AbstractTransactionalAnnotatedConfigClassTests#setDataSource(DataSource)}.</li>
-		 *</ol>
-		 *
+		 * </ol>
+		 * <p>
 		 * Consequently, the {@link JdbcTemplate} used by this test instance and
 		 * the {@link PlatformTransactionManager} used by the Spring TestContext
 		 * Framework will operate on two different {@code DataSource} instances,
@@ -94,10 +93,10 @@ public class TransactionalAnnotatedConfigClassesWithoutAtConfigurationTests exte
 		@Bean
 		public DataSource dataSource() {
 			return new EmbeddedDatabaseBuilder()//
-			.addScript("classpath:/org/springframework/test/jdbc/schema.sql")//
-			// Ensure that this in-memory database is only used by this class:
-			.setName(getClass().getName())//
-			.build();
+					.addScript("classpath:/org/springframework/test/jdbc/schema.sql")//
+					// Ensure that this in-memory database is only used by this class:
+					.setName(getClass().getName())//
+					.build();
 		}
 
 	}

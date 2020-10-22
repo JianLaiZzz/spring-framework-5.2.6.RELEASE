@@ -16,12 +16,12 @@
 
 package org.springframework.web.accept;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.NativeWebRequest;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A {@code ContentNegotiationStrategy} that returns a fixed content type.
@@ -29,16 +29,14 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Rossen Stoyanchev
  * @since 3.2
  */
-public class FixedContentNegotiationStrategy implements ContentNegotiationStrategy
-{
+public class FixedContentNegotiationStrategy implements ContentNegotiationStrategy {
 
 	private final List<MediaType> contentTypes;
 
 	/**
 	 * Constructor with a single default {@code MediaType}.
 	 */
-	public FixedContentNegotiationStrategy(MediaType contentType)
-	{
+	public FixedContentNegotiationStrategy(MediaType contentType) {
 		this(Collections.singletonList(contentType));
 	}
 
@@ -48,11 +46,10 @@ public class FixedContentNegotiationStrategy implements ContentNegotiationStrate
 	 * <p>
 	 * Consider appending {@link MediaType#ALL} at the end if destinations
 	 * are present which do not support any of the other default media types.
-	 * 
+	 *
 	 * @since 5.0
 	 */
-	public FixedContentNegotiationStrategy(List<MediaType> contentTypes)
-	{
+	public FixedContentNegotiationStrategy(List<MediaType> contentTypes) {
 		Assert.notNull(contentTypes, "'contentTypes' must not be null");
 		this.contentTypes = Collections.unmodifiableList(contentTypes);
 	}
@@ -60,14 +57,12 @@ public class FixedContentNegotiationStrategy implements ContentNegotiationStrate
 	/**
 	 * Return the configured list of media types.
 	 */
-	public List<MediaType> getContentTypes()
-	{
+	public List<MediaType> getContentTypes() {
 		return this.contentTypes;
 	}
 
 	@Override
-	public List<MediaType> resolveMediaTypes(NativeWebRequest request)
-	{
+	public List<MediaType> resolveMediaTypes(NativeWebRequest request) {
 		return this.contentTypes;
 	}
 

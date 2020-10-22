@@ -32,14 +32,13 @@ import java.lang.annotation.*;
  * <em>composed annotations</em>.
  *
  * @author Stephane Nicoll
- * @since 4.2
  * @see JmsListener
+ * @since 4.2
  */
-@Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface JmsListeners
-{
+public @interface JmsListeners {
 
 	JmsListener[] value();
 

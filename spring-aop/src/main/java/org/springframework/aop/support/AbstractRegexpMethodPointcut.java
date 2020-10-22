@@ -16,15 +16,15 @@
 
 package org.springframework.aop.support;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * Abstract base regular expression pointcut bean. JavaBean properties are:
@@ -47,13 +47,12 @@ import org.springframework.util.StringUtils;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @author Rob Harrop
- * @since 1.1
  * @see JdkRegexpMethodPointcut
+ * @since 1.1
  */
 @SuppressWarnings("serial")
 public abstract class AbstractRegexpMethodPointcut extends StaticMethodMatcherPointcut
-		implements Serializable
-{
+		implements Serializable {
 
 	/**
 	 * Regular expressions to match.
@@ -68,26 +67,23 @@ public abstract class AbstractRegexpMethodPointcut extends StaticMethodMatcherPo
 	/**
 	 * Convenience method when we have only a single pattern.
 	 * Use either this method or {@link #setPatterns}, not both.
-	 * 
+	 *
 	 * @see #setPatterns
 	 */
-	public void setPattern(String pattern)
-	{
+	public void setPattern(String pattern) {
 		setPatterns(pattern);
 	}
 
 	/**
 	 * Set the regular expressions defining methods to match.
 	 * Matching will be the union of all these; if any match, the pointcut matches.
-	 * 
+	 *
 	 * @see #setPattern
 	 */
-	public void setPatterns(String... patterns)
-	{
+	public void setPatterns(String... patterns) {
 		Assert.notEmpty(patterns, "'patterns' must not be empty");
 		this.patterns = new String[patterns.length];
-		for (int i = 0; i < patterns.length; i++)
-		{
+		for (int i = 0; i < patterns.length; i++) {
 			this.patterns[i] = StringUtils.trimWhitespace(patterns[i]);
 		}
 		initPatternRepresentation(this.patterns);
@@ -96,34 +92,30 @@ public abstract class AbstractRegexpMethodPointcut extends StaticMethodMatcherPo
 	/**
 	 * Return the regular expressions for method matching.
 	 */
-	public String[] getPatterns()
-	{
+	public String[] getPatterns() {
 		return this.patterns;
 	}
 
 	/**
 	 * Convenience method when we have only a single exclusion pattern.
 	 * Use either this method or {@link #setExcludedPatterns}, not both.
-	 * 
+	 *
 	 * @see #setExcludedPatterns
 	 */
-	public void setExcludedPattern(String excludedPattern)
-	{
+	public void setExcludedPattern(String excludedPattern) {
 		setExcludedPatterns(excludedPattern);
 	}
 
 	/**
 	 * Set the regular expressions defining methods to match for exclusion.
 	 * Matching will be the union of all these; if any match, the pointcut matches.
-	 * 
+	 *
 	 * @see #setExcludedPattern
 	 */
-	public void setExcludedPatterns(String... excludedPatterns)
-	{
+	public void setExcludedPatterns(String... excludedPatterns) {
 		Assert.notEmpty(excludedPatterns, "'excludedPatterns' must not be empty");
 		this.excludedPatterns = new String[excludedPatterns.length];
-		for (int i = 0; i < excludedPatterns.length; i++)
-		{
+		for (int i = 0; i < excludedPatterns.length; i++) {
 			this.excludedPatterns[i] = StringUtils.trimWhitespace(excludedPatterns[i]);
 		}
 		initExcludedPatternRepresentation(this.excludedPatterns);
@@ -132,8 +124,7 @@ public abstract class AbstractRegexpMethodPointcut extends StaticMethodMatcherPo
 	/**
 	 * Returns the regular expressions for exclusion matching.
 	 */
-	public String[] getExcludedPatterns()
-	{
+	public String[] getExcludedPatterns() {
 		return this.excludedPatterns;
 	}
 
@@ -143,32 +134,25 @@ public abstract class AbstractRegexpMethodPointcut extends StaticMethodMatcherPo
 	 * plus the name of the method.
 	 */
 	@Override
-	public boolean matches(Method method, Class<?> targetClass)
-	{
+	public boolean matches(Method method, Class<?> targetClass) {
 		return (matchesPattern(ClassUtils.getQualifiedMethodName(method, targetClass))
 				|| (targetClass != method.getDeclaringClass() && matchesPattern(
-						ClassUtils.getQualifiedMethodName(method, method.getDeclaringClass()))));
+				ClassUtils.getQualifiedMethodName(method, method.getDeclaringClass()))));
 	}
 
 	/**
 	 * Match the specified candidate against the configured patterns.
-	 * 
-	 * @param signatureString
-	 *            "java.lang.Object.hashCode" style signature
+	 *
+	 * @param signatureString "java.lang.Object.hashCode" style signature
 	 * @return whether the candidate matches at least one of the specified patterns
 	 */
-	protected boolean matchesPattern(String signatureString)
-	{
-		for (int i = 0; i < this.patterns.length; i++)
-		{
+	protected boolean matchesPattern(String signatureString) {
+		for (int i = 0; i < this.patterns.length; i++) {
 			boolean matched = matches(signatureString, i);
-			if (matched)
-			{
-				for (int j = 0; j < this.excludedPatterns.length; j++)
-				{
+			if (matched) {
+				for (int j = 0; j < this.excludedPatterns.length; j++) {
 					boolean excluded = matchesExclusion(signatureString, j);
-					if (excluded)
-					{
+					if (excluded) {
 						return false;
 					}
 				}
@@ -184,11 +168,9 @@ public abstract class AbstractRegexpMethodPointcut extends StaticMethodMatcherPo
 	 * <p>
 	 * This method will be invoked from the {@link #setPatterns} method,
 	 * and also on deserialization.
-	 * 
-	 * @param patterns
-	 *            the patterns to initialize
-	 * @throws IllegalArgumentException
-	 *             in case of an invalid pattern
+	 *
+	 * @param patterns the patterns to initialize
+	 * @throws IllegalArgumentException in case of an invalid pattern
 	 */
 	protected abstract void initPatternRepresentation(String[] patterns) throws IllegalArgumentException;
 
@@ -198,46 +180,37 @@ public abstract class AbstractRegexpMethodPointcut extends StaticMethodMatcherPo
 	 * <p>
 	 * This method will be invoked from the {@link #setExcludedPatterns} method,
 	 * and also on deserialization.
-	 * 
-	 * @param patterns
-	 *            the patterns to initialize
-	 * @throws IllegalArgumentException
-	 *             in case of an invalid pattern
+	 *
+	 * @param patterns the patterns to initialize
+	 * @throws IllegalArgumentException in case of an invalid pattern
 	 */
 	protected abstract void initExcludedPatternRepresentation(String[] patterns)
 			throws IllegalArgumentException;
 
 	/**
 	 * Does the pattern at the given index match the given String?
-	 * 
-	 * @param pattern
-	 *            the {@code String} pattern to match
-	 * @param patternIndex
-	 *            index of pattern (starting from 0)
+	 *
+	 * @param pattern      the {@code String} pattern to match
+	 * @param patternIndex index of pattern (starting from 0)
 	 * @return {@code true} if there is a match, {@code false} otherwise
 	 */
 	protected abstract boolean matches(String pattern, int patternIndex);
 
 	/**
 	 * Does the exclusion pattern at the given index match the given String?
-	 * 
-	 * @param pattern
-	 *            the {@code String} pattern to match
-	 * @param patternIndex
-	 *            index of pattern (starting from 0)
+	 *
+	 * @param pattern      the {@code String} pattern to match
+	 * @param patternIndex index of pattern (starting from 0)
 	 * @return {@code true} if there is a match, {@code false} otherwise
 	 */
 	protected abstract boolean matchesExclusion(String pattern, int patternIndex);
 
 	@Override
-	public boolean equals(@Nullable Object other)
-	{
-		if (this == other)
-		{
+	public boolean equals(@Nullable Object other) {
+		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof AbstractRegexpMethodPointcut))
-		{
+		if (!(other instanceof AbstractRegexpMethodPointcut)) {
 			return false;
 		}
 		AbstractRegexpMethodPointcut otherPointcut = (AbstractRegexpMethodPointcut) other;
@@ -246,23 +219,19 @@ public abstract class AbstractRegexpMethodPointcut extends StaticMethodMatcherPo
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		int result = 27;
-		for (String pattern : this.patterns)
-		{
+		for (String pattern : this.patterns) {
 			result = 13 * result + pattern.hashCode();
 		}
-		for (String excludedPattern : this.excludedPatterns)
-		{
+		for (String excludedPattern : this.excludedPatterns) {
 			result = 13 * result + excludedPattern.hashCode();
 		}
 		return result;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getClass().getName() + ": patterns " + ObjectUtils.nullSafeToString(this.patterns)
 				+ ", excluded patterns " + ObjectUtils.nullSafeToString(this.excludedPatterns);
 	}

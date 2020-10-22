@@ -31,8 +31,7 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 2.0
  */
-public class AspectJPointcutAdvisor implements PointcutAdvisor, Ordered
-{
+public class AspectJPointcutAdvisor implements PointcutAdvisor, Ordered {
 
 	private final AbstractAspectJAdvice advice;
 
@@ -43,73 +42,59 @@ public class AspectJPointcutAdvisor implements PointcutAdvisor, Ordered
 
 	/**
 	 * Create a new AspectJPointcutAdvisor for the given advice.
-	 * 
-	 * @param advice
-	 *            the AbstractAspectJAdvice to wrap
+	 *
+	 * @param advice the AbstractAspectJAdvice to wrap
 	 */
-	public AspectJPointcutAdvisor(AbstractAspectJAdvice advice)
-	{
+	public AspectJPointcutAdvisor(AbstractAspectJAdvice advice) {
 		Assert.notNull(advice, "Advice must not be null");
 		this.advice = advice;
 		this.pointcut = advice.buildSafePointcut();
 	}
 
-	public void setOrder(int order)
-	{
+	public void setOrder(int order) {
 		this.order = order;
 	}
 
 	@Override
-	public int getOrder()
-	{
-		if (this.order != null)
-		{
+	public int getOrder() {
+		if (this.order != null) {
 			return this.order;
-		}
-		else
-		{
+		} else {
 			return this.advice.getOrder();
 		}
 	}
 
 	@Override
-	public boolean isPerInstance()
-	{
+	public boolean isPerInstance() {
 		return true;
 	}
 
 	@Override
-	public Advice getAdvice()
-	{
+	public Advice getAdvice() {
 		return this.advice;
 	}
 
 	@Override
-	public Pointcut getPointcut()
-	{
+	public Pointcut getPointcut() {
 		return this.pointcut;
 	}
 
 	/**
 	 * Return the name of the aspect (bean) in which the advice was declared.
-	 * 
-	 * @since 4.3.15
+	 *
 	 * @see AbstractAspectJAdvice#getAspectName()
+	 * @since 4.3.15
 	 */
-	public String getAspectName()
-	{
+	public String getAspectName() {
 		return this.advice.getAspectName();
 	}
 
 	@Override
-	public boolean equals(@Nullable Object other)
-	{
-		if (this == other)
-		{
+	public boolean equals(@Nullable Object other) {
+		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof AspectJPointcutAdvisor))
-		{
+		if (!(other instanceof AspectJPointcutAdvisor)) {
 			return false;
 		}
 		AspectJPointcutAdvisor otherAdvisor = (AspectJPointcutAdvisor) other;
@@ -117,8 +102,7 @@ public class AspectJPointcutAdvisor implements PointcutAdvisor, Ordered
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return AspectJPointcutAdvisor.class.hashCode() * 29 + this.advice.hashCode();
 	}
 

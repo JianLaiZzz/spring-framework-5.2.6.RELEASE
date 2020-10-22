@@ -16,6 +16,12 @@
 
 package org.springframework.jms.connection;
 
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ObjectUtils;
+
+import javax.jms.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -23,13 +29,6 @@ import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import javax.jms.*;
-
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.ObjectUtils;
 
 /**
  * {@link SingleConnectionFactory} subclass that adds {@link javax.jms.Session}
@@ -73,8 +72,7 @@ import org.springframework.util.ObjectUtils;
  * @author Juergen Hoeller
  * @since 2.5.3
  */
-public class CachingConnectionFactory extends SingleConnectionFactory
-{
+public class CachingConnectionFactory extends SingleConnectionFactory {
 
 	private int sessionCacheSize = 1;
 
@@ -88,11 +86,10 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 
 	/**
 	 * Create a new CachingConnectionFactory for bean-style usage.
-	 * 
+	 *
 	 * @see #setTargetConnectionFactory
 	 */
-	public CachingConnectionFactory()
-	{
+	public CachingConnectionFactory() {
 		super();
 		setReconnectOnException(true);
 	}
@@ -100,12 +97,10 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 	/**
 	 * Create a new CachingConnectionFactory for the given target
 	 * ConnectionFactory.
-	 * 
-	 * @param targetConnectionFactory
-	 *            the target ConnectionFactory
+	 *
+	 * @param targetConnectionFactory the target ConnectionFactory
 	 */
-	public CachingConnectionFactory(ConnectionFactory targetConnectionFactory)
-	{
+	public CachingConnectionFactory(ConnectionFactory targetConnectionFactory) {
 		super(targetConnectionFactory);
 		setReconnectOnException(true);
 	}
@@ -122,11 +117,10 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 	 * Default is 1: caching a single Session, (re-)creating further ones on
 	 * demand. Specify a number like 10 if you'd like to raise the number of cached
 	 * Sessions; that said, 1 may be sufficient for low-concurrency scenarios.
-	 * 
+	 *
 	 * @see #setCacheProducers
 	 */
-	public void setSessionCacheSize(int sessionCacheSize)
-	{
+	public void setSessionCacheSize(int sessionCacheSize) {
 		Assert.isTrue(sessionCacheSize >= 1, "Session cache size must be 1 or higher");
 		this.sessionCacheSize = sessionCacheSize;
 	}
@@ -134,8 +128,7 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 	/**
 	 * Return the desired size for the JMS Session cache (per JMS Session type).
 	 */
-	public int getSessionCacheSize()
-	{
+	public int getSessionCacheSize() {
 		return this.sessionCacheSize;
 	}
 
@@ -146,16 +139,14 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 	 * Default is "true". Switch this to "false" in order to always
 	 * recreate MessageProducers on demand.
 	 */
-	public void setCacheProducers(boolean cacheProducers)
-	{
+	public void setCacheProducers(boolean cacheProducers) {
 		this.cacheProducers = cacheProducers;
 	}
 
 	/**
 	 * Return whether to cache JMS MessageProducers per JMS Session instance.
 	 */
-	public boolean isCacheProducers()
-	{
+	public boolean isCacheProducers() {
 		return this.cacheProducers;
 	}
 
@@ -168,16 +159,14 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 	 * Default is "true". Switch this to "false" in order to always
 	 * recreate MessageConsumers on demand.
 	 */
-	public void setCacheConsumers(boolean cacheConsumers)
-	{
+	public void setCacheConsumers(boolean cacheConsumers) {
 		this.cacheConsumers = cacheConsumers;
 	}
 
 	/**
 	 * Return whether to cache JMS MessageConsumers per JMS Session instance.
 	 */
-	public boolean isCacheConsumers()
-	{
+	public boolean isCacheConsumers() {
 		return this.cacheConsumers;
 	}
 
@@ -185,24 +174,16 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 	 * Resets the Session cache as well.
 	 */
 	@Override
-	public void resetConnection()
-	{
+	public void resetConnection() {
 		this.active = false;
 
-		synchronized (this.cachedSessions)
-		{
-			for (LinkedList<Session> sessionList : this.cachedSessions.values())
-			{
-				synchronized (sessionList)
-				{
-					for (Session session : sessionList)
-					{
-						try
-						{
+		synchronized (this.cachedSessions) {
+			for (LinkedList<Session> sessionList : this.cachedSessions.values()) {
+				synchronized (sessionList) {
+					for (Session session : sessionList) {
+						try {
 							session.close();
-						}
-						catch (Throwable ex)
-						{
+						} catch (Throwable ex) {
 							logger.trace("Could not close cached JMS Session", ex);
 						}
 					}
@@ -221,37 +202,28 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 	 * Checks for a cached Session for the given mode.
 	 */
 	@Override
-	protected Session getSession(Connection con, Integer mode) throws JMSException
-	{
-		if (!this.active)
-		{
+	protected Session getSession(Connection con, Integer mode) throws JMSException {
+		if (!this.active) {
 			return null;
 		}
 
 		LinkedList<Session> sessionList = this.cachedSessions.computeIfAbsent(mode,
 				k -> new LinkedList<>());
 		Session session = null;
-		synchronized (sessionList)
-		{
-			if (!sessionList.isEmpty())
-			{
+		synchronized (sessionList) {
+			if (!sessionList.isEmpty()) {
 				session = sessionList.removeFirst();
 			}
 		}
-		if (session != null)
-		{
-			if (logger.isTraceEnabled())
-			{
+		if (session != null) {
+			if (logger.isTraceEnabled()) {
 				logger.trace("Found cached JMS Session for mode " + mode + ": "
 						+ (session instanceof SessionProxy ? ((SessionProxy) session).getTargetSession()
-								: session));
+						: session));
 			}
-		}
-		else
-		{
+		} else {
 			Session targetSession = createSession(con, mode);
-			if (logger.isDebugEnabled())
-			{
+			if (logger.isDebugEnabled()) {
 				logger.debug("Registering cached JMS Session for mode " + mode + ": " + targetSession);
 			}
 			session = getCachedSessionProxy(targetSession, sessionList);
@@ -263,23 +235,18 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 	 * Wrap the given Session with a proxy that delegates every method call to it
 	 * but adapts close calls. This is useful for allowing application code to
 	 * handle a special framework Session just like an ordinary Session.
-	 * 
-	 * @param target
-	 *            the original Session to wrap
-	 * @param sessionList
-	 *            the List of cached Sessions that the given Session belongs to
+	 *
+	 * @param target      the original Session to wrap
+	 * @param sessionList the List of cached Sessions that the given Session belongs to
 	 * @return the wrapped Session
 	 */
-	protected Session getCachedSessionProxy(Session target, LinkedList<Session> sessionList)
-	{
+	protected Session getCachedSessionProxy(Session target, LinkedList<Session> sessionList) {
 		List<Class<?>> classes = new ArrayList<>(3);
 		classes.add(SessionProxy.class);
-		if (target instanceof QueueSession)
-		{
+		if (target instanceof QueueSession) {
 			classes.add(QueueSession.class);
 		}
-		if (target instanceof TopicSession)
-		{
+		if (target instanceof TopicSession) {
 			classes.add(TopicSession.class);
 		}
 		return (Session) Proxy.newProxyInstance(SessionProxy.class.getClassLoader(),
@@ -290,8 +257,7 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 	/**
 	 * Invocation handler for a cached JMS Session proxy.
 	 */
-	private class CachedSessionInvocationHandler implements InvocationHandler
-	{
+	private class CachedSessionInvocationHandler implements InvocationHandler {
 
 		private final Session target;
 
@@ -303,48 +269,33 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 
 		private boolean transactionOpen = false;
 
-		public CachedSessionInvocationHandler(Session target, LinkedList<Session> sessionList)
-		{
+		public CachedSessionInvocationHandler(Session target, LinkedList<Session> sessionList) {
 			this.target = target;
 			this.sessionList = sessionList;
 		}
 
 		@Override
 		@Nullable
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-		{
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			String methodName = method.getName();
-			if (methodName.equals("equals"))
-			{
+			if (methodName.equals("equals")) {
 				// Only consider equal when proxies are identical.
 				return (proxy == args[0]);
-			}
-			else if (methodName.equals("hashCode"))
-			{
+			} else if (methodName.equals("hashCode")) {
 				// Use hashCode of Session proxy.
 				return System.identityHashCode(proxy);
-			}
-			else if (methodName.equals("toString"))
-			{
+			} else if (methodName.equals("toString")) {
 				return "Cached JMS Session: " + this.target;
-			}
-			else if (methodName.equals("close"))
-			{
+			} else if (methodName.equals("close")) {
 				// Handle close method: don't pass the call on.
-				if (active)
-				{
-					synchronized (this.sessionList)
-					{
-						if (this.sessionList.size() < getSessionCacheSize())
-						{
-							try
-							{
+				if (active) {
+					synchronized (this.sessionList) {
+						if (this.sessionList.size() < getSessionCacheSize()) {
+							try {
 								logicalClose((Session) proxy);
 								// Remain open in the session list.
 								return null;
-							}
-							catch (JMSException ex)
-							{
+							} catch (JMSException ex) {
 								logger.trace("Logical close of cached JMS Session failed - discarding it",
 										ex);
 								// Proceed to physical close from here...
@@ -355,100 +306,70 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 				// If we get here, we're supposed to shut down.
 				physicalClose();
 				return null;
-			}
-			else if (methodName.equals("getTargetSession"))
-			{
+			} else if (methodName.equals("getTargetSession")) {
 				// Handle getTargetSession method: return underlying Session.
 				return this.target;
-			}
-			else if (methodName.equals("commit") || methodName.equals("rollback"))
-			{
+			} else if (methodName.equals("commit") || methodName.equals("rollback")) {
 				this.transactionOpen = false;
-			}
-			else if (methodName.startsWith("create"))
-			{
+			} else if (methodName.startsWith("create")) {
 				this.transactionOpen = true;
 				if (isCacheProducers() && (methodName.equals("createProducer")
-						|| methodName.equals("createSender") || methodName.equals("createPublisher")))
-				{
+						|| methodName.equals("createSender") || methodName.equals("createPublisher"))) {
 					// Destination argument being null is ok for a producer
 					Destination dest = (Destination) args[0];
-					if (!(dest instanceof TemporaryQueue || dest instanceof TemporaryTopic))
-					{
+					if (!(dest instanceof TemporaryQueue || dest instanceof TemporaryTopic)) {
 						return getCachedProducer(dest);
 					}
-				}
-				else if (isCacheConsumers())
-				{
+				} else if (isCacheConsumers()) {
 					// let raw JMS invocation throw an exception if Destination (i.e. args[0]) is null
 					if ((methodName.equals("createConsumer") || methodName.equals("createReceiver")
-							|| methodName.equals("createSubscriber")))
-					{
+							|| methodName.equals("createSubscriber"))) {
 						Destination dest = (Destination) args[0];
 						if (dest != null
-								&& !(dest instanceof TemporaryQueue || dest instanceof TemporaryTopic))
-						{
+								&& !(dest instanceof TemporaryQueue || dest instanceof TemporaryTopic)) {
 							return getCachedConsumer(dest, (args.length > 1 ? (String) args[1] : null),
 									(args.length > 2 && (Boolean) args[2]), null, false);
 						}
-					}
-					else if (methodName.equals("createDurableConsumer")
-							|| methodName.equals("createDurableSubscriber"))
-					{
+					} else if (methodName.equals("createDurableConsumer")
+							|| methodName.equals("createDurableSubscriber")) {
 						Destination dest = (Destination) args[0];
-						if (dest != null)
-						{
+						if (dest != null) {
 							return getCachedConsumer(dest, (args.length > 2 ? (String) args[2] : null),
 									(args.length > 3 && (Boolean) args[3]), (String) args[1], true);
 						}
-					}
-					else if (methodName.equals("createSharedConsumer"))
-					{
+					} else if (methodName.equals("createSharedConsumer")) {
 						Destination dest = (Destination) args[0];
-						if (dest != null)
-						{
+						if (dest != null) {
 							return getCachedConsumer(dest, (args.length > 2 ? (String) args[2] : null),
 									null, (String) args[1], false);
 						}
-					}
-					else if (methodName.equals("createSharedDurableConsumer"))
-					{
+					} else if (methodName.equals("createSharedDurableConsumer")) {
 						Destination dest = (Destination) args[0];
-						if (dest != null)
-						{
+						if (dest != null) {
 							return getCachedConsumer(dest, (args.length > 2 ? (String) args[2] : null),
 									null, (String) args[1], true);
 						}
 					}
 				}
 			}
-			try
-			{
+			try {
 				return method.invoke(this.target, args);
-			}
-			catch (InvocationTargetException ex)
-			{
+			} catch (InvocationTargetException ex) {
 				throw ex.getTargetException();
 			}
 		}
 
-		private MessageProducer getCachedProducer(@Nullable Destination dest) throws JMSException
-		{
+		private MessageProducer getCachedProducer(@Nullable Destination dest) throws JMSException {
 			DestinationCacheKey cacheKey = (dest != null ? new DestinationCacheKey(dest) : null);
 			MessageProducer producer = this.cachedProducers.get(cacheKey);
-			if (producer != null)
-			{
-				if (logger.isTraceEnabled())
-				{
+			if (producer != null) {
+				if (logger.isTraceEnabled()) {
 					logger.trace("Found cached JMS MessageProducer for destination [" + dest + "]: "
 							+ producer);
 				}
-			}
-			else
-			{
+			} else {
 				producer = this.target.createProducer(dest);
-				if (logger.isDebugEnabled())
-				{
+				if (logger.isDebugEnabled()) {
 					logger.debug("Registering cached JMS MessageProducer for destination [" + dest + "]: "
 							+ producer);
 				}
@@ -458,46 +379,34 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 		}
 
 		private MessageConsumer getCachedConsumer(Destination dest, @Nullable String selector,
-				@Nullable Boolean noLocal, @Nullable String subscription, boolean durable)
-				throws JMSException
-		{
+												  @Nullable Boolean noLocal, @Nullable String subscription, boolean durable)
+				throws JMSException {
 
 			ConsumerCacheKey cacheKey = new ConsumerCacheKey(dest, selector, noLocal, subscription,
 					durable);
 			MessageConsumer consumer = this.cachedConsumers.get(cacheKey);
-			if (consumer != null)
-			{
-				if (logger.isTraceEnabled())
-				{
+			if (consumer != null) {
+				if (logger.isTraceEnabled()) {
 					logger.trace("Found cached JMS MessageConsumer for destination [" + dest + "]: "
 							+ consumer);
 				}
-			}
-			else
-			{
-				if (dest instanceof Topic)
-				{
-					if (noLocal == null)
-					{
+			} else {
+				if (dest instanceof Topic) {
+					if (noLocal == null) {
 						consumer = (durable
 								? this.target.createSharedDurableConsumer((Topic) dest, subscription,
-										selector)
+								selector)
 								: this.target.createSharedConsumer((Topic) dest, subscription, selector));
-					}
-					else
-					{
+					} else {
 						consumer = (durable
 								? this.target.createDurableSubscriber((Topic) dest, subscription,
-										selector, noLocal)
+								selector, noLocal)
 								: this.target.createConsumer(dest, selector, noLocal));
 					}
-				}
-				else
-				{
+				} else {
 					consumer = this.target.createConsumer(dest, selector);
 				}
-				if (logger.isDebugEnabled())
-				{
+				if (logger.isDebugEnabled()) {
 					logger.debug("Registering cached JMS MessageConsumer for destination [" + dest + "]: "
 							+ consumer);
 				}
@@ -506,62 +415,48 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 			return new CachedMessageConsumer(consumer);
 		}
 
-		private void logicalClose(Session proxy) throws JMSException
-		{
+		private void logicalClose(Session proxy) throws JMSException {
 			// Preserve rollback-on-close semantics.
-			if (this.transactionOpen && this.target.getTransacted())
-			{
+			if (this.transactionOpen && this.target.getTransacted()) {
 				this.transactionOpen = false;
 				this.target.rollback();
 			}
 			// Physically close durable subscribers at time of Session close call.
 			for (Iterator<Map.Entry<ConsumerCacheKey, MessageConsumer>> it = this.cachedConsumers
-					.entrySet().iterator(); it.hasNext();)
-			{
+					.entrySet().iterator(); it.hasNext(); ) {
 				Map.Entry<ConsumerCacheKey, MessageConsumer> entry = it.next();
-				if (entry.getKey().subscription != null)
-				{
+				if (entry.getKey().subscription != null) {
 					entry.getValue().close();
 					it.remove();
 				}
 			}
 			// Allow for multiple close calls...
 			boolean returned = false;
-			synchronized (this.sessionList)
-			{
-				if (!this.sessionList.contains(proxy))
-				{
+			synchronized (this.sessionList) {
+				if (!this.sessionList.contains(proxy)) {
 					this.sessionList.addLast(proxy);
 					returned = true;
 				}
 			}
-			if (returned && logger.isTraceEnabled())
-			{
+			if (returned && logger.isTraceEnabled()) {
 				logger.trace("Returned cached Session: " + this.target);
 			}
 		}
 
-		private void physicalClose() throws JMSException
-		{
-			if (logger.isDebugEnabled())
-			{
+		private void physicalClose() throws JMSException {
+			if (logger.isDebugEnabled()) {
 				logger.debug("Closing cached Session: " + this.target);
 			}
 			// Explicitly close all MessageProducers and MessageConsumers that
 			// this Session happens to cache...
-			try
-			{
-				for (MessageProducer producer : this.cachedProducers.values())
-				{
+			try {
+				for (MessageProducer producer : this.cachedProducers.values()) {
 					producer.close();
 				}
-				for (MessageConsumer consumer : this.cachedConsumers.values())
-				{
+				for (MessageConsumer consumer : this.cachedConsumers.values()) {
 					consumer.close();
 				}
-			}
-			finally
-			{
+			} finally {
 				this.cachedProducers.clear();
 				this.cachedConsumers.clear();
 				// Now actually close the Session.
@@ -574,39 +469,33 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 	 * Simple wrapper class around a Destination reference.
 	 * Used as the cache key when caching MessageProducer objects.
 	 */
-	private static class DestinationCacheKey implements Comparable<DestinationCacheKey>
-	{
+	private static class DestinationCacheKey implements Comparable<DestinationCacheKey> {
 
 		private final Destination destination;
 
 		@Nullable
 		private String destinationString;
 
-		public DestinationCacheKey(Destination destination)
-		{
+		public DestinationCacheKey(Destination destination) {
 			Assert.notNull(destination, "Destination must not be null");
 			this.destination = destination;
 		}
 
-		private String getDestinationString()
-		{
-			if (this.destinationString == null)
-			{
+		private String getDestinationString() {
+			if (this.destinationString == null) {
 				this.destinationString = this.destination.toString();
 			}
 			return this.destinationString;
 		}
 
-		protected boolean destinationEquals(DestinationCacheKey otherKey)
-		{
+		protected boolean destinationEquals(DestinationCacheKey otherKey) {
 			return (this.destination.getClass() == otherKey.destination.getClass()
 					&& (this.destination.equals(otherKey.destination)
-							|| getDestinationString().equals(otherKey.getDestinationString())));
+					|| getDestinationString().equals(otherKey.getDestinationString())));
 		}
 
 		@Override
-		public boolean equals(@Nullable Object other)
-		{
+		public boolean equals(@Nullable Object other) {
 			// Effectively checking object equality as well as toString equality.
 			// On WebSphere MQ, Destination objects do not implement equals...
 			return (this == other || (other instanceof DestinationCacheKey
@@ -614,8 +503,7 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 		}
 
 		@Override
-		public int hashCode()
-		{
+		public int hashCode() {
 			// Can't use a more specific hashCode since we can't rely on
 			// this.destination.hashCode() actually being the same value
 			// for equivalent destinations... Thanks a lot, WebSphere MQ!
@@ -623,14 +511,12 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 		}
 
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return getDestinationString();
 		}
 
 		@Override
-		public int compareTo(DestinationCacheKey other)
-		{
+		public int compareTo(DestinationCacheKey other) {
 			return getDestinationString().compareTo(other.getDestinationString());
 		}
 	}
@@ -639,8 +525,7 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 	 * Simple wrapper class around a Destination and other consumer attributes.
 	 * Used as the cache key when caching MessageConsumer objects.
 	 */
-	private static class ConsumerCacheKey extends DestinationCacheKey
-	{
+	private static class ConsumerCacheKey extends DestinationCacheKey {
 
 		@Nullable
 		private final String selector;
@@ -654,8 +539,7 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 		private final boolean durable;
 
 		public ConsumerCacheKey(Destination destination, @Nullable String selector,
-				@Nullable Boolean noLocal, @Nullable String subscription, boolean durable)
-		{
+								@Nullable Boolean noLocal, @Nullable String subscription, boolean durable) {
 
 			super(destination);
 			this.selector = selector;
@@ -665,14 +549,11 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 		}
 
 		@Override
-		public boolean equals(@Nullable Object other)
-		{
-			if (this == other)
-			{
+		public boolean equals(@Nullable Object other) {
+			if (this == other) {
 				return true;
 			}
-			if (!(other instanceof ConsumerCacheKey))
-			{
+			if (!(other instanceof ConsumerCacheKey)) {
 				return false;
 			}
 			ConsumerCacheKey otherKey = (ConsumerCacheKey) other;
@@ -684,14 +565,12 @@ public class CachingConnectionFactory extends SingleConnectionFactory
 		}
 
 		@Override
-		public int hashCode()
-		{
+		public int hashCode() {
 			return (31 * super.hashCode() + ObjectUtils.nullSafeHashCode(this.selector));
 		}
 
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return super.toString() + " [selector=" + this.selector + ", noLocal=" + this.noLocal
 					+ ", subscription=" + this.subscription + ", durable=" + this.durable + "]";
 		}

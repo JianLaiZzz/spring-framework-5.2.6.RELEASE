@@ -25,8 +25,7 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
  * @author Juergen Hoeller
  */
 @SuppressWarnings("serial")
-public class CallCountingTransactionManager extends AbstractPlatformTransactionManager
-{
+public class CallCountingTransactionManager extends AbstractPlatformTransactionManager {
 
 	public TransactionDefinition lastDefinition;
 	public int begun;
@@ -35,35 +34,30 @@ public class CallCountingTransactionManager extends AbstractPlatformTransactionM
 	public int inflight;
 
 	@Override
-	protected Object doGetTransaction()
-	{
+	protected Object doGetTransaction() {
 		return new Object();
 	}
 
 	@Override
-	protected void doBegin(Object transaction, TransactionDefinition definition)
-	{
+	protected void doBegin(Object transaction, TransactionDefinition definition) {
 		this.lastDefinition = definition;
 		++begun;
 		++inflight;
 	}
 
 	@Override
-	protected void doCommit(DefaultTransactionStatus status)
-	{
+	protected void doCommit(DefaultTransactionStatus status) {
 		++commits;
 		--inflight;
 	}
 
 	@Override
-	protected void doRollback(DefaultTransactionStatus status)
-	{
+	protected void doRollback(DefaultTransactionStatus status) {
 		++rollbacks;
 		--inflight;
 	}
 
-	public void clear()
-	{
+	public void clear() {
 		begun = commits = rollbacks = inflight = 0;
 	}
 

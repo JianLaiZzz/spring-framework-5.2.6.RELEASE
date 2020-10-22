@@ -16,11 +16,6 @@
 
 package org.springframework.web.bind.support;
 
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.http.codec.multipart.FormFieldPart;
 import org.springframework.http.codec.multipart.Part;
@@ -29,8 +24,12 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.server.ServerWebExchange;
-
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * Specialized {@link org.springframework.validation.DataBinder} to perform data
@@ -39,45 +38,37 @@ import reactor.core.publisher.Mono;
  * @author Rossen Stoyanchev
  * @since 5.0
  */
-public class WebExchangeDataBinder extends WebDataBinder
-{
+public class WebExchangeDataBinder extends WebDataBinder {
 
 	/**
 	 * Create a new instance, with default object name.
-	 * 
-	 * @param target
-	 *            the target object to bind onto (or {@code null} if the
-	 *            binder is just used to convert a plain parameter value)
+	 *
+	 * @param target the target object to bind onto (or {@code null} if the
+	 *               binder is just used to convert a plain parameter value)
 	 * @see #DEFAULT_OBJECT_NAME
 	 */
-	public WebExchangeDataBinder(@Nullable Object target)
-	{
+	public WebExchangeDataBinder(@Nullable Object target) {
 		super(target);
 	}
 
 	/**
 	 * Create a new instance.
-	 * 
-	 * @param target
-	 *            the target object to bind onto (or {@code null} if the
-	 *            binder is just used to convert a plain parameter value)
-	 * @param objectName
-	 *            the name of the target object
+	 *
+	 * @param target     the target object to bind onto (or {@code null} if the
+	 *                   binder is just used to convert a plain parameter value)
+	 * @param objectName the name of the target object
 	 */
-	public WebExchangeDataBinder(@Nullable Object target, String objectName)
-	{
+	public WebExchangeDataBinder(@Nullable Object target, String objectName) {
 		super(target, objectName);
 	}
 
 	/**
 	 * Bind query params, form data, and or multipart form data to the binder target.
-	 * 
-	 * @param exchange
-	 *            the current exchange.
+	 *
+	 * @param exchange the current exchange.
 	 * @return a {@code Mono<Void>} when binding is complete
 	 */
-	public Mono<Void> bind(ServerWebExchange exchange)
-	{
+	public Mono<Void> bind(ServerWebExchange exchange) {
 		return getValuesToBind(exchange).doOnNext(values -> doBind(new MutablePropertyValues(values)))
 				.then();
 	}
@@ -86,8 +77,7 @@ public class WebExchangeDataBinder extends WebDataBinder
 	 * Protected method to obtain the values for data binding. By default this
 	 * method delegates to {@link #extractValuesToBind(ServerWebExchange)}.
 	 */
-	protected Mono<Map<String, Object>> getValuesToBind(ServerWebExchange exchange)
-	{
+	protected Mono<Map<String, Object>> getValuesToBind(ServerWebExchange exchange) {
 		return extractValuesToBind(exchange);
 	}
 
@@ -95,16 +85,14 @@ public class WebExchangeDataBinder extends WebDataBinder
 	 * Combine query params and form data for multipart form data from the body
 	 * of the request into a {@code Map<String, Object>} of values to use for
 	 * data binding purposes.
-	 * 
-	 * @param exchange
-	 *            the current exchange
+	 *
+	 * @param exchange the current exchange
 	 * @return a {@code Mono} with the values to bind
 	 * @see org.springframework.http.server.reactive.ServerHttpRequest#getQueryParams()
 	 * @see ServerWebExchange#getFormData()
 	 * @see ServerWebExchange#getMultipartData()
 	 */
-	public static Mono<Map<String, Object>> extractValuesToBind(ServerWebExchange exchange)
-	{
+	public static Mono<Map<String, Object>> extractValuesToBind(ServerWebExchange exchange) {
 		MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
 		Mono<MultiValueMap<String, String>> formData = exchange.getFormData();
 		Mono<MultiValueMap<String, Part>> multipartData = exchange.getMultipartData();
@@ -119,10 +107,8 @@ public class WebExchangeDataBinder extends WebDataBinder
 		});
 	}
 
-	private static void addBindValue(Map<String, Object> params, String key, List<?> values)
-	{
-		if (!CollectionUtils.isEmpty(values))
-		{
+	private static void addBindValue(Map<String, Object> params, String key, List<?> values) {
+		if (!CollectionUtils.isEmpty(values)) {
 			values = values.stream().map(
 					value -> value instanceof FormFieldPart ? ((FormFieldPart) value).value() : value)
 					.collect(Collectors.toList());

@@ -16,21 +16,13 @@
 
 package org.springframework.http;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.within;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * @author Arjen Poutsma

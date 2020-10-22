@@ -16,10 +16,10 @@
 
 package org.springframework.web.jsf;
 
+import org.springframework.lang.Nullable;
+
 import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
-
-import org.springframework.lang.Nullable;
 
 /**
  * Base class for JSF NavigationHandler implementations that want
@@ -34,12 +34,11 @@ import org.springframework.lang.Nullable;
  * with the constructor-injected NavigationHandler as argument.
  *
  * @author Juergen Hoeller
- * @since 1.2.7
  * @see #handleNavigation(javax.faces.context.FacesContext, String, String, NavigationHandler)
  * @see DelegatingNavigationHandlerProxy
+ * @since 1.2.7
  */
-public abstract class DecoratingNavigationHandler extends NavigationHandler
-{
+public abstract class DecoratingNavigationHandler extends NavigationHandler {
 
 	@Nullable
 	private NavigationHandler decoratedNavigationHandler;
@@ -47,18 +46,15 @@ public abstract class DecoratingNavigationHandler extends NavigationHandler
 	/**
 	 * Create a DecoratingNavigationHandler without fixed original NavigationHandler.
 	 */
-	protected DecoratingNavigationHandler()
-	{
+	protected DecoratingNavigationHandler() {
 	}
 
 	/**
 	 * Create a DecoratingNavigationHandler with fixed original NavigationHandler.
-	 * 
-	 * @param originalNavigationHandler
-	 *            the original NavigationHandler to decorate
+	 *
+	 * @param originalNavigationHandler the original NavigationHandler to decorate
 	 */
-	protected DecoratingNavigationHandler(NavigationHandler originalNavigationHandler)
-	{
+	protected DecoratingNavigationHandler(NavigationHandler originalNavigationHandler) {
 		this.decoratedNavigationHandler = originalNavigationHandler;
 	}
 
@@ -67,8 +63,7 @@ public abstract class DecoratingNavigationHandler extends NavigationHandler
 	 * (that is, if passed in through the constructor).
 	 */
 	@Nullable
-	public final NavigationHandler getDecoratedNavigationHandler()
-	{
+	public final NavigationHandler getDecoratedNavigationHandler() {
 		return this.decoratedNavigationHandler;
 	}
 
@@ -76,13 +71,12 @@ public abstract class DecoratingNavigationHandler extends NavigationHandler
 	 * This implementation of the standard JSF {@code handleNavigation} method
 	 * delegates to the overloaded variant, passing in constructor-injected
 	 * NavigationHandler as argument.
-	 * 
+	 *
 	 * @see #handleNavigation(javax.faces.context.FacesContext, String, String,
-	 *      javax.faces.application.NavigationHandler)
+	 * javax.faces.application.NavigationHandler)
 	 */
 	@Override
-	public final void handleNavigation(FacesContext facesContext, String fromAction, String outcome)
-	{
+	public final void handleNavigation(FacesContext facesContext, String fromAction, String outcome) {
 		handleNavigation(facesContext, fromAction, outcome, this.decoratedNavigationHandler);
 	}
 
@@ -98,22 +92,18 @@ public abstract class DecoratingNavigationHandler extends NavigationHandler
 	 * Alternatively, the decorated NavigationHandler or the passed-in original
 	 * NavigationHandler can also be called directly; however, this is not as
 	 * flexible in terms of reacting to potential positions in the chain.
-	 * 
-	 * @param facesContext
-	 *            the current JSF context
-	 * @param fromAction
-	 *            the action binding expression that was evaluated to retrieve the
-	 *            specified outcome, or {@code null} if the outcome was acquired by some other means
-	 * @param outcome
-	 *            the logical outcome returned by a previous invoked application action
-	 *            (which may be {@code null})
-	 * @param originalNavigationHandler
-	 *            the original NavigationHandler,
-	 *            or {@code null} if none
+	 *
+	 * @param facesContext              the current JSF context
+	 * @param fromAction                the action binding expression that was evaluated to retrieve the
+	 *                                  specified outcome, or {@code null} if the outcome was acquired by some other means
+	 * @param outcome                   the logical outcome returned by a previous invoked application action
+	 *                                  (which may be {@code null})
+	 * @param originalNavigationHandler the original NavigationHandler,
+	 *                                  or {@code null} if none
 	 * @see #callNextHandlerInChain
 	 */
 	public abstract void handleNavigation(FacesContext facesContext, @Nullable String fromAction,
-			@Nullable String outcome, @Nullable NavigationHandler originalNavigationHandler);
+										  @Nullable String outcome, @Nullable NavigationHandler originalNavigationHandler);
 
 	/**
 	 * Method to be called by subclasses when intending to delegate to the next
@@ -137,41 +127,31 @@ public abstract class DecoratingNavigationHandler extends NavigationHandler
 	 * original NavigationHandler has been passed in (for example if this
 	 * instance is the last element in a chain with standard NavigationHandlers
 	 * as earlier elements), this method corresponds to a no-op.
-	 * 
-	 * @param facesContext
-	 *            the current JSF context
-	 * @param fromAction
-	 *            the action binding expression that was evaluated to retrieve the
-	 *            specified outcome, or {@code null} if the outcome was acquired by some other means
-	 * @param outcome
-	 *            the logical outcome returned by a previous invoked application action
-	 *            (which may be {@code null})
-	 * @param originalNavigationHandler
-	 *            the original NavigationHandler,
-	 *            or {@code null} if none
+	 *
+	 * @param facesContext              the current JSF context
+	 * @param fromAction                the action binding expression that was evaluated to retrieve the
+	 *                                  specified outcome, or {@code null} if the outcome was acquired by some other means
+	 * @param outcome                   the logical outcome returned by a previous invoked application action
+	 *                                  (which may be {@code null})
+	 * @param originalNavigationHandler the original NavigationHandler,
+	 *                                  or {@code null} if none
 	 */
 	protected final void callNextHandlerInChain(FacesContext facesContext, @Nullable String fromAction,
-			@Nullable String outcome, @Nullable NavigationHandler originalNavigationHandler)
-	{
+												@Nullable String outcome, @Nullable NavigationHandler originalNavigationHandler) {
 
 		NavigationHandler decoratedNavigationHandler = getDecoratedNavigationHandler();
 
-		if (decoratedNavigationHandler instanceof DecoratingNavigationHandler)
-		{
+		if (decoratedNavigationHandler instanceof DecoratingNavigationHandler) {
 			// DecoratingNavigationHandler specified through constructor argument:
 			// Call it with original NavigationHandler passed in.
 			DecoratingNavigationHandler decHandler = (DecoratingNavigationHandler) decoratedNavigationHandler;
 			decHandler.handleNavigation(facesContext, fromAction, outcome, originalNavigationHandler);
-		}
-		else if (decoratedNavigationHandler != null)
-		{
+		} else if (decoratedNavigationHandler != null) {
 			// Standard NavigationHandler specified through constructor argument:
 			// Call it through standard API, without original NavigationHandler passed in.
 			// The called handler will not be able to redirect to the original handler.
 			decoratedNavigationHandler.handleNavigation(facesContext, fromAction, outcome);
-		}
-		else if (originalNavigationHandler != null)
-		{
+		} else if (originalNavigationHandler != null) {
 			// No NavigationHandler specified through constructor argument:
 			// Call original handler, marking the end of this chain.
 			originalNavigationHandler.handleNavigation(facesContext, fromAction, outcome);

@@ -16,15 +16,15 @@
 
 package org.springframework.transaction.interceptor;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-
 import org.springframework.aop.ClassFilter;
 import org.springframework.aop.support.StaticMethodMatcherPointcut;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.util.ObjectUtils;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
 /**
  * Inner class that implements a Pointcut that matches if the underlying
@@ -35,30 +35,24 @@ import org.springframework.util.ObjectUtils;
  */
 @SuppressWarnings("serial")
 abstract class TransactionAttributeSourcePointcut extends StaticMethodMatcherPointcut
-		implements Serializable
-{
+		implements Serializable {
 
-	protected TransactionAttributeSourcePointcut()
-	{
+	protected TransactionAttributeSourcePointcut() {
 		setClassFilter(new TransactionAttributeSourceClassFilter());
 	}
 
 	@Override
-	public boolean matches(Method method, Class<?> targetClass)
-	{
+	public boolean matches(Method method, Class<?> targetClass) {
 		TransactionAttributeSource tas = getTransactionAttributeSource();
 		return (tas == null || tas.getTransactionAttribute(method, targetClass) != null);
 	}
 
 	@Override
-	public boolean equals(@Nullable Object other)
-	{
-		if (this == other)
-		{
+	public boolean equals(@Nullable Object other) {
+		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof TransactionAttributeSourcePointcut))
-		{
+		if (!(other instanceof TransactionAttributeSourcePointcut)) {
 			return false;
 		}
 		TransactionAttributeSourcePointcut otherPc = (TransactionAttributeSourcePointcut) other;
@@ -67,14 +61,12 @@ abstract class TransactionAttributeSourcePointcut extends StaticMethodMatcherPoi
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return TransactionAttributeSourcePointcut.class.hashCode();
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getClass().getName() + ": " + getTransactionAttributeSource();
 	}
 
@@ -89,16 +81,13 @@ abstract class TransactionAttributeSourcePointcut extends StaticMethodMatcherPoi
 	 * {@link ClassFilter} that delegates to {@link TransactionAttributeSource#isCandidateClass}
 	 * for filtering classes whose methods are not worth searching to begin with.
 	 */
-	private class TransactionAttributeSourceClassFilter implements ClassFilter
-	{
+	private class TransactionAttributeSourceClassFilter implements ClassFilter {
 
 		@Override
-		public boolean matches(Class<?> clazz)
-		{
+		public boolean matches(Class<?> clazz) {
 			if (TransactionalProxy.class.isAssignableFrom(clazz)
 					|| PlatformTransactionManager.class.isAssignableFrom(clazz)
-					|| PersistenceExceptionTranslator.class.isAssignableFrom(clazz))
-			{
+					|| PersistenceExceptionTranslator.class.isAssignableFrom(clazz)) {
 				return false;
 			}
 			TransactionAttributeSource tas = getTransactionAttributeSource();

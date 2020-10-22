@@ -16,6 +16,15 @@
 
 package org.springframework.web.servlet.resource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.lang.Nullable;
+import org.springframework.util.DigestUtils;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -25,17 +34,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Scanner;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.springframework.core.io.Resource;
-import org.springframework.lang.Nullable;
-import org.springframework.util.DigestUtils;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * A {@link ResourceTransformer} implementation that helps handling resources
@@ -60,8 +58,8 @@ import org.springframework.util.StringUtils;
  * in a {@code WebMvcConfigurer}.
  *
  * @author Brian Clozel
- * @since 4.1
  * @see <a href="https://html.spec.whatwg.org/multipage/browsers.html#offline">HTML5 offline applications spec</a>
+ * @since 4.1
  */
 public class AppCacheManifestTransformer extends ResourceTransformerSupport {
 
@@ -98,7 +96,7 @@ public class AppCacheManifestTransformer extends ResourceTransformerSupport {
 
 	@Override
 	public Resource transform(HttpServletRequest request, Resource resource,
-			ResourceTransformerChain chain) throws IOException {
+							  ResourceTransformerChain chain) throws IOException {
 
 		resource = chain.transform(request, resource);
 		if (!this.fileExtension.equals(StringUtils.getFilenameExtension(resource.getFilename()))) {
@@ -136,7 +134,7 @@ public class AppCacheManifestTransformer extends ResourceTransformerSupport {
 	}
 
 	private LineOutput processLine(LineInfo info, HttpServletRequest request,
-			Resource resource, ResourceTransformerChain transformerChain) {
+								   Resource resource, ResourceTransformerChain transformerChain) {
 
 		if (!info.isLink()) {
 			return new LineOutput(info.getLine(), null);
@@ -171,8 +169,7 @@ public class AppCacheManifestTransformer extends ResourceTransformerSupport {
 			String trimmedLine = line.trim();
 			if (MANIFEST_SECTION_HEADERS.contains(trimmedLine)) {
 				return trimmedLine.equals(CACHE_HEADER);
-			}
-			else if (previousLine != null) {
+			} else if (previousLine != null) {
 				return previousLine.isCacheSection();
 			}
 			throw new IllegalStateException(

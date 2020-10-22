@@ -16,15 +16,23 @@
 
 package org.springframework.core.io.buffer;
 
+import io.netty.buffer.ByteBuf;
+import org.mockito.stubbing.Answer;
+import org.reactivestreams.Subscription;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.testfixture.io.buffer.AbstractDataBufferAllocatingTests;
+import reactor.core.publisher.BaseSubscriber;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
-import java.nio.channels.AsynchronousFileChannel;
-import java.nio.channels.CompletionHandler;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
+import java.nio.channels.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,23 +42,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import io.netty.buffer.ByteBuf;
-import org.mockito.stubbing.Answer;
-import org.reactivestreams.Subscription;
-import reactor.core.publisher.BaseSubscriber;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.testfixture.io.buffer.AbstractDataBufferAllocatingTests;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willAnswer;
 import static org.mockito.Mockito.mock;
@@ -88,7 +81,7 @@ class DataBufferUtilsTests extends AbstractDataBufferAllocatingTests {
 		URI uri = this.resource.getURI();
 		Flux<DataBuffer> result =
 				DataBufferUtils.readByteChannel(() -> FileChannel.open(Paths.get(uri), StandardOpenOption.READ),
-					super.bufferFactory, 3);
+						super.bufferFactory, 3);
 
 		verifyReadData(result);
 	}
@@ -123,7 +116,7 @@ class DataBufferUtilsTests extends AbstractDataBufferAllocatingTests {
 		URI uri = this.resource.getURI();
 		Flux<DataBuffer> result =
 				DataBufferUtils.readByteChannel(() -> FileChannel.open(Paths.get(uri), StandardOpenOption.READ),
-					super.bufferFactory, 3);
+						super.bufferFactory, 3);
 
 		StepVerifier.create(result)
 				.consumeNextWith(stringConsumer("foo"))
@@ -179,7 +172,7 @@ class DataBufferUtilsTests extends AbstractDataBufferAllocatingTests {
 			completionHandler.failed(new IOException(), dataBuffer);
 			return null;
 		})
-		.given(channel).read(any(), anyLong(), any(), any());
+				.given(channel).read(any(), anyLong(), any(), any());
 
 		Flux<DataBuffer> result =
 				DataBufferUtils.readAsynchronousFileChannel(() -> channel, super.bufferFactory, 3);
@@ -205,7 +198,8 @@ class DataBufferUtilsTests extends AbstractDataBufferAllocatingTests {
 				.verify();
 	}
 
-	@ParameterizedDataBufferAllocatingTest // gh-22107
+	@ParameterizedDataBufferAllocatingTest
+		// gh-22107
 	void readAsynchronousFileChannelCancelWithoutDemand(String displayName, DataBufferFactory bufferFactory) throws Exception {
 		super.bufferFactory = bufferFactory;
 
@@ -280,7 +274,7 @@ class DataBufferUtilsTests extends AbstractDataBufferAllocatingTests {
 	void readByteArrayResourcePositionAndTakeUntil(String displayName, DataBufferFactory bufferFactory) throws Exception {
 		super.bufferFactory = bufferFactory;
 
-		Resource resource = new ByteArrayResource("foobarbazqux" .getBytes());
+		Resource resource = new ByteArrayResource("foobarbazqux".getBytes());
 		Flux<DataBuffer> flux = DataBufferUtils.read(resource, 3, super.bufferFactory, 3);
 
 		flux = DataBufferUtils.takeUntilByteCount(flux, 5);
@@ -482,14 +476,14 @@ class DataBufferUtilsTests extends AbstractDataBufferAllocatingTests {
 
 			return null;
 		})
-		.willAnswer(invocation -> {
-			ByteBuffer buffer = invocation.getArgument(0);
-			CompletionHandler<Integer, ByteBuffer> completionHandler =
-					invocation.getArgument(3);
-			completionHandler.failed(new IOException(), buffer);
-			return null;
-		})
-		.given(channel).write(isA(ByteBuffer.class), anyLong(), isA(ByteBuffer.class), isA(CompletionHandler.class));
+				.willAnswer(invocation -> {
+					ByteBuffer buffer = invocation.getArgument(0);
+					CompletionHandler<Integer, ByteBuffer> completionHandler =
+							invocation.getArgument(3);
+					completionHandler.failed(new IOException(), buffer);
+					return null;
+				})
+				.given(channel).write(isA(ByteBuffer.class), anyLong(), isA(ByteBuffer.class), isA(CompletionHandler.class));
 
 		Flux<DataBuffer> writeResult = DataBufferUtils.write(flux, channel);
 		StepVerifier.create(writeResult)
@@ -552,7 +546,7 @@ class DataBufferUtilsTests extends AbstractDataBufferAllocatingTests {
 		Flux<DataBuffer> sourceFlux =
 				DataBufferUtils
 						.readByteChannel(() -> FileChannel.open(source, StandardOpenOption.READ),
-							super.bufferFactory, 3);
+								super.bufferFactory, 3);
 
 		Path destination = Files.createTempFile("DataBufferUtilsTests", null);
 		WritableByteChannel channel = Files.newByteChannel(destination, StandardOpenOption.WRITE);
@@ -567,11 +561,9 @@ class DataBufferUtilsTests extends AbstractDataBufferAllocatingTests {
 								String expected = String.join("", Files.readAllLines(source));
 								String result = String.join("", Files.readAllLines(destination));
 								assertThat(result).isEqualTo(expected);
-							}
-							catch (IOException e) {
+							} catch (IOException e) {
 								throw new AssertionError(e.getMessage(), e);
-							}
-							finally {
+							} finally {
 								DataBufferUtils.closeChannel(channel);
 							}
 						});
@@ -606,11 +598,9 @@ class DataBufferUtilsTests extends AbstractDataBufferAllocatingTests {
 								assertThat(result).isEqualTo(expected);
 								latch.countDown();
 
-							}
-							catch (IOException e) {
+							} catch (IOException e) {
 								throw new AssertionError(e.getMessage(), e);
-							}
-							finally {
+							} finally {
 								DataBufferUtils.closeChannel(channel);
 							}
 						});

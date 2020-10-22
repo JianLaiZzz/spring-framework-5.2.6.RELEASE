@@ -16,16 +16,15 @@
 
 package org.springframework.test.web.reactive.server;
 
-import java.net.URI;
-import java.time.Duration;
-
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.MonoProcessor;
-
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.http.client.reactive.MockClientHttpRequest;
 import org.springframework.mock.http.client.reactive.MockClientHttpResponse;
+import reactor.core.publisher.MonoProcessor;
+
+import java.net.URI;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.Matchers.equalTo;
@@ -34,6 +33,7 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Unit tests for {@link StatusAssertions}.
+ *
  * @author Rossen Stoyanchev
  */
 public class StatusAssertionTests {

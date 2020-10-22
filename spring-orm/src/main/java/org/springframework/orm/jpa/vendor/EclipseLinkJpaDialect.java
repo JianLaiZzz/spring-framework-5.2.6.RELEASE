@@ -16,18 +16,17 @@
 
 package org.springframework.orm.jpa.vendor;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-
 import org.eclipse.persistence.sessions.UnitOfWork;
 import org.springframework.jdbc.datasource.ConnectionHandle;
 import org.springframework.lang.Nullable;
 import org.springframework.orm.jpa.DefaultJpaDialect;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionException;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * {@link org.springframework.orm.jpa.JpaDialect} implementation for Eclipse
@@ -44,13 +43,12 @@ import org.springframework.transaction.TransactionException;
  * and therefore keep EclipseLink in shared cache mode.
  *
  * @author Juergen Hoeller
- * @since 2.5.2
  * @see #setLazyDatabaseTransaction
  * @see org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy
+ * @since 2.5.2
  */
 @SuppressWarnings("serial")
-public class EclipseLinkJpaDialect extends DefaultJpaDialect
-{
+public class EclipseLinkJpaDialect extends DefaultJpaDialect {
 
 	private boolean lazyDatabaseTransaction = false;
 
@@ -68,22 +66,19 @@ public class EclipseLinkJpaDialect extends DefaultJpaDialect
 	 * even for non-read-only transactions, allowing access to EclipseLink's
 	 * shared cache and following EclipseLink's connection mode configuration,
 	 * assuming that isolation and visibility at the JDBC level are less important.
-	 * 
+	 *
 	 * @see org.eclipse.persistence.sessions.UnitOfWork#beginEarlyTransaction()
 	 */
-	public void setLazyDatabaseTransaction(boolean lazyDatabaseTransaction)
-	{
+	public void setLazyDatabaseTransaction(boolean lazyDatabaseTransaction) {
 		this.lazyDatabaseTransaction = lazyDatabaseTransaction;
 	}
 
 	@Override
 	@Nullable
 	public Object beginTransaction(EntityManager entityManager, TransactionDefinition definition)
-			throws PersistenceException, SQLException, TransactionException
-	{
+			throws PersistenceException, SQLException, TransactionException {
 
-		if (definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT)
-		{
+		if (definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT) {
 			// Pass custom isolation level on to EclipseLink's DatabaseLogin configuration
 			// (since Spring 4.1.2)
 			UnitOfWork uow = entityManager.unwrap(UnitOfWork.class);
@@ -92,8 +87,7 @@ public class EclipseLinkJpaDialect extends DefaultJpaDialect
 
 		entityManager.getTransaction().begin();
 
-		if (!definition.isReadOnly() && !this.lazyDatabaseTransaction)
-		{
+		if (!definition.isReadOnly() && !this.lazyDatabaseTransaction) {
 			// Begin an early transaction to force EclipseLink to get a JDBC Connection
 			// so that Spring can manage transactions with JDBC as well as EclipseLink.
 			entityManager.unwrap(UnitOfWork.class).beginEarlyTransaction();
@@ -104,8 +98,7 @@ public class EclipseLinkJpaDialect extends DefaultJpaDialect
 
 	@Override
 	public ConnectionHandle getJdbcConnection(EntityManager entityManager, boolean readOnly)
-			throws PersistenceException, SQLException
-	{
+			throws PersistenceException, SQLException {
 
 		// As of Spring 4.1.2, we're using a custom ConnectionHandle for lazy retrieval
 		// of the underlying Connection (allowing for deferred internal transaction begin
@@ -120,24 +113,20 @@ public class EclipseLinkJpaDialect extends DefaultJpaDialect
 	 * This is useful to defer the early transaction begin that obtaining a
 	 * JDBC Connection implies within an EclipseLink EntityManager.
 	 */
-	private static class EclipseLinkConnectionHandle implements ConnectionHandle
-	{
+	private static class EclipseLinkConnectionHandle implements ConnectionHandle {
 
 		private final EntityManager entityManager;
 
 		@Nullable
 		private Connection connection;
 
-		public EclipseLinkConnectionHandle(EntityManager entityManager)
-		{
+		public EclipseLinkConnectionHandle(EntityManager entityManager) {
 			this.entityManager = entityManager;
 		}
 
 		@Override
-		public Connection getConnection()
-		{
-			if (this.connection == null)
-			{
+		public Connection getConnection() {
+			if (this.connection == null) {
 				this.connection = this.entityManager.unwrap(Connection.class);
 			}
 			return this.connection;

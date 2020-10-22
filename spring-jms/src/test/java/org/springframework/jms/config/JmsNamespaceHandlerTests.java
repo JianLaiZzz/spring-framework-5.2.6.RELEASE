@@ -16,20 +16,6 @@
 
 package org.springframework.jms.config;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import javax.jms.ConnectionFactory;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.TextMessage;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,14 +34,26 @@ import org.springframework.util.ErrorHandler;
 import org.springframework.util.backoff.BackOff;
 import org.springframework.util.backoff.FixedBackOff;
 
+import javax.jms.ConnectionFactory;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.TextMessage;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 /**
  * @author Mark Fisher
  * @author Juergen Hoeller
  * @author Christian Dupuis
  * @author Stephane Nicoll
  */
-public class JmsNamespaceHandlerTests
-{
+public class JmsNamespaceHandlerTests {
 
 	private static final String DEFAULT_CONNECTION_FACTORY = "connectionFactory";
 
@@ -64,20 +62,17 @@ public class JmsNamespaceHandlerTests
 	private ToolingTestApplicationContext context;
 
 	@BeforeEach
-	public void setUp() throws Exception
-	{
+	public void setUp() throws Exception {
 		this.context = new ToolingTestApplicationContext("jmsNamespaceHandlerTests.xml", getClass());
 	}
 
 	@AfterEach
-	public void tearDown() throws Exception
-	{
+	public void tearDown() throws Exception {
 		this.context.close();
 	}
 
 	@Test
-	public void testBeansCreated()
-	{
+	public void testBeansCreated() {
 		Map<String, ?> containers = context.getBeansOfType(DefaultMessageListenerContainer.class);
 		assertThat(containers.size()).as("Context should contain 3 JMS listener containers").isEqualTo(3);
 
@@ -91,8 +86,7 @@ public class JmsNamespaceHandlerTests
 	}
 
 	@Test
-	public void testContainerConfiguration() throws Exception
-	{
+	public void testContainerConfiguration() throws Exception {
 		Map<String, DefaultMessageListenerContainer> containers = context
 				.getBeansOfType(DefaultMessageListenerContainer.class);
 		ConnectionFactory defaultConnectionFactory = context.getBean(DEFAULT_CONNECTION_FACTORY,
@@ -103,14 +97,10 @@ public class JmsNamespaceHandlerTests
 		int defaultConnectionFactoryCount = 0;
 		int explicitConnectionFactoryCount = 0;
 
-		for (DefaultMessageListenerContainer container : containers.values())
-		{
-			if (container.getConnectionFactory().equals(defaultConnectionFactory))
-			{
+		for (DefaultMessageListenerContainer container : containers.values()) {
+			if (container.getConnectionFactory().equals(defaultConnectionFactory)) {
 				defaultConnectionFactoryCount++;
-			}
-			else if (container.getConnectionFactory().equals(explicitConnectionFactory))
-			{
+			} else if (container.getConnectionFactory().equals(explicitConnectionFactory)) {
 				explicitConnectionFactoryCount++;
 			}
 		}
@@ -122,8 +112,7 @@ public class JmsNamespaceHandlerTests
 	}
 
 	@Test
-	public void testJcaContainerConfiguration() throws Exception
-	{
+	public void testJcaContainerConfiguration() throws Exception {
 		Map<String, JmsMessageEndpointManager> containers = context
 				.getBeansOfType(JmsMessageEndpointManager.class);
 
@@ -152,8 +141,7 @@ public class JmsNamespaceHandlerTests
 	}
 
 	@Test
-	public void testJmsContainerFactoryConfiguration()
-	{
+	public void testJmsContainerFactoryConfiguration() {
 		Map<String, DefaultJmsListenerContainerFactory> containers = context
 				.getBeansOfType(DefaultJmsListenerContainerFactory.class);
 		DefaultJmsListenerContainerFactory factory = containers.get("testJmsFactory");
@@ -180,8 +168,7 @@ public class JmsNamespaceHandlerTests
 	}
 
 	@Test
-	public void testJcaContainerFactoryConfiguration()
-	{
+	public void testJcaContainerFactoryConfiguration() {
 		Map<String, DefaultJcaListenerContainerFactory> containers = context
 				.getBeansOfType(DefaultJcaListenerContainerFactory.class);
 		DefaultJcaListenerContainerFactory factory = containers.get("testJcaFactory");
@@ -202,8 +189,7 @@ public class JmsNamespaceHandlerTests
 	}
 
 	@Test
-	public void testListeners() throws Exception
-	{
+	public void testListeners() throws Exception {
 		TestBean testBean1 = context.getBean("testBean1", TestBean.class);
 		TestBean testBean2 = context.getBean("testBean2", TestBean.class);
 		TestMessageListener testBean3 = context.getBean("testBean3", TestMessageListener.class);
@@ -234,8 +220,7 @@ public class JmsNamespaceHandlerTests
 	}
 
 	@Test
-	public void testRecoveryInterval()
-	{
+	public void testRecoveryInterval() {
 		Object testBackOff = context.getBean("testBackOff");
 		BackOff backOff1 = getBackOff("listener1");
 		BackOff backOff2 = getBackOff("listener2");
@@ -249,8 +234,7 @@ public class JmsNamespaceHandlerTests
 	}
 
 	@Test
-	public void testConcurrency()
-	{
+	public void testConcurrency() {
 		// JMS
 		DefaultMessageListenerContainer listener0 = this.context.getBean(
 				DefaultMessageListenerContainer.class.getName() + "#0",
@@ -284,8 +268,7 @@ public class JmsNamespaceHandlerTests
 	}
 
 	@Test
-	public void testResponseDestination()
-	{
+	public void testResponseDestination() {
 		// JMS
 		DefaultMessageListenerContainer listener1 = this.context.getBean("listener1",
 				DefaultMessageListenerContainer.class);
@@ -312,8 +295,7 @@ public class JmsNamespaceHandlerTests
 	}
 
 	@Test
-	public void testErrorHandlers()
-	{
+	public void testErrorHandlers() {
 		ErrorHandler expected = this.context.getBean("testErrorHandler", ErrorHandler.class);
 		ErrorHandler errorHandler1 = getErrorHandler("listener1");
 		ErrorHandler errorHandler2 = getErrorHandler("listener2");
@@ -325,8 +307,7 @@ public class JmsNamespaceHandlerTests
 	}
 
 	@Test
-	public void testPhases()
-	{
+	public void testPhases() {
 		int phase1 = getPhase("listener1");
 		int phase2 = getPhase("listener2");
 		int phase3 = getPhase("listener3");
@@ -340,8 +321,7 @@ public class JmsNamespaceHandlerTests
 	}
 
 	@Test
-	public void testComponentRegistration()
-	{
+	public void testComponentRegistration() {
 		assertThat(context.containsComponentDefinition("listener1"))
 				.as("Parser should have registered a component named 'listener1'").isTrue();
 		assertThat(context.containsComponentDefinition("listener2"))
@@ -350,9 +330,9 @@ public class JmsNamespaceHandlerTests
 				.as("Parser should have registered a component named 'listener3'").isTrue();
 		assertThat(context
 				.containsComponentDefinition(DefaultMessageListenerContainer.class.getName() + "#0"))
-						.as("Parser should have registered a component named '"
-								+ DefaultMessageListenerContainer.class.getName() + "#0'")
-						.isTrue();
+				.as("Parser should have registered a component named '"
+						+ DefaultMessageListenerContainer.class.getName() + "#0'")
+				.isTrue();
 		assertThat(context.containsComponentDefinition(JmsMessageEndpointManager.class.getName() + "#0"))
 				.as("Parser should have registered a component named '"
 						+ JmsMessageEndpointManager.class.getName() + "#0'")
@@ -366,11 +346,9 @@ public class JmsNamespaceHandlerTests
 	}
 
 	@Test
-	public void testSourceExtraction()
-	{
+	public void testSourceExtraction() {
 		Iterator<ComponentDefinition> iterator = context.getRegisteredComponents();
-		while (iterator.hasNext())
-		{
+		while (iterator.hasNext()) {
 			ComponentDefinition compDef = iterator.next();
 			assertThat(compDef.getSource()).as(
 					"CompositeComponentDefinition '" + compDef.getName() + "' has no source attachment")
@@ -379,70 +357,59 @@ public class JmsNamespaceHandlerTests
 		}
 	}
 
-	private void validateComponentDefinition(ComponentDefinition compDef)
-	{
+	private void validateComponentDefinition(ComponentDefinition compDef) {
 		BeanDefinition[] beanDefs = compDef.getBeanDefinitions();
-		for (BeanDefinition beanDef : beanDefs)
-		{
+		for (BeanDefinition beanDef : beanDefs) {
 			assertThat(beanDef.getSource()).as("BeanDefinition has no source attachment").isNotNull();
 		}
 	}
 
-	private MessageListener getListener(String containerBeanName)
-	{
+	private MessageListener getListener(String containerBeanName) {
 		DefaultMessageListenerContainer container = this.context.getBean(containerBeanName,
 				DefaultMessageListenerContainer.class);
 		return (MessageListener) container.getMessageListener();
 	}
 
-	private ErrorHandler getErrorHandler(String containerBeanName)
-	{
+	private ErrorHandler getErrorHandler(String containerBeanName) {
 		DefaultMessageListenerContainer container = this.context.getBean(containerBeanName,
 				DefaultMessageListenerContainer.class);
 		return (ErrorHandler) new DirectFieldAccessor(container).getPropertyValue("errorHandler");
 	}
 
-	private BackOff getBackOff(String containerBeanName)
-	{
+	private BackOff getBackOff(String containerBeanName) {
 		DefaultMessageListenerContainer container = this.context.getBean(containerBeanName,
 				DefaultMessageListenerContainer.class);
 		return (BackOff) new DirectFieldAccessor(container).getPropertyValue("backOff");
 	}
 
-	private long getRecoveryInterval(String containerBeanName)
-	{
+	private long getRecoveryInterval(String containerBeanName) {
 		BackOff backOff = getBackOff(containerBeanName);
 		assertThat(backOff.getClass()).isEqualTo(FixedBackOff.class);
 		return ((FixedBackOff) backOff).getInterval();
 	}
 
-	private int getPhase(String containerBeanName)
-	{
+	private int getPhase(String containerBeanName) {
 		Object container = this.context.getBean(containerBeanName);
-		if (!(container instanceof Phased))
-		{
+		if (!(container instanceof Phased)) {
 			throw new IllegalStateException(
 					"Container '" + containerBeanName + "' does not implement Phased.");
 		}
 		return ((Phased) container).getPhase();
 	}
 
-	private JmsListenerEndpoint createDummyEndpoint()
-	{
+	private JmsListenerEndpoint createDummyEndpoint() {
 		SimpleJmsListenerEndpoint endpoint = new SimpleJmsListenerEndpoint();
 		endpoint.setMessageListener(new MessageListenerAdapter());
 		endpoint.setDestination("testQueue");
 		return endpoint;
 	}
 
-	public static class TestMessageListener implements MessageListener
-	{
+	public static class TestMessageListener implements MessageListener {
 
 		public Message message;
 
 		@Override
-		public void onMessage(Message message)
-		{
+		public void onMessage(Message message) {
 			this.message = message;
 		}
 	}
@@ -451,45 +418,34 @@ public class JmsNamespaceHandlerTests
 	 * Internal extension that registers a {@link ReaderEventListener} to store
 	 * registered {@link ComponentDefinition}s.
 	 */
-	private static class ToolingTestApplicationContext extends ClassPathXmlApplicationContext
-	{
+	private static class ToolingTestApplicationContext extends ClassPathXmlApplicationContext {
 
 		private Set<ComponentDefinition> registeredComponents;
 
-		public ToolingTestApplicationContext(String path, Class<?> clazz)
-		{
+		public ToolingTestApplicationContext(String path, Class<?> clazz) {
 			super(path, clazz);
 		}
 
 		@Override
-		protected void initBeanDefinitionReader(XmlBeanDefinitionReader beanDefinitionReader)
-		{
+		protected void initBeanDefinitionReader(XmlBeanDefinitionReader beanDefinitionReader) {
 			this.registeredComponents = new HashSet<>();
 			beanDefinitionReader
 					.setEventListener(new StoringReaderEventListener(this.registeredComponents));
 			beanDefinitionReader.setSourceExtractor(new PassThroughSourceExtractor());
 		}
 
-		public boolean containsComponentDefinition(String name)
-		{
-			for (ComponentDefinition cd : this.registeredComponents)
-			{
-				if (cd instanceof CompositeComponentDefinition)
-				{
+		public boolean containsComponentDefinition(String name) {
+			for (ComponentDefinition cd : this.registeredComponents) {
+				if (cd instanceof CompositeComponentDefinition) {
 					ComponentDefinition[] innerCds = ((CompositeComponentDefinition) cd)
 							.getNestedComponents();
-					for (ComponentDefinition innerCd : innerCds)
-					{
-						if (innerCd.getName().equals(name))
-						{
+					for (ComponentDefinition innerCd : innerCds) {
+						if (innerCd.getName().equals(name)) {
 							return true;
 						}
 					}
-				}
-				else
-				{
-					if (cd.getName().equals(name))
-					{
+				} else {
+					if (cd.getName().equals(name)) {
 						return true;
 					}
 				}
@@ -497,35 +453,29 @@ public class JmsNamespaceHandlerTests
 			return false;
 		}
 
-		public Iterator<ComponentDefinition> getRegisteredComponents()
-		{
+		public Iterator<ComponentDefinition> getRegisteredComponents() {
 			return this.registeredComponents.iterator();
 		}
 	}
 
-	private static class StoringReaderEventListener extends EmptyReaderEventListener
-	{
+	private static class StoringReaderEventListener extends EmptyReaderEventListener {
 
 		protected final Set<ComponentDefinition> registeredComponents;
 
-		public StoringReaderEventListener(Set<ComponentDefinition> registeredComponents)
-		{
+		public StoringReaderEventListener(Set<ComponentDefinition> registeredComponents) {
 			this.registeredComponents = registeredComponents;
 		}
 
 		@Override
-		public void componentRegistered(ComponentDefinition componentDefinition)
-		{
+		public void componentRegistered(ComponentDefinition componentDefinition) {
 			this.registeredComponents.add(componentDefinition);
 		}
 	}
 
-	static class TestErrorHandler implements ErrorHandler
-	{
+	static class TestErrorHandler implements ErrorHandler {
 
 		@Override
-		public void handleError(Throwable t)
-		{
+		public void handleError(Throwable t) {
 		}
 	}
 

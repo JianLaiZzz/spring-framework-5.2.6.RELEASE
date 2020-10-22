@@ -16,20 +16,15 @@
 
 package org.springframework.test.context.jdbc;
 
-import java.lang.reflect.Method;
-
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.springframework.jdbc.datasource.init.ScriptUtils.DEFAULT_BLOCK_COMMENT_END_DELIMITER;
-import static org.springframework.jdbc.datasource.init.ScriptUtils.DEFAULT_BLOCK_COMMENT_START_DELIMITER;
-import static org.springframework.jdbc.datasource.init.ScriptUtils.DEFAULT_COMMENT_PREFIXES;
-import static org.springframework.jdbc.datasource.init.ScriptUtils.DEFAULT_STATEMENT_SEPARATOR;
-import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.CONTINUE_ON_ERROR;
-import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.FAIL_ON_ERROR;
-import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.IGNORE_FAILED_DROPS;
+import static org.springframework.jdbc.datasource.init.ScriptUtils.*;
+import static org.springframework.test.context.jdbc.SqlConfig.ErrorMode.*;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.INFERRED;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
 
@@ -44,8 +39,8 @@ class MergedSqlConfigTests {
 	@Test
 	void nullLocalSqlConfig() {
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> new MergedSqlConfig(null, getClass()))
-			.withMessage("Local @SqlConfig must not be null");
+				.isThrownBy(() -> new MergedSqlConfig(null, getClass()))
+				.withMessage("Local @SqlConfig must not be null");
 	}
 
 	@Test
@@ -53,8 +48,8 @@ class MergedSqlConfigTests {
 		SqlConfig sqlConfig = GlobalConfigClass.class.getAnnotation(SqlConfig.class);
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> new MergedSqlConfig(sqlConfig, null))
-			.withMessage("testClass must not be null");
+				.isThrownBy(() -> new MergedSqlConfig(sqlConfig, null))
+				.withMessage("testClass must not be null");
 	}
 
 	@Test
@@ -63,8 +58,8 @@ class MergedSqlConfigTests {
 		SqlConfig sqlConfig = method.getAnnotation(Sql.class).config();
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> new MergedSqlConfig(sqlConfig, getClass()))
-			.withMessage("@SqlConfig(commentPrefix) must contain text");
+				.isThrownBy(() -> new MergedSqlConfig(sqlConfig, getClass()))
+				.withMessage("@SqlConfig(commentPrefix) must contain text");
 	}
 
 	@Test
@@ -73,8 +68,8 @@ class MergedSqlConfigTests {
 		SqlConfig sqlConfig = method.getAnnotation(Sql.class).config();
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> new MergedSqlConfig(sqlConfig, getClass()))
-			.withMessage("@SqlConfig(commentPrefixes) must not contain empty prefixes");
+				.isThrownBy(() -> new MergedSqlConfig(sqlConfig, getClass()))
+				.withMessage("@SqlConfig(commentPrefixes) must not contain empty prefixes");
 	}
 
 	@Test
@@ -83,8 +78,8 @@ class MergedSqlConfigTests {
 		SqlConfig sqlConfig = method.getAnnotation(Sql.class).config();
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> new MergedSqlConfig(sqlConfig, getClass()))
-			.withMessage("You may declare the 'commentPrefix' or 'commentPrefixes' attribute in @SqlConfig but not both");
+				.isThrownBy(() -> new MergedSqlConfig(sqlConfig, getClass()))
+				.withMessage("You may declare the 'commentPrefix' or 'commentPrefixes' attribute in @SqlConfig but not both");
 	}
 
 	@Test
@@ -160,8 +155,8 @@ class MergedSqlConfigTests {
 		SqlConfig sqlConfig = GlobalConfigWithWithEmptyCommentPrefixClass.class.getAnnotation(SqlConfig.class);
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> new MergedSqlConfig(sqlConfig, getClass()))
-			.withMessage("@SqlConfig(commentPrefix) must contain text");
+				.isThrownBy(() -> new MergedSqlConfig(sqlConfig, getClass()))
+				.withMessage("@SqlConfig(commentPrefix) must contain text");
 	}
 
 	@Test
@@ -169,8 +164,8 @@ class MergedSqlConfigTests {
 		SqlConfig sqlConfig = GlobalConfigWithWithEmptyCommentPrefixesClass.class.getAnnotation(SqlConfig.class);
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> new MergedSqlConfig(sqlConfig, getClass()))
-			.withMessage("@SqlConfig(commentPrefixes) must not contain empty prefixes");
+				.isThrownBy(() -> new MergedSqlConfig(sqlConfig, getClass()))
+				.withMessage("@SqlConfig(commentPrefixes) must not contain empty prefixes");
 	}
 
 	@Test
@@ -178,8 +173,8 @@ class MergedSqlConfigTests {
 		SqlConfig sqlConfig = GlobalConfigWithWithDuplicatedCommentPrefixesClass.class.getAnnotation(SqlConfig.class);
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> new MergedSqlConfig(sqlConfig, getClass()))
-			.withMessage("You may declare the 'commentPrefix' or 'commentPrefixes' attribute in @SqlConfig but not both");
+				.isThrownBy(() -> new MergedSqlConfig(sqlConfig, getClass()))
+				.withMessage("You may declare the 'commentPrefix' or 'commentPrefixes' attribute in @SqlConfig but not both");
 	}
 
 	@Test
@@ -285,7 +280,7 @@ class MergedSqlConfigTests {
 
 	// -------------------------------------------------------------------------
 
-	@Sql(config = @SqlConfig(commentPrefix = "#", commentPrefixes = "#" ))
+	@Sql(config = @SqlConfig(commentPrefix = "#", commentPrefixes = "#"))
 	public static void localConfigMethodWithDuplicatedCommentPrefixes() {
 	}
 
@@ -297,11 +292,11 @@ class MergedSqlConfigTests {
 	public static void localConfigMethodWithCustomValues() {
 	}
 
-	@Sql(config = @SqlConfig(commentPrefix = "   " ))
+	@Sql(config = @SqlConfig(commentPrefix = "   "))
 	public static void localConfigMethodWithEmptyCommentPrefix() {
 	}
 
-	@Sql(config = @SqlConfig(commentPrefixes = { "--", "   " }))
+	@Sql(config = @SqlConfig(commentPrefixes = {"--", "   "}))
 	public static void localConfigMethodWithEmptyCommentPrefixes() {
 	}
 
@@ -309,7 +304,7 @@ class MergedSqlConfigTests {
 	public static void localConfigMethodWithCustomCommentPrefixes() {
 	}
 
-	@Sql(config = @SqlConfig(commentPrefixes = { "`", "--" }))
+	@Sql(config = @SqlConfig(commentPrefixes = {"`", "--"}))
 	public static void localConfigMethodWithMultipleCommentPrefixes() {
 	}
 
@@ -325,7 +320,7 @@ class MergedSqlConfigTests {
 	public static class GlobalConfigWithWithEmptyCommentPrefixClass {
 	}
 
-	@SqlConfig(commentPrefixes = { "--", "   " })
+	@SqlConfig(commentPrefixes = {"--", "   "})
 	public static class GlobalConfigWithWithEmptyCommentPrefixesClass {
 	}
 
@@ -341,7 +336,7 @@ class MergedSqlConfigTests {
 		}
 	}
 
-	@SqlConfig(encoding = "global", separator = "\n", commentPrefixes = { "`", "--" }, errorMode = IGNORE_FAILED_DROPS)
+	@SqlConfig(encoding = "global", separator = "\n", commentPrefixes = {"`", "--"}, errorMode = IGNORE_FAILED_DROPS)
 	public static class GlobalConfigClass {
 
 		@Sql
@@ -356,7 +351,7 @@ class MergedSqlConfigTests {
 	@SqlConfig(commentPrefix = "`")
 	public static class GlobalConfigWithPrefixClass {
 
-		@Sql(config = @SqlConfig(commentPrefixes = { "#", "@" }))
+		@Sql(config = @SqlConfig(commentPrefixes = {"#", "@"}))
 		public void commentPrefixesOverrideCommentPrefix() {
 		}
 
@@ -365,10 +360,10 @@ class MergedSqlConfigTests {
 		}
 	}
 
-	@SqlConfig(commentPrefixes = { "`", "--" })
+	@SqlConfig(commentPrefixes = {"`", "--"})
 	public static class GlobalConfigWithPrefixesClass {
 
-		@Sql(config = @SqlConfig(commentPrefixes = { "#", "@" }))
+		@Sql(config = @SqlConfig(commentPrefixes = {"#", "@"}))
 		public void commentPrefixesOverrideCommentPrefixes() {
 		}
 

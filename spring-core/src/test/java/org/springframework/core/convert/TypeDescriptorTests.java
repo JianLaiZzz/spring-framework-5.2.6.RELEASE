@@ -16,31 +16,18 @@
 
 package org.springframework.core.convert;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.core.MethodParameter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.junit.jupiter.api.Test;
-
-import org.springframework.core.MethodParameter;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -678,7 +665,7 @@ class TypeDescriptorTests {
 		TypeDescriptor typeDescriptor = new TypeDescriptor(property);
 		assertThatIllegalArgumentException().isThrownBy(() ->
 				typeDescriptor.upcast(Collection.class))
-			.withMessage("interface java.util.Map is not assignable to interface java.util.Collection");
+				.withMessage("interface java.util.Map is not assignable to interface java.util.Collection");
 	}
 
 	@Test

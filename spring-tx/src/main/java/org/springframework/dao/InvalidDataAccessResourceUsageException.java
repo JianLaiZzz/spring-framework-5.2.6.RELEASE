@@ -24,30 +24,24 @@ package org.springframework.dao;
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
-public class InvalidDataAccessResourceUsageException extends NonTransientDataAccessException
-{
+public class InvalidDataAccessResourceUsageException extends NonTransientDataAccessException {
 
 	/**
 	 * Constructor for InvalidDataAccessResourceUsageException.
-	 * 
-	 * @param msg
-	 *            the detail message
+	 *
+	 * @param msg the detail message
 	 */
-	public InvalidDataAccessResourceUsageException(String msg)
-	{
+	public InvalidDataAccessResourceUsageException(String msg) {
 		super(msg);
 	}
 
 	/**
 	 * Constructor for InvalidDataAccessResourceUsageException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the root cause from the data access API in use
+	 *
+	 * @param msg   the detail message
+	 * @param cause the root cause from the data access API in use
 	 */
-	public InvalidDataAccessResourceUsageException(String msg, Throwable cause)
-	{
+	public InvalidDataAccessResourceUsageException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 

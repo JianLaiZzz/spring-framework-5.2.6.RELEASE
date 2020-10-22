@@ -16,25 +16,20 @@
 
 package org.springframework.beans.factory;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.core.testfixture.EnabledForTestGroups;
 import org.springframework.core.testfixture.TestGroup;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.core.testfixture.io.ResourceTestUtils.qualifiedResource;
@@ -56,8 +51,7 @@ public class ConcurrentBeanFactoryTests {
 		try {
 			DATE_1 = DATE_FORMAT.parse("2004/08/08");
 			DATE_2 = DATE_FORMAT.parse("2000/02/02");
-		}
-		catch (ParseException e) {
+		} catch (ParseException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -100,7 +94,7 @@ public class ConcurrentBeanFactoryTests {
 			run.setDaemon(true);
 			set.add(run);
 		}
-		for (Iterator<TestRun> it = new HashSet<>(set).iterator(); it.hasNext();) {
+		for (Iterator<TestRun> it = new HashSet<>(set).iterator(); it.hasNext(); ) {
 			TestRun run = it.next();
 			run.start();
 		}
@@ -109,8 +103,7 @@ public class ConcurrentBeanFactoryTests {
 			while (!set.isEmpty() && ex == null) {
 				try {
 					set.wait();
-				}
-				catch (InterruptedException e) {
+				} catch (InterruptedException e) {
 					logger.info(e.toString());
 				}
 				logger.info(set.size() + " threads still active.");
@@ -138,11 +131,9 @@ public class ConcurrentBeanFactoryTests {
 				for (int i = 0; i < 10000; i++) {
 					performTest();
 				}
-			}
-			catch (Throwable e) {
+			} catch (Throwable e) {
 				ex = e;
-			}
-			finally {
+			} finally {
 				synchronized (set) {
 					set.remove(this);
 					set.notifyAll();

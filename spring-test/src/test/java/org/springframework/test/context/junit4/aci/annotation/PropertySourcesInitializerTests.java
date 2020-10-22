@@ -18,7 +18,6 @@ package org.springframework.test.context.junit4.aci.annotation;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContextInitializer;
@@ -77,7 +76,7 @@ public class PropertySourcesInitializerTests {
 		@Override
 		public void initialize(ConfigurableApplicationContext applicationContext) {
 			applicationContext.getEnvironment().getPropertySources().addFirst(
-				new MockPropertySource().withProperty("enigma", "foo"));
+					new MockPropertySource().withProperty("enigma", "foo"));
 		}
 	}
 

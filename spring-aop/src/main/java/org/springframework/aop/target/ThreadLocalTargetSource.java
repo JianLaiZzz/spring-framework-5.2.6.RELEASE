@@ -16,15 +16,15 @@
 
 package org.springframework.aop.target;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.springframework.aop.IntroductionAdvisor;
 import org.springframework.aop.support.DefaultIntroductionAdvisor;
 import org.springframework.aop.support.DelegatingIntroductionInterceptor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.core.NamedThreadLocal;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Alternative to an object pool. This {@link org.springframework.aop.TargetSource}
@@ -52,8 +52,7 @@ import org.springframework.core.NamedThreadLocal;
  */
 @SuppressWarnings("serial")
 public class ThreadLocalTargetSource extends AbstractPrototypeBasedTargetSource
-		implements ThreadLocalTargetSourceStats, DisposableBean
-{
+		implements ThreadLocalTargetSourceStats, DisposableBean {
 
 	/**
 	 * ThreadLocal holding the target associated with the current
@@ -78,14 +77,11 @@ public class ThreadLocalTargetSource extends AbstractPrototypeBasedTargetSource
 	 * we create one and bind it to the thread. No synchronization is required.
 	 */
 	@Override
-	public Object getTarget() throws BeansException
-	{
+	public Object getTarget() throws BeansException {
 		++this.invocationCount;
 		Object target = this.targetInThread.get();
-		if (target == null)
-		{
-			if (logger.isDebugEnabled())
-			{
+		if (target == null) {
+			if (logger.isDebugEnabled()) {
 				logger.debug("No target for prototype '" + getTargetBeanName() + "' bound to thread: "
 						+ "creating one and binding it to thread '" + Thread.currentThread().getName()
 						+ "'");
@@ -93,13 +89,10 @@ public class ThreadLocalTargetSource extends AbstractPrototypeBasedTargetSource
 			// Associate target with ThreadLocal.
 			target = newPrototypeInstance();
 			this.targetInThread.set(target);
-			synchronized (this.targetSet)
-			{
+			synchronized (this.targetSet) {
 				this.targetSet.add(target);
 			}
-		}
-		else
-		{
+		} else {
 			++this.hitCount;
 		}
 		return target;
@@ -107,17 +100,14 @@ public class ThreadLocalTargetSource extends AbstractPrototypeBasedTargetSource
 
 	/**
 	 * Dispose of targets if necessary; clear ThreadLocal.
-	 * 
+	 *
 	 * @see #destroyPrototypeInstance
 	 */
 	@Override
-	public void destroy()
-	{
+	public void destroy() {
 		logger.debug("Destroying ThreadLocalTargetSource bindings");
-		synchronized (this.targetSet)
-		{
-			for (Object target : this.targetSet)
-			{
+		synchronized (this.targetSet) {
+			for (Object target : this.targetSet) {
 				destroyPrototypeInstance(target);
 			}
 			this.targetSet.clear();
@@ -127,22 +117,18 @@ public class ThreadLocalTargetSource extends AbstractPrototypeBasedTargetSource
 	}
 
 	@Override
-	public int getInvocationCount()
-	{
+	public int getInvocationCount() {
 		return this.invocationCount;
 	}
 
 	@Override
-	public int getHitCount()
-	{
+	public int getHitCount() {
 		return this.hitCount;
 	}
 
 	@Override
-	public int getObjectCount()
-	{
-		synchronized (this.targetSet)
-		{
+	public int getObjectCount() {
+		synchronized (this.targetSet) {
 			return this.targetSet.size();
 		}
 	}
@@ -151,8 +137,7 @@ public class ThreadLocalTargetSource extends AbstractPrototypeBasedTargetSource
 	 * Return an introduction advisor mixin that allows the AOP proxy to be
 	 * cast to ThreadLocalInvokerStats.
 	 */
-	public IntroductionAdvisor getStatsMixin()
-	{
+	public IntroductionAdvisor getStatsMixin() {
 		DelegatingIntroductionInterceptor dii = new DelegatingIntroductionInterceptor(this);
 		return new DefaultIntroductionAdvisor(dii, ThreadLocalTargetSourceStats.class);
 	}

@@ -16,12 +16,12 @@
 
 package org.springframework.dao.support;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.dao.DataAccessException;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of {@link PersistenceExceptionTranslator} that supports chaining,
@@ -32,17 +32,17 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 2.0
  */
-public class ChainedPersistenceExceptionTranslator implements PersistenceExceptionTranslator
-{
+public class ChainedPersistenceExceptionTranslator implements PersistenceExceptionTranslator {
 
-	/** List of PersistenceExceptionTranslators. */
+	/**
+	 * List of PersistenceExceptionTranslators.
+	 */
 	private final List<PersistenceExceptionTranslator> delegates = new ArrayList<>(4);
 
 	/**
 	 * Add a PersistenceExceptionTranslator to the chained delegate list.
 	 */
-	public final void addDelegate(PersistenceExceptionTranslator pet)
-	{
+	public final void addDelegate(PersistenceExceptionTranslator pet) {
 		Assert.notNull(pet, "PersistenceExceptionTranslator must not be null");
 		this.delegates.add(pet);
 	}
@@ -50,20 +50,16 @@ public class ChainedPersistenceExceptionTranslator implements PersistenceExcepti
 	/**
 	 * Return all registered PersistenceExceptionTranslator delegates (as array).
 	 */
-	public final PersistenceExceptionTranslator[] getDelegates()
-	{
+	public final PersistenceExceptionTranslator[] getDelegates() {
 		return this.delegates.toArray(new PersistenceExceptionTranslator[0]);
 	}
 
 	@Override
 	@Nullable
-	public DataAccessException translateExceptionIfPossible(RuntimeException ex)
-	{
-		for (PersistenceExceptionTranslator pet : this.delegates)
-		{
+	public DataAccessException translateExceptionIfPossible(RuntimeException ex) {
+		for (PersistenceExceptionTranslator pet : this.delegates) {
 			DataAccessException translatedDex = pet.translateExceptionIfPossible(ex);
-			if (translatedDex != null)
-			{
+			if (translatedDex != null) {
 				return translatedDex;
 			}
 		}

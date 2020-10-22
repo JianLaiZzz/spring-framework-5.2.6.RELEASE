@@ -16,11 +16,6 @@
 
 package org.springframework.web.accept;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.MediaType;
@@ -29,6 +24,11 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.context.request.NativeWebRequest;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Base class for {@code ContentNegotiationStrategy} implementations with the
@@ -51,8 +51,7 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @since 3.2
  */
 public abstract class AbstractMappingContentNegotiationStrategy
-		extends MappingMediaTypeFileExtensionResolver implements ContentNegotiationStrategy
-{
+		extends MappingMediaTypeFileExtensionResolver implements ContentNegotiationStrategy {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -63,8 +62,7 @@ public abstract class AbstractMappingContentNegotiationStrategy
 	/**
 	 * Create an instance with the given map of file extensions and media types.
 	 */
-	public AbstractMappingContentNegotiationStrategy(@Nullable Map<String, MediaType> mediaTypes)
-	{
+	public AbstractMappingContentNegotiationStrategy(@Nullable Map<String, MediaType> mediaTypes) {
 		super(mediaTypes);
 	}
 
@@ -74,13 +72,11 @@ public abstract class AbstractMappingContentNegotiationStrategy
 	 * <p>
 	 * By default this is set to {@code false}.
 	 */
-	public void setUseRegisteredExtensionsOnly(boolean useRegisteredExtensionsOnly)
-	{
+	public void setUseRegisteredExtensionsOnly(boolean useRegisteredExtensionsOnly) {
 		this.useRegisteredExtensionsOnly = useRegisteredExtensionsOnly;
 	}
 
-	public boolean isUseRegisteredExtensionsOnly()
-	{
+	public boolean isUseRegisteredExtensionsOnly() {
 		return this.useRegisteredExtensionsOnly;
 	}
 
@@ -91,20 +87,17 @@ public abstract class AbstractMappingContentNegotiationStrategy
 	 * By default this is set to {@literal false} but is overridden in
 	 * {@link PathExtensionContentNegotiationStrategy} to {@literal true}.
 	 */
-	public void setIgnoreUnknownExtensions(boolean ignoreUnknownExtensions)
-	{
+	public void setIgnoreUnknownExtensions(boolean ignoreUnknownExtensions) {
 		this.ignoreUnknownExtensions = ignoreUnknownExtensions;
 	}
 
-	public boolean isIgnoreUnknownExtensions()
-	{
+	public boolean isIgnoreUnknownExtensions() {
 		return this.ignoreUnknownExtensions;
 	}
 
 	@Override
 	public List<MediaType> resolveMediaTypes(NativeWebRequest webRequest)
-			throws HttpMediaTypeNotAcceptableException
-	{
+			throws HttpMediaTypeNotAcceptableException {
 
 		return resolveMediaTypeKey(webRequest, getMediaTypeKey(webRequest));
 	}
@@ -112,24 +105,20 @@ public abstract class AbstractMappingContentNegotiationStrategy
 	/**
 	 * An alternative to {@link #resolveMediaTypes(NativeWebRequest)} that accepts
 	 * an already extracted key.
-	 * 
+	 *
 	 * @since 3.2.16
 	 */
 	public List<MediaType> resolveMediaTypeKey(NativeWebRequest webRequest, @Nullable String key)
-			throws HttpMediaTypeNotAcceptableException
-	{
+			throws HttpMediaTypeNotAcceptableException {
 
-		if (StringUtils.hasText(key))
-		{
+		if (StringUtils.hasText(key)) {
 			MediaType mediaType = lookupMediaType(key);
-			if (mediaType != null)
-			{
+			if (mediaType != null) {
 				handleMatch(key, mediaType);
 				return Collections.singletonList(mediaType);
 			}
 			mediaType = handleNoMatch(webRequest, key);
-			if (mediaType != null)
-			{
+			if (mediaType != null) {
 				addMapping(key, mediaType);
 				return Collections.singletonList(mediaType);
 			}
@@ -139,7 +128,7 @@ public abstract class AbstractMappingContentNegotiationStrategy
 
 	/**
 	 * Extract a key from the request to use to look up media types.
-	 * 
+	 *
 	 * @return the lookup key, or {@code null} if none
 	 */
 	@Nullable
@@ -149,8 +138,7 @@ public abstract class AbstractMappingContentNegotiationStrategy
 	 * Override to provide handling when a key is successfully resolved via
 	 * {@link #lookupMediaType}.
 	 */
-	protected void handleMatch(String key, MediaType mediaType)
-	{
+	protected void handleMatch(String key, MediaType mediaType) {
 	}
 
 	/**
@@ -161,19 +149,15 @@ public abstract class AbstractMappingContentNegotiationStrategy
 	 */
 	@Nullable
 	protected MediaType handleNoMatch(NativeWebRequest request, String key)
-			throws HttpMediaTypeNotAcceptableException
-	{
+			throws HttpMediaTypeNotAcceptableException {
 
-		if (!isUseRegisteredExtensionsOnly())
-		{
+		if (!isUseRegisteredExtensionsOnly()) {
 			Optional<MediaType> mediaType = MediaTypeFactory.getMediaType("file." + key);
-			if (mediaType.isPresent())
-			{
+			if (mediaType.isPresent()) {
 				return mediaType.get();
 			}
 		}
-		if (isIgnoreUnknownExtensions())
-		{
+		if (isIgnoreUnknownExtensions()) {
 			return null;
 		}
 		throw new HttpMediaTypeNotAcceptableException(getAllMediaTypes());

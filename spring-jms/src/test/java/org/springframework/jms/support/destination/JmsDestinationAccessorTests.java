@@ -16,24 +16,22 @@
 
 package org.springframework.jms.support.destination;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.mock;
+import org.junit.jupiter.api.Test;
 
 import javax.jms.ConnectionFactory;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Rick Evans
  * @author Chris Beams
  */
-public class JmsDestinationAccessorTests
-{
+public class JmsDestinationAccessorTests {
 
 	@Test
-	public void testChokesIfDestinationResolverIsetToNullExplicitly() throws Exception
-	{
+	public void testChokesIfDestinationResolverIsetToNullExplicitly() throws Exception {
 		ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 
 		JmsDestinationAccessor accessor = new StubJmsDestinationAccessor();
@@ -42,8 +40,7 @@ public class JmsDestinationAccessorTests
 	}
 
 	@Test
-	public void testSessionTransactedModeReallyDoesDefaultToFalse() throws Exception
-	{
+	public void testSessionTransactedModeReallyDoesDefaultToFalse() throws Exception {
 		JmsDestinationAccessor accessor = new StubJmsDestinationAccessor();
 		assertThat(accessor.isPubSubDomain())
 				.as("The [pubSubDomain] property of JmsDestinationAccessor must default to "
@@ -52,8 +49,7 @@ public class JmsDestinationAccessorTests
 				.isFalse();
 	}
 
-	private static class StubJmsDestinationAccessor extends JmsDestinationAccessor
-	{
+	private static class StubJmsDestinationAccessor extends JmsDestinationAccessor {
 
 	}
 

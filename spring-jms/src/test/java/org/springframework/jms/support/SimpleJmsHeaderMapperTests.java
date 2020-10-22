@@ -16,39 +16,34 @@
 
 package org.springframework.jms.support;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Date;
-import java.util.Map;
-
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.jms.StubTextMessage;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 
+import javax.jms.DeliveryMode;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import java.util.Date;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
- *
  * @author Mark Fisher
  * @author Gary Russel
  * @author Stephane Nicoll
  */
-public class SimpleJmsHeaderMapperTests
-{
+public class SimpleJmsHeaderMapperTests {
 
 	private final SimpleJmsHeaderMapper mapper = new SimpleJmsHeaderMapper();
 
 	// Outbound mapping
 
 	@Test
-	public void jmsReplyToMappedFromHeader() throws JMSException
-	{
-		Destination replyTo = new Destination()
-		{
+	public void jmsReplyToMappedFromHeader() throws JMSException {
+		Destination replyTo = new Destination() {
 		};
 		Message<String> message = initBuilder().setHeader(JmsHeaders.REPLY_TO, replyTo).build();
 
@@ -59,8 +54,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void JmsReplyToIgnoredIfIncorrectType() throws JMSException
-	{
+	public void JmsReplyToIgnoredIfIncorrectType() throws JMSException {
 		Message<String> message = initBuilder().setHeader(JmsHeaders.REPLY_TO, "not-a-destination")
 				.build();
 		javax.jms.Message jmsMessage = new StubTextMessage();
@@ -69,8 +63,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsCorrelationIdMappedFromHeader() throws JMSException
-	{
+	public void jmsCorrelationIdMappedFromHeader() throws JMSException {
 		String jmsCorrelationId = "ABC-123";
 		Message<String> message = initBuilder().setHeader(JmsHeaders.CORRELATION_ID, jmsCorrelationId)
 				.build();
@@ -81,8 +74,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsCorrelationIdNumberConvertsToString() throws JMSException
-	{
+	public void jmsCorrelationIdNumberConvertsToString() throws JMSException {
 		Message<String> message = initBuilder().setHeader(JmsHeaders.CORRELATION_ID, 123).build();
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		mapper.fromHeaders(message.getHeaders(), jmsMessage);
@@ -90,8 +82,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsCorrelationIdIgnoredIfIncorrectType() throws JMSException
-	{
+	public void jmsCorrelationIdIgnoredIfIncorrectType() throws JMSException {
 		Message<String> message = initBuilder().setHeader(JmsHeaders.CORRELATION_ID, new Date()).build();
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		mapper.fromHeaders(message.getHeaders(), jmsMessage);
@@ -99,8 +90,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsTypeMappedFromHeader() throws JMSException
-	{
+	public void jmsTypeMappedFromHeader() throws JMSException {
 		String jmsType = "testing";
 		Message<String> message = initBuilder().setHeader(JmsHeaders.TYPE, jmsType).build();
 		javax.jms.Message jmsMessage = new StubTextMessage();
@@ -110,8 +100,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsTypeIgnoredIfIncorrectType() throws JMSException
-	{
+	public void jmsTypeIgnoredIfIncorrectType() throws JMSException {
 		Message<String> message = initBuilder().setHeader(JmsHeaders.TYPE, 123).build();
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		mapper.fromHeaders(message.getHeaders(), jmsMessage);
@@ -119,10 +108,8 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsReadOnlyPropertiesNotMapped() throws JMSException
-	{
-		Message<String> message = initBuilder().setHeader(JmsHeaders.DESTINATION, new Destination()
-		{
+	public void jmsReadOnlyPropertiesNotMapped() throws JMSException {
+		Message<String> message = initBuilder().setHeader(JmsHeaders.DESTINATION, new Destination() {
 		}).setHeader(JmsHeaders.DELIVERY_MODE, DeliveryMode.NON_PERSISTENT)
 				.setHeader(JmsHeaders.EXPIRATION, 1000L).setHeader(JmsHeaders.MESSAGE_ID, "abc-123")
 				.setHeader(JmsHeaders.PRIORITY, 9).setHeader(JmsHeaders.REDELIVERED, true)
@@ -139,8 +126,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void contentTypePropertyMappedFromHeader() throws JMSException
-	{
+	public void contentTypePropertyMappedFromHeader() throws JMSException {
 		Message<String> message = initBuilder().setHeader(MessageHeaders.CONTENT_TYPE, "foo").build();
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		mapper.fromHeaders(message.getHeaders(), jmsMessage);
@@ -150,8 +136,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void userDefinedPropertyMappedFromHeader() throws JMSException
-	{
+	public void userDefinedPropertyMappedFromHeader() throws JMSException {
 		Message<String> message = initBuilder().setHeader("foo", 123).build();
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		mapper.fromHeaders(message.getHeaders(), jmsMessage);
@@ -162,8 +147,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void userDefinedPropertyMappedFromHeaderWithCustomPrefix() throws JMSException
-	{
+	public void userDefinedPropertyMappedFromHeaderWithCustomPrefix() throws JMSException {
 		Message<String> message = initBuilder().setHeader("foo", 123).build();
 		mapper.setOutboundPrefix("custom_");
 		javax.jms.Message jmsMessage = new StubTextMessage();
@@ -175,10 +159,8 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void userDefinedPropertyWithUnsupportedType() throws JMSException
-	{
-		Destination destination = new Destination()
-		{
+	public void userDefinedPropertyWithUnsupportedType() throws JMSException {
+		Destination destination = new Destination() {
 		};
 		Message<String> message = initBuilder().setHeader("destination", destination).build();
 		javax.jms.Message jmsMessage = new StubTextMessage();
@@ -188,13 +170,10 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToReadDisallowedCorrelationIdPropertyIsNotFatal() throws JMSException
-	{
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+	public void attemptToReadDisallowedCorrelationIdPropertyIsNotFatal() throws JMSException {
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public String getJMSCorrelationID() throws JMSException
-			{
+			public String getJMSCorrelationID() throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -202,13 +181,10 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToReadDisallowedDestinationPropertyIsNotFatal() throws JMSException
-	{
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+	public void attemptToReadDisallowedDestinationPropertyIsNotFatal() throws JMSException {
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public Destination getJMSDestination() throws JMSException
-			{
+			public Destination getJMSDestination() throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -216,13 +192,10 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToReadDisallowedDeliveryModePropertyIsNotFatal() throws JMSException
-	{
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+	public void attemptToReadDisallowedDeliveryModePropertyIsNotFatal() throws JMSException {
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public int getJMSDeliveryMode() throws JMSException
-			{
+			public int getJMSDeliveryMode() throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -230,13 +203,10 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToReadDisallowedExpirationPropertyIsNotFatal() throws JMSException
-	{
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+	public void attemptToReadDisallowedExpirationPropertyIsNotFatal() throws JMSException {
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public long getJMSExpiration() throws JMSException
-			{
+			public long getJMSExpiration() throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -244,13 +214,10 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToReadDisallowedMessageIdPropertyIsNotFatal() throws JMSException
-	{
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+	public void attemptToReadDisallowedMessageIdPropertyIsNotFatal() throws JMSException {
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public String getJMSMessageID() throws JMSException
-			{
+			public String getJMSMessageID() throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -258,13 +225,10 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToReadDisallowedPriorityPropertyIsNotFatal() throws JMSException
-	{
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+	public void attemptToReadDisallowedPriorityPropertyIsNotFatal() throws JMSException {
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public int getJMSPriority() throws JMSException
-			{
+			public int getJMSPriority() throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -272,13 +236,10 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToReadDisallowedReplyToPropertyIsNotFatal() throws JMSException
-	{
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+	public void attemptToReadDisallowedReplyToPropertyIsNotFatal() throws JMSException {
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public Destination getJMSReplyTo() throws JMSException
-			{
+			public Destination getJMSReplyTo() throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -286,13 +247,10 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToReadDisallowedRedeliveredPropertyIsNotFatal() throws JMSException
-	{
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+	public void attemptToReadDisallowedRedeliveredPropertyIsNotFatal() throws JMSException {
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public boolean getJMSRedelivered() throws JMSException
-			{
+			public boolean getJMSRedelivered() throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -300,13 +258,10 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToReadDisallowedTypePropertyIsNotFatal() throws JMSException
-	{
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+	public void attemptToReadDisallowedTypePropertyIsNotFatal() throws JMSException {
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public String getJMSType() throws JMSException
-			{
+			public String getJMSType() throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -314,13 +269,10 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToReadDisallowedTimestampPropertyIsNotFatal() throws JMSException
-	{
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+	public void attemptToReadDisallowedTimestampPropertyIsNotFatal() throws JMSException {
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public long getJMSTimestamp() throws JMSException
-			{
+			public long getJMSTimestamp() throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -328,19 +280,13 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToReadDisallowedUserPropertyIsNotFatal() throws JMSException
-	{
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+	public void attemptToReadDisallowedUserPropertyIsNotFatal() throws JMSException {
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public Object getObjectProperty(String name) throws JMSException
-			{
-				if (name.equals("fail"))
-				{
+			public Object getObjectProperty(String name) throws JMSException {
+				if (name.equals("fail")) {
 					throw new JMSException("illegal property");
-				}
-				else
-				{
+				} else {
 					return super.getObjectProperty(name);
 				}
 			}
@@ -352,8 +298,7 @@ public class SimpleJmsHeaderMapperTests
 	// Inbound mapping
 
 	@Test
-	public void jmsCorrelationIdMappedToHeader() throws JMSException
-	{
+	public void jmsCorrelationIdMappedToHeader() throws JMSException {
 		String correlationId = "ABC-123";
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		jmsMessage.setJMSCorrelationID(correlationId);
@@ -361,10 +306,8 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void destinationMappedToHeader() throws JMSException
-	{
-		Destination destination = new Destination()
-		{
+	public void destinationMappedToHeader() throws JMSException {
+		Destination destination = new Destination() {
 		};
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		jmsMessage.setJMSDestination(destination);
@@ -372,8 +315,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsDeliveryModeMappedToHeader() throws JMSException
-	{
+	public void jmsDeliveryModeMappedToHeader() throws JMSException {
 		int deliveryMode = 1;
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		jmsMessage.setJMSDeliveryMode(deliveryMode);
@@ -381,8 +323,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsExpirationMappedToHeader() throws JMSException
-	{
+	public void jmsExpirationMappedToHeader() throws JMSException {
 		long expiration = 1000L;
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		jmsMessage.setJMSExpiration(expiration);
@@ -390,8 +331,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsMessageIdMappedToHeader() throws JMSException
-	{
+	public void jmsMessageIdMappedToHeader() throws JMSException {
 		String messageId = "ID:ABC-123";
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		jmsMessage.setJMSMessageID(messageId);
@@ -399,8 +339,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsPriorityMappedToHeader() throws JMSException
-	{
+	public void jmsPriorityMappedToHeader() throws JMSException {
 		int priority = 8;
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		jmsMessage.setJMSPriority(priority);
@@ -408,10 +347,8 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsReplyToMappedToHeader() throws JMSException
-	{
-		Destination replyTo = new Destination()
-		{
+	public void jmsReplyToMappedToHeader() throws JMSException {
+		Destination replyTo = new Destination() {
 		};
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		jmsMessage.setJMSReplyTo(replyTo);
@@ -419,8 +356,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsTypeMappedToHeader() throws JMSException
-	{
+	public void jmsTypeMappedToHeader() throws JMSException {
 		String type = "testing";
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		jmsMessage.setJMSType(type);
@@ -428,8 +364,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void jmsTimestampMappedToHeader() throws JMSException
-	{
+	public void jmsTimestampMappedToHeader() throws JMSException {
 		long timestamp = 123L;
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		jmsMessage.setJMSTimestamp(timestamp);
@@ -437,24 +372,21 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void contentTypePropertyMappedToHeader() throws JMSException
-	{
+	public void contentTypePropertyMappedToHeader() throws JMSException {
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		jmsMessage.setStringProperty("content_type", "foo");
 		assertInboundHeader(jmsMessage, MessageHeaders.CONTENT_TYPE, "foo");
 	}
 
 	@Test
-	public void userDefinedPropertyMappedToHeader() throws JMSException
-	{
+	public void userDefinedPropertyMappedToHeader() throws JMSException {
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		jmsMessage.setIntProperty("foo", 123);
 		assertInboundHeader(jmsMessage, "foo", 123);
 	}
 
 	@Test
-	public void userDefinedPropertyMappedToHeaderWithCustomPrefix() throws JMSException
-	{
+	public void userDefinedPropertyMappedToHeaderWithCustomPrefix() throws JMSException {
 		javax.jms.Message jmsMessage = new StubTextMessage();
 		jmsMessage.setIntProperty("foo", 123);
 		mapper.setInboundPrefix("custom_");
@@ -462,17 +394,13 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void propertyMappingExceptionIsNotFatal() throws JMSException
-	{
+	public void propertyMappingExceptionIsNotFatal() throws JMSException {
 		Message<String> message = initBuilder().setHeader("foo", 123).setHeader("bad", 456)
 				.setHeader("bar", 789).build();
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public void setObjectProperty(String name, Object value) throws JMSException
-			{
-				if (name.equals("bad"))
-				{
+			public void setObjectProperty(String name, Object value) throws JMSException {
+				if (name.equals("bad")) {
 					throw new JMSException("illegal property");
 				}
 				super.setObjectProperty(name, value);
@@ -488,17 +416,13 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void illegalArgumentExceptionIsNotFatal() throws JMSException
-	{
+	public void illegalArgumentExceptionIsNotFatal() throws JMSException {
 		Message<String> message = initBuilder().setHeader("foo", 123).setHeader("bad", 456)
 				.setHeader("bar", 789).build();
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public void setObjectProperty(String name, Object value) throws JMSException
-			{
-				if (name.equals("bad"))
-				{
+			public void setObjectProperty(String name, Object value) throws JMSException {
+				if (name.equals("bad")) {
 					throw new IllegalArgumentException("illegal property");
 				}
 				super.setObjectProperty(name, value);
@@ -514,16 +438,12 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToWriteDisallowedReplyToPropertyIsNotFatal() throws JMSException
-	{
-		Message<String> message = initBuilder().setHeader(JmsHeaders.REPLY_TO, new Destination()
-		{
+	public void attemptToWriteDisallowedReplyToPropertyIsNotFatal() throws JMSException {
+		Message<String> message = initBuilder().setHeader(JmsHeaders.REPLY_TO, new Destination() {
 		}).setHeader("foo", "bar").build();
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public void setJMSReplyTo(Destination replyTo) throws JMSException
-			{
+			public void setJMSReplyTo(Destination replyTo) throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -534,15 +454,12 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToWriteDisallowedTypePropertyIsNotFatal() throws JMSException
-	{
+	public void attemptToWriteDisallowedTypePropertyIsNotFatal() throws JMSException {
 		Message<String> message = initBuilder().setHeader(JmsHeaders.TYPE, "someType")
 				.setHeader("foo", "bar").build();
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public void setJMSType(String type) throws JMSException
-			{
+			public void setJMSType(String type) throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -553,15 +470,12 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToWriteDisallowedCorrelationIdStringPropertyIsNotFatal() throws JMSException
-	{
+	public void attemptToWriteDisallowedCorrelationIdStringPropertyIsNotFatal() throws JMSException {
 		Message<String> message = initBuilder().setHeader(JmsHeaders.CORRELATION_ID, "abc")
 				.setHeader("foo", "bar").build();
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public void setJMSCorrelationID(String correlationId) throws JMSException
-			{
+			public void setJMSCorrelationID(String correlationId) throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -572,15 +486,12 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	@Test
-	public void attemptToWriteDisallowedCorrelationIdNumberPropertyIsNotFatal() throws JMSException
-	{
+	public void attemptToWriteDisallowedCorrelationIdNumberPropertyIsNotFatal() throws JMSException {
 		Message<String> message = initBuilder().setHeader(JmsHeaders.CORRELATION_ID, 123)
 				.setHeader("foo", "bar").build();
-		javax.jms.Message jmsMessage = new StubTextMessage()
-		{
+		javax.jms.Message jmsMessage = new StubTextMessage() {
 			@Override
-			public void setJMSCorrelationID(String correlationId) throws JMSException
-			{
+			public void setJMSCorrelationID(String correlationId) throws JMSException {
 				throw new JMSException("illegal property");
 			}
 		};
@@ -590,16 +501,12 @@ public class SimpleJmsHeaderMapperTests
 		assertThat(jmsMessage.getStringProperty("foo")).isEqualTo("bar");
 	}
 
-	private void assertInboundHeader(javax.jms.Message jmsMessage, String headerId, Object value)
-	{
+	private void assertInboundHeader(javax.jms.Message jmsMessage, String headerId, Object value) {
 		Map<String, Object> headers = mapper.toHeaders(jmsMessage);
 		Object headerValue = headers.get(headerId);
-		if (value == null)
-		{
+		if (value == null) {
 			assertThat(headerValue).isNull();
-		}
-		else
-		{
+		} else {
 			assertThat(headerValue).isNotNull();
 			assertThat(headerValue.getClass()).isEqualTo(value.getClass());
 			assertThat(headerValue).isEqualTo(value);
@@ -607,8 +514,7 @@ public class SimpleJmsHeaderMapperTests
 	}
 
 	private void assertAttemptReadDisallowedPropertyIsNotFatal(javax.jms.Message jmsMessage,
-			String headerId) throws JMSException
-	{
+															   String headerId) throws JMSException {
 		jmsMessage.setStringProperty("foo", "bar");
 		Map<String, Object> headers = mapper.toHeaders(jmsMessage);
 		assertThat(headers.get(headerId)).isNull();
@@ -616,8 +522,7 @@ public class SimpleJmsHeaderMapperTests
 		assertThat(headers.get("foo")).isEqualTo("bar");
 	}
 
-	private MessageBuilder<String> initBuilder()
-	{
+	private MessageBuilder<String> initBuilder() {
 		return MessageBuilder.withPayload("test");
 	}
 

@@ -16,22 +16,20 @@
 
 package org.springframework.transaction;
 
-import static org.assertj.core.api.Assertions.*;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.support.*;
+
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * @author Juergen Hoeller
  * @since 29.04.2003
  */
-public class TransactionSupportTests
-{
+public class TransactionSupportTests {
 
 	@Test
-	public void noExistingTransaction()
-	{
+	public void noExistingTransaction() {
 		PlatformTransactionManager tm = new TestTransactionManager(false, true);
 		DefaultTransactionStatus status1 = (DefaultTransactionStatus) tm.getTransaction(
 				new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_SUPPORTS));
@@ -48,8 +46,7 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void existingTransaction()
-	{
+	public void existingTransaction() {
 		PlatformTransactionManager tm = new TestTransactionManager(true, true);
 		DefaultTransactionStatus status1 = (DefaultTransactionStatus) tm.getTransaction(
 				new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_SUPPORTS));
@@ -71,8 +68,7 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void commitWithoutExistingTransaction()
-	{
+	public void commitWithoutExistingTransaction() {
 		TestTransactionManager tm = new TestTransactionManager(false, true);
 		TransactionStatus status = tm.getTransaction(null);
 		tm.commit(status);
@@ -84,8 +80,7 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void rollbackWithoutExistingTransaction()
-	{
+	public void rollbackWithoutExistingTransaction() {
 		TestTransactionManager tm = new TestTransactionManager(false, true);
 		TransactionStatus status = tm.getTransaction(null);
 		tm.rollback(status);
@@ -97,8 +92,7 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void rollbackOnlyWithoutExistingTransaction()
-	{
+	public void rollbackOnlyWithoutExistingTransaction() {
 		TestTransactionManager tm = new TestTransactionManager(false, true);
 		TransactionStatus status = tm.getTransaction(null);
 		status.setRollbackOnly();
@@ -111,8 +105,7 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void commitWithExistingTransaction()
-	{
+	public void commitWithExistingTransaction() {
 		TestTransactionManager tm = new TestTransactionManager(true, true);
 		TransactionStatus status = tm.getTransaction(null);
 		tm.commit(status);
@@ -124,8 +117,7 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void rollbackWithExistingTransaction()
-	{
+	public void rollbackWithExistingTransaction() {
 		TestTransactionManager tm = new TestTransactionManager(true, true);
 		TransactionStatus status = tm.getTransaction(null);
 		tm.rollback(status);
@@ -137,8 +129,7 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void rollbackOnlyWithExistingTransaction()
-	{
+	public void rollbackOnlyWithExistingTransaction() {
 		TestTransactionManager tm = new TestTransactionManager(true, true);
 		TransactionStatus status = tm.getTransaction(null);
 		status.setRollbackOnly();
@@ -151,15 +142,12 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void transactionTemplate()
-	{
+	public void transactionTemplate() {
 		TestTransactionManager tm = new TestTransactionManager(false, true);
 		TransactionTemplate template = new TransactionTemplate(tm);
-		template.execute(new TransactionCallbackWithoutResult()
-		{
+		template.execute(new TransactionCallbackWithoutResult() {
 			@Override
-			protected void doInTransactionWithoutResult(TransactionStatus status)
-			{
+			protected void doInTransactionWithoutResult(TransactionStatus status) {
 			}
 		});
 
@@ -170,15 +158,12 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void transactionTemplateWithCallbackPreference()
-	{
+	public void transactionTemplateWithCallbackPreference() {
 		MockCallbackPreferringTransactionManager ptm = new MockCallbackPreferringTransactionManager();
 		TransactionTemplate template = new TransactionTemplate(ptm);
-		template.execute(new TransactionCallbackWithoutResult()
-		{
+		template.execute(new TransactionCallbackWithoutResult() {
 			@Override
-			protected void doInTransactionWithoutResult(TransactionStatus status)
-			{
+			protected void doInTransactionWithoutResult(TransactionStatus status) {
 			}
 		});
 
@@ -187,17 +172,14 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void transactionTemplateWithException()
-	{
+	public void transactionTemplateWithException() {
 		TestTransactionManager tm = new TestTransactionManager(false, true);
 		TransactionTemplate template = new TransactionTemplate(tm);
 		final RuntimeException ex = new RuntimeException("Some application exception");
 		assertThatExceptionOfType(RuntimeException.class)
-				.isThrownBy(() -> template.execute(new TransactionCallbackWithoutResult()
-				{
+				.isThrownBy(() -> template.execute(new TransactionCallbackWithoutResult() {
 					@Override
-					protected void doInTransactionWithoutResult(TransactionStatus status)
-					{
+					protected void doInTransactionWithoutResult(TransactionStatus status) {
 						throw ex;
 					}
 				})).isSameAs(ex);
@@ -209,14 +191,11 @@ public class TransactionSupportTests
 
 	@SuppressWarnings("serial")
 	@Test
-	public void transactionTemplateWithRollbackException()
-	{
+	public void transactionTemplateWithRollbackException() {
 		final TransactionSystemException tex = new TransactionSystemException("system exception");
-		TestTransactionManager tm = new TestTransactionManager(false, true)
-		{
+		TestTransactionManager tm = new TestTransactionManager(false, true) {
 			@Override
-			protected void doRollback(DefaultTransactionStatus status)
-			{
+			protected void doRollback(DefaultTransactionStatus status) {
 				super.doRollback(status);
 				throw tex;
 			}
@@ -224,11 +203,9 @@ public class TransactionSupportTests
 		TransactionTemplate template = new TransactionTemplate(tm);
 		final RuntimeException ex = new RuntimeException("Some application exception");
 		assertThatExceptionOfType(RuntimeException.class)
-				.isThrownBy(() -> template.execute(new TransactionCallbackWithoutResult()
-				{
+				.isThrownBy(() -> template.execute(new TransactionCallbackWithoutResult() {
 					@Override
-					protected void doInTransactionWithoutResult(TransactionStatus status)
-					{
+					protected void doInTransactionWithoutResult(TransactionStatus status) {
 						throw ex;
 					}
 				})).isSameAs(tex);
@@ -239,16 +216,13 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void transactionTemplateWithError()
-	{
+	public void transactionTemplateWithError() {
 		TestTransactionManager tm = new TestTransactionManager(false, true);
 		TransactionTemplate template = new TransactionTemplate(tm);
 		assertThatExceptionOfType(Error.class)
-				.isThrownBy(() -> template.execute(new TransactionCallbackWithoutResult()
-				{
+				.isThrownBy(() -> template.execute(new TransactionCallbackWithoutResult() {
 					@Override
-					protected void doInTransactionWithoutResult(TransactionStatus status)
-					{
+					protected void doInTransactionWithoutResult(TransactionStatus status) {
 						throw new Error("Some application error");
 					}
 				}));
@@ -259,8 +233,7 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void transactionTemplateInitialization()
-	{
+	public void transactionTemplateInitialization() {
 		TestTransactionManager tm = new TestTransactionManager(false, true);
 		TransactionTemplate template = new TransactionTemplate();
 		template.setTransactionManager(tm);
@@ -291,8 +264,7 @@ public class TransactionSupportTests
 	}
 
 	@Test
-	public void transactionTemplateEquality()
-	{
+	public void transactionTemplateEquality() {
 		TestTransactionManager tm1 = new TestTransactionManager(false, true);
 		TestTransactionManager tm2 = new TestTransactionManager(false, true);
 		TransactionTemplate template1 = new TransactionTemplate(tm1);
@@ -305,8 +277,7 @@ public class TransactionSupportTests
 	}
 
 	@AfterEach
-	public void clear()
-	{
+	public void clear() {
 		assertThat(TransactionSynchronizationManager.getResourceMap().isEmpty()).isTrue();
 		assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isFalse();
 	}

@@ -16,15 +16,14 @@
 
 package org.springframework.web.servlet.tags;
 
-import java.beans.PropertyEditor;
-
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.support.BindStatus;
+
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
+import java.beans.PropertyEditor;
 
 /**
  * The {@code <bind>} tag supports evaluation of binding errors for a certain
@@ -113,6 +112,7 @@ public class BindTag extends HtmlEscapingAwareTag implements EditorAwareTag {
 	 * field errors (also supporting nested fields and "person.na*" mappings).
 	 * "person.*" will return all errors for the specified bean, both global
 	 * and field errors.
+	 *
 	 * @see org.springframework.validation.Errors#getGlobalErrors
 	 * @see org.springframework.validation.Errors#getFieldErrors
 	 */
@@ -158,8 +158,7 @@ public class BindTag extends HtmlEscapingAwareTag implements EditorAwareTag {
 
 		try {
 			this.status = new BindStatus(getRequestContext(), resolvedPath, isHtmlEscape());
-		}
-		catch (IllegalStateException ex) {
+		} catch (IllegalStateException ex) {
 			throw new JspTagException(ex.getMessage());
 		}
 
@@ -183,8 +182,7 @@ public class BindTag extends HtmlEscapingAwareTag implements EditorAwareTag {
 		}
 		if (this.previousRequestStatus != null) {
 			this.pageContext.setAttribute(STATUS_VARIABLE_NAME, this.previousRequestStatus, PageContext.REQUEST_SCOPE);
-		}
-		else {
+		} else {
 			this.pageContext.removeAttribute(STATUS_VARIABLE_NAME, PageContext.REQUEST_SCOPE);
 		}
 		return EVAL_PAGE;
@@ -203,6 +201,7 @@ public class BindTag extends HtmlEscapingAwareTag implements EditorAwareTag {
 	 * Retrieve the property that this tag is currently bound to,
 	 * or {@code null} if bound to an object rather than a specific property.
 	 * Intended for cooperating nesting tags.
+	 *
 	 * @return the property that this tag is currently bound to,
 	 * or {@code null} if none
 	 */
@@ -214,6 +213,7 @@ public class BindTag extends HtmlEscapingAwareTag implements EditorAwareTag {
 	/**
 	 * Retrieve the Errors instance that this tag is currently bound to.
 	 * Intended for cooperating nesting tags.
+	 *
 	 * @return the current Errors instance, or {@code null} if none
 	 */
 	@Nullable

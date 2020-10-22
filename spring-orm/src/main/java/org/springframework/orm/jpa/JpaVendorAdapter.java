@@ -16,15 +16,14 @@
 
 package org.springframework.orm.jpa;
 
-import java.util.Collections;
-import java.util.Map;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceProvider;
 import javax.persistence.spi.PersistenceUnitInfo;
-
-import org.springframework.lang.Nullable;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * SPI interface that allows to plug in vendor-specific behavior
@@ -33,11 +32,10 @@ import org.springframework.lang.Nullable;
  *
  * @author Juergen Hoeller
  * @author Rod Johnson
- * @since 2.0
  * @see AbstractEntityManagerFactoryBean#setJpaVendorAdapter
+ * @since 2.0
  */
-public interface JpaVendorAdapter
-{
+public interface JpaVendorAdapter {
 
 	/**
 	 * Return the vendor-specific persistence provider.
@@ -48,12 +46,11 @@ public interface JpaVendorAdapter
 	 * Return the name of the persistence provider's root package
 	 * (e.g. "oracle.toplink.essentials"). Will be used for
 	 * excluding provider classes from temporary class overriding.
-	 * 
+	 *
 	 * @since 2.5.2
 	 */
 	@Nullable
-	default String getPersistenceProviderRootPackage()
-	{
+	default String getPersistenceProviderRootPackage() {
 		return null;
 	}
 
@@ -76,18 +73,16 @@ public interface JpaVendorAdapter
 	 * Java SE style bootstrapping via {@link javax.persistence.Persistence}
 	 * (i.e. {@link LocalEntityManagerFactoryBean}), the parameter-less
 	 * {@link #getJpaPropertyMap()} variant will be called directly.
-	 * 
-	 * @param pui
-	 *            the PersistenceUnitInfo for the current persistence unit
+	 *
+	 * @param pui the PersistenceUnitInfo for the current persistence unit
 	 * @return a Map of JPA properties, as accepted by the standard JPA bootstrap
-	 *         facilities, or an empty Map if there are no properties to expose
-	 * @since 4.3.13
+	 * facilities, or an empty Map if there are no properties to expose
 	 * @see PersistenceUnitInfo#getTransactionType()
 	 * @see javax.persistence.spi.PersistenceProvider#createContainerEntityManagerFactory(PersistenceUnitInfo,
-	 *      Map)
+	 * Map)
+	 * @since 4.3.13
 	 */
-	default Map<String, ?> getJpaPropertyMap(PersistenceUnitInfo pui)
-	{
+	default Map<String, ?> getJpaPropertyMap(PersistenceUnitInfo pui) {
 		return getJpaPropertyMap();
 	}
 
@@ -98,13 +93,12 @@ public interface JpaVendorAdapter
 	 * Note that there might be further JPA properties defined on the
 	 * EntityManagerFactory bean, which might potentially override individual
 	 * JPA property values specified here.
-	 * 
+	 *
 	 * @return a Map of JPA properties, as accepted by the standard JPA bootstrap
-	 *         facilities, or an empty Map if there are no properties to expose
+	 * facilities, or an empty Map if there are no properties to expose
 	 * @see javax.persistence.Persistence#createEntityManagerFactory(String, Map)
 	 */
-	default Map<String, ?> getJpaPropertyMap()
-	{
+	default Map<String, ?> getJpaPropertyMap() {
 		return Collections.emptyMap();
 	}
 
@@ -113,8 +107,7 @@ public interface JpaVendorAdapter
 	 * provider, or {@code null} if there is none.
 	 */
 	@Nullable
-	default JpaDialect getJpaDialect()
-	{
+	default JpaDialect getJpaDialect() {
 		return null;
 	}
 
@@ -125,11 +118,10 @@ public interface JpaVendorAdapter
 	 * If the provider does not offer any EntityManagerFactory extensions,
 	 * the adapter should simply return the standard
 	 * {@link javax.persistence.EntityManagerFactory} class here.
-	 * 
+	 *
 	 * @since 2.5.2
 	 */
-	default Class<? extends EntityManagerFactory> getEntityManagerFactoryInterface()
-	{
+	default Class<? extends EntityManagerFactory> getEntityManagerFactoryInterface() {
 		return EntityManagerFactory.class;
 	}
 
@@ -141,8 +133,7 @@ public interface JpaVendorAdapter
 	 * the adapter should simply return the standard
 	 * {@link javax.persistence.EntityManager} class here.
 	 */
-	default Class<? extends EntityManager> getEntityManagerInterface()
-	{
+	default Class<? extends EntityManager> getEntityManagerInterface() {
 		return EntityManager.class;
 	}
 
@@ -154,8 +145,7 @@ public interface JpaVendorAdapter
 	 * While this is not expected to be used for most providers, it is included
 	 * here as a general extension hook.
 	 */
-	default void postProcessEntityManagerFactory(EntityManagerFactory emf)
-	{
+	default void postProcessEntityManagerFactory(EntityManagerFactory emf) {
 	}
 
 }

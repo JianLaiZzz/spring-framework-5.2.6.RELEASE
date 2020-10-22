@@ -17,7 +17,6 @@
 package org.springframework.transaction;
 
 import org.springframework.lang.Nullable;
-
 import reactor.core.publisher.Mono;
 
 /**
@@ -28,12 +27,11 @@ import reactor.core.publisher.Mono;
  *
  * @author Mark Paluch
  * @author Juergen Hoeller
- * @since 5.2
  * @see org.springframework.transaction.reactive.TransactionalOperator
  * @see org.springframework.transaction.interceptor.TransactionInterceptor
+ * @since 5.2
  */
-public interface ReactiveTransactionManager extends TransactionManager
-{
+public interface ReactiveTransactionManager extends TransactionManager {
 
 	/**
 	 * Emit a currently active reactive transaction or create a new one, according to
@@ -49,17 +47,14 @@ public interface ReactiveTransactionManager extends TransactionManager
 	 * An exception to the above rule is the read-only flag, which should be
 	 * ignored if no explicit read-only mode is supported. Essentially, the
 	 * read-only flag is just a hint for potential optimization.
-	 * 
-	 * @param definition
-	 *            the TransactionDefinition instance,
-	 *            describing propagation behavior, isolation level, timeout etc.
+	 *
+	 * @param definition the TransactionDefinition instance,
+	 *                   describing propagation behavior, isolation level, timeout etc.
 	 * @return transaction status object representing the new or current transaction
-	 * @throws TransactionException
-	 *             in case of lookup, creation, or system errors
-	 * @throws IllegalTransactionStateException
-	 *             if the given transaction definition
-	 *             cannot be executed (for example, if a currently active transaction is in
-	 *             conflict with the specified propagation behavior)
+	 * @throws TransactionException             in case of lookup, creation, or system errors
+	 * @throws IllegalTransactionStateException if the given transaction definition
+	 *                                          cannot be executed (for example, if a currently active transaction is in
+	 *                                          conflict with the specified propagation behavior)
 	 * @see TransactionDefinition#getPropagationBehavior
 	 * @see TransactionDefinition#getIsolationLevel
 	 * @see TransactionDefinition#getTimeout
@@ -87,21 +82,16 @@ public interface ReactiveTransactionManager extends TransactionManager
 	 * database right before commit, with the resulting DataAccessException
 	 * causing the transaction to fail. The original exception will be
 	 * propagated to the caller of this commit method in such a case.
-	 * 
-	 * @param transaction
-	 *            object returned by the {@code getTransaction} method
-	 * @throws UnexpectedRollbackException
-	 *             in case of an unexpected rollback
-	 *             that the transaction coordinator initiated
-	 * @throws HeuristicCompletionException
-	 *             in case of a transaction failure
-	 *             caused by a heuristic decision on the side of the transaction coordinator
-	 * @throws TransactionSystemException
-	 *             in case of commit or system errors
-	 *             (typically caused by fundamental resource failures)
-	 * @throws IllegalTransactionStateException
-	 *             if the given transaction
-	 *             is already completed (that is, committed or rolled back)
+	 *
+	 * @param transaction object returned by the {@code getTransaction} method
+	 * @throws UnexpectedRollbackException      in case of an unexpected rollback
+	 *                                          that the transaction coordinator initiated
+	 * @throws HeuristicCompletionException     in case of a transaction failure
+	 *                                          caused by a heuristic decision on the side of the transaction coordinator
+	 * @throws TransactionSystemException       in case of commit or system errors
+	 *                                          (typically caused by fundamental resource failures)
+	 * @throws IllegalTransactionStateException if the given transaction
+	 *                                          is already completed (that is, committed or rolled back)
 	 * @see ReactiveTransaction#setRollbackOnly
 	 */
 	Mono<Void> commit(ReactiveTransaction transaction) throws TransactionException;
@@ -118,15 +108,12 @@ public interface ReactiveTransactionManager extends TransactionManager
 	 * The transaction will already have been completed and cleaned up when commit
 	 * returns, even in case of a commit exception. Consequently, a rollback call
 	 * after commit failure will lead to an IllegalTransactionStateException.
-	 * 
-	 * @param transaction
-	 *            object returned by the {@code getTransaction} method
-	 * @throws TransactionSystemException
-	 *             in case of rollback or system errors
-	 *             (typically caused by fundamental resource failures)
-	 * @throws IllegalTransactionStateException
-	 *             if the given transaction
-	 *             is already completed (that is, committed or rolled back)
+	 *
+	 * @param transaction object returned by the {@code getTransaction} method
+	 * @throws TransactionSystemException       in case of rollback or system errors
+	 *                                          (typically caused by fundamental resource failures)
+	 * @throws IllegalTransactionStateException if the given transaction
+	 *                                          is already completed (that is, committed or rolled back)
 	 */
 	Mono<Void> rollback(ReactiveTransaction transaction) throws TransactionException;
 

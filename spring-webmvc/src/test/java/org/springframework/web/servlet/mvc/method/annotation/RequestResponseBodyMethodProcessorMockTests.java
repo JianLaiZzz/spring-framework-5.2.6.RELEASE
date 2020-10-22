@@ -16,19 +16,8 @@
 
 package org.springframework.web.servlet.mvc.method.annotation;
 
-import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -55,19 +44,21 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * Test fixture for {@link RequestResponseBodyMethodProcessor} delegating to a
@@ -173,12 +164,12 @@ public class RequestResponseBodyMethodProcessorMockTests {
 	public void resolveArgumentNotValid() throws Exception {
 		assertThatExceptionOfType(MethodArgumentNotValidException.class).isThrownBy(() ->
 				testResolveArgumentWithValidation(new SimpleBean(null)))
-			.satisfies(ex -> {
-				BindingResult bindingResult = ex.getBindingResult();
-				assertThat(bindingResult.getObjectName()).isEqualTo("simpleBean");
-				assertThat(bindingResult.getErrorCount()).isEqualTo(1);
-				assertThat(bindingResult.getFieldError("name")).isNotNull();
-			});
+				.satisfies(ex -> {
+					BindingResult bindingResult = ex.getBindingResult();
+					assertThat(bindingResult.getObjectName()).isEqualTo("simpleBean");
+					assertThat(bindingResult.getErrorCount()).isEqualTo(1);
+					assertThat(bindingResult.getFieldError("name")).isNotNull();
+				});
 	}
 
 	@Test
@@ -469,7 +460,7 @@ public class RequestResponseBodyMethodProcessorMockTests {
 
 		@Override
 		public WebDataBinder createBinder(NativeWebRequest webRequest, @Nullable Object target,
-				String objectName) throws Exception {
+										  String objectName) throws Exception {
 
 			LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
 			validator.afterPropertiesSet();

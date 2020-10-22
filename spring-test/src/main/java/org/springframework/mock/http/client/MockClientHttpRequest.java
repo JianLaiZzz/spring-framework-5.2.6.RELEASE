@@ -16,16 +16,16 @@
 
 package org.springframework.mock.http.client;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.lang.Nullable;
 import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.util.Assert;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Mock implementation of {@link ClientHttpRequest}.
@@ -53,8 +53,7 @@ public class MockClientHttpRequest extends MockHttpOutputMessage implements Clie
 		this.httpMethod = HttpMethod.GET;
 		try {
 			this.uri = new URI("/");
-		}
-		catch (URISyntaxException ex) {
+		} catch (URISyntaxException ex) {
 			throw new IllegalStateException(ex);
 		}
 	}
@@ -102,6 +101,7 @@ public class MockClientHttpRequest extends MockHttpOutputMessage implements Clie
 	/**
 	 * Set the {@link #isExecuted() executed} flag to {@code true} and return the
 	 * configured {@link #setResponse(ClientHttpResponse) response}.
+	 *
 	 * @see #executeInternal()
 	 */
 	@Override

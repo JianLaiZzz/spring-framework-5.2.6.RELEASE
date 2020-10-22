@@ -33,34 +33,30 @@ import org.springframework.beans.BeansException;
  * @see #setTargetBeanName
  */
 @SuppressWarnings("serial")
-public class PrototypeTargetSource extends AbstractPrototypeBasedTargetSource
-{
+public class PrototypeTargetSource extends AbstractPrototypeBasedTargetSource {
 
 	/**
 	 * Obtain a new prototype instance for every call.
-	 * 
+	 *
 	 * @see #newPrototypeInstance()
 	 */
 	@Override
-	public Object getTarget() throws BeansException
-	{
+	public Object getTarget() throws BeansException {
 		return newPrototypeInstance();
 	}
 
 	/**
 	 * Destroy the given independent instance.
-	 * 
+	 *
 	 * @see #destroyPrototypeInstance
 	 */
 	@Override
-	public void releaseTarget(Object target)
-	{
+	public void releaseTarget(Object target) {
 		destroyPrototypeInstance(target);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "PrototypeTargetSource for target bean with name '" + getTargetBeanName() + "'";
 	}
 

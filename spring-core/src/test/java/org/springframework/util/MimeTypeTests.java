@@ -16,21 +16,18 @@
 
 package org.springframework.util;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.jupiter.api.Test;
-
-import org.springframework.core.convert.ConversionService;
-import org.springframework.core.convert.support.DefaultConversionService;
-
 import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * Unit tests for {@link MimeType}.
@@ -255,25 +252,29 @@ class MimeTypeTests {
 				MimeTypeUtils.parseMimeType("text/html; charset=foo-bar"));
 	}
 
-	@Test  // SPR-8917
+	@Test
+		// SPR-8917
 	void parseMimeTypeQuotedParameterValue() {
 		MimeType mimeType = MimeTypeUtils.parseMimeType("audio/*;attr=\"v>alue\"");
 		assertThat(mimeType.getParameter("attr")).isEqualTo("\"v>alue\"");
 	}
 
-	@Test  // SPR-8917
+	@Test
+		// SPR-8917
 	void parseMimeTypeSingleQuotedParameterValue() {
 		MimeType mimeType = MimeTypeUtils.parseMimeType("audio/*;attr='v>alue'");
 		assertThat(mimeType.getParameter("attr")).isEqualTo("'v>alue'");
 	}
 
-	@Test // SPR-16630
+	@Test
+		// SPR-16630
 	void parseMimeTypeWithSpacesAroundEquals() {
 		MimeType mimeType = MimeTypeUtils.parseMimeType("multipart/x-mixed-replace;boundary = --myboundary");
 		assertThat(mimeType.getParameter("boundary")).isEqualTo("--myboundary");
 	}
 
-	@Test // SPR-16630
+	@Test
+		// SPR-16630
 	void parseMimeTypeWithSpacesAroundEqualsAndQuotedValue() {
 		MimeType mimeType = MimeTypeUtils.parseMimeType("text/plain; foo = \" bar \" ");
 		assertThat(mimeType.getParameter("foo")).isEqualTo("\" bar \"");
@@ -303,14 +304,16 @@ class MimeTypeTests {
 		assertThat(mimeTypes.size()).as("Invalid amount of mime types").isEqualTo(0);
 	}
 
-	@Test // gh-23241
+	@Test
+		// gh-23241
 	void parseMimeTypesWithTrailingComma() {
 		List<MimeType> mimeTypes = MimeTypeUtils.parseMimeTypes("text/plain, text/html,");
 		assertThat(mimeTypes).as("No mime types returned").isNotNull();
 		assertThat(mimeTypes.size()).as("Incorrect number of mime types").isEqualTo(2);
 	}
 
-	@Test // SPR-17459
+	@Test
+		// SPR-17459
 	void parseMimeTypesWithQuotedParameters() {
 		testWithQuotedParameters("foo/bar;param=\",\"");
 		testWithQuotedParameters("foo/bar;param=\"s,a,\"");
@@ -324,7 +327,7 @@ class MimeTypeTests {
 		String s = String.join(",", mimeTypes);
 		List<MimeType> actual = MimeTypeUtils.parseMimeTypes(s);
 		assertThat(actual.size()).isEqualTo(mimeTypes.length);
-		for (int i=0; i < mimeTypes.length; i++) {
+		for (int i = 0; i < mimeTypes.length; i++) {
 			assertThat(actual.get(i).toString()).isEqualTo(mimeTypes[i]);
 		}
 	}
@@ -382,6 +385,7 @@ class MimeTypeTests {
 
 	/**
 	 * SPR-13157
+	 *
 	 * @since 4.2
 	 */
 	@Test

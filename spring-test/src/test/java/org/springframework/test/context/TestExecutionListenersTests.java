@@ -16,12 +16,7 @@
 
 package org.springframework.test.context;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationConfigurationException;
 import org.springframework.test.context.event.EventPublishingTestExecutionListener;
@@ -32,6 +27,10 @@ import org.springframework.test.context.support.DirtiesContextBeforeModesTestExe
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.context.web.ServletTestExecutionListener;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -122,7 +121,7 @@ class TestExecutionListenersTests {
 	@Test
 	void customListenersDeclaredOnInterface() {
 		assertRegisteredListeners(ExplicitListenersOnTestInterfaceTestCase.class,
-			asList(FooTestExecutionListener.class, BarTestExecutionListener.class));
+				asList(FooTestExecutionListener.class, BarTestExecutionListener.class));
 	}
 
 	@Test
@@ -238,7 +237,7 @@ class TestExecutionListenersTests {
 	static class NonInheritedListenersTestCase extends InheritedListenersTestCase {
 	}
 
-	@TestExecutionListeners({ FooTestExecutionListener.class, BarTestExecutionListener.class })
+	@TestExecutionListeners({FooTestExecutionListener.class, BarTestExecutionListener.class})
 	interface ExplicitListenersTestInterface {
 	}
 

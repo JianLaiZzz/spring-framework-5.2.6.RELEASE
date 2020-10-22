@@ -27,40 +27,34 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
-public class DefaultDataBinderFactory implements WebDataBinderFactory
-{
+public class DefaultDataBinderFactory implements WebDataBinderFactory {
 
 	@Nullable
 	private final WebBindingInitializer initializer;
 
 	/**
 	 * Create a new {@code DefaultDataBinderFactory} instance.
-	 * 
-	 * @param initializer
-	 *            for global data binder initialization
-	 *            (or {@code null} if none)
+	 *
+	 * @param initializer for global data binder initialization
+	 *                    (or {@code null} if none)
 	 */
-	public DefaultDataBinderFactory(@Nullable WebBindingInitializer initializer)
-	{
+	public DefaultDataBinderFactory(@Nullable WebBindingInitializer initializer) {
 		this.initializer = initializer;
 	}
 
 	/**
 	 * Create a new {@link WebDataBinder} for the given target object and
 	 * initialize it through a {@link WebBindingInitializer}.
-	 * 
-	 * @throws Exception
-	 *             in case of invalid state or arguments
+	 *
+	 * @throws Exception in case of invalid state or arguments
 	 */
 	@Override
 	@SuppressWarnings("deprecation")
 	public final WebDataBinder createBinder(NativeWebRequest webRequest, @Nullable Object target,
-			String objectName) throws Exception
-	{
+											String objectName) throws Exception {
 
 		WebDataBinder dataBinder = createBinderInstance(target, objectName, webRequest);
-		if (this.initializer != null)
-		{
+		if (this.initializer != null) {
 			this.initializer.initBinder(dataBinder, webRequest);
 		}
 		initBinder(dataBinder, webRequest);
@@ -70,19 +64,14 @@ public class DefaultDataBinderFactory implements WebDataBinderFactory
 	/**
 	 * Extension point to create the WebDataBinder instance.
 	 * By default this is {@code WebRequestDataBinder}.
-	 * 
-	 * @param target
-	 *            the binding target or {@code null} for type conversion only
-	 * @param objectName
-	 *            the binding target object name
-	 * @param webRequest
-	 *            the current request
-	 * @throws Exception
-	 *             in case of invalid state or arguments
+	 *
+	 * @param target     the binding target or {@code null} for type conversion only
+	 * @param objectName the binding target object name
+	 * @param webRequest the current request
+	 * @throws Exception in case of invalid state or arguments
 	 */
 	protected WebDataBinder createBinderInstance(@Nullable Object target, String objectName,
-			NativeWebRequest webRequest) throws Exception
-	{
+												 NativeWebRequest webRequest) throws Exception {
 
 		return new WebRequestDataBinder(target, objectName);
 	}
@@ -91,16 +80,12 @@ public class DefaultDataBinderFactory implements WebDataBinderFactory
 	 * Extension point to further initialize the created data binder instance
 	 * (e.g. with {@code @InitBinder} methods) after "global" initialization
 	 * via {@link WebBindingInitializer}.
-	 * 
-	 * @param dataBinder
-	 *            the data binder instance to customize
-	 * @param webRequest
-	 *            the current request
-	 * @throws Exception
-	 *             if initialization fails
+	 *
+	 * @param dataBinder the data binder instance to customize
+	 * @param webRequest the current request
+	 * @throws Exception if initialization fails
 	 */
-	protected void initBinder(WebDataBinder dataBinder, NativeWebRequest webRequest) throws Exception
-	{
+	protected void initBinder(WebDataBinder dataBinder, NativeWebRequest webRequest) throws Exception {
 
 	}
 

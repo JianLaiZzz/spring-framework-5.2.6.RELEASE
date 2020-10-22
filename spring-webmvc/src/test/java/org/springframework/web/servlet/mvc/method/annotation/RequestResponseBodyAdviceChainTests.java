@@ -16,15 +16,9 @@
 
 package org.springframework.web.servlet.mvc.method.annotation;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
@@ -41,6 +35,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.ControllerAdviceBean;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -155,8 +154,8 @@ public class RequestResponseBodyAdviceChainTests {
 
 		@Override
 		public String beforeBodyWrite(String body, MethodParameter returnType,
-				MediaType contentType, Class<? extends HttpMessageConverter<?>> converterType,
-				ServerHttpRequest request, ServerHttpResponse response) {
+									  MediaType contentType, Class<? extends HttpMessageConverter<?>> converterType,
+									  ServerHttpRequest request, ServerHttpResponse response) {
 
 			return body + "-MyControllerAdvice";
 		}
@@ -173,8 +172,8 @@ public class RequestResponseBodyAdviceChainTests {
 
 		@Override
 		public String beforeBodyWrite(String body, MethodParameter returnType,
-				MediaType contentType, Class<? extends HttpMessageConverter<?>> converterType,
-				ServerHttpRequest request, ServerHttpResponse response) {
+									  MediaType contentType, Class<? extends HttpMessageConverter<?>> converterType,
+									  ServerHttpRequest request, ServerHttpResponse response) {
 
 			return body + "-TargetedControllerAdvice";
 		}

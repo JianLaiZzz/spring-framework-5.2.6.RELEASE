@@ -16,30 +16,27 @@
 
 package org.springframework.transaction.reactive;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link TransactionalOperator}.
  *
  * @author Mark Paluch
  */
-public class TransactionalOperatorTests
-{
+public class TransactionalOperatorTests {
 
 	ReactiveTestTransactionManager tm = new ReactiveTestTransactionManager(false, true);
 
 	@Test
-	public void commitWithMono()
-	{
+	public void commitWithMono() {
 		TransactionalOperator operator = TransactionalOperator.create(tm,
 				new DefaultTransactionDefinition());
 		Mono.just(true).as(operator::transactional).as(StepVerifier::create).expectNext(true)
@@ -49,8 +46,7 @@ public class TransactionalOperatorTests
 	}
 
 	@Test
-	public void monoSubscriptionNotCancelled()
-	{
+	public void monoSubscriptionNotCancelled() {
 		AtomicBoolean cancelled = new AtomicBoolean();
 		TransactionalOperator operator = TransactionalOperator.create(tm,
 				new DefaultTransactionDefinition());
@@ -62,8 +58,7 @@ public class TransactionalOperatorTests
 	}
 
 	@Test
-	public void cancellationPropagatedToMono()
-	{
+	public void cancellationPropagatedToMono() {
 		AtomicBoolean cancelled = new AtomicBoolean();
 		TransactionalOperator operator = TransactionalOperator.create(tm,
 				new DefaultTransactionDefinition());
@@ -75,8 +70,7 @@ public class TransactionalOperatorTests
 	}
 
 	@Test
-	public void cancellationPropagatedToFlux()
-	{
+	public void cancellationPropagatedToFlux() {
 		AtomicBoolean cancelled = new AtomicBoolean();
 		TransactionalOperator operator = TransactionalOperator.create(tm,
 				new DefaultTransactionDefinition());
@@ -88,8 +82,7 @@ public class TransactionalOperatorTests
 	}
 
 	@Test
-	public void rollbackWithMono()
-	{
+	public void rollbackWithMono() {
 		TransactionalOperator operator = TransactionalOperator.create(tm,
 				new DefaultTransactionDefinition());
 		Mono.error(new IllegalStateException()).as(operator::transactional).as(StepVerifier::create)
@@ -99,8 +92,7 @@ public class TransactionalOperatorTests
 	}
 
 	@Test
-	public void commitWithFlux()
-	{
+	public void commitWithFlux() {
 		TransactionalOperator operator = TransactionalOperator.create(tm,
 				new DefaultTransactionDefinition());
 		Flux.just(1, 2, 3, 4).as(operator::transactional).as(StepVerifier::create).expectNextCount(4)
@@ -110,8 +102,7 @@ public class TransactionalOperatorTests
 	}
 
 	@Test
-	public void rollbackWithFlux()
-	{
+	public void rollbackWithFlux() {
 		TransactionalOperator operator = TransactionalOperator.create(tm,
 				new DefaultTransactionDefinition());
 		Flux.error(new IllegalStateException()).as(operator::transactional).as(StepVerifier::create)

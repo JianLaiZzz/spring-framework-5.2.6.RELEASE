@@ -16,10 +16,6 @@
 
 package org.springframework.web.accept;
 
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
@@ -28,6 +24,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import javax.servlet.ServletContext;
+import java.util.Map;
+
 /**
  * Extends {@code PathExtensionContentNegotiationStrategy} that also uses
  * {@link ServletContext#getMimeType(String)} to resolve file extensions.
@@ -35,13 +34,12 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Rossen Stoyanchev
  * @since 3.2
  * @deprecated as of 5.2.4. See class-level note in
- *             {@link ContentNegotiationManagerFactoryBean} on the deprecation of path
- *             extension config options.
+ * {@link ContentNegotiationManagerFactoryBean} on the deprecation of path
+ * extension config options.
  */
 @Deprecated
 public class ServletPathExtensionContentNegotiationStrategy
-		extends PathExtensionContentNegotiationStrategy
-{
+		extends PathExtensionContentNegotiationStrategy {
 
 	private final ServletContext servletContext;
 
@@ -51,8 +49,7 @@ public class ServletPathExtensionContentNegotiationStrategy
 	 * {@link ServletContext#getMimeType(String)} or via
 	 * {@link org.springframework.http.MediaTypeFactory}.
 	 */
-	public ServletPathExtensionContentNegotiationStrategy(ServletContext context)
-	{
+	public ServletPathExtensionContentNegotiationStrategy(ServletContext context) {
 		this(context, null);
 	}
 
@@ -60,8 +57,7 @@ public class ServletPathExtensionContentNegotiationStrategy
 	 * Create an instance with the given extension-to-MediaType lookup.
 	 */
 	public ServletPathExtensionContentNegotiationStrategy(ServletContext servletContext,
-			@Nullable Map<String, MediaType> mediaTypes)
-	{
+														  @Nullable Map<String, MediaType> mediaTypes) {
 
 		super(mediaTypes);
 		Assert.notNull(servletContext, "ServletContext is required");
@@ -76,20 +72,16 @@ public class ServletPathExtensionContentNegotiationStrategy
 	@Override
 	@Nullable
 	protected MediaType handleNoMatch(NativeWebRequest webRequest, String extension)
-			throws HttpMediaTypeNotAcceptableException
-	{
+			throws HttpMediaTypeNotAcceptableException {
 
 		MediaType mediaType = null;
 		String mimeType = this.servletContext.getMimeType("file." + extension);
-		if (StringUtils.hasText(mimeType))
-		{
+		if (StringUtils.hasText(mimeType)) {
 			mediaType = MediaType.parseMediaType(mimeType);
 		}
-		if (mediaType == null || MediaType.APPLICATION_OCTET_STREAM.equals(mediaType))
-		{
+		if (mediaType == null || MediaType.APPLICATION_OCTET_STREAM.equals(mediaType)) {
 			MediaType superMediaType = super.handleNoMatch(webRequest, extension);
-			if (superMediaType != null)
-			{
+			if (superMediaType != null) {
 				mediaType = superMediaType;
 			}
 		}
@@ -100,26 +92,21 @@ public class ServletPathExtensionContentNegotiationStrategy
 	 * Extends the base class
 	 * {@link PathExtensionContentNegotiationStrategy#getMediaTypeForResource}
 	 * with the ability to also look up through the ServletContext.
-	 * 
-	 * @param resource
-	 *            the resource to look up
+	 *
+	 * @param resource the resource to look up
 	 * @return the MediaType for the extension, or {@code null} if none found
 	 * @since 4.3
 	 */
 	@Override
-	public MediaType getMediaTypeForResource(Resource resource)
-	{
+	public MediaType getMediaTypeForResource(Resource resource) {
 		MediaType mediaType = null;
 		String mimeType = this.servletContext.getMimeType(resource.getFilename());
-		if (StringUtils.hasText(mimeType))
-		{
+		if (StringUtils.hasText(mimeType)) {
 			mediaType = MediaType.parseMediaType(mimeType);
 		}
-		if (mediaType == null || MediaType.APPLICATION_OCTET_STREAM.equals(mediaType))
-		{
+		if (mediaType == null || MediaType.APPLICATION_OCTET_STREAM.equals(mediaType)) {
 			MediaType superMediaType = super.getMediaTypeForResource(resource);
-			if (superMediaType != null)
-			{
+			if (superMediaType != null) {
 				mediaType = superMediaType;
 			}
 		}

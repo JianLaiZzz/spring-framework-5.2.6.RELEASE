@@ -16,12 +16,6 @@
 
 package org.springframework.transaction.annotation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
-import java.util.Collection;
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +28,12 @@ import org.springframework.transaction.config.TransactionManagementConfigUtils;
 import org.springframework.transaction.event.TransactionalEventListenerFactory;
 import org.springframework.transaction.testfixture.CallCountingTransactionManager;
 
+import java.util.Collection;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 /**
  * Tests demonstrating use of @EnableTransactionManagement @Configuration classes.
  *
@@ -43,12 +43,10 @@ import org.springframework.transaction.testfixture.CallCountingTransactionManage
  * @author Sam Brannen
  * @since 3.1
  */
-public class EnableTransactionManagementTests
-{
+public class EnableTransactionManagementTests {
 
 	@Test
-	public void transactionProxyIsCreated()
-	{
+	public void transactionProxyIsCreated() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				EnableTxConfig.class, TxManagerConfig.class);
 		TransactionalTestBean bean = ctx.getBean(TransactionalTestBean.class);
@@ -59,8 +57,7 @@ public class EnableTransactionManagementTests
 	}
 
 	@Test
-	public void transactionProxyIsCreatedWithEnableOnSuperclass()
-	{
+	public void transactionProxyIsCreatedWithEnableOnSuperclass() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				InheritedEnableTxConfig.class, TxManagerConfig.class);
 		TransactionalTestBean bean = ctx.getBean(TransactionalTestBean.class);
@@ -71,8 +68,7 @@ public class EnableTransactionManagementTests
 	}
 
 	@Test
-	public void transactionProxyIsCreatedWithEnableOnExcludedSuperclass()
-	{
+	public void transactionProxyIsCreatedWithEnableOnExcludedSuperclass() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				ParentEnableTxConfig.class, ChildEnableTxConfig.class, TxManagerConfig.class);
 		TransactionalTestBean bean = ctx.getBean(TransactionalTestBean.class);
@@ -83,8 +79,7 @@ public class EnableTransactionManagementTests
 	}
 
 	@Test
-	public void txManagerIsResolvedOnInvocationOfTransactionalMethod()
-	{
+	public void txManagerIsResolvedOnInvocationOfTransactionalMethod() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				EnableTxConfig.class, TxManagerConfig.class);
 		TransactionalTestBean bean = ctx.getBean(TransactionalTestBean.class);
@@ -101,8 +96,7 @@ public class EnableTransactionManagementTests
 	}
 
 	@Test
-	public void txManagerIsResolvedCorrectlyWhenMultipleManagersArePresent()
-	{
+	public void txManagerIsResolvedCorrectlyWhenMultipleManagersArePresent() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				EnableTxConfig.class, MultiTxManagerConfig.class);
 		TransactionalTestBean bean = ctx.getBean(TransactionalTestBean.class);
@@ -124,8 +118,7 @@ public class EnableTransactionManagementTests
 	}
 
 	@Test
-	public void txManagerIsResolvedCorrectlyWhenMultipleManagersArePresentAndOneIsPrimary()
-	{
+	public void txManagerIsResolvedCorrectlyWhenMultipleManagersArePresentAndOneIsPrimary() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				EnableTxConfig.class, PrimaryMultiTxManagerConfig.class);
 		TransactionalTestBean bean = ctx.getBean(TransactionalTestBean.class);
@@ -148,8 +141,7 @@ public class EnableTransactionManagementTests
 	}
 
 	@Test
-	public void txManagerIsResolvedCorrectlyWithTxMgmtConfigurerAndPrimaryPresent()
-	{
+	public void txManagerIsResolvedCorrectlyWithTxMgmtConfigurerAndPrimaryPresent() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				EnableTxConfig.class, PrimaryTxManagerAndTxMgmtConfigurerConfig.class);
 		TransactionalTestBean bean = ctx.getBean(TransactionalTestBean.class);
@@ -177,8 +169,7 @@ public class EnableTransactionManagementTests
 	 */
 	@Test
 	@SuppressWarnings("resource")
-	public void proxyTypeAspectJCausesRegistrationOfAnnotationTransactionAspect()
-	{
+	public void proxyTypeAspectJCausesRegistrationOfAnnotationTransactionAspect() {
 		// should throw CNFE when trying to load AnnotationTransactionAspect.
 		// Do you actually have org.springframework.aspects on the classpath?
 		assertThatExceptionOfType(Exception.class)
@@ -188,20 +179,18 @@ public class EnableTransactionManagementTests
 	}
 
 	@Test
-	public void transactionalEventListenerRegisteredProperly()
-	{
+	public void transactionalEventListenerRegisteredProperly() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				EnableTxConfig.class);
 		assertThat(ctx.containsBean(
 				TransactionManagementConfigUtils.TRANSACTIONAL_EVENT_LISTENER_FACTORY_BEAN_NAME))
-						.isTrue();
+				.isTrue();
 		assertThat(ctx.getBeansOfType(TransactionalEventListenerFactory.class).size()).isEqualTo(1);
 		ctx.close();
 	}
 
 	@Test
-	public void spr11915TransactionManagerAsManualSingleton()
-	{
+	public void spr11915TransactionManagerAsManualSingleton() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				Spr11915Config.class);
 		TransactionalTestBean bean = ctx.getBean(TransactionalTestBean.class);
@@ -222,8 +211,7 @@ public class EnableTransactionManagementTests
 	}
 
 	@Test
-	public void spr14322FindsOnInterfaceWithInterfaceProxy()
-	{
+	public void spr14322FindsOnInterfaceWithInterfaceProxy() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				Spr14322ConfigA.class);
 		TransactionalTestInterface bean = ctx.getBean(TransactionalTestInterface.class);
@@ -239,8 +227,7 @@ public class EnableTransactionManagementTests
 	}
 
 	@Test
-	public void spr14322FindsOnInterfaceWithCglibProxy()
-	{
+	public void spr14322FindsOnInterfaceWithCglibProxy() {
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(
 				Spr14322ConfigB.class);
 		TransactionalTestInterface bean = ctx.getBean(TransactionalTestInterface.class);
@@ -256,243 +243,201 @@ public class EnableTransactionManagementTests
 	}
 
 	@Service
-	public static class TransactionalTestBean
-	{
+	public static class TransactionalTestBean {
 
 		@Transactional(readOnly = true)
-		public Collection<?> findAllFoos()
-		{
+		public Collection<?> findAllFoos() {
 			return null;
 		}
 
 		@Transactional("qualifiedTransactionManager")
-		public void saveQualifiedFoo()
-		{
+		public void saveQualifiedFoo() {
 		}
 
 		@Transactional(transactionManager = "qualifiedTransactionManager")
-		public void saveQualifiedFooWithAttributeAlias()
-		{
+		public void saveQualifiedFooWithAttributeAlias() {
 		}
 	}
 
 	@Configuration
 	@EnableTransactionManagement
-	static class EnableTxConfig
-	{
+	static class EnableTxConfig {
 	}
 
 	@Configuration
-	static class InheritedEnableTxConfig extends EnableTxConfig
-	{
+	static class InheritedEnableTxConfig extends EnableTxConfig {
 	}
 
 	@Configuration
 	@EnableTransactionManagement
 	@Conditional(NeverCondition.class)
-	static class ParentEnableTxConfig
-	{
+	static class ParentEnableTxConfig {
 
 		@Bean
-		Object someBean()
-		{
+		Object someBean() {
 			return new Object();
 		}
 	}
 
 	@Configuration
-	static class ChildEnableTxConfig extends ParentEnableTxConfig
-	{
+	static class ChildEnableTxConfig extends ParentEnableTxConfig {
 
 		@Override
-		Object someBean()
-		{
+		Object someBean() {
 			return "X";
 		}
 	}
 
-	private static class NeverCondition implements ConfigurationCondition
-	{
+	private static class NeverCondition implements ConfigurationCondition {
 
 		@Override
-		public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata)
-		{
+		public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
 			return false;
 		}
 
 		@Override
-		public ConfigurationPhase getConfigurationPhase()
-		{
+		public ConfigurationPhase getConfigurationPhase() {
 			return ConfigurationPhase.REGISTER_BEAN;
 		}
 	}
 
 	@Configuration
 	@EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
-	static class EnableAspectjTxConfig
-	{
+	static class EnableAspectjTxConfig {
 	}
 
 	@Configuration
-	static class TxManagerConfig
-	{
+	static class TxManagerConfig {
 
 		@Bean
-		public TransactionalTestBean testBean()
-		{
+		public TransactionalTestBean testBean() {
 			return new TransactionalTestBean();
 		}
 
 		@Bean
-		public PlatformTransactionManager txManager()
-		{
+		public PlatformTransactionManager txManager() {
 			return new CallCountingTransactionManager();
 		}
 	}
 
 	@Configuration
-	static class MultiTxManagerConfig extends TxManagerConfig implements TransactionManagementConfigurer
-	{
+	static class MultiTxManagerConfig extends TxManagerConfig implements TransactionManagementConfigurer {
 
 		@Bean
-		public PlatformTransactionManager txManager2()
-		{
+		public PlatformTransactionManager txManager2() {
 			return new CallCountingTransactionManager();
 		}
 
 		@Override
-		public PlatformTransactionManager annotationDrivenTransactionManager()
-		{
+		public PlatformTransactionManager annotationDrivenTransactionManager() {
 			return txManager2();
 		}
 	}
 
 	@Configuration
-	static class PrimaryMultiTxManagerConfig
-	{
+	static class PrimaryMultiTxManagerConfig {
 
 		@Bean
-		public TransactionalTestBean testBean()
-		{
+		public TransactionalTestBean testBean() {
 			return new TransactionalTestBean();
 		}
 
 		@Bean
 		@Primary
-		public PlatformTransactionManager primary()
-		{
+		public PlatformTransactionManager primary() {
 			return new CallCountingTransactionManager();
 		}
 
 		@Bean
-		public PlatformTransactionManager txManager2()
-		{
+		public PlatformTransactionManager txManager2() {
 			return new CallCountingTransactionManager();
 		}
 	}
 
 	@Configuration
-	static class PrimaryTxManagerAndTxMgmtConfigurerConfig implements TransactionManagementConfigurer
-	{
+	static class PrimaryTxManagerAndTxMgmtConfigurerConfig implements TransactionManagementConfigurer {
 
 		@Bean
-		public TransactionalTestBean testBean()
-		{
+		public TransactionalTestBean testBean() {
 			return new TransactionalTestBean();
 		}
 
 		@Bean
 		@Primary
-		public PlatformTransactionManager primary()
-		{
+		public PlatformTransactionManager primary() {
 			return new CallCountingTransactionManager();
 		}
 
 		@Bean
 		@Override
-		public PlatformTransactionManager annotationDrivenTransactionManager()
-		{
+		public PlatformTransactionManager annotationDrivenTransactionManager() {
 			return new CallCountingTransactionManager();
 		}
 	}
 
 	@Configuration
 	@EnableTransactionManagement
-	static class Spr11915Config
-	{
+	static class Spr11915Config {
 
 		@Autowired
-		public void initializeApp(ConfigurableApplicationContext applicationContext)
-		{
+		public void initializeApp(ConfigurableApplicationContext applicationContext) {
 			applicationContext.getBeanFactory().registerSingleton("qualifiedTransactionManager",
 					new CallCountingTransactionManager());
 		}
 
 		@Bean
-		public TransactionalTestBean testBean()
-		{
+		public TransactionalTestBean testBean() {
 			return new TransactionalTestBean();
 		}
 	}
 
-	public interface BaseTransactionalInterface
-	{
+	public interface BaseTransactionalInterface {
 
 		@Transactional
-		default void saveBar()
-		{
+		default void saveBar() {
 		}
 	}
 
-	public interface TransactionalTestInterface extends BaseTransactionalInterface
-	{
+	public interface TransactionalTestInterface extends BaseTransactionalInterface {
 
 		@Transactional
 		void saveFoo();
 	}
 
 	@Service
-	public static class TransactionalTestService implements TransactionalTestInterface
-	{
+	public static class TransactionalTestService implements TransactionalTestInterface {
 
 		@Override
-		public void saveFoo()
-		{
+		public void saveFoo() {
 		}
 	}
 
 	@Configuration
 	@EnableTransactionManagement
-	static class Spr14322ConfigA
-	{
+	static class Spr14322ConfigA {
 
 		@Bean
-		public TransactionalTestInterface testBean()
-		{
+		public TransactionalTestInterface testBean() {
 			return new TransactionalTestService();
 		}
 
 		@Bean
-		public PlatformTransactionManager txManager()
-		{
+		public PlatformTransactionManager txManager() {
 			return new CallCountingTransactionManager();
 		}
 	}
 
 	@Configuration
 	@EnableTransactionManagement(proxyTargetClass = true)
-	static class Spr14322ConfigB
-	{
+	static class Spr14322ConfigB {
 
 		@Bean
-		public TransactionalTestInterface testBean()
-		{
+		public TransactionalTestInterface testBean() {
 			return new TransactionalTestService();
 		}
 
 		@Bean
-		public PlatformTransactionManager txManager()
-		{
+		public PlatformTransactionManager txManager() {
 			return new CallCountingTransactionManager();
 		}
 	}

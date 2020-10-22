@@ -16,13 +16,6 @@
 
 package org.springframework.web.servlet.function.support;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -37,6 +30,12 @@ import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.RouterFunctions;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.handler.AbstractHandlerMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * {@code HandlerMapping} implementation that supports {@link RouterFunction RouterFunctions}.
@@ -59,7 +58,6 @@ public class RouterFunctionMapping extends AbstractHandlerMapping implements Ini
 	private boolean detectHandlerFunctionsInAncestorContexts = false;
 
 
-
 	/**
 	 * Create an empty {@code RouterFunctionMapping}.
 	 * <p>If this constructor is used, this mapping will detect all
@@ -71,6 +69,7 @@ public class RouterFunctionMapping extends AbstractHandlerMapping implements Ini
 	/**
 	 * Create a {@code RouterFunctionMapping} with the given {@link RouterFunction}.
 	 * <p>If this constructor is used, no application context detection will occur.
+	 *
 	 * @param routerFunction the router function to use for mapping
 	 */
 	public RouterFunctionMapping(RouterFunction<?> routerFunction) {
@@ -90,6 +89,7 @@ public class RouterFunctionMapping extends AbstractHandlerMapping implements Ini
 	 * <p><strong>Note:</strong> When router functions are detected from the
 	 * ApplicationContext, this method may return {@code null} if invoked
 	 * prior to {@link #afterPropertiesSet()}.
+	 *
 	 * @return the router function or {@code null}
 	 */
 	@Nullable
@@ -154,8 +154,7 @@ public class RouterFunctionMapping extends AbstractHandlerMapping implements Ini
 
 		try {
 			messageConverters.add(new SourceHttpMessageConverter<>());
-		}
-		catch (Error err) {
+		} catch (Error err) {
 			// Ignore when no TransformerFactory implementation is available
 		}
 		messageConverters.add(new AllEncompassingFormHttpMessageConverter());
@@ -172,8 +171,7 @@ public class RouterFunctionMapping extends AbstractHandlerMapping implements Ini
 			ServerRequest request = ServerRequest.create(servletRequest, this.messageConverters);
 			servletRequest.setAttribute(RouterFunctions.REQUEST_ATTRIBUTE, request);
 			return this.routerFunction.route(request).orElse(null);
-		}
-		else {
+		} else {
 			return null;
 		}
 	}

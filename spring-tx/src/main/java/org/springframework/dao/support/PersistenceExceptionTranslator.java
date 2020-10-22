@@ -33,8 +33,7 @@ import org.springframework.lang.Nullable;
  * @since 2.0
  */
 @FunctionalInterface
-public interface PersistenceExceptionTranslator
-{
+public interface PersistenceExceptionTranslator {
 
 	/**
 	 * Translate the given runtime exception thrown by a persistence framework to a
@@ -49,12 +48,11 @@ public interface PersistenceExceptionTranslator
 	 * DataIntegrityViolationException, for example on constraint violation.
 	 * Implementations may use Spring JDBC's sophisticated exception translation
 	 * to provide further information in the event of SQLException as a root cause.
-	 * 
-	 * @param ex
-	 *            a RuntimeException to translate
+	 *
+	 * @param ex a RuntimeException to translate
 	 * @return the corresponding DataAccessException (or {@code null} if the
-	 *         exception could not be translated, as in this case it may result from
-	 *         user code rather than from an actual persistence problem)
+	 * exception could not be translated, as in this case it may result from
+	 * user code rather than from an actual persistence problem)
 	 * @see org.springframework.dao.DataIntegrityViolationException
 	 * @see org.springframework.jdbc.support.SQLExceptionTranslator
 	 */

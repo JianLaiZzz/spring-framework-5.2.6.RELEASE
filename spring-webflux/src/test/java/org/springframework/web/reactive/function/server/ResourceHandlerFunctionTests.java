@@ -16,16 +16,8 @@
 
 package org.springframework.web.reactive.function.server;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.EnumSet;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
@@ -36,6 +28,13 @@ import org.springframework.web.reactive.result.view.ViewResolver;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpResponse;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.EnumSet;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -60,6 +59,7 @@ public class ResourceHandlerFunctionTests {
 			public List<HttpMessageWriter<?>> messageWriters() {
 				return strategies.messageWriters();
 			}
+
 			@Override
 			public List<ViewResolver> viewResolvers() {
 				return strategies.viewResolvers();
@@ -82,10 +82,10 @@ public class ResourceHandlerFunctionTests {
 			boolean condition = response instanceof EntityResponse;
 			assertThat(condition).isTrue();
 			@SuppressWarnings("unchecked")
-					EntityResponse<Resource> entityResponse = (EntityResponse<Resource>) response;
+			EntityResponse<Resource> entityResponse = (EntityResponse<Resource>) response;
 			assertThat(entityResponse.entity()).isEqualTo(this.resource);
 			return response.writeTo(exchange, context);
-				});
+		});
 
 		StepVerifier.create(result)
 				.expectComplete()

@@ -16,10 +16,10 @@
 
 package org.springframework.core.testfixture.xml;
 
-import java.io.StringWriter;
-
 import org.assertj.core.api.AssertProvider;
 import org.xmlunit.assertj.XmlAssert;
+
+import java.io.StringWriter;
 
 /**
  * {@link AssertProvider} to allow XML content assertions. Ultimately delegates

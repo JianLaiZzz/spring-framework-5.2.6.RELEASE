@@ -27,8 +27,7 @@ import org.springframework.transaction.TransactionDefinition;
  * @author Juergen Hoeller
  * @since 1.2
  */
-public enum Propagation
-{
+public enum Propagation {
 
 	/**
 	 * Support a current transaction, create a new one if none exists.
@@ -48,7 +47,7 @@ public enum Propagation
 	 * As a consequence, the same resources (JDBC Connection, Hibernate Session, etc)
 	 * will be shared for the entire specified scope. Note that this depends on
 	 * the actual synchronization configuration of the transaction manager.
-	 * 
+	 *
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#setTransactionSynchronization
 	 */
 	SUPPORTS(TransactionDefinition.PROPAGATION_SUPPORTS),
@@ -68,7 +67,7 @@ public enum Propagation
 	 * {@link org.springframework.transaction.jta.JtaTransactionManager},
 	 * which requires the {@code javax.transaction.TransactionManager} to be
 	 * made available to it (which is server-specific in standard Java EE).
-	 * 
+	 *
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
 	 */
 	REQUIRES_NEW(TransactionDefinition.PROPAGATION_REQUIRES_NEW),
@@ -82,7 +81,7 @@ public enum Propagation
 	 * {@link org.springframework.transaction.jta.JtaTransactionManager},
 	 * which requires the {@code javax.transaction.TransactionManager} to be
 	 * made available to it (which is server-specific in standard Java EE).
-	 * 
+	 *
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
 	 */
 	NOT_SUPPORTED(TransactionDefinition.PROPAGATION_NOT_SUPPORTED),
@@ -101,20 +100,18 @@ public enum Propagation
 	 * transaction managers. Out of the box, this only applies to the JDBC
 	 * DataSourceTransactionManager. Some JTA providers might support nested
 	 * transactions as well.
-	 * 
+	 *
 	 * @see org.springframework.jdbc.datasource.DataSourceTransactionManager
 	 */
 	NESTED(TransactionDefinition.PROPAGATION_NESTED);
 
 	private final int value;
 
-	Propagation(int value)
-	{
+	Propagation(int value) {
 		this.value = value;
 	}
 
-	public int value()
-	{
+	public int value() {
 		return this.value;
 	}
 

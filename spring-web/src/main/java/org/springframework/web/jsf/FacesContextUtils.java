@@ -16,13 +16,13 @@
 
 package org.springframework.web.jsf;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.util.WebUtils;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 /**
  * Convenience methods to retrieve Spring's root {@link WebApplicationContext}
@@ -33,12 +33,11 @@ import org.springframework.web.util.WebUtils;
  * Analogous to Spring's WebApplicationContextUtils for the ServletContext.
  *
  * @author Juergen Hoeller
- * @since 1.1
  * @see org.springframework.web.context.ContextLoader
  * @see org.springframework.web.context.support.WebApplicationContextUtils
+ * @since 1.1
  */
-public abstract class FacesContextUtils
-{
+public abstract class FacesContextUtils {
 
 	/**
 	 * Find the root {@link WebApplicationContext} for this web app, typically
@@ -46,32 +45,26 @@ public abstract class FacesContextUtils
 	 * <p>
 	 * Will rethrow an exception that happened on root context startup,
 	 * to differentiate between a failed context startup and no context at all.
-	 * 
-	 * @param fc
-	 *            the FacesContext to find the web application context for
+	 *
+	 * @param fc the FacesContext to find the web application context for
 	 * @return the root WebApplicationContext for this web app, or {@code null} if none
 	 * @see org.springframework.web.context.WebApplicationContext#ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE
 	 */
 	@Nullable
-	public static WebApplicationContext getWebApplicationContext(FacesContext fc)
-	{
+	public static WebApplicationContext getWebApplicationContext(FacesContext fc) {
 		Assert.notNull(fc, "FacesContext must not be null");
 		Object attr = fc.getExternalContext().getApplicationMap()
 				.get(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-		if (attr == null)
-		{
+		if (attr == null) {
 			return null;
 		}
-		if (attr instanceof RuntimeException)
-		{
+		if (attr instanceof RuntimeException) {
 			throw (RuntimeException) attr;
 		}
-		if (attr instanceof Error)
-		{
+		if (attr instanceof Error) {
 			throw (Error) attr;
 		}
-		if (!(attr instanceof WebApplicationContext))
-		{
+		if (!(attr instanceof WebApplicationContext)) {
 			throw new IllegalStateException(
 					"Root context attribute is not of type WebApplicationContext: " + attr);
 		}
@@ -84,20 +77,16 @@ public abstract class FacesContextUtils
 	 * <p>
 	 * Will rethrow an exception that happened on root context startup,
 	 * to differentiate between a failed context startup and no context at all.
-	 * 
-	 * @param fc
-	 *            the FacesContext to find the web application context for
+	 *
+	 * @param fc the FacesContext to find the web application context for
 	 * @return the root WebApplicationContext for this web app
-	 * @throws IllegalStateException
-	 *             if the root WebApplicationContext could not be found
+	 * @throws IllegalStateException if the root WebApplicationContext could not be found
 	 * @see org.springframework.web.context.WebApplicationContext#ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE
 	 */
 	public static WebApplicationContext getRequiredWebApplicationContext(FacesContext fc)
-			throws IllegalStateException
-	{
+			throws IllegalStateException {
 		WebApplicationContext wac = getWebApplicationContext(fc);
-		if (wac == null)
-		{
+		if (wac == null) {
 			throw new IllegalStateException(
 					"No WebApplicationContext found: no ContextLoaderListener registered?");
 		}
@@ -122,21 +111,18 @@ public abstract class FacesContextUtils
 	 * as well, since it will always be the same object reference for the
 	 * same active logical session. However, this is not guaranteed across
 	 * different servlet containers; the only 100% safe way is a session mutex.
-	 * 
-	 * @param fc
-	 *            the FacesContext to find the session mutex for
+	 *
+	 * @param fc the FacesContext to find the session mutex for
 	 * @return the mutex object (never {@code null})
 	 * @see org.springframework.web.util.WebUtils#SESSION_MUTEX_ATTRIBUTE
 	 * @see org.springframework.web.util.HttpSessionMutexListener
 	 */
 	@Nullable
-	public static Object getSessionMutex(FacesContext fc)
-	{
+	public static Object getSessionMutex(FacesContext fc) {
 		Assert.notNull(fc, "FacesContext must not be null");
 		ExternalContext ec = fc.getExternalContext();
 		Object mutex = ec.getSessionMap().get(WebUtils.SESSION_MUTEX_ATTRIBUTE);
-		if (mutex == null)
-		{
+		if (mutex == null) {
 			mutex = ec.getSession(true);
 		}
 		return mutex;

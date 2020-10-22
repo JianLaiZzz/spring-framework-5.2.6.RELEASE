@@ -17,20 +17,12 @@
 package org.springframework.web.reactive.function.server;
 
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
-
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import reactor.core.publisher.Mono;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
-import static org.springframework.web.reactive.function.server.RequestPredicates.contentType;
-import static org.springframework.web.reactive.function.server.RequestPredicates.method;
-import static org.springframework.web.reactive.function.server.RequestPredicates.methods;
-import static org.springframework.web.reactive.function.server.RequestPredicates.path;
-import static org.springframework.web.reactive.function.server.RequestPredicates.pathExtension;
-import static org.springframework.web.reactive.function.server.RequestPredicates.queryParam;
+import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
@@ -43,9 +35,9 @@ public class ToStringVisitorTests {
 		HandlerFunction<ServerResponse> handler = new SimpleHandlerFunction();
 		RouterFunction<ServerResponse> routerFunction = route()
 				.path("/foo", builder ->
-					builder.path("/bar", () -> route()
-							.GET("/baz", handler)
-							.build())
+						builder.path("/bar", () -> route()
+								.GET("/baz", handler)
+								.build())
 				)
 				.build();
 
@@ -84,8 +76,8 @@ public class ToStringVisitorTests {
 		testPredicate(method(HttpMethod.GET).negate(), "!(GET)");
 
 		testPredicate(GET("/foo")
-				.or(contentType(MediaType.TEXT_PLAIN))
-				.and(accept(MediaType.APPLICATION_JSON).negate()),
+						.or(contentType(MediaType.TEXT_PLAIN))
+						.and(accept(MediaType.APPLICATION_JSON).negate()),
 				"(((GET && /foo) || Content-Type: text/plain) && !(Accept: application/json))");
 	}
 

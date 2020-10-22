@@ -16,10 +16,10 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.lang.annotation.*;
-
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.ui.Model;
+
+import java.lang.annotation.*;
 
 /**
  * Annotation that binds a method parameter or method return value
@@ -52,11 +52,10 @@ import org.springframework.ui.Model;
  * @author Rossen Stoyanchev
  * @since 2.5
  */
-@Target({ ElementType.PARAMETER, ElementType.METHOD })
+@Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ModelAttribute
-{
+public @interface ModelAttribute {
 
 	/**
 	 * Alias for {@link #name}.
@@ -72,7 +71,7 @@ public @interface ModelAttribute
 	 * based on the non-qualified class name:
 	 * e.g. "orderAddress" for class "mypackage.OrderAddress",
 	 * or "orderAddressList" for "List&lt;mypackage.OrderAddress&gt;".
-	 * 
+	 *
 	 * @since 4.3
 	 */
 	@AliasFor("value")
@@ -85,7 +84,7 @@ public @interface ModelAttribute
 	 * <p>
 	 * By default this is set to {@code true} in which case data binding applies.
 	 * Set this to {@code false} to disable data binding.
-	 * 
+	 *
 	 * @since 4.3
 	 */
 	boolean binding() default true;

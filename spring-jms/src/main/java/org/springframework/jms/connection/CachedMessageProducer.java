@@ -16,9 +16,9 @@
 
 package org.springframework.jms.connection;
 
-import javax.jms.*;
-
 import org.springframework.lang.Nullable;
+
+import javax.jms.*;
 
 /**
  * JMS MessageProducer decorator that adapts calls to a shared MessageProducer
@@ -27,8 +27,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.5.3
  */
-class CachedMessageProducer implements MessageProducer, QueueSender, TopicPublisher
-{
+class CachedMessageProducer implements MessageProducer, QueueSender, TopicPublisher {
 
 	private final MessageProducer target;
 
@@ -47,8 +46,7 @@ class CachedMessageProducer implements MessageProducer, QueueSender, TopicPublis
 
 	private long timeToLive;
 
-	public CachedMessageProducer(MessageProducer target) throws JMSException
-	{
+	public CachedMessageProducer(MessageProducer target) throws JMSException {
 		this.target = target;
 		this.deliveryMode = target.getDeliveryMode();
 		this.priority = target.getPriority();
@@ -56,226 +54,189 @@ class CachedMessageProducer implements MessageProducer, QueueSender, TopicPublis
 	}
 
 	@Override
-	public void setDisableMessageID(boolean disableMessageID) throws JMSException
-	{
-		if (this.originalDisableMessageID == null)
-		{
+	public void setDisableMessageID(boolean disableMessageID) throws JMSException {
+		if (this.originalDisableMessageID == null) {
 			this.originalDisableMessageID = this.target.getDisableMessageID();
 		}
 		this.target.setDisableMessageID(disableMessageID);
 	}
 
 	@Override
-	public boolean getDisableMessageID() throws JMSException
-	{
+	public boolean getDisableMessageID() throws JMSException {
 		return this.target.getDisableMessageID();
 	}
 
 	@Override
-	public void setDisableMessageTimestamp(boolean disableMessageTimestamp) throws JMSException
-	{
-		if (this.originalDisableMessageTimestamp == null)
-		{
+	public void setDisableMessageTimestamp(boolean disableMessageTimestamp) throws JMSException {
+		if (this.originalDisableMessageTimestamp == null) {
 			this.originalDisableMessageTimestamp = this.target.getDisableMessageTimestamp();
 		}
 		this.target.setDisableMessageTimestamp(disableMessageTimestamp);
 	}
 
 	@Override
-	public boolean getDisableMessageTimestamp() throws JMSException
-	{
+	public boolean getDisableMessageTimestamp() throws JMSException {
 		return this.target.getDisableMessageTimestamp();
 	}
 
 	@Override
-	public void setDeliveryDelay(long deliveryDelay) throws JMSException
-	{
-		if (this.originalDeliveryDelay == null)
-		{
+	public void setDeliveryDelay(long deliveryDelay) throws JMSException {
+		if (this.originalDeliveryDelay == null) {
 			this.originalDeliveryDelay = this.target.getDeliveryDelay();
 		}
 		this.target.setDeliveryDelay(deliveryDelay);
 	}
 
 	@Override
-	public long getDeliveryDelay() throws JMSException
-	{
+	public long getDeliveryDelay() throws JMSException {
 		return this.target.getDeliveryDelay();
 	}
 
 	@Override
-	public void setDeliveryMode(int deliveryMode)
-	{
+	public void setDeliveryMode(int deliveryMode) {
 		this.deliveryMode = deliveryMode;
 	}
 
 	@Override
-	public int getDeliveryMode()
-	{
+	public int getDeliveryMode() {
 		return this.deliveryMode;
 	}
 
 	@Override
-	public void setPriority(int priority)
-	{
+	public void setPriority(int priority) {
 		this.priority = priority;
 	}
 
 	@Override
-	public int getPriority()
-	{
+	public int getPriority() {
 		return this.priority;
 	}
 
 	@Override
-	public void setTimeToLive(long timeToLive)
-	{
+	public void setTimeToLive(long timeToLive) {
 		this.timeToLive = timeToLive;
 	}
 
 	@Override
-	public long getTimeToLive()
-	{
+	public long getTimeToLive() {
 		return this.timeToLive;
 	}
 
 	@Override
-	public Destination getDestination() throws JMSException
-	{
+	public Destination getDestination() throws JMSException {
 		return this.target.getDestination();
 	}
 
 	@Override
-	public Queue getQueue() throws JMSException
-	{
+	public Queue getQueue() throws JMSException {
 		return (Queue) this.target.getDestination();
 	}
 
 	@Override
-	public Topic getTopic() throws JMSException
-	{
+	public Topic getTopic() throws JMSException {
 		return (Topic) this.target.getDestination();
 	}
 
 	@Override
-	public void send(Message message) throws JMSException
-	{
+	public void send(Message message) throws JMSException {
 		this.target.send(message, this.deliveryMode, this.priority, this.timeToLive);
 	}
 
 	@Override
-	public void send(Message message, int deliveryMode, int priority, long timeToLive) throws JMSException
-	{
+	public void send(Message message, int deliveryMode, int priority, long timeToLive) throws JMSException {
 		this.target.send(message, deliveryMode, priority, timeToLive);
 	}
 
 	@Override
-	public void send(Destination destination, Message message) throws JMSException
-	{
+	public void send(Destination destination, Message message) throws JMSException {
 		this.target.send(destination, message, this.deliveryMode, this.priority, this.timeToLive);
 	}
 
 	@Override
 	public void send(Destination destination, Message message, int deliveryMode, int priority,
-			long timeToLive) throws JMSException
-	{
+					 long timeToLive) throws JMSException {
 		this.target.send(destination, message, deliveryMode, priority, timeToLive);
 	}
 
 	@Override
-	public void send(Message message, CompletionListener completionListener) throws JMSException
-	{
+	public void send(Message message, CompletionListener completionListener) throws JMSException {
 		this.target.send(message, this.deliveryMode, this.priority, this.timeToLive, completionListener);
 	}
 
 	@Override
 	public void send(Message message, int deliveryMode, int priority, long timeToLive,
-			CompletionListener completionListener) throws JMSException
-	{
+					 CompletionListener completionListener) throws JMSException {
 
 		this.target.send(message, deliveryMode, priority, timeToLive, completionListener);
 	}
 
 	@Override
 	public void send(Destination destination, Message message, CompletionListener completionListener)
-			throws JMSException
-	{
+			throws JMSException {
 		this.target.send(destination, message, this.deliveryMode, this.priority, this.timeToLive,
 				completionListener);
 	}
 
 	@Override
 	public void send(Destination destination, Message message, int deliveryMode, int priority,
-			long timeToLive, CompletionListener completionListener) throws JMSException
-	{
+					 long timeToLive, CompletionListener completionListener) throws JMSException {
 
 		this.target.send(destination, message, deliveryMode, priority, timeToLive, completionListener);
 
 	}
 
 	@Override
-	public void send(Queue queue, Message message) throws JMSException
-	{
+	public void send(Queue queue, Message message) throws JMSException {
 		this.target.send(queue, message, this.deliveryMode, this.priority, this.timeToLive);
 	}
 
 	@Override
 	public void send(Queue queue, Message message, int deliveryMode, int priority, long timeToLive)
-			throws JMSException
-	{
+			throws JMSException {
 		this.target.send(queue, message, deliveryMode, priority, timeToLive);
 	}
 
 	@Override
-	public void publish(Message message) throws JMSException
-	{
+	public void publish(Message message) throws JMSException {
 		this.target.send(message, this.deliveryMode, this.priority, this.timeToLive);
 	}
 
 	@Override
 	public void publish(Message message, int deliveryMode, int priority, long timeToLive)
-			throws JMSException
-	{
+			throws JMSException {
 		this.target.send(message, deliveryMode, priority, timeToLive);
 	}
 
 	@Override
-	public void publish(Topic topic, Message message) throws JMSException
-	{
+	public void publish(Topic topic, Message message) throws JMSException {
 		this.target.send(topic, message, this.deliveryMode, this.priority, this.timeToLive);
 	}
 
 	@Override
 	public void publish(Topic topic, Message message, int deliveryMode, int priority, long timeToLive)
-			throws JMSException
-	{
+			throws JMSException {
 		this.target.send(topic, message, deliveryMode, priority, timeToLive);
 	}
 
 	@Override
-	public void close() throws JMSException
-	{
+	public void close() throws JMSException {
 		// It's a cached MessageProducer... reset properties only.
-		if (this.originalDisableMessageID != null)
-		{
+		if (this.originalDisableMessageID != null) {
 			this.target.setDisableMessageID(this.originalDisableMessageID);
 			this.originalDisableMessageID = null;
 		}
-		if (this.originalDisableMessageTimestamp != null)
-		{
+		if (this.originalDisableMessageTimestamp != null) {
 			this.target.setDisableMessageTimestamp(this.originalDisableMessageTimestamp);
 			this.originalDisableMessageTimestamp = null;
 		}
-		if (this.originalDeliveryDelay != null)
-		{
+		if (this.originalDeliveryDelay != null) {
 			this.target.setDeliveryDelay(this.originalDeliveryDelay);
 			this.originalDeliveryDelay = null;
 		}
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Cached JMS MessageProducer: " + this.target;
 	}
 

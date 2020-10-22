@@ -16,16 +16,16 @@
 
 package org.springframework.jca.cci.core.support;
 
-import javax.resource.cci.Connection;
-import javax.resource.cci.ConnectionFactory;
-import javax.resource.cci.ConnectionSpec;
-
 import org.springframework.dao.support.DaoSupport;
 import org.springframework.jca.cci.CannotGetCciConnectionException;
 import org.springframework.jca.cci.connection.ConnectionFactoryUtils;
 import org.springframework.jca.cci.core.CciTemplate;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import javax.resource.cci.Connection;
+import javax.resource.cci.ConnectionFactory;
+import javax.resource.cci.ConnectionSpec;
 
 /**
  * Convenient super class for CCI-based data access objects.
@@ -42,13 +42,12 @@ import org.springframework.util.Assert;
  *
  * @author Thierry Templier
  * @author Juergen Hoeller
- * @since 1.2
  * @see #setConnectionFactory
  * @see #getCciTemplate
  * @see org.springframework.jca.cci.core.CciTemplate
+ * @since 1.2
  */
-public abstract class CciDaoSupport extends DaoSupport
-{
+public abstract class CciDaoSupport extends DaoSupport {
 
 	@Nullable
 	private CciTemplate cciTemplate;
@@ -56,10 +55,8 @@ public abstract class CciDaoSupport extends DaoSupport
 	/**
 	 * Set the ConnectionFactory to be used by this DAO.
 	 */
-	public final void setConnectionFactory(ConnectionFactory connectionFactory)
-	{
-		if (this.cciTemplate == null || connectionFactory != this.cciTemplate.getConnectionFactory())
-		{
+	public final void setConnectionFactory(ConnectionFactory connectionFactory) {
+		if (this.cciTemplate == null || connectionFactory != this.cciTemplate.getConnectionFactory()) {
 			this.cciTemplate = createCciTemplate(connectionFactory);
 		}
 	}
@@ -70,14 +67,12 @@ public abstract class CciDaoSupport extends DaoSupport
 	 * <p>
 	 * Can be overridden in subclasses to provide a CciTemplate instance
 	 * with different configuration, or a custom CciTemplate subclass.
-	 * 
-	 * @param connectionFactory
-	 *            the CCI ConnectionFactory to create a CciTemplate for
+	 *
+	 * @param connectionFactory the CCI ConnectionFactory to create a CciTemplate for
 	 * @return the new CciTemplate instance
 	 * @see #setConnectionFactory(javax.resource.cci.ConnectionFactory)
 	 */
-	protected CciTemplate createCciTemplate(ConnectionFactory connectionFactory)
-	{
+	protected CciTemplate createCciTemplate(ConnectionFactory connectionFactory) {
 		return new CciTemplate(connectionFactory);
 	}
 
@@ -85,8 +80,7 @@ public abstract class CciDaoSupport extends DaoSupport
 	 * Return the ConnectionFactory used by this DAO.
 	 */
 	@Nullable
-	public final ConnectionFactory getConnectionFactory()
-	{
+	public final ConnectionFactory getConnectionFactory() {
 		return (this.cciTemplate != null ? this.cciTemplate.getConnectionFactory() : null);
 	}
 
@@ -94,8 +88,7 @@ public abstract class CciDaoSupport extends DaoSupport
 	 * Set the CciTemplate for this DAO explicitly,
 	 * as an alternative to specifying a ConnectionFactory.
 	 */
-	public final void setCciTemplate(CciTemplate cciTemplate)
-	{
+	public final void setCciTemplate(CciTemplate cciTemplate) {
 		this.cciTemplate = cciTemplate;
 	}
 
@@ -104,16 +97,13 @@ public abstract class CciDaoSupport extends DaoSupport
 	 * pre-initialized with the ConnectionFactory or set explicitly.
 	 */
 	@Nullable
-	public final CciTemplate getCciTemplate()
-	{
+	public final CciTemplate getCciTemplate() {
 		return this.cciTemplate;
 	}
 
 	@Override
-	protected final void checkDaoConfig()
-	{
-		if (this.cciTemplate == null)
-		{
+	protected final void checkDaoConfig() {
+		if (this.cciTemplate == null) {
 			throw new IllegalArgumentException("'connectionFactory' or 'cciTemplate' is required");
 		}
 	}
@@ -122,15 +112,13 @@ public abstract class CciDaoSupport extends DaoSupport
 	 * Obtain a CciTemplate derived from the main template instance,
 	 * inheriting the ConnectionFactory and other settings but
 	 * overriding the ConnectionSpec used for obtaining Connections.
-	 * 
-	 * @param connectionSpec
-	 *            the CCI ConnectionSpec that the returned
-	 *            template instance is supposed to obtain Connections for
+	 *
+	 * @param connectionSpec the CCI ConnectionSpec that the returned
+	 *                       template instance is supposed to obtain Connections for
 	 * @return the derived template instance
 	 * @see org.springframework.jca.cci.core.CciTemplate#getDerivedTemplate(javax.resource.cci.ConnectionSpec)
 	 */
-	protected final CciTemplate getCciTemplate(ConnectionSpec connectionSpec)
-	{
+	protected final CciTemplate getCciTemplate(ConnectionSpec connectionSpec) {
 		CciTemplate cciTemplate = getCciTemplate();
 		Assert.state(cciTemplate != null, "No CciTemplate set");
 		return cciTemplate.getDerivedTemplate(connectionSpec);
@@ -138,14 +126,12 @@ public abstract class CciDaoSupport extends DaoSupport
 
 	/**
 	 * Get a CCI Connection, either from the current transaction or a new one.
-	 * 
+	 *
 	 * @return the CCI Connection
-	 * @throws org.springframework.jca.cci.CannotGetCciConnectionException
-	 *             if the attempt to get a Connection failed
+	 * @throws org.springframework.jca.cci.CannotGetCciConnectionException if the attempt to get a Connection failed
 	 * @see org.springframework.jca.cci.connection.ConnectionFactoryUtils#getConnection(javax.resource.cci.ConnectionFactory)
 	 */
-	protected final Connection getConnection() throws CannotGetCciConnectionException
-	{
+	protected final Connection getConnection() throws CannotGetCciConnectionException {
 		ConnectionFactory connectionFactory = getConnectionFactory();
 		Assert.state(connectionFactory != null, "No ConnectionFactory set");
 		return ConnectionFactoryUtils.getConnection(connectionFactory);
@@ -154,13 +140,11 @@ public abstract class CciDaoSupport extends DaoSupport
 	/**
 	 * Close the given CCI Connection, created via this bean's ConnectionFactory,
 	 * if it isn't bound to the thread.
-	 * 
-	 * @param con
-	 *            the Connection to close
+	 *
+	 * @param con the Connection to close
 	 * @see org.springframework.jca.cci.connection.ConnectionFactoryUtils#releaseConnection
 	 */
-	protected final void releaseConnection(Connection con)
-	{
+	protected final void releaseConnection(Connection con) {
 		ConnectionFactoryUtils.releaseConnection(con, getConnectionFactory());
 	}
 

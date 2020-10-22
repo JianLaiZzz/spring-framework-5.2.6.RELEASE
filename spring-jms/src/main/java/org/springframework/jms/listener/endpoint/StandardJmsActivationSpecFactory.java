@@ -16,7 +16,12 @@
 
 package org.springframework.jms.listener.endpoint;
 
-import java.util.Map;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.jms.support.destination.DestinationResolutionException;
+import org.springframework.jms.support.destination.DestinationResolver;
+import org.springframework.lang.Nullable;
 
 import javax.jms.JMSException;
 import javax.jms.Queue;
@@ -24,13 +29,7 @@ import javax.jms.Session;
 import javax.jms.Topic;
 import javax.resource.spi.ActivationSpec;
 import javax.resource.spi.ResourceAdapter;
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.jms.support.destination.DestinationResolutionException;
-import org.springframework.jms.support.destination.DestinationResolver;
-import org.springframework.lang.Nullable;
+import java.util.Map;
 
 /**
  * Standard implementation of the {@link JmsActivationSpecFactory} interface.
@@ -48,12 +47,11 @@ import org.springframework.lang.Nullable;
  * JMS 1.5 specification.
  *
  * @author Juergen Hoeller
- * @since 2.5
  * @see #setActivationSpecClass
  * @see DefaultJmsActivationSpecFactory
+ * @since 2.5
  */
-public class StandardJmsActivationSpecFactory implements JmsActivationSpecFactory
-{
+public class StandardJmsActivationSpecFactory implements JmsActivationSpecFactory {
 
 	@Nullable
 	private Class<?> activationSpecClass;
@@ -68,8 +66,7 @@ public class StandardJmsActivationSpecFactory implements JmsActivationSpecFactor
 	 * Specify the fully-qualified ActivationSpec class name for the target
 	 * provider (e.g. "org.apache.activemq.ra.ActiveMQActivationSpec").
 	 */
-	public void setActivationSpecClass(Class<?> activationSpecClass)
-	{
+	public void setActivationSpecClass(Class<?> activationSpecClass) {
 		this.activationSpecClass = activationSpecClass;
 	}
 
@@ -80,8 +77,7 @@ public class StandardJmsActivationSpecFactory implements JmsActivationSpecFactor
 	 * listener-specific settings. Allows for configuring vendor-specific properties
 	 * beyond the Spring-defined settings in {@link JmsActivationSpecConfig}.
 	 */
-	public void setDefaultProperties(Map<String, String> defaultProperties)
-	{
+	public void setDefaultProperties(Map<String, String> defaultProperties) {
 		this.defaultProperties = defaultProperties;
 	}
 
@@ -98,8 +94,7 @@ public class StandardJmsActivationSpecFactory implements JmsActivationSpecFactor
 	 * or {@link org.springframework.jms.support.destination.BeanFactoryDestinationResolver}
 	 * but not {@link org.springframework.jms.support.destination.DynamicDestinationResolver}.
 	 */
-	public void setDestinationResolver(@Nullable DestinationResolver destinationResolver)
-	{
+	public void setDestinationResolver(@Nullable DestinationResolver destinationResolver) {
 		this.destinationResolver = destinationResolver;
 	}
 
@@ -107,28 +102,23 @@ public class StandardJmsActivationSpecFactory implements JmsActivationSpecFactor
 	 * Return the {@link DestinationResolver} to use for resolving destinations names.
 	 */
 	@Nullable
-	public DestinationResolver getDestinationResolver()
-	{
+	public DestinationResolver getDestinationResolver() {
 		return this.destinationResolver;
 	}
 
 	@Override
-	public ActivationSpec createActivationSpec(ResourceAdapter adapter, JmsActivationSpecConfig config)
-	{
+	public ActivationSpec createActivationSpec(ResourceAdapter adapter, JmsActivationSpecConfig config) {
 		Class<?> activationSpecClassToUse = this.activationSpecClass;
-		if (activationSpecClassToUse == null)
-		{
+		if (activationSpecClassToUse == null) {
 			activationSpecClassToUse = determineActivationSpecClass(adapter);
-			if (activationSpecClassToUse == null)
-			{
+			if (activationSpecClassToUse == null) {
 				throw new IllegalStateException("Property 'activationSpecClass' is required");
 			}
 		}
 
 		ActivationSpec spec = (ActivationSpec) BeanUtils.instantiateClass(activationSpecClassToUse);
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(spec);
-		if (this.defaultProperties != null)
-		{
+		if (this.defaultProperties != null) {
 			bw.setPropertyValues(this.defaultProperties);
 		}
 		populateActivationSpecProperties(bw, config);
@@ -138,16 +128,14 @@ public class StandardJmsActivationSpecFactory implements JmsActivationSpecFactor
 	/**
 	 * Determine the ActivationSpec class for the given ResourceAdapter,
 	 * if possible. Called if no 'activationSpecClass' has been set explicitly
-	 * 
-	 * @param adapter
-	 *            the ResourceAdapter to check
+	 *
+	 * @param adapter the ResourceAdapter to check
 	 * @return the corresponding ActivationSpec class, or {@code null}
-	 *         if not determinable
+	 * if not determinable
 	 * @see #setActivationSpecClass
 	 */
 	@Nullable
-	protected Class<?> determineActivationSpecClass(ResourceAdapter adapter)
-	{
+	protected Class<?> determineActivationSpecClass(ResourceAdapter adapter) {
 		return null;
 	}
 
@@ -157,28 +145,20 @@ public class StandardJmsActivationSpecFactory implements JmsActivationSpecFactor
 	 * <p>
 	 * This implementation applies all standard JMS settings, but ignores
 	 * "maxConcurrency" and "prefetchSize" - not supported in standard JCA 1.5.
-	 * 
-	 * @param bw
-	 *            the BeanWrapper wrapping the ActivationSpec object
-	 * @param config
-	 *            the configured object holding common JMS settings
+	 *
+	 * @param bw     the BeanWrapper wrapping the ActivationSpec object
+	 * @param config the configured object holding common JMS settings
 	 */
-	protected void populateActivationSpecProperties(BeanWrapper bw, JmsActivationSpecConfig config)
-	{
+	protected void populateActivationSpecProperties(BeanWrapper bw, JmsActivationSpecConfig config) {
 		String destinationName = config.getDestinationName();
-		if (destinationName != null)
-		{
+		if (destinationName != null) {
 			boolean pubSubDomain = config.isPubSubDomain();
 			Object destination = destinationName;
-			if (this.destinationResolver != null)
-			{
-				try
-				{
+			if (this.destinationResolver != null) {
+				try {
 					destination = this.destinationResolver.resolveDestinationName(null, destinationName,
 							pubSubDomain);
-				}
-				catch (JMSException ex)
-				{
+				} catch (JMSException ex) {
 					throw new DestinationResolutionException(
 							"Cannot resolve destination name [" + destinationName + "]", ex);
 				}
@@ -188,33 +168,26 @@ public class StandardJmsActivationSpecFactory implements JmsActivationSpecFactor
 					pubSubDomain ? Topic.class.getName() : Queue.class.getName());
 		}
 
-		if (bw.isWritableProperty("subscriptionDurability"))
-		{
+		if (bw.isWritableProperty("subscriptionDurability")) {
 			bw.setPropertyValue("subscriptionDurability",
 					config.isSubscriptionDurable() ? "Durable" : "NonDurable");
-		}
-		else if (config.isSubscriptionDurable())
-		{
+		} else if (config.isSubscriptionDurable()) {
 			// Standard JCA 1.5 "subscriptionDurability" apparently not supported...
 			throw new IllegalArgumentException(
 					"Durable subscriptions not supported by underlying provider");
 		}
-		if (config.isSubscriptionShared())
-		{
+		if (config.isSubscriptionShared()) {
 			throw new IllegalArgumentException(
 					"Shared subscriptions not supported for JCA-driven endpoints");
 		}
 
-		if (config.getSubscriptionName() != null)
-		{
+		if (config.getSubscriptionName() != null) {
 			bw.setPropertyValue("subscriptionName", config.getSubscriptionName());
 		}
-		if (config.getClientId() != null)
-		{
+		if (config.getClientId() != null) {
 			bw.setPropertyValue("clientId", config.getClientId());
 		}
-		if (config.getMessageSelector() != null)
-		{
+		if (config.getMessageSelector() != null) {
 			bw.setPropertyValue("messageSelector", config.getMessageSelector());
 		}
 		applyAcknowledgeMode(bw, config.getAcknowledgeMode());
@@ -227,38 +200,28 @@ public class StandardJmsActivationSpecFactory implements JmsActivationSpecFactor
 	 * "Auto-acknowledge" and "Dups-ok-acknowledge". It throws an exception in
 	 * case of {@code CLIENT_ACKNOWLEDGE} or {@code SESSION_TRANSACTED}
 	 * having been requested.
-	 * 
-	 * @param bw
-	 *            the BeanWrapper wrapping the ActivationSpec object
-	 * @param ackMode
-	 *            the configured acknowledge mode
-	 *            (according to the constants in {@link javax.jms.Session}
+	 *
+	 * @param bw      the BeanWrapper wrapping the ActivationSpec object
+	 * @param ackMode the configured acknowledge mode
+	 *                (according to the constants in {@link javax.jms.Session}
 	 * @see javax.jms.Session#AUTO_ACKNOWLEDGE
 	 * @see javax.jms.Session#DUPS_OK_ACKNOWLEDGE
 	 * @see javax.jms.Session#CLIENT_ACKNOWLEDGE
 	 * @see javax.jms.Session#SESSION_TRANSACTED
 	 */
-	protected void applyAcknowledgeMode(BeanWrapper bw, int ackMode)
-	{
-		if (ackMode == Session.SESSION_TRANSACTED)
-		{
+	protected void applyAcknowledgeMode(BeanWrapper bw, int ackMode) {
+		if (ackMode == Session.SESSION_TRANSACTED) {
 			throw new IllegalArgumentException(
 					"No support for SESSION_TRANSACTED: Only \"Auto-acknowledge\" "
 							+ "and \"Dups-ok-acknowledge\" supported in standard JCA 1.5");
-		}
-		else if (ackMode == Session.CLIENT_ACKNOWLEDGE)
-		{
+		} else if (ackMode == Session.CLIENT_ACKNOWLEDGE) {
 			throw new IllegalArgumentException(
 					"No support for CLIENT_ACKNOWLEDGE: Only \"Auto-acknowledge\" "
 							+ "and \"Dups-ok-acknowledge\" supported in standard JCA 1.5");
-		}
-		else if (bw.isWritableProperty("acknowledgeMode"))
-		{
+		} else if (bw.isWritableProperty("acknowledgeMode")) {
 			bw.setPropertyValue("acknowledgeMode",
 					ackMode == Session.DUPS_OK_ACKNOWLEDGE ? "Dups-ok-acknowledge" : "Auto-acknowledge");
-		}
-		else if (ackMode == Session.DUPS_OK_ACKNOWLEDGE)
-		{
+		} else if (ackMode == Session.DUPS_OK_ACKNOWLEDGE) {
 			// Standard JCA 1.5 "acknowledgeMode" apparently not supported (e.g. WebSphere MQ 6.0.2.1)
 			throw new IllegalArgumentException(
 					"Dups-ok-acknowledge not supported by underlying provider");

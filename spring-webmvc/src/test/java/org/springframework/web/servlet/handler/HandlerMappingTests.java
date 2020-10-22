@@ -16,14 +16,7 @@
 
 package org.springframework.web.servlet.handler;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.context.support.StaticWebApplicationContext;
@@ -32,11 +25,17 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.support.WebContentGenerator;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 /**
  * Unit tests for {@link org.springframework.web.servlet.HandlerMapping}.
+ *
  * @author Brian Clozel
  */
 public class HandlerMappingTests {

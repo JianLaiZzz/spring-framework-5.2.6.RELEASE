@@ -18,7 +18,6 @@ package org.springframework.test.context.junit4.annotation.meta;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.testfixture.beans.Employee;
 import org.springframework.beans.testfixture.beans.Pet;
@@ -35,8 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @since 4.0
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ConfigClassesAndProfilesWithCustomDefaultsMetaConfig(classes = { PojoAndStringConfig.class,
-	ConfigClassesAndProfilesWithCustomDefaultsMetaConfig.ProductionConfig.class }, profiles = "prod")
+@ConfigClassesAndProfilesWithCustomDefaultsMetaConfig(classes = {PojoAndStringConfig.class,
+		ConfigClassesAndProfilesWithCustomDefaultsMetaConfig.ProductionConfig.class}, profiles = "prod")
 public class ConfigClassesAndProfilesWithCustomDefaultsMetaConfigWithOverridesTests {
 
 	@Autowired

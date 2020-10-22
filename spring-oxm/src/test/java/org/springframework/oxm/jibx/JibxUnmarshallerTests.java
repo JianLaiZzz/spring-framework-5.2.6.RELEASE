@@ -16,16 +16,15 @@
 
 package org.springframework.oxm.jibx;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.condition.JRE.JAVA_8;
-
-import java.io.ByteArrayInputStream;
-
-import javax.xml.transform.stream.StreamSource;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.springframework.oxm.AbstractUnmarshallerTests;
+
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.condition.JRE.JAVA_8;
 
 /**
  * NOTE: These tests fail under Eclipse/IDEA because JiBX binding does
@@ -36,15 +35,13 @@ import org.springframework.oxm.AbstractUnmarshallerTests;
  */
 @Deprecated
 @EnabledOnJre(JAVA_8) // JiBX compiler is currently not compatible with JDK 9
-public class JibxUnmarshallerTests extends AbstractUnmarshallerTests<JibxMarshaller>
-{
+public class JibxUnmarshallerTests extends AbstractUnmarshallerTests<JibxMarshaller> {
 
 	protected static final String INPUT_STRING_WITH_SPECIAL_CHARACTERS = "<tns:flights xmlns:tns=\"http://samples.springframework.org/flight\">"
 			+ "<tns:flight><tns:airline>Air Libert\u00e9</tns:airline><tns:number>42</tns:number></tns:flight></tns:flights>";
 
 	@Override
-	protected JibxMarshaller createUnmarshaller() throws Exception
-	{
+	protected JibxMarshaller createUnmarshaller() throws Exception {
 		JibxMarshaller unmarshaller = new JibxMarshaller();
 		unmarshaller.setTargetClass(Flights.class);
 		unmarshaller.afterPropertiesSet();
@@ -52,8 +49,7 @@ public class JibxUnmarshallerTests extends AbstractUnmarshallerTests<JibxMarshal
 	}
 
 	@Override
-	protected void testFlights(Object o)
-	{
+	protected void testFlights(Object o) {
 		Flights flights = (Flights) o;
 		assertThat(flights).as("Flights is null").isNotNull();
 		assertThat(flights.sizeFlightList()).as("Invalid amount of flight elements").isEqualTo(1);
@@ -61,8 +57,7 @@ public class JibxUnmarshallerTests extends AbstractUnmarshallerTests<JibxMarshal
 	}
 
 	@Override
-	protected void testFlight(Object o)
-	{
+	protected void testFlight(Object o) {
 		FlightType flight = (FlightType) o;
 		assertThat(flight).as("Flight is null").isNotNull();
 		assertThat(flight.getNumber()).as("Number is invalid").isEqualTo(42L);
@@ -70,14 +65,12 @@ public class JibxUnmarshallerTests extends AbstractUnmarshallerTests<JibxMarshal
 
 	@Test
 	@Override
-	public void unmarshalPartialStaxSourceXmlStreamReader() throws Exception
-	{
+	public void unmarshalPartialStaxSourceXmlStreamReader() throws Exception {
 		// JiBX does not support reading XML fragments, hence the override here
 	}
 
 	@Test
-	public void unmarshalStreamSourceInputStreamUsingNonDefaultEncoding() throws Exception
-	{
+	public void unmarshalStreamSourceInputStreamUsingNonDefaultEncoding() throws Exception {
 		String encoding = "ISO-8859-1";
 		unmarshaller.setEncoding(encoding);
 

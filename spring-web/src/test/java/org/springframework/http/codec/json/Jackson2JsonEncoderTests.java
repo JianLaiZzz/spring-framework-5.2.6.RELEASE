@@ -16,21 +16,11 @@
 
 package org.springframework.http.codec.json;
 
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.ResolvableType;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -42,14 +32,20 @@ import org.springframework.http.codec.json.JacksonViewBean.MyJacksonView3;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.testfixture.xml.Pojo;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
-import static org.springframework.http.MediaType.APPLICATION_STREAM_JSON;
-import static org.springframework.http.MediaType.APPLICATION_XML;
+import static org.springframework.http.MediaType.*;
 import static org.springframework.http.codec.json.Jackson2CodecSupport.JSON_VIEW_HINT;
 
 /**
@@ -84,10 +80,10 @@ public class Jackson2JsonEncoderTests extends AbstractEncoderTests<Jackson2JsonE
 				new Pojo("foofoofoo", "barbarbar"));
 
 		testEncodeAll(input, ResolvableType.forClass(Pojo.class), step -> step
-				.consumeNextWith(expectString("{\"foo\":\"foo\",\"bar\":\"bar\"}\n"))
-				.consumeNextWith(expectString("{\"foo\":\"foofoo\",\"bar\":\"barbar\"}\n"))
-				.consumeNextWith(expectString("{\"foo\":\"foofoofoo\",\"bar\":\"barbarbar\"}\n"))
-				.verifyComplete(),
+						.consumeNextWith(expectString("{\"foo\":\"foo\",\"bar\":\"bar\"}\n"))
+						.consumeNextWith(expectString("{\"foo\":\"foofoo\",\"bar\":\"barbar\"}\n"))
+						.consumeNextWith(expectString("{\"foo\":\"foofoofoo\",\"bar\":\"barbarbar\"}\n"))
+						.verifyComplete(),
 				APPLICATION_STREAM_JSON, null);
 	}
 
@@ -157,13 +153,13 @@ public class Jackson2JsonEncoderTests extends AbstractEncoderTests<Jackson2JsonE
 		);
 
 		testEncode(input, ResolvableType.forClass(Pojo.class), step -> step
-				.consumeNextWith(expectString("{\"foo\":\"foo\",\"bar\":\"bar\"}\n")
-						.andThen(DataBufferUtils::release))
-				.consumeNextWith(expectString("{\"foo\":\"foofoo\",\"bar\":\"barbar\"}\n")
-						.andThen(DataBufferUtils::release))
-				.consumeNextWith(expectString("{\"foo\":\"foofoofoo\",\"bar\":\"barbarbar\"}\n")
-						.andThen(DataBufferUtils::release))
-				.verifyComplete(),
+						.consumeNextWith(expectString("{\"foo\":\"foo\",\"bar\":\"bar\"}\n")
+								.andThen(DataBufferUtils::release))
+						.consumeNextWith(expectString("{\"foo\":\"foofoo\",\"bar\":\"barbar\"}\n")
+								.andThen(DataBufferUtils::release))
+						.consumeNextWith(expectString("{\"foo\":\"foofoofoo\",\"bar\":\"barbarbar\"}\n")
+								.andThen(DataBufferUtils::release))
+						.verifyComplete(),
 				barMediaType, null);
 	}
 

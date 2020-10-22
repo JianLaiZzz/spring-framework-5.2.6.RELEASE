@@ -16,15 +16,14 @@
 
 package org.springframework.beans.factory.support;
 
-import java.util.Arrays;
-import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
+
+import java.util.Arrays;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

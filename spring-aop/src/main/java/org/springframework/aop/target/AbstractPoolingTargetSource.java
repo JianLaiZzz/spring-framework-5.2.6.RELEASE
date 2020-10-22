@@ -56,18 +56,18 @@ import org.springframework.lang.Nullable;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractPoolingTargetSource extends AbstractPrototypeBasedTargetSource
-		implements PoolingConfig, DisposableBean
-{
+		implements PoolingConfig, DisposableBean {
 
-	/** The maximum size of the pool. */
+	/**
+	 * The maximum size of the pool.
+	 */
 	private int maxSize = -1;
 
 	/**
 	 * Set the maximum size of the pool.
 	 * Default is -1, indicating no size limit.
 	 */
-	public void setMaxSize(int maxSize)
-	{
+	public void setMaxSize(int maxSize) {
 		this.maxSize = maxSize;
 	}
 
@@ -75,40 +75,33 @@ public abstract class AbstractPoolingTargetSource extends AbstractPrototypeBased
 	 * Return the maximum size of the pool.
 	 */
 	@Override
-	public int getMaxSize()
-	{
+	public int getMaxSize() {
 		return this.maxSize;
 	}
 
 	@Override
-	public final void setBeanFactory(BeanFactory beanFactory) throws BeansException
-	{
+	public final void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 		super.setBeanFactory(beanFactory);
-		try
-		{
+		try {
 			createPool();
-		}
-		catch (Throwable ex)
-		{
+		} catch (Throwable ex) {
 			throw new BeanInitializationException("Could not create instance pool for TargetSource", ex);
 		}
 	}
 
 	/**
 	 * Create the pool.
-	 * 
-	 * @throws Exception
-	 *             to avoid placing constraints on pooling APIs
+	 *
+	 * @throws Exception to avoid placing constraints on pooling APIs
 	 */
 	protected abstract void createPool() throws Exception;
 
 	/**
 	 * Acquire an object from the pool.
-	 * 
+	 *
 	 * @return an object from the pool
-	 * @throws Exception
-	 *             we may need to deal with checked exceptions from pool
-	 *             APIs, so we're forgiving with our exception signature
+	 * @throws Exception we may need to deal with checked exceptions from pool
+	 *                   APIs, so we're forgiving with our exception signature
 	 */
 	@Override
 	@Nullable
@@ -116,12 +109,10 @@ public abstract class AbstractPoolingTargetSource extends AbstractPrototypeBased
 
 	/**
 	 * Return the given object to the pool.
-	 * 
-	 * @param target
-	 *            object that must have been acquired from the pool
-	 *            via a call to {@code getTarget()}
-	 * @throws Exception
-	 *             to allow pooling APIs to throw exception
+	 *
+	 * @param target object that must have been acquired from the pool
+	 *               via a call to {@code getTarget()}
+	 * @throws Exception to allow pooling APIs to throw exception
 	 * @see #getTarget
 	 */
 	@Override
@@ -131,8 +122,7 @@ public abstract class AbstractPoolingTargetSource extends AbstractPrototypeBased
 	 * Return an IntroductionAdvisor that providing a mixin
 	 * exposing statistics about the pool maintained by this object.
 	 */
-	public DefaultIntroductionAdvisor getPoolingConfigMixin()
-	{
+	public DefaultIntroductionAdvisor getPoolingConfigMixin() {
 		DelegatingIntroductionInterceptor dii = new DelegatingIntroductionInterceptor(this);
 		return new DefaultIntroductionAdvisor(dii, PoolingConfig.class);
 	}

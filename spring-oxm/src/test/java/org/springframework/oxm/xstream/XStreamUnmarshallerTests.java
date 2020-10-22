@@ -16,12 +16,11 @@
 
 package org.springframework.oxm.xstream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.ByteArrayInputStream;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.util.xml.StaxUtils;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,34 +29,31 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.util.xml.StaxUtils;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Arjen Poutsma
  */
-public class XStreamUnmarshallerTests
-{
+public class XStreamUnmarshallerTests {
 
 	protected static final String INPUT_STRING = "<flight><flightNumber>42</flightNumber></flight>";
 
 	private XStreamMarshaller unmarshaller;
 
 	@BeforeEach
-	public void createUnmarshaller() throws Exception
-	{
+	public void createUnmarshaller() throws Exception {
 		unmarshaller = new XStreamMarshaller();
 		Map<String, Class<?>> aliases = new HashMap<>();
 		aliases.put("flight", Flight.class);
 		unmarshaller.setAliases(aliases);
 	}
 
-	private void testFlight(Object o)
-	{
+	private void testFlight(Object o) {
 		boolean condition = o instanceof Flight;
 		assertThat(condition).as("Unmarshalled object is not Flights").isTrue();
 		Flight flight = (Flight) o;
@@ -66,8 +62,7 @@ public class XStreamUnmarshallerTests
 	}
 
 	@Test
-	public void unmarshalDomSource() throws Exception
-	{
+	public void unmarshalDomSource() throws Exception {
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document document = builder.parse(new InputSource(new StringReader(INPUT_STRING)));
 		DOMSource source = new DOMSource(document);
@@ -76,8 +71,7 @@ public class XStreamUnmarshallerTests
 	}
 
 	@Test
-	public void unmarshalStaxSourceXmlStreamReader() throws Exception
-	{
+	public void unmarshalStaxSourceXmlStreamReader() throws Exception {
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		XMLStreamReader streamReader = inputFactory.createXMLStreamReader(new StringReader(INPUT_STRING));
 		Source source = StaxUtils.createStaxSource(streamReader);
@@ -86,16 +80,14 @@ public class XStreamUnmarshallerTests
 	}
 
 	@Test
-	public void unmarshalStreamSourceInputStream() throws Exception
-	{
+	public void unmarshalStreamSourceInputStream() throws Exception {
 		StreamSource source = new StreamSource(new ByteArrayInputStream(INPUT_STRING.getBytes("UTF-8")));
 		Object flights = unmarshaller.unmarshal(source);
 		testFlight(flights);
 	}
 
 	@Test
-	public void unmarshalStreamSourceReader() throws Exception
-	{
+	public void unmarshalStreamSourceReader() throws Exception {
 		StreamSource source = new StreamSource(new StringReader(INPUT_STRING));
 		Object flights = unmarshaller.unmarshal(source);
 		testFlight(flights);

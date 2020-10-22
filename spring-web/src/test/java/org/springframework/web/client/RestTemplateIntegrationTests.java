@@ -16,6 +16,26 @@
 
 package org.springframework.web.client;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -27,33 +47,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
-
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.annotation.JsonView;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.http.converter.FormHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -90,10 +83,10 @@ class RestTemplateIntegrationTests extends AbstractMockWebServerTests {
 	@SuppressWarnings("deprecation")
 	static Stream<ClientHttpRequestFactory> clientHttpRequestFactories() {
 		return Stream.of(
-			new SimpleClientHttpRequestFactory(),
-			new HttpComponentsClientHttpRequestFactory(),
-			new org.springframework.http.client.Netty4ClientHttpRequestFactory(),
-			new OkHttp3ClientHttpRequestFactory()
+				new SimpleClientHttpRequestFactory(),
+				new HttpComponentsClientHttpRequestFactory(),
+				new org.springframework.http.client.Netty4ClientHttpRequestFactory(),
+				new OkHttp3ClientHttpRequestFactory()
 		);
 	}
 
@@ -239,11 +232,11 @@ class RestTemplateIntegrationTests extends AbstractMockWebServerTests {
 
 		assertThatExceptionOfType(HttpClientErrorException.class).isThrownBy(() ->
 				template.execute(baseUrl + "/status/notfound", HttpMethod.GET, null, null))
-			.satisfies(ex -> {
-				assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-				assertThat(ex.getStatusText()).isNotNull();
-				assertThat(ex.getResponseBodyAsString()).isNotNull();
-			});
+				.satisfies(ex -> {
+					assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+					assertThat(ex.getStatusText()).isNotNull();
+					assertThat(ex.getResponseBodyAsString()).isNotNull();
+				});
 	}
 
 	@ParameterizedRestTemplateTest
@@ -252,10 +245,10 @@ class RestTemplateIntegrationTests extends AbstractMockWebServerTests {
 
 		assertThatExceptionOfType(HttpClientErrorException.class).isThrownBy(() ->
 				template.execute(baseUrl + "/status/badrequest", HttpMethod.GET, null, null))
-			.satisfies(ex -> {
-				assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-				assertThat(ex.getMessage()).isEqualTo("400 Client Error: [no body]");
-			});
+				.satisfies(ex -> {
+					assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+					assertThat(ex.getMessage()).isEqualTo("400 Client Error: [no body]");
+				});
 	}
 
 	@ParameterizedRestTemplateTest
@@ -264,11 +257,11 @@ class RestTemplateIntegrationTests extends AbstractMockWebServerTests {
 
 		assertThatExceptionOfType(HttpServerErrorException.class).isThrownBy(() ->
 				template.execute(baseUrl + "/status/server", HttpMethod.GET, null, null))
-			.satisfies(ex -> {
-				assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-				assertThat(ex.getStatusText()).isNotNull();
-				assertThat(ex.getResponseBodyAsString()).isNotNull();
-			});
+				.satisfies(ex -> {
+					assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+					assertThat(ex.getStatusText()).isNotNull();
+					assertThat(ex.getResponseBodyAsString()).isNotNull();
+				});
 	}
 
 	@ParameterizedRestTemplateTest
@@ -409,7 +402,8 @@ class RestTemplateIntegrationTests extends AbstractMockWebServerTests {
 		assertThat(s.contains("\"without\":\"without\"")).isFalse();
 	}
 
-	@ParameterizedRestTemplateTest  // SPR-12123
+	@ParameterizedRestTemplateTest
+		// SPR-12123
 	void serverPort(ClientHttpRequestFactory clientHttpRequestFactory) {
 		setUpClient(clientHttpRequestFactory);
 
@@ -417,14 +411,16 @@ class RestTemplateIntegrationTests extends AbstractMockWebServerTests {
 		assertThat(s).as("Invalid content").isEqualTo(helloWorld);
 	}
 
-	@ParameterizedRestTemplateTest  // SPR-13154
+	@ParameterizedRestTemplateTest
+		// SPR-13154
 	void jsonPostForObjectWithJacksonTypeInfoList(ClientHttpRequestFactory clientHttpRequestFactory) throws Exception {
 		setUpClient(clientHttpRequestFactory);
 
 		List<ParentClass> list = new ArrayList<>();
 		list.add(new Foo("foo"));
 		list.add(new Bar("bar"));
-		ParameterizedTypeReference<?> typeReference = new ParameterizedTypeReference<List<ParentClass>>() {};
+		ParameterizedTypeReference<?> typeReference = new ParameterizedTypeReference<List<ParentClass>>() {
+		};
 		RequestEntity<List<ParentClass>> entity = RequestEntity
 				.post(new URI(baseUrl + "/jsonpost"))
 				.contentType(new MediaType("application", "json", StandardCharsets.UTF_8))
@@ -434,7 +430,8 @@ class RestTemplateIntegrationTests extends AbstractMockWebServerTests {
 		assertThat(content.contains("\"type\":\"bar\"")).isTrue();
 	}
 
-	@ParameterizedRestTemplateTest  // SPR-15015
+	@ParameterizedRestTemplateTest
+		// SPR-15015
 	void postWithoutBody(ClientHttpRequestFactory clientHttpRequestFactory) throws Exception {
 		setUpClient(clientHttpRequestFactory);
 
@@ -442,9 +439,11 @@ class RestTemplateIntegrationTests extends AbstractMockWebServerTests {
 	}
 
 
-	public interface MyJacksonView1 {}
+	public interface MyJacksonView1 {
+	}
 
-	public interface MyJacksonView2 {}
+	public interface MyJacksonView2 {
+	}
 
 
 	public static class MySampleBean {

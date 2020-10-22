@@ -16,13 +16,13 @@
 
 package org.springframework.transaction.interceptor;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import org.junit.jupiter.api.Test;
+import org.springframework.transaction.TransactionDefinition;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.transaction.TransactionDefinition;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 /**
  * Tests to check conversion from String to TransactionAttribute.
@@ -32,12 +32,10 @@ import org.springframework.transaction.TransactionDefinition;
  * @author Chris Beams
  * @since 26.04.2003
  */
-public class TransactionAttributeEditorTests
-{
+public class TransactionAttributeEditorTests {
 
 	@Test
-	public void testNull()
-	{
+	public void testNull() {
 		TransactionAttributeEditor pe = new TransactionAttributeEditor();
 		pe.setAsText(null);
 		TransactionAttribute ta = (TransactionAttribute) pe.getValue();
@@ -45,8 +43,7 @@ public class TransactionAttributeEditorTests
 	}
 
 	@Test
-	public void testEmptyString()
-	{
+	public void testEmptyString() {
 		TransactionAttributeEditor pe = new TransactionAttributeEditor();
 		pe.setAsText("");
 		TransactionAttribute ta = (TransactionAttribute) pe.getValue();
@@ -54,8 +51,7 @@ public class TransactionAttributeEditorTests
 	}
 
 	@Test
-	public void testValidPropagationCodeOnly()
-	{
+	public void testValidPropagationCodeOnly() {
 		TransactionAttributeEditor pe = new TransactionAttributeEditor();
 		pe.setAsText("PROPAGATION_REQUIRED");
 		TransactionAttribute ta = (TransactionAttribute) pe.getValue();
@@ -67,16 +63,14 @@ public class TransactionAttributeEditorTests
 	}
 
 	@Test
-	public void testInvalidPropagationCodeOnly()
-	{
+	public void testInvalidPropagationCodeOnly() {
 		TransactionAttributeEditor pe = new TransactionAttributeEditor();
 		// should have failed with bogus propagation code
 		assertThatIllegalArgumentException().isThrownBy(() -> pe.setAsText("XXPROPAGATION_REQUIRED"));
 	}
 
 	@Test
-	public void testValidPropagationCodeAndIsolationCode()
-	{
+	public void testValidPropagationCodeAndIsolationCode() {
 		TransactionAttributeEditor pe = new TransactionAttributeEditor();
 		pe.setAsText("PROPAGATION_REQUIRED, ISOLATION_READ_UNCOMMITTED");
 		TransactionAttribute ta = (TransactionAttribute) pe.getValue();
@@ -86,8 +80,7 @@ public class TransactionAttributeEditorTests
 	}
 
 	@Test
-	public void testValidPropagationAndIsolationCodesAndInvalidRollbackRule()
-	{
+	public void testValidPropagationAndIsolationCodesAndInvalidRollbackRule() {
 		TransactionAttributeEditor pe = new TransactionAttributeEditor();
 		// should fail with bogus rollback rule
 		assertThatIllegalArgumentException()
@@ -95,8 +88,7 @@ public class TransactionAttributeEditorTests
 	}
 
 	@Test
-	public void testValidPropagationCodeAndIsolationCodeAndRollbackRules1()
-	{
+	public void testValidPropagationCodeAndIsolationCodeAndRollbackRules1() {
 		TransactionAttributeEditor pe = new TransactionAttributeEditor();
 		pe.setAsText(
 				"PROPAGATION_MANDATORY,ISOLATION_REPEATABLE_READ,timeout_10,-IOException,+MyRuntimeException");
@@ -115,8 +107,7 @@ public class TransactionAttributeEditorTests
 	}
 
 	@Test
-	public void testValidPropagationCodeAndIsolationCodeAndRollbackRules2()
-	{
+	public void testValidPropagationCodeAndIsolationCodeAndRollbackRules2() {
 		TransactionAttributeEditor pe = new TransactionAttributeEditor();
 		pe.setAsText(
 				"+IOException,readOnly,ISOLATION_READ_COMMITTED,-MyRuntimeException,PROPAGATION_SUPPORTS");
@@ -134,8 +125,7 @@ public class TransactionAttributeEditorTests
 	}
 
 	@Test
-	public void testDefaultTransactionAttributeToString()
-	{
+	public void testDefaultTransactionAttributeToString() {
 		DefaultTransactionAttribute source = new DefaultTransactionAttribute();
 		source.setPropagationBehavior(TransactionDefinition.PROPAGATION_SUPPORTS);
 		source.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
@@ -160,8 +150,7 @@ public class TransactionAttributeEditorTests
 	}
 
 	@Test
-	public void testRuleBasedTransactionAttributeToString()
-	{
+	public void testRuleBasedTransactionAttributeToString() {
 		RuleBasedTransactionAttribute source = new RuleBasedTransactionAttribute();
 		source.setPropagationBehavior(TransactionDefinition.PROPAGATION_SUPPORTS);
 		source.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);

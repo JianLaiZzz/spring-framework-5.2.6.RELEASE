@@ -16,15 +16,7 @@
 
 package org.springframework.web.reactive.function.server.support;
 
-import java.net.URI;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpMethod;
@@ -34,6 +26,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyExtractor;
 import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.server.ServerRequest;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -159,7 +158,8 @@ public class ServerRequestWrapperTests {
 	@Test
 	public void bodyToMonoParameterizedTypeReference() {
 		Mono<String> result = Mono.just("foo");
-		ParameterizedTypeReference<String> reference = new ParameterizedTypeReference<String>() {};
+		ParameterizedTypeReference<String> reference = new ParameterizedTypeReference<String>() {
+		};
 		given(mockRequest.bodyToMono(reference)).willReturn(result);
 
 		assertThat(wrapper.bodyToMono(reference)).isSameAs(result);
@@ -176,7 +176,8 @@ public class ServerRequestWrapperTests {
 	@Test
 	public void bodyToFluxParameterizedTypeReference() {
 		Flux<String> result = Flux.just("foo");
-		ParameterizedTypeReference<String> reference = new ParameterizedTypeReference<String>() {};
+		ParameterizedTypeReference<String> reference = new ParameterizedTypeReference<String>() {
+		};
 		given(mockRequest.bodyToFlux(reference)).willReturn(result);
 
 		assertThat(wrapper.bodyToFlux(reference)).isSameAs(result);

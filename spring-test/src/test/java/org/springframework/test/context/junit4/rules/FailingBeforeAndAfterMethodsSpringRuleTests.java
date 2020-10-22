@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
 import org.junit.runners.JUnit4;
 import org.junit.runners.Parameterized.Parameters;
-
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.FailingBeforeAndAfterMethodsSpringRunnerTests;
@@ -46,14 +45,14 @@ public class FailingBeforeAndAfterMethodsSpringRuleTests extends FailingBeforeAn
 
 	@Parameters(name = "{0}")
 	public static Object[] testData() {
-		return new Object[] {//
-			AlwaysFailingBeforeTestClassSpringRuleTestCase.class.getSimpleName(),//
-			AlwaysFailingAfterTestClassSpringRuleTestCase.class.getSimpleName(),//
-			AlwaysFailingPrepareTestInstanceSpringRuleTestCase.class.getSimpleName(),//
-			AlwaysFailingBeforeTestMethodSpringRuleTestCase.class.getSimpleName(),//
-			AlwaysFailingAfterTestMethodSpringRuleTestCase.class.getSimpleName(),//
-			FailingBeforeTransactionSpringRuleTestCase.class.getSimpleName(),//
-			FailingAfterTransactionSpringRuleTestCase.class.getSimpleName() //
+		return new Object[]{//
+				AlwaysFailingBeforeTestClassSpringRuleTestCase.class.getSimpleName(),//
+				AlwaysFailingAfterTestClassSpringRuleTestCase.class.getSimpleName(),//
+				AlwaysFailingPrepareTestInstanceSpringRuleTestCase.class.getSimpleName(),//
+				AlwaysFailingBeforeTestMethodSpringRuleTestCase.class.getSimpleName(),//
+				AlwaysFailingAfterTestMethodSpringRuleTestCase.class.getSimpleName(),//
+				FailingBeforeTransactionSpringRuleTestCase.class.getSimpleName(),//
+				FailingAfterTransactionSpringRuleTestCase.class.getSimpleName() //
 		};
 	}
 

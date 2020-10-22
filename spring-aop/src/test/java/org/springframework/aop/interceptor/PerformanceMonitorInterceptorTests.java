@@ -16,6 +16,10 @@
 
 package org.springframework.aop.interceptor;
 
+import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.logging.Log;
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -23,21 +27,15 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.logging.Log;
-import org.junit.jupiter.api.Test;
-
 /**
  * @author Rob Harrop
  * @author Rick Evans
  * @author Chris Beams
  */
-public class PerformanceMonitorInterceptorTests
-{
+public class PerformanceMonitorInterceptorTests {
 
 	@Test
-	public void testSuffixAndPrefixAssignment()
-	{
+	public void testSuffixAndPrefixAssignment() {
 		PerformanceMonitorInterceptor interceptor = new PerformanceMonitorInterceptor();
 
 		assertThat(interceptor.getPrefix()).isNotNull();
@@ -51,8 +49,7 @@ public class PerformanceMonitorInterceptorTests
 	}
 
 	@Test
-	public void testSunnyDayPathLogsPerformanceMetricsCorrectly() throws Throwable
-	{
+	public void testSunnyDayPathLogsPerformanceMetricsCorrectly() throws Throwable {
 		MethodInvocation mi = mock(MethodInvocation.class);
 		given(mi.getMethod()).willReturn(String.class.getMethod("toString", new Class[0]));
 
@@ -65,8 +62,7 @@ public class PerformanceMonitorInterceptorTests
 	}
 
 	@Test
-	public void testExceptionPathStillLogsPerformanceMetricsCorrectly() throws Throwable
-	{
+	public void testExceptionPathStillLogsPerformanceMetricsCorrectly() throws Throwable {
 		MethodInvocation mi = mock(MethodInvocation.class);
 
 		given(mi.getMethod()).willReturn(String.class.getMethod("toString", new Class[0]));

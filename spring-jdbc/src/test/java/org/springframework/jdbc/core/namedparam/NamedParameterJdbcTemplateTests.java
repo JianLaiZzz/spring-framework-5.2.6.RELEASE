@@ -16,41 +16,25 @@
 
 package org.springframework.jdbc.core.namedparam;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
-
 import org.springframework.jdbc.Customer;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.SqlParameterValue;
 
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.*;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Rick Evans
@@ -78,7 +62,7 @@ public class NamedParameterJdbcTemplateTests {
 	private static final String UPDATE_ARRAY_PARAMETERS_PARSED =
 			"update customer set type = array[?, ?, ?] where id = ?";
 
-	private static final String[] COLUMN_NAMES = new String[] {"id", "forename"};
+	private static final String[] COLUMN_NAMES = new String[]{"id", "forename"};
 
 
 	private Connection connection;
@@ -100,7 +84,7 @@ public class NamedParameterJdbcTemplateTests {
 	public void setup() throws Exception {
 		connection = mock(Connection.class);
 		dataSource = mock(DataSource.class);
-		preparedStatement =	mock(PreparedStatement.class);
+		preparedStatement = mock(PreparedStatement.class);
 		resultSet = mock(ResultSet.class);
 		namedParameterTemplate = new NamedParameterJdbcTemplate(dataSource);
 		databaseMetaData = mock(DatabaseMetaData.class);
@@ -122,7 +106,7 @@ public class NamedParameterJdbcTemplateTests {
 	@Test
 	public void testNullJdbcTemplateProvidedToCtor() {
 		assertThatIllegalArgumentException().isThrownBy(() ->
-		new NamedParameterJdbcTemplate((JdbcOperations) null));
+				new NamedParameterJdbcTemplate((JdbcOperations) null));
 	}
 
 	@Test
@@ -415,11 +399,10 @@ public class NamedParameterJdbcTemplateTests {
 
 	@Test
 	public void testBatchUpdateWithPlainMap() throws Exception {
-		@SuppressWarnings("unchecked")
-		final Map<String, Integer>[] ids = new Map[2];
+		@SuppressWarnings("unchecked") final Map<String, Integer>[] ids = new Map[2];
 		ids[0] = Collections.singletonMap("id", 100);
 		ids[1] = Collections.singletonMap("id", 200);
-		final int[] rowsAffected = new int[] {1, 2};
+		final int[] rowsAffected = new int[]{1, 2};
 
 		given(preparedStatement.executeBatch()).willReturn(rowsAffected);
 		given(connection.getMetaData()).willReturn(databaseMetaData);
@@ -440,8 +423,7 @@ public class NamedParameterJdbcTemplateTests {
 
 	@Test
 	public void testBatchUpdateWithEmptyMap() throws Exception {
-		@SuppressWarnings("unchecked")
-		final Map<String, Integer>[] ids = new Map[0];
+		@SuppressWarnings("unchecked") final Map<String, Integer>[] ids = new Map[0];
 		namedParameterTemplate = new NamedParameterJdbcTemplate(new JdbcTemplate(dataSource, false));
 
 		int[] actualRowsAffected = namedParameterTemplate.batchUpdate(
@@ -454,7 +436,7 @@ public class NamedParameterJdbcTemplateTests {
 		SqlParameterSource[] ids = new SqlParameterSource[2];
 		ids[0] = new MapSqlParameterSource("id", 100);
 		ids[1] = new MapSqlParameterSource("id", 200);
-		final int[] rowsAffected = new int[] {1, 2};
+		final int[] rowsAffected = new int[]{1, 2};
 
 		given(preparedStatement.executeBatch()).willReturn(rowsAffected);
 		given(connection.getMetaData()).willReturn(databaseMetaData);
@@ -481,7 +463,7 @@ public class NamedParameterJdbcTemplateTests {
 		parameters[1] = Collections.singletonMap("ids", Arrays.asList("3", "4"));
 		parameters[2] = Collections.singletonMap("ids", (Iterable<Integer>) () -> Arrays.asList(5, 6).iterator());
 
-		final int[] rowsAffected = new int[] {1, 2, 3};
+		final int[] rowsAffected = new int[]{1, 2, 3};
 		given(preparedStatement.executeBatch()).willReturn(rowsAffected);
 		given(connection.getMetaData()).willReturn(databaseMetaData);
 
@@ -518,7 +500,7 @@ public class NamedParameterJdbcTemplateTests {
 		SqlParameterSource[] ids = new SqlParameterSource[2];
 		ids[0] = new MapSqlParameterSource().addValue("id", 100, Types.NUMERIC);
 		ids[1] = new MapSqlParameterSource().addValue("id", 200, Types.NUMERIC);
-		final int[] rowsAffected = new int[] {1, 2};
+		final int[] rowsAffected = new int[]{1, 2};
 
 		given(preparedStatement.executeBatch()).willReturn(rowsAffected);
 		given(connection.getMetaData()).willReturn(databaseMetaData);

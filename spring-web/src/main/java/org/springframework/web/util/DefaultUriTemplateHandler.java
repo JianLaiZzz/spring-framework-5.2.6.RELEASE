@@ -35,14 +35,13 @@ import java.util.Map;
  * @author Rossen Stoyanchev
  * @since 4.2
  * @deprecated as of 5.0 in favor of {@link DefaultUriBuilderFactory}.
- *             <p>
- *             <strong>Note:</strong> {@link DefaultUriBuilderFactory} has a different
- *             default for the {@link #setParsePath(boolean) parsePath} property (from
- *             false to true).
+ * <p>
+ * <strong>Note:</strong> {@link DefaultUriBuilderFactory} has a different
+ * default for the {@link #setParsePath(boolean) parsePath} property (from
+ * false to true).
  */
 @Deprecated
-public class DefaultUriTemplateHandler extends AbstractUriTemplateHandler
-{
+public class DefaultUriTemplateHandler extends AbstractUriTemplateHandler {
 
 	private boolean parsePath;
 
@@ -58,20 +57,17 @@ public class DefaultUriTemplateHandler extends AbstractUriTemplateHandler
 	 * <p>
 	 * By default this is set to {@code false} in which case the path is kept
 	 * as a full path and expanded URI variables will preserve "/" characters.
-	 * 
-	 * @param parsePath
-	 *            whether to parse the path into path segments
+	 *
+	 * @param parsePath whether to parse the path into path segments
 	 */
-	public void setParsePath(boolean parsePath)
-	{
+	public void setParsePath(boolean parsePath) {
 		this.parsePath = parsePath;
 	}
 
 	/**
 	 * Whether the handler is configured to parse the path into path segments.
 	 */
-	public boolean shouldParsePath()
-	{
+	public boolean shouldParsePath() {
 		return this.parsePath;
 	}
 
@@ -89,35 +85,30 @@ public class DefaultUriTemplateHandler extends AbstractUriTemplateHandler
 	 * <p>
 	 * <strong>Note:</strong> this property supersedes the need to also set
 	 * the {@link #setParsePath parsePath} property.
-	 * 
-	 * @param strictEncoding
-	 *            whether to perform strict encoding
+	 *
+	 * @param strictEncoding whether to perform strict encoding
 	 * @since 4.3
 	 */
-	public void setStrictEncoding(boolean strictEncoding)
-	{
+	public void setStrictEncoding(boolean strictEncoding) {
 		this.strictEncoding = strictEncoding;
 	}
 
 	/**
 	 * Whether to strictly encode any character outside the unreserved set.
 	 */
-	public boolean isStrictEncoding()
-	{
+	public boolean isStrictEncoding() {
 		return this.strictEncoding;
 	}
 
 	@Override
-	protected URI expandInternal(String uriTemplate, Map<String, ?> uriVariables)
-	{
+	protected URI expandInternal(String uriTemplate, Map<String, ?> uriVariables) {
 		UriComponentsBuilder uriComponentsBuilder = initUriComponentsBuilder(uriTemplate);
 		UriComponents uriComponents = expandAndEncode(uriComponentsBuilder, uriVariables);
 		return createUri(uriComponents);
 	}
 
 	@Override
-	protected URI expandInternal(String uriTemplate, Object... uriVariables)
-	{
+	protected URI expandInternal(String uriTemplate, Object... uriVariables) {
 		UriComponentsBuilder uriComponentsBuilder = initUriComponentsBuilder(uriTemplate);
 		UriComponents uriComponents = expandAndEncode(uriComponentsBuilder, uriVariables);
 		return createUri(uriComponents);
@@ -128,56 +119,41 @@ public class DefaultUriTemplateHandler extends AbstractUriTemplateHandler
 	 * This implementation also breaks up the path into path segments depending
 	 * on whether {@link #setParsePath parsePath} is enabled.
 	 */
-	protected UriComponentsBuilder initUriComponentsBuilder(String uriTemplate)
-	{
+	protected UriComponentsBuilder initUriComponentsBuilder(String uriTemplate) {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(uriTemplate);
-		if (shouldParsePath() && !isStrictEncoding())
-		{
+		if (shouldParsePath() && !isStrictEncoding()) {
 			List<String> pathSegments = builder.build().getPathSegments();
 			builder.replacePath(null);
-			for (String pathSegment : pathSegments)
-			{
+			for (String pathSegment : pathSegments) {
 				builder.pathSegment(pathSegment);
 			}
 		}
 		return builder;
 	}
 
-	protected UriComponents expandAndEncode(UriComponentsBuilder builder, Map<String, ?> uriVariables)
-	{
-		if (!isStrictEncoding())
-		{
+	protected UriComponents expandAndEncode(UriComponentsBuilder builder, Map<String, ?> uriVariables) {
+		if (!isStrictEncoding()) {
 			return builder.buildAndExpand(uriVariables).encode();
-		}
-		else
-		{
+		} else {
 			Map<String, ?> encodedUriVars = UriUtils.encodeUriVariables(uriVariables);
 			return builder.buildAndExpand(encodedUriVars);
 		}
 	}
 
-	protected UriComponents expandAndEncode(UriComponentsBuilder builder, Object[] uriVariables)
-	{
-		if (!isStrictEncoding())
-		{
+	protected UriComponents expandAndEncode(UriComponentsBuilder builder, Object[] uriVariables) {
+		if (!isStrictEncoding()) {
 			return builder.buildAndExpand(uriVariables).encode();
-		}
-		else
-		{
+		} else {
 			Object[] encodedUriVars = UriUtils.encodeUriVariables(uriVariables);
 			return builder.buildAndExpand(encodedUriVars);
 		}
 	}
 
-	private URI createUri(UriComponents uriComponents)
-	{
-		try
-		{
+	private URI createUri(UriComponents uriComponents) {
+		try {
 			// Avoid further encoding (in the case of strictEncoding=true)
 			return new URI(uriComponents.toUriString());
-		}
-		catch (URISyntaxException ex)
-		{
+		} catch (URISyntaxException ex) {
 			throw new IllegalStateException("Could not create URI object: " + ex.getMessage(), ex);
 		}
 	}

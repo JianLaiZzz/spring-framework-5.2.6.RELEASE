@@ -16,11 +16,11 @@
 
 package org.springframework.aop.aspectj;
 
-import java.io.Serializable;
-
 import org.springframework.core.Ordered;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.io.Serializable;
 
 /**
  * Implementation of {@link AspectInstanceFactory} that is backed by a
@@ -29,37 +29,32 @@ import org.springframework.util.Assert;
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
- * @since 2.0
  * @see SimpleAspectInstanceFactory
+ * @since 2.0
  */
 @SuppressWarnings("serial")
-public class SingletonAspectInstanceFactory implements AspectInstanceFactory, Serializable
-{
+public class SingletonAspectInstanceFactory implements AspectInstanceFactory, Serializable {
 
 	private final Object aspectInstance;
 
 	/**
 	 * Create a new SingletonAspectInstanceFactory for the given aspect instance.
-	 * 
-	 * @param aspectInstance
-	 *            the singleton aspect instance
+	 *
+	 * @param aspectInstance the singleton aspect instance
 	 */
-	public SingletonAspectInstanceFactory(Object aspectInstance)
-	{
+	public SingletonAspectInstanceFactory(Object aspectInstance) {
 		Assert.notNull(aspectInstance, "Aspect instance must not be null");
 		this.aspectInstance = aspectInstance;
 	}
 
 	@Override
-	public final Object getAspectInstance()
-	{
+	public final Object getAspectInstance() {
 		return this.aspectInstance;
 	}
 
 	@Override
 	@Nullable
-	public ClassLoader getAspectClassLoader()
-	{
+	public ClassLoader getAspectClassLoader() {
 		return this.aspectInstance.getClass().getClassLoader();
 	}
 
@@ -68,15 +63,13 @@ public class SingletonAspectInstanceFactory implements AspectInstanceFactory, Se
 	 * either an instance-specific order expressed through implementing
 	 * the {@link org.springframework.core.Ordered} interface,
 	 * or a fallback order.
-	 * 
+	 *
 	 * @see org.springframework.core.Ordered
 	 * @see #getOrderForAspectClass
 	 */
 	@Override
-	public int getOrder()
-	{
-		if (this.aspectInstance instanceof Ordered)
-		{
+	public int getOrder() {
+		if (this.aspectInstance instanceof Ordered) {
 			return ((Ordered) this.aspectInstance).getOrder();
 		}
 		return getOrderForAspectClass(this.aspectInstance.getClass());
@@ -88,12 +81,10 @@ public class SingletonAspectInstanceFactory implements AspectInstanceFactory, Se
 	 * the {@link org.springframework.core.Ordered} interface.
 	 * <p>
 	 * The default implementation simply returns {@code Ordered.LOWEST_PRECEDENCE}.
-	 * 
-	 * @param aspectClass
-	 *            the aspect class
+	 *
+	 * @param aspectClass the aspect class
 	 */
-	protected int getOrderForAspectClass(Class<?> aspectClass)
-	{
+	protected int getOrderForAspectClass(Class<?> aspectClass) {
 		return Ordered.LOWEST_PRECEDENCE;
 	}
 

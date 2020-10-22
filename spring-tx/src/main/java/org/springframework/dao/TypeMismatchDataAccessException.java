@@ -24,30 +24,24 @@ package org.springframework.dao;
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
-public class TypeMismatchDataAccessException extends InvalidDataAccessResourceUsageException
-{
+public class TypeMismatchDataAccessException extends InvalidDataAccessResourceUsageException {
 
 	/**
 	 * Constructor for TypeMismatchDataAccessException.
-	 * 
-	 * @param msg
-	 *            the detail message
+	 *
+	 * @param msg the detail message
 	 */
-	public TypeMismatchDataAccessException(String msg)
-	{
+	public TypeMismatchDataAccessException(String msg) {
 		super(msg);
 	}
 
 	/**
 	 * Constructor for TypeMismatchDataAccessException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the root cause from the data access API in use
+	 *
+	 * @param msg   the detail message
+	 * @param cause the root cause from the data access API in use
 	 */
-	public TypeMismatchDataAccessException(String msg, Throwable cause)
-	{
+	public TypeMismatchDataAccessException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 

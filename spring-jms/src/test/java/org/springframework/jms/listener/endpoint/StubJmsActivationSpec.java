@@ -16,9 +16,9 @@
 
 package org.springframework.jms.listener.endpoint;
 
-import javax.jms.Destination;
-
 import org.springframework.jca.StubActivationSpec;
+
+import javax.jms.Destination;
 
 /**
  * StubActivationSpec which implements all required and optional properties (see
@@ -28,8 +28,7 @@ import org.springframework.jca.StubActivationSpec;
  *
  * @author Agim Emruli
  */
-public class StubJmsActivationSpec extends StubActivationSpec
-{
+public class StubJmsActivationSpec extends StubActivationSpec {
 
 	private String destinationType;
 
@@ -43,63 +42,51 @@ public class StubJmsActivationSpec extends StubActivationSpec
 
 	private String acknowledgeMode;
 
-	public String getDestinationType()
-	{
+	public String getDestinationType() {
 		return destinationType;
 	}
 
-	public void setDestinationType(String destinationType)
-	{
+	public void setDestinationType(String destinationType) {
 		this.destinationType = destinationType;
 	}
 
-	public String getSubscriptionDurability()
-	{
+	public String getSubscriptionDurability() {
 		return subscriptionDurability;
 	}
 
-	public void setSubscriptionDurability(String subscriptionDurability)
-	{
+	public void setSubscriptionDurability(String subscriptionDurability) {
 		this.subscriptionDurability = subscriptionDurability;
 	}
 
-	public String getSubscriptionName()
-	{
+	public String getSubscriptionName() {
 		return subscriptionName;
 	}
 
-	public void setSubscriptionName(String subscriptionName)
-	{
+	public void setSubscriptionName(String subscriptionName) {
 		this.subscriptionName = subscriptionName;
 	}
 
-	public String getClientId()
-	{
+	public String getClientId() {
 		return clientId;
 	}
 
-	public void setClientId(String clientId)
-	{
+	public void setClientId(String clientId) {
 		this.clientId = clientId;
 	}
 
-	public String getMessageSelector()
-	{
+	public String getMessageSelector() {
 		return messageSelector;
 	}
 
-	public void setMessageSelector(String messageSelector)
-	{
+	public void setMessageSelector(String messageSelector) {
 		this.messageSelector = messageSelector;
 	}
 
-	public String getAcknowledgeMode()
-	{
+	public String getAcknowledgeMode() {
 		return acknowledgeMode;
 	}
 
-	public void setAcknowledgeMode(String acknowledgeMode)
-	{
+	public void setAcknowledgeMode(String acknowledgeMode) {
 		this.acknowledgeMode = acknowledgeMode;
 	}
 

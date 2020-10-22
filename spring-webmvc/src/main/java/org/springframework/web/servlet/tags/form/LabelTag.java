@@ -16,11 +16,11 @@
 
 package org.springframework.web.servlet.tags.form;
 
-import javax.servlet.jsp.JspException;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import javax.servlet.jsp.JspException;
 
 /**
  * The {@code <label>} tag renders a form field label in an HTML 'label' tag.
@@ -222,6 +222,7 @@ public class LabelTag extends AbstractHtmlElementTag {
 	/**
 	 * Writes the opening '{@code label}' tag and forces a block tag so
 	 * that body content is written correctly.
+	 *
 	 * @return {@link javax.servlet.jsp.tagext.Tag#EVAL_BODY_INCLUDE}
 	 */
 	@Override
@@ -238,6 +239,7 @@ public class LabelTag extends AbstractHtmlElementTag {
 	 * Overrides {@code #getName()} to always return {@code null},
 	 * because the '{@code name}' attribute is not supported by the
 	 * '{@code label}' tag.
+	 *
 	 * @return the value for the HTML '{@code name}' attribute
 	 */
 	@Override
@@ -250,14 +252,14 @@ public class LabelTag extends AbstractHtmlElementTag {
 	/**
 	 * Determine the '{@code for}' attribute value for this tag,
 	 * autogenerating one if none specified.
+	 *
 	 * @see #getFor()
 	 * @see #autogenerateFor()
 	 */
 	protected String resolveFor() throws JspException {
 		if (StringUtils.hasText(this.forId)) {
 			return getDisplayString(evaluate(FOR_ATTRIBUTE, this.forId));
-		}
-		else {
+		} else {
 			return autogenerateFor();
 		}
 	}

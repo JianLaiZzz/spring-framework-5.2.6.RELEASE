@@ -16,16 +16,9 @@
 
 package org.springframework.transaction.jta;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import javax.transaction.RollbackException;
-import javax.transaction.Status;
-import javax.transaction.UserTransaction;
-
+import com.ibm.wsspi.uow.UOWAction;
+import com.ibm.wsspi.uow.UOWException;
+import com.ibm.wsspi.uow.UOWManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.testfixture.jndi.ExpectedLookupTemplate;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -34,19 +27,23 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.ibm.wsspi.uow.UOWAction;
-import com.ibm.wsspi.uow.UOWException;
-import com.ibm.wsspi.uow.UOWManager;
+import javax.transaction.RollbackException;
+import javax.transaction.Status;
+import javax.transaction.UserTransaction;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Juergen Hoeller
  */
-public class WebSphereUowTransactionManagerTests
-{
+public class WebSphereUowTransactionManagerTests {
 
 	@Test
-	public void uowManagerFoundInJndi()
-	{
+	public void uowManagerFoundInJndi() {
 		MockUOWManager manager = new MockUOWManager();
 		ExpectedLookupTemplate jndiTemplate = new ExpectedLookupTemplate(
 				WebSphereUowTransactionManager.DEFAULT_UOW_MANAGER_NAME, manager);
@@ -55,11 +52,9 @@ public class WebSphereUowTransactionManagerTests
 		ptm.afterPropertiesSet();
 
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-		assertThat(ptm.execute(definition, new TransactionCallback<String>()
-		{
+		assertThat(ptm.execute(definition, new TransactionCallback<String>() {
 			@Override
-			public String doInTransaction(TransactionStatus status)
-			{
+			public String doInTransaction(TransactionStatus status) {
 				return "result";
 			}
 		})).isEqualTo("result");
@@ -70,8 +65,7 @@ public class WebSphereUowTransactionManagerTests
 	}
 
 	@Test
-	public void uowManagerAndUserTransactionFoundInJndi() throws Exception
-	{
+	public void uowManagerAndUserTransactionFoundInJndi() throws Exception {
 		UserTransaction ut = mock(UserTransaction.class);
 		given(ut.getStatus()).willReturn(Status.STATUS_NO_TRANSACTION, Status.STATUS_ACTIVE,
 				Status.STATUS_ACTIVE);
@@ -87,11 +81,9 @@ public class WebSphereUowTransactionManagerTests
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
 		TransactionStatus ts = ptm.getTransaction(definition);
 		ptm.commit(ts);
-		assertThat(ptm.execute(definition, new TransactionCallback<String>()
-		{
+		assertThat(ptm.execute(definition, new TransactionCallback<String>() {
 			@Override
-			public String doInTransaction(TransactionStatus status)
-			{
+			public String doInTransaction(TransactionStatus status) {
 				return "result";
 			}
 		})).isEqualTo("result");
@@ -104,89 +96,76 @@ public class WebSphereUowTransactionManagerTests
 	}
 
 	@Test
-	public void propagationMandatoryFailsInCaseOfNoExistingTransaction()
-	{
+	public void propagationMandatoryFailsInCaseOfNoExistingTransaction() {
 		MockUOWManager manager = new MockUOWManager();
 		WebSphereUowTransactionManager ptm = new WebSphereUowTransactionManager(manager);
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
 		definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_MANDATORY);
 
 		assertThatExceptionOfType(IllegalTransactionStateException.class)
-				.isThrownBy(() -> ptm.execute(definition, new TransactionCallback<String>()
-				{
+				.isThrownBy(() -> ptm.execute(definition, new TransactionCallback<String>() {
 					@Override
-					public String doInTransaction(TransactionStatus status)
-					{
+					public String doInTransaction(TransactionStatus status) {
 						return "result";
 					}
 				}));
 	}
 
 	@Test
-	public void newTransactionSynchronizationUsingPropagationSupports()
-	{
+	public void newTransactionSynchronizationUsingPropagationSupports() {
 		doTestNewTransactionSynchronization(TransactionDefinition.PROPAGATION_SUPPORTS,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_ALWAYS);
 	}
 
 	@Test
-	public void newTransactionSynchronizationUsingPropagationNotSupported()
-	{
+	public void newTransactionSynchronizationUsingPropagationNotSupported() {
 		doTestNewTransactionSynchronization(TransactionDefinition.PROPAGATION_NOT_SUPPORTED,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_ALWAYS);
 	}
 
 	@Test
-	public void newTransactionSynchronizationUsingPropagationNever()
-	{
+	public void newTransactionSynchronizationUsingPropagationNever() {
 		doTestNewTransactionSynchronization(TransactionDefinition.PROPAGATION_NEVER,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_ALWAYS);
 	}
 
 	@Test
-	public void newTransactionSynchronizationUsingPropagationSupportsAndSynchOnActual()
-	{
+	public void newTransactionSynchronizationUsingPropagationSupportsAndSynchOnActual() {
 		doTestNewTransactionSynchronization(TransactionDefinition.PROPAGATION_SUPPORTS,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_ON_ACTUAL_TRANSACTION);
 	}
 
 	@Test
-	public void newTransactionSynchronizationUsingPropagationNotSupportedAndSynchOnActual()
-	{
+	public void newTransactionSynchronizationUsingPropagationNotSupportedAndSynchOnActual() {
 		doTestNewTransactionSynchronization(TransactionDefinition.PROPAGATION_NOT_SUPPORTED,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_ON_ACTUAL_TRANSACTION);
 	}
 
 	@Test
-	public void newTransactionSynchronizationUsingPropagationNeverAndSynchOnActual()
-	{
+	public void newTransactionSynchronizationUsingPropagationNeverAndSynchOnActual() {
 		doTestNewTransactionSynchronization(TransactionDefinition.PROPAGATION_NEVER,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_ON_ACTUAL_TRANSACTION);
 	}
 
 	@Test
-	public void newTransactionSynchronizationUsingPropagationSupportsAndSynchNever()
-	{
+	public void newTransactionSynchronizationUsingPropagationSupportsAndSynchNever() {
 		doTestNewTransactionSynchronization(TransactionDefinition.PROPAGATION_SUPPORTS,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_NEVER);
 	}
 
 	@Test
-	public void newTransactionSynchronizationUsingPropagationNotSupportedAndSynchNever()
-	{
+	public void newTransactionSynchronizationUsingPropagationNotSupportedAndSynchNever() {
 		doTestNewTransactionSynchronization(TransactionDefinition.PROPAGATION_NOT_SUPPORTED,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_NEVER);
 	}
 
 	@Test
-	public void newTransactionSynchronizationUsingPropagationNeverAndSynchNever()
-	{
+	public void newTransactionSynchronizationUsingPropagationNeverAndSynchNever() {
 		doTestNewTransactionSynchronization(TransactionDefinition.PROPAGATION_NEVER,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_NEVER);
 	}
 
-	private void doTestNewTransactionSynchronization(int propagationBehavior, final int synchMode)
-	{
+	private void doTestNewTransactionSynchronization(int propagationBehavior, final int synchMode) {
 		MockUOWManager manager = new MockUOWManager();
 		WebSphereUowTransactionManager ptm = new WebSphereUowTransactionManager(manager);
 		ptm.setTransactionSynchronization(synchMode);
@@ -198,19 +177,14 @@ public class WebSphereUowTransactionManagerTests
 		assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
 		assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 
-		assertThat(ptm.execute(definition, new TransactionCallback<String>()
-		{
+		assertThat(ptm.execute(definition, new TransactionCallback<String>() {
 			@Override
-			public String doInTransaction(TransactionStatus status)
-			{
-				if (synchMode == WebSphereUowTransactionManager.SYNCHRONIZATION_ALWAYS)
-				{
+			public String doInTransaction(TransactionStatus status) {
+				if (synchMode == WebSphereUowTransactionManager.SYNCHRONIZATION_ALWAYS) {
 					assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 					assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
 					assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isTrue();
-				}
-				else
-				{
+				} else {
 					assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isFalse();
 					assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
 					assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly())
@@ -231,70 +205,60 @@ public class WebSphereUowTransactionManagerTests
 	}
 
 	@Test
-	public void newTransactionWithCommitUsingPropagationRequired()
-	{
+	public void newTransactionWithCommitUsingPropagationRequired() {
 		doTestNewTransactionWithCommit(TransactionDefinition.PROPAGATION_REQUIRED,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_ALWAYS);
 	}
 
 	@Test
-	public void newTransactionWithCommitUsingPropagationRequiresNew()
-	{
+	public void newTransactionWithCommitUsingPropagationRequiresNew() {
 		doTestNewTransactionWithCommit(TransactionDefinition.PROPAGATION_REQUIRES_NEW,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_ALWAYS);
 	}
 
 	@Test
-	public void newTransactionWithCommitUsingPropagationNested()
-	{
+	public void newTransactionWithCommitUsingPropagationNested() {
 		doTestNewTransactionWithCommit(TransactionDefinition.PROPAGATION_NESTED,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_ALWAYS);
 	}
 
 	@Test
-	public void newTransactionWithCommitUsingPropagationRequiredAndSynchOnActual()
-	{
+	public void newTransactionWithCommitUsingPropagationRequiredAndSynchOnActual() {
 		doTestNewTransactionWithCommit(TransactionDefinition.PROPAGATION_REQUIRED,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_ON_ACTUAL_TRANSACTION);
 	}
 
 	@Test
-	public void newTransactionWithCommitUsingPropagationRequiresNewAndSynchOnActual()
-	{
+	public void newTransactionWithCommitUsingPropagationRequiresNewAndSynchOnActual() {
 		doTestNewTransactionWithCommit(TransactionDefinition.PROPAGATION_REQUIRES_NEW,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_ON_ACTUAL_TRANSACTION);
 	}
 
 	@Test
-	public void newTransactionWithCommitUsingPropagationNestedAndSynchOnActual()
-	{
+	public void newTransactionWithCommitUsingPropagationNestedAndSynchOnActual() {
 		doTestNewTransactionWithCommit(TransactionDefinition.PROPAGATION_NESTED,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_ON_ACTUAL_TRANSACTION);
 	}
 
 	@Test
-	public void newTransactionWithCommitUsingPropagationRequiredAndSynchNever()
-	{
+	public void newTransactionWithCommitUsingPropagationRequiredAndSynchNever() {
 		doTestNewTransactionWithCommit(TransactionDefinition.PROPAGATION_REQUIRED,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_NEVER);
 	}
 
 	@Test
-	public void newTransactionWithCommitUsingPropagationRequiresNewAndSynchNever()
-	{
+	public void newTransactionWithCommitUsingPropagationRequiresNewAndSynchNever() {
 		doTestNewTransactionWithCommit(TransactionDefinition.PROPAGATION_REQUIRES_NEW,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_NEVER);
 	}
 
 	@Test
-	public void newTransactionWithCommitUsingPropagationNestedAndSynchNever()
-	{
+	public void newTransactionWithCommitUsingPropagationNestedAndSynchNever() {
 		doTestNewTransactionWithCommit(TransactionDefinition.PROPAGATION_NESTED,
 				WebSphereUowTransactionManager.SYNCHRONIZATION_NEVER);
 	}
 
-	private void doTestNewTransactionWithCommit(int propagationBehavior, final int synchMode)
-	{
+	private void doTestNewTransactionWithCommit(int propagationBehavior, final int synchMode) {
 		MockUOWManager manager = new MockUOWManager();
 		WebSphereUowTransactionManager ptm = new WebSphereUowTransactionManager(manager);
 		ptm.setTransactionSynchronization(synchMode);
@@ -306,19 +270,14 @@ public class WebSphereUowTransactionManagerTests
 		assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
 		assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 
-		assertThat(ptm.execute(definition, new TransactionCallback<String>()
-		{
+		assertThat(ptm.execute(definition, new TransactionCallback<String>() {
 			@Override
-			public String doInTransaction(TransactionStatus status)
-			{
-				if (synchMode != WebSphereUowTransactionManager.SYNCHRONIZATION_NEVER)
-				{
+			public String doInTransaction(TransactionStatus status) {
+				if (synchMode != WebSphereUowTransactionManager.SYNCHRONIZATION_NEVER) {
 					assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 					assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 					assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isTrue();
-				}
-				else
-				{
+				} else {
 					assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isFalse();
 					assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
 					assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly())
@@ -339,8 +298,7 @@ public class WebSphereUowTransactionManagerTests
 	}
 
 	@Test
-	public void newTransactionWithCommitAndTimeout()
-	{
+	public void newTransactionWithCommitAndTimeout() {
 		MockUOWManager manager = new MockUOWManager();
 		WebSphereUowTransactionManager ptm = new WebSphereUowTransactionManager(manager);
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -351,11 +309,9 @@ public class WebSphereUowTransactionManagerTests
 		assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
 		assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 
-		assertThat(ptm.execute(definition, new TransactionCallback<String>()
-		{
+		assertThat(ptm.execute(definition, new TransactionCallback<String>() {
 			@Override
-			public String doInTransaction(TransactionStatus status)
-			{
+			public String doInTransaction(TransactionStatus status) {
 				assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isTrue();
@@ -374,14 +330,11 @@ public class WebSphereUowTransactionManagerTests
 	}
 
 	@Test
-	public void newTransactionWithCommitException()
-	{
+	public void newTransactionWithCommitException() {
 		final RollbackException rex = new RollbackException();
-		MockUOWManager manager = new MockUOWManager()
-		{
+		MockUOWManager manager = new MockUOWManager() {
 			@Override
-			public void runUnderUOW(int type, boolean join, UOWAction action) throws UOWException
-			{
+			public void runUnderUOW(int type, boolean join, UOWAction action) throws UOWException {
 				throw new UOWException(rex);
 			}
 		};
@@ -393,11 +346,9 @@ public class WebSphereUowTransactionManagerTests
 		assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 
 		assertThatExceptionOfType(TransactionSystemException.class)
-				.isThrownBy(() -> ptm.execute(definition, new TransactionCallback<String>()
-				{
+				.isThrownBy(() -> ptm.execute(definition, new TransactionCallback<String>() {
 					@Override
-					public String doInTransaction(TransactionStatus status)
-					{
+					public String doInTransaction(TransactionStatus status) {
 						assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 						assertThat(TransactionSynchronizationManager.isActualTransactionActive())
 								.isTrue();
@@ -406,10 +357,10 @@ public class WebSphereUowTransactionManagerTests
 						return "result";
 					}
 				})).withCauseInstanceOf(UOWException.class).satisfies(ex ->
-				{
-					assertThat(ex.getRootCause()).isSameAs(rex);
-					assertThat(ex.getMostSpecificCause()).isSameAs(rex);
-				});
+		{
+			assertThat(ex.getRootCause()).isSameAs(rex);
+			assertThat(ex.getMostSpecificCause()).isSameAs(rex);
+		});
 
 		assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isFalse();
 		assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
@@ -419,8 +370,7 @@ public class WebSphereUowTransactionManagerTests
 	}
 
 	@Test
-	public void newTransactionWithRollback()
-	{
+	public void newTransactionWithRollback() {
 		MockUOWManager manager = new MockUOWManager();
 		WebSphereUowTransactionManager ptm = new WebSphereUowTransactionManager(manager);
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -430,11 +380,9 @@ public class WebSphereUowTransactionManagerTests
 		assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 
 		assertThatExceptionOfType(OptimisticLockingFailureException.class)
-				.isThrownBy(() -> ptm.execute(definition, new TransactionCallback<String>()
-				{
+				.isThrownBy(() -> ptm.execute(definition, new TransactionCallback<String>() {
 					@Override
-					public String doInTransaction(TransactionStatus status)
-					{
+					public String doInTransaction(TransactionStatus status) {
 						assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 						assertThat(TransactionSynchronizationManager.isActualTransactionActive())
 								.isTrue();
@@ -455,8 +403,7 @@ public class WebSphereUowTransactionManagerTests
 	}
 
 	@Test
-	public void newTransactionWithRollbackOnly()
-	{
+	public void newTransactionWithRollbackOnly() {
 		MockUOWManager manager = new MockUOWManager();
 		WebSphereUowTransactionManager ptm = new WebSphereUowTransactionManager(manager);
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -465,11 +412,9 @@ public class WebSphereUowTransactionManagerTests
 		assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
 		assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 
-		assertThat(ptm.execute(definition, new TransactionCallback<String>()
-		{
+		assertThat(ptm.execute(definition, new TransactionCallback<String>() {
 			@Override
-			public String doInTransaction(TransactionStatus status)
-			{
+			public String doInTransaction(TransactionStatus status) {
 				assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
@@ -489,8 +434,7 @@ public class WebSphereUowTransactionManagerTests
 	}
 
 	@Test
-	public void existingNonSpringTransaction()
-	{
+	public void existingNonSpringTransaction() {
 		MockUOWManager manager = new MockUOWManager();
 		manager.setUOWStatus(UOWManager.UOW_STATUS_ACTIVE);
 		WebSphereUowTransactionManager ptm = new WebSphereUowTransactionManager(manager);
@@ -500,11 +444,9 @@ public class WebSphereUowTransactionManagerTests
 		assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
 		assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 
-		assertThat(ptm.execute(definition, new TransactionCallback<String>()
-		{
+		assertThat(ptm.execute(definition, new TransactionCallback<String>() {
 			@Override
-			public String doInTransaction(TransactionStatus status)
-			{
+			public String doInTransaction(TransactionStatus status) {
 				assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
@@ -523,8 +465,7 @@ public class WebSphereUowTransactionManagerTests
 	}
 
 	@Test
-	public void propagationNeverFailsInCaseOfExistingTransaction()
-	{
+	public void propagationNeverFailsInCaseOfExistingTransaction() {
 		MockUOWManager manager = new MockUOWManager();
 		manager.setUOWStatus(UOWManager.UOW_STATUS_ACTIVE);
 		WebSphereUowTransactionManager ptm = new WebSphereUowTransactionManager(manager);
@@ -532,19 +473,16 @@ public class WebSphereUowTransactionManagerTests
 		definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_NEVER);
 
 		assertThatExceptionOfType(IllegalTransactionStateException.class)
-				.isThrownBy(() -> ptm.execute(definition, new TransactionCallback<String>()
-				{
+				.isThrownBy(() -> ptm.execute(definition, new TransactionCallback<String>() {
 					@Override
-					public String doInTransaction(TransactionStatus status)
-					{
+					public String doInTransaction(TransactionStatus status) {
 						return "result";
 					}
 				}));
 	}
 
 	@Test
-	public void propagationNestedFailsInCaseOfExistingTransaction()
-	{
+	public void propagationNestedFailsInCaseOfExistingTransaction() {
 		MockUOWManager manager = new MockUOWManager();
 		manager.setUOWStatus(UOWManager.UOW_STATUS_ACTIVE);
 		WebSphereUowTransactionManager ptm = new WebSphereUowTransactionManager(manager);
@@ -552,36 +490,30 @@ public class WebSphereUowTransactionManagerTests
 		definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_NESTED);
 
 		assertThatExceptionOfType(NestedTransactionNotSupportedException.class)
-				.isThrownBy(() -> ptm.execute(definition, new TransactionCallback<String>()
-				{
+				.isThrownBy(() -> ptm.execute(definition, new TransactionCallback<String>() {
 					@Override
-					public String doInTransaction(TransactionStatus status)
-					{
+					public String doInTransaction(TransactionStatus status) {
 						return "result";
 					}
 				}));
 	}
 
 	@Test
-	public void existingTransactionWithParticipationUsingPropagationRequired()
-	{
+	public void existingTransactionWithParticipationUsingPropagationRequired() {
 		doTestExistingTransactionWithParticipation(TransactionDefinition.PROPAGATION_REQUIRED);
 	}
 
 	@Test
-	public void existingTransactionWithParticipationUsingPropagationSupports()
-	{
+	public void existingTransactionWithParticipationUsingPropagationSupports() {
 		doTestExistingTransactionWithParticipation(TransactionDefinition.PROPAGATION_SUPPORTS);
 	}
 
 	@Test
-	public void existingTransactionWithParticipationUsingPropagationMandatory()
-	{
+	public void existingTransactionWithParticipationUsingPropagationMandatory() {
 		doTestExistingTransactionWithParticipation(TransactionDefinition.PROPAGATION_MANDATORY);
 	}
 
-	private void doTestExistingTransactionWithParticipation(int propagationBehavior)
-	{
+	private void doTestExistingTransactionWithParticipation(int propagationBehavior) {
 		MockUOWManager manager = new MockUOWManager();
 		final WebSphereUowTransactionManager ptm = new WebSphereUowTransactionManager(manager);
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -593,19 +525,15 @@ public class WebSphereUowTransactionManagerTests
 		assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
 		assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 
-		assertThat(ptm.execute(definition, new TransactionCallback<String>()
-		{
+		assertThat(ptm.execute(definition, new TransactionCallback<String>() {
 			@Override
-			public String doInTransaction(TransactionStatus status)
-			{
+			public String doInTransaction(TransactionStatus status) {
 				assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
-				assertThat(ptm.execute(definition2, new TransactionCallback<String>()
-				{
+				assertThat(ptm.execute(definition2, new TransactionCallback<String>() {
 					@Override
-					public String doInTransaction(TransactionStatus status1)
-					{
+					public String doInTransaction(TransactionStatus status1) {
 						assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 						assertThat(TransactionSynchronizationManager.isActualTransactionActive())
 								.isTrue();
@@ -629,19 +557,16 @@ public class WebSphereUowTransactionManagerTests
 	}
 
 	@Test
-	public void existingTransactionWithSuspensionUsingPropagationRequiresNew()
-	{
+	public void existingTransactionWithSuspensionUsingPropagationRequiresNew() {
 		doTestExistingTransactionWithSuspension(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
 	}
 
 	@Test
-	public void existingTransactionWithSuspensionUsingPropagationNotSupported()
-	{
+	public void existingTransactionWithSuspensionUsingPropagationNotSupported() {
 		doTestExistingTransactionWithSuspension(TransactionDefinition.PROPAGATION_NOT_SUPPORTED);
 	}
 
-	private void doTestExistingTransactionWithSuspension(final int propagationBehavior)
-	{
+	private void doTestExistingTransactionWithSuspension(final int propagationBehavior) {
 		MockUOWManager manager = new MockUOWManager();
 		final WebSphereUowTransactionManager ptm = new WebSphereUowTransactionManager(manager);
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -653,19 +578,15 @@ public class WebSphereUowTransactionManagerTests
 		assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
 		assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 
-		assertThat(ptm.execute(definition, new TransactionCallback<String>()
-		{
+		assertThat(ptm.execute(definition, new TransactionCallback<String>() {
 			@Override
-			public String doInTransaction(TransactionStatus status)
-			{
+			public String doInTransaction(TransactionStatus status) {
 				assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
-				assertThat(ptm.execute(definition2, new TransactionCallback<String>()
-				{
+				assertThat(ptm.execute(definition2, new TransactionCallback<String>() {
 					@Override
-					public String doInTransaction(TransactionStatus status1)
-					{
+					public String doInTransaction(TransactionStatus status1) {
 						assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 						assertThat(TransactionSynchronizationManager.isActualTransactionActive())
 								.isEqualTo(
@@ -684,12 +605,9 @@ public class WebSphereUowTransactionManagerTests
 		assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 
 		assertThat(manager.getUOWTimeout()).isEqualTo(0);
-		if (propagationBehavior == TransactionDefinition.PROPAGATION_REQUIRES_NEW)
-		{
+		if (propagationBehavior == TransactionDefinition.PROPAGATION_REQUIRES_NEW) {
 			assertThat(manager.getUOWType()).isEqualTo(UOWManager.UOW_TYPE_GLOBAL_TRANSACTION);
-		}
-		else
-		{
+		} else {
 			assertThat(manager.getUOWType()).isEqualTo(UOWManager.UOW_TYPE_LOCAL_TRANSACTION);
 		}
 		assertThat(manager.getJoined()).isFalse();
@@ -697,8 +615,7 @@ public class WebSphereUowTransactionManagerTests
 	}
 
 	@Test
-	public void existingTransactionUsingPropagationNotSupported()
-	{
+	public void existingTransactionUsingPropagationNotSupported() {
 		MockUOWManager manager = new MockUOWManager();
 		final WebSphereUowTransactionManager ptm = new WebSphereUowTransactionManager(manager);
 		DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
@@ -710,19 +627,15 @@ public class WebSphereUowTransactionManagerTests
 		assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
 		assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
 
-		assertThat(ptm.execute(definition, new TransactionCallback<String>()
-		{
+		assertThat(ptm.execute(definition, new TransactionCallback<String>() {
 			@Override
-			public String doInTransaction(TransactionStatus status)
-			{
+			public String doInTransaction(TransactionStatus status) {
 				assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
-				assertThat(ptm.execute(definition2, new TransactionCallback<String>()
-				{
+				assertThat(ptm.execute(definition2, new TransactionCallback<String>() {
 					@Override
-					public String doInTransaction(TransactionStatus status1)
-					{
+					public String doInTransaction(TransactionStatus status1) {
 						assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
 						assertThat(TransactionSynchronizationManager.isActualTransactionActive())
 								.isFalse();

@@ -21,8 +21,7 @@ import javax.jms.*;
 /**
  * @author Juergen Hoeller
  */
-public class TestConnection implements Connection
-{
+public class TestConnection implements Connection {
 
 	private ExceptionListener exceptionListener;
 
@@ -31,104 +30,87 @@ public class TestConnection implements Connection
 	private int closeCount;
 
 	@Override
-	public Session createSession(boolean b, int i) throws JMSException
-	{
+	public Session createSession(boolean b, int i) throws JMSException {
 		return null;
 	}
 
 	@Override
-	public Session createSession(int sessionMode) throws JMSException
-	{
+	public Session createSession(int sessionMode) throws JMSException {
 		return null;
 	}
 
 	@Override
-	public Session createSession() throws JMSException
-	{
+	public Session createSession() throws JMSException {
 		return null;
 	}
 
 	@Override
-	public String getClientID() throws JMSException
-	{
+	public String getClientID() throws JMSException {
 		return null;
 	}
 
 	@Override
-	public void setClientID(String paramName) throws JMSException
-	{
+	public void setClientID(String paramName) throws JMSException {
 	}
 
 	@Override
-	public ConnectionMetaData getMetaData() throws JMSException
-	{
+	public ConnectionMetaData getMetaData() throws JMSException {
 		return null;
 	}
 
 	@Override
-	public ExceptionListener getExceptionListener() throws JMSException
-	{
+	public ExceptionListener getExceptionListener() throws JMSException {
 		return exceptionListener;
 	}
 
 	@Override
-	public void setExceptionListener(ExceptionListener exceptionListener) throws JMSException
-	{
+	public void setExceptionListener(ExceptionListener exceptionListener) throws JMSException {
 		this.exceptionListener = exceptionListener;
 	}
 
 	@Override
-	public void start() throws JMSException
-	{
+	public void start() throws JMSException {
 		this.startCount++;
 	}
 
 	@Override
-	public void stop() throws JMSException
-	{
+	public void stop() throws JMSException {
 	}
 
 	@Override
-	public void close() throws JMSException
-	{
+	public void close() throws JMSException {
 		this.closeCount++;
 	}
 
 	@Override
 	public ConnectionConsumer createConnectionConsumer(Destination destination, String paramName,
-			ServerSessionPool serverSessionPool, int i) throws JMSException
-	{
+													   ServerSessionPool serverSessionPool, int i) throws JMSException {
 		return null;
 	}
 
 	@Override
 	public ConnectionConsumer createDurableConnectionConsumer(Topic topic, String paramName,
-			String paramName1, ServerSessionPool serverSessionPool, int i) throws JMSException
-	{
+															  String paramName1, ServerSessionPool serverSessionPool, int i) throws JMSException {
 		return null;
 	}
 
 	@Override
 	public ConnectionConsumer createSharedConnectionConsumer(Topic topic, String subscriptionName,
-			String messageSelector, ServerSessionPool sessionPool, int maxMessages) throws JMSException
-	{
+															 String messageSelector, ServerSessionPool sessionPool, int maxMessages) throws JMSException {
 		return null;
 	}
 
 	@Override
 	public ConnectionConsumer createSharedDurableConnectionConsumer(Topic topic, String subscriptionName,
-			String messageSelector, ServerSessionPool sessionPool, int maxMessages) throws JMSException
-	{
+																	String messageSelector, ServerSessionPool sessionPool, int maxMessages) throws JMSException {
 		return null;
 	}
 
-	public int getStartCount()
-	{
+	public int getStartCount() {
 		return startCount;
 	}
 
-	public int getCloseCount()
-	{
+	public int getCloseCount() {
 		return closeCount;
 	}
 

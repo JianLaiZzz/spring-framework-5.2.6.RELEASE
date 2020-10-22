@@ -28,23 +28,20 @@ import javax.jms.Message;
  * This often as an anonymous class within a method implementation.
  *
  * @author Mark Pollack
- * @since 1.1
  * @see JmsTemplate#convertAndSend(String, Object, MessagePostProcessor)
  * @see JmsTemplate#convertAndSend(javax.jms.Destination, Object, MessagePostProcessor)
  * @see org.springframework.jms.support.converter.MessageConverter
+ * @since 1.1
  */
-public interface MessagePostProcessor
-{
+public interface MessagePostProcessor {
 
 	/**
 	 * Apply a MessagePostProcessor to the message. The returned message is
 	 * typically a modified version of the original.
-	 * 
-	 * @param message
-	 *            the JMS message from the MessageConverter
+	 *
+	 * @param message the JMS message from the MessageConverter
 	 * @return the modified version of the Message
-	 * @throws javax.jms.JMSException
-	 *             if thrown by JMS API methods
+	 * @throws javax.jms.JMSException if thrown by JMS API methods
 	 */
 	Message postProcessMessage(Message message) throws JMSException;
 

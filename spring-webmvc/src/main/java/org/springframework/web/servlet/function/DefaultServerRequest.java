@@ -16,35 +16,6 @@
 
 package org.springframework.web.servlet.function;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.security.Principal;
-import java.time.Instant;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalLong;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRange;
@@ -64,6 +35,24 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UrlPathHelper;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.security.Principal;
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * {@code ServerRequest} implementation based on a {@link HttpServletRequest}.
@@ -235,8 +224,7 @@ class DefaultServerRequest implements ServerRequest {
 				servletRequest().getAttribute(RouterFunctions.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 		if (pathVariables != null) {
 			return pathVariables;
-		}
-		else {
+		} else {
 			return Collections.emptyMap();
 		}
 	}
@@ -266,8 +254,7 @@ class DefaultServerRequest implements ServerRequest {
 			return Optional.of(ServerResponse.status(response.status).
 					headers(headers -> headers.addAll(response.headers))
 					.build());
-		}
-		else {
+		} else {
 			return Optional.empty();
 		}
 	}
@@ -367,8 +354,7 @@ class DefaultServerRequest implements ServerRequest {
 			String[] parameterValues = this.servletRequest.getParameterValues(name);
 			if (!ObjectUtils.isEmpty(parameterValues)) {
 				return Arrays.asList(parameterValues);
-			}
-			else {
+			} else {
 				return Collections.emptyList();
 			}
 		}

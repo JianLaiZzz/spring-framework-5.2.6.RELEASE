@@ -37,11 +37,10 @@ import org.w3c.dom.Element;
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @author Mark Fisher
- * @since 2.0
  * @see AopConfigUtils
+ * @since 2.0
  */
-public abstract class AopNamespaceUtils
-{
+public abstract class AopNamespaceUtils {
 
 	/**
 	 * The {@code proxy-target-class} attribute as found on AOP-related XML tags.
@@ -54,8 +53,7 @@ public abstract class AopNamespaceUtils
 	private static final String EXPOSE_PROXY_ATTRIBUTE = "expose-proxy";
 
 	public static void registerAutoProxyCreatorIfNecessary(ParserContext parserContext,
-			Element sourceElement)
-	{
+														   Element sourceElement) {
 
 		BeanDefinition beanDefinition = AopConfigUtils.registerAutoProxyCreatorIfNecessary(
 				parserContext.getRegistry(), parserContext.extractSource(sourceElement));
@@ -64,8 +62,7 @@ public abstract class AopNamespaceUtils
 	}
 
 	public static void registerAspectJAutoProxyCreatorIfNecessary(ParserContext parserContext,
-			Element sourceElement)
-	{
+																  Element sourceElement) {
 
 		BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAutoProxyCreatorIfNecessary(
 				parserContext.getRegistry(), parserContext.extractSource(sourceElement));
@@ -74,8 +71,7 @@ public abstract class AopNamespaceUtils
 	}
 
 	public static void registerAspectJAnnotationAutoProxyCreatorIfNecessary(ParserContext parserContext,
-			Element sourceElement)
-	{
+																			Element sourceElement) {
 
 		BeanDefinition beanDefinition = AopConfigUtils
 				.registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext.getRegistry(),
@@ -85,30 +81,24 @@ public abstract class AopNamespaceUtils
 	}
 
 	private static void useClassProxyingIfNecessary(BeanDefinitionRegistry registry,
-			@Nullable Element sourceElement)
-	{
-		if (sourceElement != null)
-		{
+													@Nullable Element sourceElement) {
+		if (sourceElement != null) {
 			boolean proxyTargetClass = Boolean
 					.parseBoolean(sourceElement.getAttribute(PROXY_TARGET_CLASS_ATTRIBUTE));
-			if (proxyTargetClass)
-			{
+			if (proxyTargetClass) {
 				AopConfigUtils.forceAutoProxyCreatorToUseClassProxying(registry);
 			}
 			boolean exposeProxy = Boolean
 					.parseBoolean(sourceElement.getAttribute(EXPOSE_PROXY_ATTRIBUTE));
-			if (exposeProxy)
-			{
+			if (exposeProxy) {
 				AopConfigUtils.forceAutoProxyCreatorToExposeProxy(registry);
 			}
 		}
 	}
 
 	private static void registerComponentIfNecessary(@Nullable BeanDefinition beanDefinition,
-			ParserContext parserContext)
-	{
-		if (beanDefinition != null)
-		{
+													 ParserContext parserContext) {
+		if (beanDefinition != null) {
 			parserContext.registerComponent(new BeanComponentDefinition(beanDefinition,
 					AopConfigUtils.AUTO_PROXY_CREATOR_BEAN_NAME));
 		}

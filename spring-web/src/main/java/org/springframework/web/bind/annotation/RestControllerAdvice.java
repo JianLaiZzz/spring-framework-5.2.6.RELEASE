@@ -16,9 +16,9 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.lang.annotation.*;
-
 import org.springframework.core.annotation.AliasFor;
+
+import java.lang.annotation.*;
 
 /**
  * A convenience annotation that is itself annotated with
@@ -38,17 +38,16 @@ import org.springframework.core.annotation.AliasFor;
  *
  * @author Rossen Stoyanchev
  * @author Sam Brannen
- * @since 4.3
  * @see RestController
  * @see ControllerAdvice
+ * @since 4.3
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @ControllerAdvice
 @ResponseBody
-public @interface RestControllerAdvice
-{
+public @interface RestControllerAdvice {
 
 	/**
 	 * Alias for the {@link #basePackages} attribute.
@@ -56,7 +55,7 @@ public @interface RestControllerAdvice
 	 * Allows for more concise annotation declarations &mdash; for example,
 	 * {@code @RestControllerAdvice("org.my.pkg")} is equivalent to
 	 * {@code @RestControllerAdvice(basePackages = "org.my.pkg")}.
-	 * 
+	 *
 	 * @see #basePackages
 	 */
 	@AliasFor(annotation = ControllerAdvice.class)

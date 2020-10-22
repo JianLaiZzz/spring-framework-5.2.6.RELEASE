@@ -16,16 +16,15 @@
 
 package org.springframework.core;
 
-import java.awt.Component;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.tests.sample.objects.TestObject;
+
+import java.awt.*;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Date;
-
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import org.springframework.tests.sample.objects.TestObject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

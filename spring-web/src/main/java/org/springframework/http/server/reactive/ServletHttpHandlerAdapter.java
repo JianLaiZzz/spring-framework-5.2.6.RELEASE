@@ -16,29 +16,9 @@
 
 package org.springframework.http.server.reactive;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.AsyncEvent;
-import javax.servlet.AsyncListener;
-import javax.servlet.DispatcherType;
-import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpLogging;
@@ -46,14 +26,23 @@ import org.springframework.http.HttpMethod;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Adapt {@link HttpHandler} to an {@link HttpServlet} using Servlet Async support
  * and Servlet 3.1 non-blocking I/O.
  *
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
- * @since 5.0
  * @see org.springframework.web.server.adapter.AbstractReactiveWebInitializer
+ * @since 5.0
  */
 public class ServletHttpHandlerAdapter implements Servlet {
 
@@ -99,6 +88,7 @@ public class ServletHttpHandlerAdapter implements Servlet {
 	/**
 	 * Return the Servlet path under which the Servlet is deployed by checking
 	 * the Servlet registration from {@link #init(ServletConfig)}.
+	 *
 	 * @return the path, or an empty string if the Servlet is deployed without
 	 * a prefix (i.e. "/" or "/*"), or {@code null} if this method is invoked
 	 * before the {@link #init(ServletConfig)} Servlet container callback.
@@ -169,8 +159,7 @@ public class ServletHttpHandlerAdapter implements Servlet {
 		ServletServerHttpRequest httpRequest;
 		try {
 			httpRequest = createRequest(((HttpServletRequest) request), asyncContext);
-		}
-		catch (URISyntaxException ex) {
+		} catch (URISyntaxException ex) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Failed to get request  URL: " + ex.getMessage());
 			}
@@ -201,7 +190,7 @@ public class ServletHttpHandlerAdapter implements Servlet {
 	}
 
 	protected ServletServerHttpResponse createResponse(HttpServletResponse response,
-			AsyncContext context, ServletServerHttpRequest request) throws IOException {
+													   AsyncContext context, ServletServerHttpRequest request) throws IOException {
 
 		return new ServletServerHttpResponse(response, context, getDataBufferFactory(), getBufferSize(), request);
 	}
@@ -231,8 +220,7 @@ public class ServletHttpHandlerAdapter implements Servlet {
 			if (asyncContext.getRequest().isAsyncStarted() && isCompleted.compareAndSet(false, true)) {
 				task.run();
 			}
-		}
-		catch (IllegalStateException ex) {
+		} catch (IllegalStateException ex) {
 			// Ignore: AsyncContext recycled and should not be used
 			// e.g. TIMEOUT_LISTENER (above) may have completed the AsyncContext
 		}
@@ -311,14 +299,12 @@ public class ServletHttpHandlerAdapter implements Servlet {
 					logger.trace(this.logPrefix + "Dispatch to container, to raise the error on servlet thread");
 					this.asyncContext.getRequest().setAttribute(WRITE_ERROR_ATTRIBUTE_NAME, ex);
 					this.asyncContext.dispatch();
-				}
-				else {
+				} else {
 					try {
 						logger.trace(this.logPrefix + "Setting ServletResponse status to 500 Server Error");
 						this.asyncContext.getResponse().resetBuffer();
 						((HttpServletResponse) this.asyncContext.getResponse()).setStatus(500);
-					}
-					finally {
+					} finally {
 						this.asyncContext.complete();
 					}
 				}

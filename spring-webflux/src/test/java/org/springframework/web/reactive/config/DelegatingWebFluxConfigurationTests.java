@@ -16,9 +16,6 @@
 
 package org.springframework.web.reactive.config;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -26,7 +23,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.format.FormatterRegistry;
@@ -37,6 +33,9 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.support.ConfigurableWebBindingInitializer;
 import org.springframework.web.reactive.accept.RequestedContentTypeResolverBuilder;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

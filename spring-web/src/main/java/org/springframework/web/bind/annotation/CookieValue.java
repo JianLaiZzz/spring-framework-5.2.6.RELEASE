@@ -16,9 +16,9 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.lang.annotation.*;
-
 import org.springframework.core.annotation.AliasFor;
+
+import java.lang.annotation.*;
 
 /**
  * Annotation which indicates that a method parameter should be bound to an HTTP cookie.
@@ -29,17 +29,16 @@ import org.springframework.core.annotation.AliasFor;
  *
  * @author Juergen Hoeller
  * @author Sam Brannen
- * @since 3.0
  * @see RequestMapping
  * @see RequestParam
  * @see RequestHeader
  * @see org.springframework.web.bind.annotation.RequestMapping
+ * @since 3.0
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface CookieValue
-{
+public @interface CookieValue {
 
 	/**
 	 * Alias for {@link #name}.
@@ -49,7 +48,7 @@ public @interface CookieValue
 
 	/**
 	 * The name of the cookie to bind to.
-	 * 
+	 *
 	 * @since 4.2
 	 */
 	@AliasFor("value")

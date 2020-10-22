@@ -16,20 +16,19 @@
 
 package org.springframework.http.server;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -166,7 +165,7 @@ public class ServletServerHttpRequestTests {
 		mockRequest.setContentType("application/x-www-form-urlencoded; charset=UTF-8");
 		mockRequest.setMethod("POST");
 		mockRequest.addParameter("name 1", "value 1");
-		mockRequest.addParameter("name 2", new String[] {"value 2+1", "value 2+2"});
+		mockRequest.addParameter("name 2", new String[]{"value 2+1", "value 2+2"});
 		mockRequest.addParameter("name 3", (String) null);
 
 		byte[] result = FileCopyUtils.copyToByteArray(request.getBody());

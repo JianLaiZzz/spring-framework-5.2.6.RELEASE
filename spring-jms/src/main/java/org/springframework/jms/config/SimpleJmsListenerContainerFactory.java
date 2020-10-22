@@ -26,12 +26,10 @@ import org.springframework.jms.listener.SimpleMessageListenerContainer;
  * @since 4.1
  */
 public class SimpleJmsListenerContainerFactory
-		extends AbstractJmsListenerContainerFactory<SimpleMessageListenerContainer>
-{
+		extends AbstractJmsListenerContainerFactory<SimpleMessageListenerContainer> {
 
 	@Override
-	protected SimpleMessageListenerContainer createContainerInstance()
-	{
+	protected SimpleMessageListenerContainer createContainerInstance() {
 		return new SimpleMessageListenerContainer();
 	}
 

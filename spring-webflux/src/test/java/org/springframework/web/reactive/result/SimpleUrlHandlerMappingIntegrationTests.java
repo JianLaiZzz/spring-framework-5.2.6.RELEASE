@@ -16,14 +16,6 @@
 
 package org.springframework.web.reactive.result;
 
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +35,13 @@ import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.AbstractHttpHandlerIntegrationTests;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.HttpServer;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -110,8 +109,7 @@ class SimpleUrlHandlerMappingIntegrationTests extends AbstractHttpHandlerIntegra
 		RequestEntity<Void> request = RequestEntity.get(url).build();
 		try {
 			new RestTemplate().exchange(request, byte[].class);
-		}
-		catch (HttpClientErrorException ex) {
+		} catch (HttpClientErrorException ex) {
 			assertThat(ex.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 		}
 	}
@@ -129,9 +127,9 @@ class SimpleUrlHandlerMappingIntegrationTests extends AbstractHttpHandlerIntegra
 		public SimpleUrlHandlerMapping handlerMapping() {
 			Map<String, Object> map = new HashMap<>();
 			map.put("/foo", (WebHandler) exchange ->
-				exchange.getResponse().writeWith(Flux.just(asDataBuffer("foo"))));
+					exchange.getResponse().writeWith(Flux.just(asDataBuffer("foo"))));
 			map.put("/bar", (WebHandler) exchange ->
-				exchange.getResponse().writeWith(Flux.just(asDataBuffer("bar"))));
+					exchange.getResponse().writeWith(Flux.just(asDataBuffer("bar"))));
 			map.put("/header", (WebHandler) exchange -> {
 				exchange.getResponse().getHeaders().add("foo", "bar");
 				return Mono.empty();

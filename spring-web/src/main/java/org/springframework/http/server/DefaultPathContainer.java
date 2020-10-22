@@ -16,21 +16,13 @@
 
 package org.springframework.http.server;
 
+import org.springframework.lang.Nullable;
+import org.springframework.util.*;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 
 /**
  * Default implementation of {@link PathContainer}.
@@ -110,8 +102,7 @@ final class DefaultPathContainer implements PathContainer {
 		if (path.charAt(0) == separator) {
 			begin = 1;
 			elements.add(separatorElement);
-		}
-		else {
+		} else {
 			begin = 0;
 		}
 		while (begin < path.length()) {
@@ -137,8 +128,7 @@ final class DefaultPathContainer implements PathContainer {
 		if (index == -1) {
 			String valueToMatch = StringUtils.uriDecode(segment, charset);
 			return new DefaultPathSegment(segment, valueToMatch, EMPTY_PARAMS);
-		}
-		else {
+		} else {
 			String valueToMatch = StringUtils.uriDecode(segment.substring(0, index), charset);
 			String pathParameterContent = segment.substring(index);
 			MultiValueMap<String, String> parameters = parsePathParams(pathParameterContent, charset);
@@ -173,8 +163,7 @@ final class DefaultPathContainer implements PathContainer {
 						output.add(name, StringUtils.uriDecode(v, charset));
 					}
 				}
-			}
-			else {
+			} else {
 				String name = StringUtils.uriDecode(input, charset);
 				if (StringUtils.hasText(name)) {
 					output.add(input, "");

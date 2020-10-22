@@ -16,15 +16,14 @@
 
 package org.springframework.http.server.reactive;
 
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+
+import javax.net.ssl.SSLSession;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.net.ssl.SSLSession;
-
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
 
 /**
  * Default implementation of {@link SslInfo}.
@@ -69,7 +68,7 @@ final class DefaultSslInfo implements SslInfo {
 
 	@Nullable
 	private static String initSessionId(SSLSession session) {
-		byte [] bytes = session.getId();
+		byte[] bytes = session.getId();
 		if (bytes == null) {
 			return null;
 		}
@@ -93,8 +92,7 @@ final class DefaultSslInfo implements SslInfo {
 		Certificate[] certificates;
 		try {
 			certificates = session.getPeerCertificates();
-		}
-		catch (Throwable ex) {
+		} catch (Throwable ex) {
 			return null;
 		}
 

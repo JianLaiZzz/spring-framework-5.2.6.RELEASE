@@ -16,10 +16,9 @@
 
 package org.springframework.http.client.reactive;
 
-import java.net.URI;
-import java.util.function.Function;
-
 import io.netty.buffer.ByteBufAllocator;
+import org.springframework.http.HttpMethod;
+import org.springframework.util.Assert;
 import reactor.core.publisher.Mono;
 import reactor.netty.NettyInbound;
 import reactor.netty.NettyOutbound;
@@ -29,15 +28,15 @@ import reactor.netty.http.client.HttpClientResponse;
 import reactor.netty.resources.ConnectionProvider;
 import reactor.netty.resources.LoopResources;
 
-import org.springframework.http.HttpMethod;
-import org.springframework.util.Assert;
+import java.net.URI;
+import java.util.function.Function;
 
 /**
  * Reactor-Netty implementation of {@link ClientHttpConnector}.
  *
  * @author Brian Clozel
- * @since 5.0
  * @see reactor.netty.http.client.HttpClient
+ * @since 5.0
  */
 public class ReactorClientHttpConnector implements ClientHttpConnector {
 
@@ -69,8 +68,9 @@ public class ReactorClientHttpConnector implements ClientHttpConnector {
 	 * consider declaring a {@link ReactorResourceFactory} bean with
 	 * {@code globalResources=true} in order to ensure the Reactor Netty global
 	 * resources are shut down when the Spring ApplicationContext is closed.
+	 *
 	 * @param factory the resource factory to obtain the resources from
-	 * @param mapper a mapper for further initialization of the created client
+	 * @param mapper  a mapper for further initialization of the created client
 	 * @since 5.1
 	 */
 	public ReactorClientHttpConnector(ReactorResourceFactory factory, Function<HttpClient, HttpClient> mapper) {
@@ -87,6 +87,7 @@ public class ReactorClientHttpConnector implements ClientHttpConnector {
 
 	/**
 	 * Constructor with a pre-configured {@code HttpClient} instance.
+	 *
 	 * @param httpClient the client to use
 	 * @since 5.1
 	 */
@@ -98,7 +99,7 @@ public class ReactorClientHttpConnector implements ClientHttpConnector {
 
 	@Override
 	public Mono<ClientHttpResponse> connect(HttpMethod method, URI uri,
-			Function<? super ClientHttpRequest, Mono<Void>> requestCallback) {
+											Function<? super ClientHttpRequest, Mono<Void>> requestCallback) {
 
 		if (!uri.isAbsolute()) {
 			return Mono.error(new IllegalArgumentException("URI is not absolute: " + uri));
@@ -113,13 +114,13 @@ public class ReactorClientHttpConnector implements ClientHttpConnector {
 	}
 
 	private ReactorClientHttpRequest adaptRequest(HttpMethod method, URI uri, HttpClientRequest request,
-			NettyOutbound nettyOutbound) {
+												  NettyOutbound nettyOutbound) {
 
 		return new ReactorClientHttpRequest(method, uri, request, nettyOutbound);
 	}
 
 	private ClientHttpResponse adaptResponse(HttpClientResponse response, NettyInbound nettyInbound,
-			ByteBufAllocator allocator) {
+											 ByteBufAllocator allocator) {
 
 		return new ReactorClientHttpResponse(response, nettyInbound, allocator);
 	}

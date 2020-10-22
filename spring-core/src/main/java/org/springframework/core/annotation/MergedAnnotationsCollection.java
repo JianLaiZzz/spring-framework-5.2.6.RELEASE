@@ -16,6 +16,9 @@
 
 package org.springframework.core.annotation;
 
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Iterator;
@@ -26,16 +29,13 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-
 /**
  * {@link MergedAnnotations} implementation backed by a {@link Collection} of
  * {@link MergedAnnotation} instances that represent direct annotations.
  *
  * @author Phillip Webb
- * @since 5.2
  * @see MergedAnnotations#of(Collection)
+ * @since 5.2
  */
 final class MergedAnnotationsCollection implements MergedAnnotations {
 
@@ -119,15 +119,15 @@ final class MergedAnnotationsCollection implements MergedAnnotations {
 
 	@Override
 	public <A extends Annotation> MergedAnnotation<A> get(Class<A> annotationType,
-			@Nullable Predicate<? super MergedAnnotation<A>> predicate) {
+														  @Nullable Predicate<? super MergedAnnotation<A>> predicate) {
 
 		return get(annotationType, predicate, null);
 	}
 
 	@Override
 	public <A extends Annotation> MergedAnnotation<A> get(Class<A> annotationType,
-			@Nullable Predicate<? super MergedAnnotation<A>> predicate,
-			@Nullable MergedAnnotationSelector<A> selector) {
+														  @Nullable Predicate<? super MergedAnnotation<A>> predicate,
+														  @Nullable MergedAnnotationSelector<A> selector) {
 
 		MergedAnnotation<A> result = find(annotationType, predicate, selector);
 		return (result != null ? result : MergedAnnotation.missing());
@@ -140,15 +140,15 @@ final class MergedAnnotationsCollection implements MergedAnnotations {
 
 	@Override
 	public <A extends Annotation> MergedAnnotation<A> get(String annotationType,
-			@Nullable Predicate<? super MergedAnnotation<A>> predicate) {
+														  @Nullable Predicate<? super MergedAnnotation<A>> predicate) {
 
 		return get(annotationType, predicate, null);
 	}
 
 	@Override
 	public <A extends Annotation> MergedAnnotation<A> get(String annotationType,
-			@Nullable Predicate<? super MergedAnnotation<A>> predicate,
-			@Nullable MergedAnnotationSelector<A> selector) {
+														  @Nullable Predicate<? super MergedAnnotation<A>> predicate,
+														  @Nullable MergedAnnotationSelector<A> selector) {
 
 		MergedAnnotation<A> result = find(annotationType, predicate, selector);
 		return (result != null ? result : MergedAnnotation.missing());
@@ -157,8 +157,8 @@ final class MergedAnnotationsCollection implements MergedAnnotations {
 	@SuppressWarnings("unchecked")
 	@Nullable
 	private <A extends Annotation> MergedAnnotation<A> find(Object requiredType,
-			@Nullable Predicate<? super MergedAnnotation<A>> predicate,
-			@Nullable MergedAnnotationSelector<A> selector) {
+															@Nullable Predicate<? super MergedAnnotation<A>> predicate,
+															@Nullable MergedAnnotationSelector<A> selector) {
 
 		if (selector == null) {
 			selector = MergedAnnotationSelectors.nearest();

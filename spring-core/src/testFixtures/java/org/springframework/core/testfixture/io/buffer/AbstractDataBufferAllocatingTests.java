@@ -16,6 +16,15 @@
 
 package org.springframework.core.testfixture.io.buffer;
 
+import io.netty.buffer.*;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.core.io.buffer.*;
+import reactor.core.publisher.Mono;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -27,24 +36,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.PoolArenaMetric;
-import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.PooledByteBufAllocatorMetric;
-import io.netty.buffer.UnpooledByteBufAllocator;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import reactor.core.publisher.Mono;
-
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.core.io.buffer.DefaultDataBufferFactory;
-import org.springframework.core.io.buffer.NettyDataBufferFactory;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -105,8 +96,7 @@ public abstract class AbstractDataBufferAllocatingTests {
 			try {
 				verifyAllocations();
 				break;
-			}
-			catch (AssertionError ex) {
+			} catch (AssertionError ex) {
 				if (Instant.now().isAfter(start.plus(duration))) {
 					throw ex;
 				}
@@ -129,8 +119,7 @@ public abstract class AbstractDataBufferAllocatingTests {
 					if (Instant.now().isBefore(start.plus(Duration.ofSeconds(5)))) {
 						try {
 							Thread.sleep(50);
-						}
-						catch (InterruptedException ex) {
+						} catch (InterruptedException ex) {
 							// ignore
 						}
 						continue;
@@ -155,19 +144,19 @@ public abstract class AbstractDataBufferAllocatingTests {
 
 	public static Stream<Arguments> dataBufferFactories() {
 		return Stream.of(
-			arguments("NettyDataBufferFactory - UnpooledByteBufAllocator - preferDirect = true",
-					new NettyDataBufferFactory(new UnpooledByteBufAllocator(true))),
-			arguments("NettyDataBufferFactory - UnpooledByteBufAllocator - preferDirect = false",
-					new NettyDataBufferFactory(new UnpooledByteBufAllocator(false))),
-			// disable caching for reliable leak detection, see https://github.com/netty/netty/issues/5275
-			arguments("NettyDataBufferFactory - PooledByteBufAllocator - preferDirect = true",
-					new NettyDataBufferFactory(new PooledByteBufAllocator(true, 1, 1, 4096, 2, 0, 0, 0, true))),
-			arguments("NettyDataBufferFactory - PooledByteBufAllocator - preferDirect = false",
-					new NettyDataBufferFactory(new PooledByteBufAllocator(false, 1, 1, 4096, 2, 0, 0, 0, true))),
-			arguments("DefaultDataBufferFactory - preferDirect = true",
-					new DefaultDataBufferFactory(true)),
-			arguments("DefaultDataBufferFactory - preferDirect = false",
-					new DefaultDataBufferFactory(false))
+				arguments("NettyDataBufferFactory - UnpooledByteBufAllocator - preferDirect = true",
+						new NettyDataBufferFactory(new UnpooledByteBufAllocator(true))),
+				arguments("NettyDataBufferFactory - UnpooledByteBufAllocator - preferDirect = false",
+						new NettyDataBufferFactory(new UnpooledByteBufAllocator(false))),
+				// disable caching for reliable leak detection, see https://github.com/netty/netty/issues/5275
+				arguments("NettyDataBufferFactory - PooledByteBufAllocator - preferDirect = true",
+						new NettyDataBufferFactory(new PooledByteBufAllocator(true, 1, 1, 4096, 2, 0, 0, 0, true))),
+				arguments("NettyDataBufferFactory - PooledByteBufAllocator - preferDirect = false",
+						new NettyDataBufferFactory(new PooledByteBufAllocator(false, 1, 1, 4096, 2, 0, 0, 0, true))),
+				arguments("DefaultDataBufferFactory - preferDirect = true",
+						new DefaultDataBufferFactory(true)),
+				arguments("DefaultDataBufferFactory - preferDirect = false",
+						new DefaultDataBufferFactory(false))
 		);
 	}
 

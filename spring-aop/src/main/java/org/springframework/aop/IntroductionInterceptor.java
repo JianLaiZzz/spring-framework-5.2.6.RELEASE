@@ -30,7 +30,6 @@ import org.aopalliance.intercept.MethodInterceptor;
  * @author Rod Johnson
  * @see DynamicIntroductionAdvice
  */
-public interface IntroductionInterceptor extends MethodInterceptor, DynamicIntroductionAdvice
-{
+public interface IntroductionInterceptor extends MethodInterceptor, DynamicIntroductionAdvice {
 
 }

@@ -27,20 +27,18 @@ import org.springframework.lang.Nullable;
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
- * @since 2.0
  * @see #getNestedComponents()
  * @see PointcutComponentDefinition
+ * @since 2.0
  */
-public class AspectComponentDefinition extends CompositeComponentDefinition
-{
+public class AspectComponentDefinition extends CompositeComponentDefinition {
 
 	private final BeanDefinition[] beanDefinitions;
 
 	private final BeanReference[] beanReferences;
 
 	public AspectComponentDefinition(String aspectName, @Nullable BeanDefinition[] beanDefinitions,
-			@Nullable BeanReference[] beanReferences, @Nullable Object source)
-	{
+									 @Nullable BeanReference[] beanReferences, @Nullable Object source) {
 
 		super(aspectName, source);
 		this.beanDefinitions = (beanDefinitions != null ? beanDefinitions : new BeanDefinition[0]);
@@ -48,14 +46,12 @@ public class AspectComponentDefinition extends CompositeComponentDefinition
 	}
 
 	@Override
-	public BeanDefinition[] getBeanDefinitions()
-	{
+	public BeanDefinition[] getBeanDefinitions() {
 		return this.beanDefinitions;
 	}
 
 	@Override
-	public BeanReference[] getBeanReferences()
-	{
+	public BeanReference[] getBeanReferences() {
 		return this.beanReferences;
 	}
 

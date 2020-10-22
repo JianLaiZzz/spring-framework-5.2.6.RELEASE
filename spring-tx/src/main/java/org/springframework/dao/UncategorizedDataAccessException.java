@@ -26,19 +26,15 @@ import org.springframework.lang.Nullable;
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
-public abstract class UncategorizedDataAccessException extends NonTransientDataAccessException
-{
+public abstract class UncategorizedDataAccessException extends NonTransientDataAccessException {
 
 	/**
 	 * Constructor for UncategorizedDataAccessException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the exception thrown by underlying data access API
+	 *
+	 * @param msg   the detail message
+	 * @param cause the exception thrown by underlying data access API
 	 */
-	public UncategorizedDataAccessException(@Nullable String msg, @Nullable Throwable cause)
-	{
+	public UncategorizedDataAccessException(@Nullable String msg, @Nullable Throwable cause) {
 		super(msg, cause);
 	}
 

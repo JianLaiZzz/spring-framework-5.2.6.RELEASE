@@ -16,10 +16,10 @@
 
 package org.springframework.core.annotation;
 
+import org.junit.jupiter.api.Test;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

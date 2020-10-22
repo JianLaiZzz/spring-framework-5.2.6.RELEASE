@@ -16,11 +16,11 @@
 
 package org.springframework.aop.interceptor;
 
-import java.io.Serializable;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.util.ConcurrencyThrottleSupport;
+
+import java.io.Serializable;
 
 /**
  * Interceptor that throttles concurrent access, blocking invocations
@@ -37,29 +37,23 @@ import org.springframework.util.ConcurrencyThrottleSupport;
  * Specify the "concurrencyLimit" bean property to change this value.
  *
  * @author Juergen Hoeller
- * @since 11.02.2004
  * @see #setConcurrencyLimit
+ * @since 11.02.2004
  */
 @SuppressWarnings("serial")
 public class ConcurrencyThrottleInterceptor extends ConcurrencyThrottleSupport
-		implements MethodInterceptor, Serializable
-{
+		implements MethodInterceptor, Serializable {
 
-	public ConcurrencyThrottleInterceptor()
-	{
+	public ConcurrencyThrottleInterceptor() {
 		setConcurrencyLimit(1);
 	}
 
 	@Override
-	public Object invoke(MethodInvocation methodInvocation) throws Throwable
-	{
+	public Object invoke(MethodInvocation methodInvocation) throws Throwable {
 		beforeAccess();
-		try
-		{
+		try {
 			return methodInvocation.proceed();
-		}
-		finally
-		{
+		} finally {
 			afterAccess();
 		}
 	}

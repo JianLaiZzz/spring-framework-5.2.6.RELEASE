@@ -16,6 +16,16 @@
 
 package org.springframework.util;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.tests.sample.objects.DerivedTestObject;
+import org.springframework.tests.sample.objects.ITestInterface;
+import org.springframework.tests.sample.objects.ITestObject;
+import org.springframework.tests.sample.objects.TestObject;
+
 import java.io.Externalizable;
 import java.io.Serializable;
 import java.lang.annotation.ElementType;
@@ -25,24 +35,7 @@ import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import org.springframework.tests.sample.objects.DerivedTestObject;
-import org.springframework.tests.sample.objects.ITestInterface;
-import org.springframework.tests.sample.objects.ITestObject;
-import org.springframework.tests.sample.objects.TestObject;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -128,8 +121,10 @@ class ClassUtilsTests {
 
 	@Test
 	void isCacheSafe() {
-		ClassLoader childLoader1 = new ClassLoader(classLoader) {};
-		ClassLoader childLoader2 = new ClassLoader(classLoader) {};
+		ClassLoader childLoader1 = new ClassLoader(classLoader) {
+		};
+		ClassLoader childLoader2 = new ClassLoader(classLoader) {
+		};
 		ClassLoader childLoader3 = new ClassLoader(classLoader) {
 			@Override
 			public Class<?> loadClass(String name) throws ClassNotFoundException {
@@ -137,7 +132,7 @@ class ClassUtilsTests {
 			}
 		};
 		Class<?> composite = ClassUtils.createCompositeInterface(
-				new Class<?>[] {Serializable.class, Externalizable.class}, childLoader1);
+				new Class<?>[]{Serializable.class, Externalizable.class}, childLoader1);
 
 		assertThat(ClassUtils.isCacheSafe(String.class, null)).isTrue();
 		assertThat(ClassUtils.isCacheSafe(String.class, classLoader)).isTrue();
@@ -158,22 +153,22 @@ class ClassUtilsTests {
 
 	@ParameterizedTest
 	@CsvSource({
-		"boolean, boolean",
-		"byte, byte",
-		"char, char",
-		"short, short",
-		"int, int",
-		"long, long",
-		"float, float",
-		"double, double",
-		"[Z, boolean[]",
-		"[B, byte[]",
-		"[C, char[]",
-		"[S, short[]",
-		"[I, int[]",
-		"[J, long[]",
-		"[F, float[]",
-		"[D, double[]"
+			"boolean, boolean",
+			"byte, byte",
+			"char, char",
+			"short, short",
+			"int, int",
+			"long, long",
+			"float, float",
+			"double, double",
+			"[Z, boolean[]",
+			"[B, byte[]",
+			"[C, char[]",
+			"[S, short[]",
+			"[I, int[]",
+			"[J, long[]",
+			"[F, float[]",
+			"[D, double[]"
 	})
 	void resolvePrimitiveClassName(String input, Class<?> output) {
 		assertThat(ClassUtils.resolvePrimitiveClassName(input)).isEqualTo(output);
@@ -434,15 +429,15 @@ class ClassUtilsTests {
 
 	@Target(ElementType.METHOD)
 	@Retention(RetentionPolicy.RUNTIME)
-	@ValueSource(classes = { Boolean.class, Character.class, Byte.class, Short.class,
-		Integer.class, Long.class, Float.class, Double.class, Void.class })
+	@ValueSource(classes = {Boolean.class, Character.class, Byte.class, Short.class,
+			Integer.class, Long.class, Float.class, Double.class, Void.class})
 	@interface WrapperTypes {
 	}
 
 	@Target(ElementType.METHOD)
 	@Retention(RetentionPolicy.RUNTIME)
-	@ValueSource(classes = { boolean.class, char.class, byte.class, short.class,
-		int.class, long.class, float.class, double.class, void.class })
+	@ValueSource(classes = {boolean.class, char.class, byte.class, short.class,
+			int.class, long.class, float.class, double.class, void.class})
 	@interface PrimitiveTypes {
 	}
 

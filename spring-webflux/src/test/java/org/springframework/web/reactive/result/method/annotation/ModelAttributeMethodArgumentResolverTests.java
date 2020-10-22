@@ -16,18 +16,8 @@
 
 package org.springframework.web.reactive.result.method.annotation;
 
-import java.net.URISyntaxException;
-import java.time.Duration;
-import java.util.Map;
-import java.util.function.Function;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-import rx.RxReactiveStreams;
-import rx.Single;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.http.MediaType;
@@ -42,6 +32,15 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.method.ResolvableMethod;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+import rx.RxReactiveStreams;
+import rx.Single;
+
+import java.net.URISyntaxException;
+import java.time.Duration;
+import java.util.Map;
+import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -16,10 +16,6 @@
 
 package org.springframework.http.server.reactive;
 
-import java.net.URI;
-
-import reactor.core.publisher.Mono;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
@@ -27,6 +23,9 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.AbstractHttpHandlerIntegrationTests;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.HttpServer;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -70,7 +69,8 @@ class ErrorHandlerIntegrationTests extends AbstractHttpHandlerIntegrationTests {
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ParameterizedHttpServerTest // SPR-15560
+	@ParameterizedHttpServerTest
+		// SPR-15560
 	void emptyPathSegments(HttpServer httpServer) throws Exception {
 		startServer(httpServer);
 
@@ -92,11 +92,9 @@ class ErrorHandlerIntegrationTests extends AbstractHttpHandlerIntegrationTests {
 			String path = request.getURI().getPath();
 			if (path.endsWith("response-body-error")) {
 				return response.writeWith(Mono.error(error));
-			}
-			else if (path.endsWith("handling-error")) {
+			} else if (path.endsWith("handling-error")) {
 				return Mono.error(error);
-			}
-			else {
+			} else {
 				return Mono.empty();
 			}
 		}

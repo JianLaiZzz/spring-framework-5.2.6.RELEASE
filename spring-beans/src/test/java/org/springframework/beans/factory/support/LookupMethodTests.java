@@ -18,7 +18,6 @@ package org.springframework.beans.factory.support;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.beans.testfixture.beans.TestBean;
 import org.springframework.core.io.ClassPathResource;
@@ -84,7 +83,7 @@ public class LookupMethodTests {
 		AbstractBean bean = (AbstractBean) beanFactory.getBean("abstractBean");
 		assertThat(bean).isNotNull();
 		assertThatExceptionOfType(AbstractMethodError.class).as("does not have a three arg constructor").isThrownBy(() ->
-			bean.getThreeArguments("name", 1, 2));
+				bean.getThreeArguments("name", 1, 2));
 	}
 
 	@Test

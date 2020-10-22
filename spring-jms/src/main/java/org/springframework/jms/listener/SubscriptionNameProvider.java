@@ -29,8 +29,7 @@ package org.springframework.jms.listener;
  * @author Juergen Hoeller
  * @since 2.5.6
  */
-public interface SubscriptionNameProvider
-{
+public interface SubscriptionNameProvider {
 
 	/**
 	 * Determine the subscription name for this message listener object.

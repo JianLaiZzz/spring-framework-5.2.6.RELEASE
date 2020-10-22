@@ -33,14 +33,15 @@ import org.springframework.lang.Nullable;
  * @author Rod Johnson
  * @author Rob Harrop
  * @author Juergen Hoeller
- * @since 2.0
  * @see #requiresRefresh()
  * @see #freshTarget()
+ * @since 2.0
  */
-public abstract class AbstractRefreshableTargetSource implements TargetSource, Refreshable
-{
+public abstract class AbstractRefreshableTargetSource implements TargetSource, Refreshable {
 
-	/** Logger available to subclasses. */
+	/**
+	 * Logger available to subclasses.
+	 */
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	@Nullable
@@ -61,16 +62,13 @@ public abstract class AbstractRefreshableTargetSource implements TargetSource, R
 	 * Note that an actual refresh will only happen when
 	 * {@link #requiresRefresh()} returns {@code true}.
 	 */
-	public void setRefreshCheckDelay(long refreshCheckDelay)
-	{
+	public void setRefreshCheckDelay(long refreshCheckDelay) {
 		this.refreshCheckDelay = refreshCheckDelay;
 	}
 
 	@Override
-	public synchronized Class<?> getTargetClass()
-	{
-		if (this.targetObject == null)
-		{
+	public synchronized Class<?> getTargetClass() {
+		if (this.targetObject == null) {
 			refresh();
 		}
 		return this.targetObject.getClass();
@@ -80,17 +78,14 @@ public abstract class AbstractRefreshableTargetSource implements TargetSource, R
 	 * Not static.
 	 */
 	@Override
-	public boolean isStatic()
-	{
+	public boolean isStatic() {
 		return false;
 	}
 
 	@Override
 	@Nullable
-	public final synchronized Object getTarget()
-	{
-		if ((refreshCheckDelayElapsed() && requiresRefresh()) || this.targetObject == null)
-		{
+	public final synchronized Object getTarget() {
+		if ((refreshCheckDelayElapsed() && requiresRefresh()) || this.targetObject == null) {
 			refresh();
 		}
 		return this.targetObject;
@@ -100,13 +95,11 @@ public abstract class AbstractRefreshableTargetSource implements TargetSource, R
 	 * No need to release target.
 	 */
 	@Override
-	public void releaseTarget(Object object)
-	{
+	public void releaseTarget(Object object) {
 	}
 
 	@Override
-	public final synchronized void refresh()
-	{
+	public final synchronized void refresh() {
 		logger.debug("Attempting to refresh target");
 
 		this.targetObject = freshTarget();
@@ -117,29 +110,24 @@ public abstract class AbstractRefreshableTargetSource implements TargetSource, R
 	}
 
 	@Override
-	public synchronized long getRefreshCount()
-	{
+	public synchronized long getRefreshCount() {
 		return this.refreshCount;
 	}
 
 	@Override
-	public synchronized long getLastRefreshTime()
-	{
+	public synchronized long getLastRefreshTime() {
 		return this.lastRefreshTime;
 	}
 
-	private boolean refreshCheckDelayElapsed()
-	{
-		if (this.refreshCheckDelay < 0)
-		{
+	private boolean refreshCheckDelayElapsed() {
+		if (this.refreshCheckDelay < 0) {
 			return false;
 		}
 
 		long currentTimeMillis = System.currentTimeMillis();
 
 		if (this.lastRefreshCheck < 0
-				|| currentTimeMillis - this.lastRefreshCheck > this.refreshCheckDelay)
-		{
+				|| currentTimeMillis - this.lastRefreshCheck > this.refreshCheckDelay) {
 			// Going to perform a refresh check - update the timestamp.
 			this.lastRefreshCheck = currentTimeMillis;
 			logger.debug("Refresh check delay elapsed - checking whether refresh is required");
@@ -156,11 +144,10 @@ public abstract class AbstractRefreshableTargetSource implements TargetSource, R
 	 * The default implementation always returns {@code true}, triggering
 	 * a refresh every time the delay has elapsed. To be overridden by subclasses
 	 * with an appropriate check of the underlying target resource.
-	 * 
+	 *
 	 * @return whether a refresh is required
 	 */
-	protected boolean requiresRefresh()
-	{
+	protected boolean requiresRefresh() {
 		return true;
 	}
 
@@ -169,7 +156,7 @@ public abstract class AbstractRefreshableTargetSource implements TargetSource, R
 	 * <p>
 	 * Only invoked if a refresh check has found that a refresh is required
 	 * (that is, {@link #requiresRefresh()} has returned {@code true}).
-	 * 
+	 *
 	 * @return the fresh target object
 	 */
 	protected abstract Object freshTarget();

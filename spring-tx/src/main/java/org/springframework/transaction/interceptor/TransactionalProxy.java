@@ -29,7 +29,6 @@ import org.springframework.aop.SpringProxy;
  * @author Juergen Hoeller
  * @since 4.1.7
  */
-public interface TransactionalProxy extends SpringProxy
-{
+public interface TransactionalProxy extends SpringProxy {
 
 }

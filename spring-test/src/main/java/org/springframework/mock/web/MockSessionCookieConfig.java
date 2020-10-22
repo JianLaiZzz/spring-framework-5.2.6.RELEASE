@@ -16,16 +16,16 @@
 
 package org.springframework.mock.web;
 
-import javax.servlet.SessionCookieConfig;
-
 import org.springframework.lang.Nullable;
+
+import javax.servlet.SessionCookieConfig;
 
 /**
  * Mock implementation of the {@link javax.servlet.SessionCookieConfig} interface.
  *
  * @author Juergen Hoeller
- * @since 4.0
  * @see javax.servlet.ServletContext#getSessionCookieConfig()
+ * @since 4.0
  */
 public class MockSessionCookieConfig implements SessionCookieConfig {
 

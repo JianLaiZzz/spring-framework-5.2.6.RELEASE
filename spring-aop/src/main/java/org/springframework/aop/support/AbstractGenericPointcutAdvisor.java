@@ -23,33 +23,29 @@ import org.aopalliance.aop.Advice;
  * that allows for any {@link Advice} to be configured.
  *
  * @author Juergen Hoeller
- * @since 2.0
  * @see #setAdvice
  * @see DefaultPointcutAdvisor
+ * @since 2.0
  */
 @SuppressWarnings("serial")
-public abstract class AbstractGenericPointcutAdvisor extends AbstractPointcutAdvisor
-{
+public abstract class AbstractGenericPointcutAdvisor extends AbstractPointcutAdvisor {
 
 	private Advice advice = EMPTY_ADVICE;
 
 	/**
 	 * Specify the advice that this advisor should apply.
 	 */
-	public void setAdvice(Advice advice)
-	{
+	public void setAdvice(Advice advice) {
 		this.advice = advice;
 	}
 
 	@Override
-	public Advice getAdvice()
-	{
+	public Advice getAdvice() {
 		return this.advice;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getClass().getName() + ": advice [" + getAdvice() + "]";
 	}
 

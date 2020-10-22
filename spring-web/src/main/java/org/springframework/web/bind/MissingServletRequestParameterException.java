@@ -23,8 +23,7 @@ package org.springframework.web.bind;
  * @since 2.0.2
  */
 @SuppressWarnings("serial")
-public class MissingServletRequestParameterException extends ServletRequestBindingException
-{
+public class MissingServletRequestParameterException extends ServletRequestBindingException {
 
 	private final String parameterName;
 
@@ -32,22 +31,18 @@ public class MissingServletRequestParameterException extends ServletRequestBindi
 
 	/**
 	 * Constructor for MissingServletRequestParameterException.
-	 * 
-	 * @param parameterName
-	 *            the name of the missing parameter
-	 * @param parameterType
-	 *            the expected type of the missing parameter
+	 *
+	 * @param parameterName the name of the missing parameter
+	 * @param parameterType the expected type of the missing parameter
 	 */
-	public MissingServletRequestParameterException(String parameterName, String parameterType)
-	{
+	public MissingServletRequestParameterException(String parameterName, String parameterType) {
 		super("");
 		this.parameterName = parameterName;
 		this.parameterType = parameterType;
 	}
 
 	@Override
-	public String getMessage()
-	{
+	public String getMessage() {
 		return "Required " + this.parameterType + " parameter '" + this.parameterName
 				+ "' is not present";
 	}
@@ -55,16 +50,14 @@ public class MissingServletRequestParameterException extends ServletRequestBindi
 	/**
 	 * Return the name of the offending parameter.
 	 */
-	public final String getParameterName()
-	{
+	public final String getParameterName() {
 		return this.parameterName;
 	}
 
 	/**
 	 * Return the expected type of the offending parameter.
 	 */
-	public final String getParameterType()
-	{
+	public final String getParameterType() {
 		return this.parameterType;
 	}
 

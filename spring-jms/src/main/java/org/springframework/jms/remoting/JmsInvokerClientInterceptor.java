@@ -16,8 +16,6 @@
 
 package org.springframework.jms.remoting;
 
-import javax.jms.*;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.support.AopUtils;
@@ -37,6 +35,8 @@ import org.springframework.remoting.support.RemoteInvocation;
 import org.springframework.remoting.support.RemoteInvocationFactory;
 import org.springframework.remoting.support.RemoteInvocationResult;
 import org.springframework.util.Assert;
+
+import javax.jms.*;
 
 /**
  * {@link org.aopalliance.intercept.MethodInterceptor} for accessing a
@@ -58,15 +58,14 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @author James Strachan
  * @author Stephane Nicoll
- * @since 2.0
  * @see #setConnectionFactory
  * @see #setQueue
  * @see #setQueueName
  * @see org.springframework.jms.remoting.JmsInvokerServiceExporter
  * @see org.springframework.jms.remoting.JmsInvokerProxyFactoryBean
+ * @since 2.0
  */
-public class JmsInvokerClientInterceptor implements MethodInterceptor, InitializingBean
-{
+public class JmsInvokerClientInterceptor implements MethodInterceptor, InitializingBean {
 
 	@Nullable
 	private ConnectionFactory connectionFactory;
@@ -85,8 +84,7 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	/**
 	 * Set the QueueConnectionFactory to use for obtaining JMS QueueConnections.
 	 */
-	public void setConnectionFactory(@Nullable ConnectionFactory connectionFactory)
-	{
+	public void setConnectionFactory(@Nullable ConnectionFactory connectionFactory) {
 		this.connectionFactory = connectionFactory;
 	}
 
@@ -94,16 +92,14 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * Return the QueueConnectionFactory to use for obtaining JMS QueueConnections.
 	 */
 	@Nullable
-	protected ConnectionFactory getConnectionFactory()
-	{
+	protected ConnectionFactory getConnectionFactory() {
 		return this.connectionFactory;
 	}
 
 	/**
 	 * Set the target Queue to send invoker requests to.
 	 */
-	public void setQueue(Queue queue)
-	{
+	public void setQueue(Queue queue) {
 		this.queue = queue;
 	}
 
@@ -113,8 +109,7 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * The specified name will be dynamically resolved via the
 	 * {@link #setDestinationResolver DestinationResolver}.
 	 */
-	public void setQueueName(String queueName)
-	{
+	public void setQueueName(String queueName) {
 		this.queue = queueName;
 	}
 
@@ -124,12 +119,11 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * <p>
 	 * The default resolver is a {@code DynamicDestinationResolver}. Specify a
 	 * {@code JndiDestinationResolver} for resolving destination names as JNDI locations.
-	 * 
+	 *
 	 * @see org.springframework.jms.support.destination.DynamicDestinationResolver
 	 * @see org.springframework.jms.support.destination.JndiDestinationResolver
 	 */
-	public void setDestinationResolver(@Nullable DestinationResolver destinationResolver)
-	{
+	public void setDestinationResolver(@Nullable DestinationResolver destinationResolver) {
 		this.destinationResolver = (destinationResolver != null ? destinationResolver
 				: new DynamicDestinationResolver());
 	}
@@ -142,8 +136,7 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * A custom invocation factory can add further context information
 	 * to the invocation, for example user credentials.
 	 */
-	public void setRemoteInvocationFactory(@Nullable RemoteInvocationFactory remoteInvocationFactory)
-	{
+	public void setRemoteInvocationFactory(@Nullable RemoteInvocationFactory remoteInvocationFactory) {
 		this.remoteInvocationFactory = (remoteInvocationFactory != null ? remoteInvocationFactory
 				: new DefaultRemoteInvocationFactory());
 	}
@@ -162,8 +155,7 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * objects into special kinds of messages, or might be specifically tailored for
 	 * translating {@code RemoteInvocation(Result)s} into specific kinds of messages.
 	 */
-	public void setMessageConverter(@Nullable MessageConverter messageConverter)
-	{
+	public void setMessageConverter(@Nullable MessageConverter messageConverter) {
 		this.messageConverter = (messageConverter != null ? messageConverter
 				: new SimpleMessageConverter());
 	}
@@ -173,12 +165,11 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * (in milliseconds).
 	 * <p>
 	 * The default is 0, which indicates a blocking receive without timeout.
-	 * 
+	 *
 	 * @see javax.jms.MessageConsumer#receive(long)
 	 * @see javax.jms.MessageConsumer#receive()
 	 */
-	public void setReceiveTimeout(long receiveTimeout)
-	{
+	public void setReceiveTimeout(long receiveTimeout) {
 		this.receiveTimeout = receiveTimeout;
 	}
 
@@ -186,55 +177,40 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * Return the timeout to use for receiving the response message for a request
 	 * (in milliseconds).
 	 */
-	protected long getReceiveTimeout()
-	{
+	protected long getReceiveTimeout() {
 		return this.receiveTimeout;
 	}
 
 	@Override
-	public void afterPropertiesSet()
-	{
-		if (getConnectionFactory() == null)
-		{
+	public void afterPropertiesSet() {
+		if (getConnectionFactory() == null) {
 			throw new IllegalArgumentException("Property 'connectionFactory' is required");
 		}
-		if (this.queue == null)
-		{
+		if (this.queue == null) {
 			throw new IllegalArgumentException("'queue' or 'queueName' is required");
 		}
 	}
 
 	@Override
 	@Nullable
-	public Object invoke(MethodInvocation methodInvocation) throws Throwable
-	{
-		if (AopUtils.isToStringMethod(methodInvocation.getMethod()))
-		{
+	public Object invoke(MethodInvocation methodInvocation) throws Throwable {
+		if (AopUtils.isToStringMethod(methodInvocation.getMethod())) {
 			return "JMS invoker proxy for queue [" + this.queue + "]";
 		}
 
 		RemoteInvocation invocation = createRemoteInvocation(methodInvocation);
 		RemoteInvocationResult result;
-		try
-		{
+		try {
 			result = executeRequest(invocation);
-		}
-		catch (JMSException ex)
-		{
+		} catch (JMSException ex) {
 			throw convertJmsInvokerAccessException(ex);
 		}
-		try
-		{
+		try {
 			return recreateRemoteInvocationResult(result);
-		}
-		catch (Throwable ex)
-		{
-			if (result.hasInvocationTargetException())
-			{
+		} catch (Throwable ex) {
+			if (result.hasInvocationTargetException()) {
 				throw ex;
-			}
-			else
-			{
+			} else {
 				throw new RemoteInvocationFailureException(
 						"Invocation of method [" + methodInvocation.getMethod()
 								+ "] failed in JMS invoker remote service at queue [" + this.queue + "]",
@@ -252,50 +228,39 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * subclasses, containing additional invocation parameters like user credentials.
 	 * Note that it is preferable to use a custom {@code RemoteInvocationFactory} which
 	 * is a reusable strategy.
-	 * 
-	 * @param methodInvocation
-	 *            the current AOP method invocation
+	 *
+	 * @param methodInvocation the current AOP method invocation
 	 * @return the RemoteInvocation object
 	 * @see RemoteInvocationFactory#createRemoteInvocation
 	 */
-	protected RemoteInvocation createRemoteInvocation(MethodInvocation methodInvocation)
-	{
+	protected RemoteInvocation createRemoteInvocation(MethodInvocation methodInvocation) {
 		return this.remoteInvocationFactory.createRemoteInvocation(methodInvocation);
 	}
 
 	/**
 	 * Execute the given remote invocation, sending an invoker request message
 	 * to this accessor's target queue and waiting for a corresponding response.
-	 * 
-	 * @param invocation
-	 *            the RemoteInvocation to execute
+	 *
+	 * @param invocation the RemoteInvocation to execute
 	 * @return the RemoteInvocationResult object
-	 * @throws JMSException
-	 *             in case of JMS failure
+	 * @throws JMSException in case of JMS failure
 	 * @see #doExecuteRequest
 	 */
-	protected RemoteInvocationResult executeRequest(RemoteInvocation invocation) throws JMSException
-	{
+	protected RemoteInvocationResult executeRequest(RemoteInvocation invocation) throws JMSException {
 		Connection con = createConnection();
 		Session session = null;
-		try
-		{
+		try {
 			session = createSession(con);
 			Queue queueToUse = resolveQueue(session);
 			Message requestMessage = createRequestMessage(session, invocation);
 			con.start();
 			Message responseMessage = doExecuteRequest(session, queueToUse, requestMessage);
-			if (responseMessage != null)
-			{
+			if (responseMessage != null) {
 				return extractInvocationResult(responseMessage);
-			}
-			else
-			{
+			} else {
 				return onReceiveTimeout(invocation);
 			}
-		}
-		finally
-		{
+		} finally {
 			JmsUtils.closeSession(session);
 			ConnectionFactoryUtils.releaseConnection(con, getConnectionFactory(), true);
 		}
@@ -304,8 +269,7 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	/**
 	 * Create a new JMS Connection for this JMS invoker.
 	 */
-	protected Connection createConnection() throws JMSException
-	{
+	protected Connection createConnection() throws JMSException {
 		ConnectionFactory connectionFactory = getConnectionFactory();
 		Assert.state(connectionFactory != null, "No ConnectionFactory set");
 		return connectionFactory.createConnection();
@@ -314,32 +278,23 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	/**
 	 * Create a new JMS Session for this JMS invoker.
 	 */
-	protected Session createSession(Connection con) throws JMSException
-	{
+	protected Session createSession(Connection con) throws JMSException {
 		return con.createSession(false, Session.AUTO_ACKNOWLEDGE);
 	}
 
 	/**
 	 * Resolve this accessor's target queue.
-	 * 
-	 * @param session
-	 *            the current JMS Session
+	 *
+	 * @param session the current JMS Session
 	 * @return the resolved target Queue
-	 * @throws JMSException
-	 *             if resolution failed
+	 * @throws JMSException if resolution failed
 	 */
-	protected Queue resolveQueue(Session session) throws JMSException
-	{
-		if (this.queue instanceof Queue)
-		{
+	protected Queue resolveQueue(Session session) throws JMSException {
+		if (this.queue instanceof Queue) {
 			return (Queue) this.queue;
-		}
-		else if (this.queue instanceof String)
-		{
+		} else if (this.queue instanceof String) {
 			return resolveQueueName(session, (String) this.queue);
-		}
-		else
-		{
+		} else {
 			throw new javax.jms.IllegalStateException("Queue object [" + this.queue
 					+ "] is neither a [javax.jms.Queue] nor a queue name String");
 		}
@@ -348,18 +303,14 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	/**
 	 * Resolve the given queue name into a JMS {@link javax.jms.Queue},
 	 * via this accessor's {@link DestinationResolver}.
-	 * 
-	 * @param session
-	 *            the current JMS Session
-	 * @param queueName
-	 *            the name of the queue
+	 *
+	 * @param session   the current JMS Session
+	 * @param queueName the name of the queue
 	 * @return the located Queue
-	 * @throws JMSException
-	 *             if resolution failed
+	 * @throws JMSException if resolution failed
 	 * @see #setDestinationResolver
 	 */
-	protected Queue resolveQueueName(Session session, String queueName) throws JMSException
-	{
+	protected Queue resolveQueueName(Session session, String queueName) throws JMSException {
 		return (Queue) this.destinationResolver.resolveDestinationName(session, queueName, false);
 	}
 
@@ -368,18 +319,14 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * <p>
 	 * The default implementation creates a JMS {@link javax.jms.ObjectMessage}
 	 * for the given RemoteInvocation object.
-	 * 
-	 * @param session
-	 *            the current JMS Session
-	 * @param invocation
-	 *            the remote invocation to send
+	 *
+	 * @param session    the current JMS Session
+	 * @param invocation the remote invocation to send
 	 * @return the JMS Message to send
-	 * @throws JMSException
-	 *             if the message could not be created
+	 * @throws JMSException if the message could not be created
 	 */
 	protected Message createRequestMessage(Session session, RemoteInvocation invocation)
-			throws JMSException
-	{
+			throws JMSException {
 		return this.messageConverter.toMessage(invocation, session);
 	}
 
@@ -389,26 +336,20 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * <p>
 	 * The default implementation is based on standard JMS send/receive,
 	 * using a {@link javax.jms.TemporaryQueue} for receiving the response.
-	 * 
-	 * @param session
-	 *            the JMS Session to use
-	 * @param queue
-	 *            the resolved target Queue to send to
-	 * @param requestMessage
-	 *            the JMS Message to send
+	 *
+	 * @param session        the JMS Session to use
+	 * @param queue          the resolved target Queue to send to
+	 * @param requestMessage the JMS Message to send
 	 * @return the RemoteInvocationResult object
-	 * @throws JMSException
-	 *             in case of JMS failure
+	 * @throws JMSException in case of JMS failure
 	 */
 	@Nullable
 	protected Message doExecuteRequest(Session session, Queue queue, Message requestMessage)
-			throws JMSException
-	{
+			throws JMSException {
 		TemporaryQueue responseQueue = null;
 		MessageProducer producer = null;
 		MessageConsumer consumer = null;
-		try
-		{
+		try {
 			responseQueue = session.createTemporaryQueue();
 			producer = session.createProducer(queue);
 			consumer = session.createConsumer(responseQueue);
@@ -416,13 +357,10 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 			producer.send(requestMessage);
 			long timeout = getReceiveTimeout();
 			return (timeout > 0 ? consumer.receive(timeout) : consumer.receive());
-		}
-		finally
-		{
+		} finally {
 			JmsUtils.closeMessageConsumer(consumer);
 			JmsUtils.closeMessageProducer(producer);
-			if (responseQueue != null)
-			{
+			if (responseQueue != null) {
 				responseQueue.delete();
 			}
 		}
@@ -434,19 +372,15 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * The default implementation expects a JMS {@link javax.jms.ObjectMessage}
 	 * carrying a {@link RemoteInvocationResult} object. If an invalid response
 	 * message is encountered, the {@code onInvalidResponse} callback gets invoked.
-	 * 
-	 * @param responseMessage
-	 *            the response message
+	 *
+	 * @param responseMessage the response message
 	 * @return the invocation result
-	 * @throws JMSException
-	 *             is thrown if a JMS exception occurs
+	 * @throws JMSException is thrown if a JMS exception occurs
 	 * @see #onInvalidResponse
 	 */
-	protected RemoteInvocationResult extractInvocationResult(Message responseMessage) throws JMSException
-	{
+	protected RemoteInvocationResult extractInvocationResult(Message responseMessage) throws JMSException {
 		Object content = this.messageConverter.fromMessage(responseMessage);
-		if (content instanceof RemoteInvocationResult)
-		{
+		if (content instanceof RemoteInvocationResult) {
 			return (RemoteInvocationResult) content;
 		}
 		return onInvalidResponse(responseMessage);
@@ -459,13 +393,11 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * By default, an {@link RemoteTimeoutException} is thrown. Sub-classes
 	 * can choose to either throw a more dedicated exception or even return
 	 * a default {@link RemoteInvocationResult} as a fallback.
-	 * 
-	 * @param invocation
-	 *            the invocation
+	 *
+	 * @param invocation the invocation
 	 * @return a default result when the receive timeout has expired
 	 */
-	protected RemoteInvocationResult onReceiveTimeout(RemoteInvocation invocation)
-	{
+	protected RemoteInvocationResult onReceiveTimeout(RemoteInvocation invocation) {
 		throw new RemoteTimeoutException(
 				"Receive timeout after " + this.receiveTimeout + " ms for " + invocation);
 	}
@@ -475,18 +407,15 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * it encounters an invalid response message.
 	 * <p>
 	 * The default implementation throws a {@link MessageFormatException}.
-	 * 
-	 * @param responseMessage
-	 *            the invalid response message
+	 *
+	 * @param responseMessage the invalid response message
 	 * @return an alternative invocation result that should be returned to
-	 *         the caller (if desired)
-	 * @throws JMSException
-	 *             if the invalid response should lead to an
-	 *             infrastructure exception propagated to the caller
+	 * the caller (if desired)
+	 * @throws JMSException if the invalid response should lead to an
+	 *                      infrastructure exception propagated to the caller
 	 * @see #extractInvocationResult
 	 */
-	protected RemoteInvocationResult onInvalidResponse(Message responseMessage) throws JMSException
-	{
+	protected RemoteInvocationResult onInvalidResponse(Message responseMessage) throws JMSException {
 		throw new MessageFormatException("Invalid response message: " + responseMessage);
 	}
 
@@ -498,30 +427,25 @@ public class JmsInvokerClientInterceptor implements MethodInterceptor, Initializ
 	 * <p>
 	 * Can be overridden in subclasses to provide custom recreation, potentially
 	 * processing the returned result object.
-	 * 
-	 * @param result
-	 *            the RemoteInvocationResult to recreate
+	 *
+	 * @param result the RemoteInvocationResult to recreate
 	 * @return a return value if the invocation result is a successful return
-	 * @throws Throwable
-	 *             if the invocation result is an exception
+	 * @throws Throwable if the invocation result is an exception
 	 * @see org.springframework.remoting.support.RemoteInvocationResult#recreate()
 	 */
 	@Nullable
-	protected Object recreateRemoteInvocationResult(RemoteInvocationResult result) throws Throwable
-	{
+	protected Object recreateRemoteInvocationResult(RemoteInvocationResult result) throws Throwable {
 		return result.recreate();
 	}
 
 	/**
 	 * Convert the given JMS invoker access exception to an appropriate
 	 * Spring {@link RemoteAccessException}.
-	 * 
-	 * @param ex
-	 *            the exception to convert
+	 *
+	 * @param ex the exception to convert
 	 * @return the RemoteAccessException to throw
 	 */
-	protected RemoteAccessException convertJmsInvokerAccessException(JMSException ex)
-	{
+	protected RemoteAccessException convertJmsInvokerAccessException(JMSException ex) {
 		return new RemoteAccessException("Could not access JMS invoker queue [" + this.queue + "]", ex);
 	}
 

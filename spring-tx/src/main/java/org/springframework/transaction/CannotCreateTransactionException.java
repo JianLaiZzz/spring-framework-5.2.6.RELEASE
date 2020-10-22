@@ -24,30 +24,24 @@ package org.springframework.transaction;
  * @since 17.03.2003
  */
 @SuppressWarnings("serial")
-public class CannotCreateTransactionException extends TransactionException
-{
+public class CannotCreateTransactionException extends TransactionException {
 
 	/**
 	 * Constructor for CannotCreateTransactionException.
-	 * 
-	 * @param msg
-	 *            the detail message
+	 *
+	 * @param msg the detail message
 	 */
-	public CannotCreateTransactionException(String msg)
-	{
+	public CannotCreateTransactionException(String msg) {
 		super(msg);
 	}
 
 	/**
 	 * Constructor for CannotCreateTransactionException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the root cause from the transaction API in use
+	 *
+	 * @param msg   the detail message
+	 * @param cause the root cause from the transaction API in use
 	 */
-	public CannotCreateTransactionException(String msg, Throwable cause)
-	{
+	public CannotCreateTransactionException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 

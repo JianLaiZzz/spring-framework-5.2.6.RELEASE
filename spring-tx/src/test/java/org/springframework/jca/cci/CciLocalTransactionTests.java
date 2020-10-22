@@ -16,14 +16,6 @@
 
 package org.springframework.jca.cci;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import javax.resource.ResourceException;
-import javax.resource.cci.*;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.jca.cci.connection.CciLocalTransactionManager;
@@ -34,12 +26,19 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.resource.ResourceException;
+import javax.resource.cci.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 /**
  * @author Thierry Templier
  * @author Chris Beams
  */
-public class CciLocalTransactionTests
-{
+public class CciLocalTransactionTests {
 
 	/**
 	 * Test if a transaction ( begin / commit ) is executed on the
@@ -47,8 +46,7 @@ public class CciLocalTransactionTests
 	 * transaction manager.
 	 */
 	@Test
-	public void testLocalTransactionCommit() throws ResourceException
-	{
+	public void testLocalTransactionCommit() throws ResourceException {
 		final ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		Connection connection = mock(Connection.class);
 		Interaction interaction = mock(Interaction.class);
@@ -66,11 +64,9 @@ public class CciLocalTransactionTests
 		tm.setConnectionFactory(connectionFactory);
 		TransactionTemplate tt = new TransactionTemplate(tm);
 
-		tt.execute(new TransactionCallbackWithoutResult()
-		{
+		tt.execute(new TransactionCallbackWithoutResult() {
 			@Override
-			protected void doInTransactionWithoutResult(TransactionStatus status)
-			{
+			protected void doInTransactionWithoutResult(TransactionStatus status) {
 				assertThat(TransactionSynchronizationManager.hasResource(connectionFactory))
 						.as("Has thread connection").isTrue();
 				CciTemplate ct = new CciTemplate(connectionFactory);
@@ -90,8 +86,7 @@ public class CciLocalTransactionTests
 	 * transaction manager and a non-checked exception is thrown.
 	 */
 	@Test
-	public void testLocalTransactionRollback() throws ResourceException
-	{
+	public void testLocalTransactionRollback() throws ResourceException {
 		final ConnectionFactory connectionFactory = mock(ConnectionFactory.class);
 		Connection connection = mock(Connection.class);
 		Interaction interaction = mock(Interaction.class);
@@ -109,13 +104,10 @@ public class CciLocalTransactionTests
 		tm.setConnectionFactory(connectionFactory);
 		TransactionTemplate tt = new TransactionTemplate(tm);
 
-		try
-		{
-			tt.execute(new TransactionCallback<Void>()
-			{
+		try {
+			tt.execute(new TransactionCallback<Void>() {
 				@Override
-				public Void doInTransaction(TransactionStatus status)
-				{
+				public Void doInTransaction(TransactionStatus status) {
 					assertThat(TransactionSynchronizationManager.hasResource(connectionFactory))
 							.as("Has thread connection").isTrue();
 					CciTemplate ct = new CciTemplate(connectionFactory);
@@ -123,9 +115,7 @@ public class CciLocalTransactionTests
 					throw new DataRetrievalFailureException("error");
 				}
 			});
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 		}
 
 		verify(localTransaction).begin();

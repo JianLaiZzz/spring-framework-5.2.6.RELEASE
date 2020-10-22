@@ -16,17 +16,16 @@
 
 package org.springframework.orm.jpa.vendor;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-
-import javax.persistence.EntityManager;
-import javax.persistence.spi.PersistenceProvider;
-
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.eclipse.persistence.config.TargetDatabase;
 import org.eclipse.persistence.jpa.JpaEntityManager;
 import org.springframework.lang.Nullable;
+
+import javax.persistence.EntityManager;
+import javax.persistence.spi.PersistenceProvider;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * {@link org.springframework.orm.jpa.JpaVendorAdapter} implementation for Eclipse
@@ -42,51 +41,42 @@ import org.springframework.lang.Nullable;
  *
  * @author Juergen Hoeller
  * @author Thomas Risberg
- * @since 2.5.2
  * @see EclipseLinkJpaDialect
  * @see org.eclipse.persistence.jpa.PersistenceProvider
  * @see org.eclipse.persistence.jpa.JpaEntityManager
+ * @since 2.5.2
  */
-public class EclipseLinkJpaVendorAdapter extends AbstractJpaVendorAdapter
-{
+public class EclipseLinkJpaVendorAdapter extends AbstractJpaVendorAdapter {
 
 	private final PersistenceProvider persistenceProvider = new org.eclipse.persistence.jpa.PersistenceProvider();
 
 	private final EclipseLinkJpaDialect jpaDialect = new EclipseLinkJpaDialect();
 
 	@Override
-	public PersistenceProvider getPersistenceProvider()
-	{
+	public PersistenceProvider getPersistenceProvider() {
 		return this.persistenceProvider;
 	}
 
 	@Override
-	public Map<String, Object> getJpaPropertyMap()
-	{
+	public Map<String, Object> getJpaPropertyMap() {
 		Map<String, Object> jpaProperties = new HashMap<>();
 
-		if (getDatabasePlatform() != null)
-		{
+		if (getDatabasePlatform() != null) {
 			jpaProperties.put(PersistenceUnitProperties.TARGET_DATABASE, getDatabasePlatform());
-		}
-		else
-		{
+		} else {
 			String targetDatabase = determineTargetDatabaseName(getDatabase());
-			if (targetDatabase != null)
-			{
+			if (targetDatabase != null) {
 				jpaProperties.put(PersistenceUnitProperties.TARGET_DATABASE, targetDatabase);
 			}
 		}
 
-		if (isGenerateDdl())
-		{
+		if (isGenerateDdl()) {
 			jpaProperties.put(PersistenceUnitProperties.DDL_GENERATION,
 					PersistenceUnitProperties.CREATE_ONLY);
 			jpaProperties.put(PersistenceUnitProperties.DDL_GENERATION_MODE,
 					PersistenceUnitProperties.DDL_DATABASE_GENERATION);
 		}
-		if (isShowSql())
-		{
+		if (isShowSql()) {
 			jpaProperties.put(PersistenceUnitProperties.CATEGORY_LOGGING_LEVEL_
 					+ org.eclipse.persistence.logging.SessionLog.SQL, Level.FINE.toString());
 			jpaProperties.put(PersistenceUnitProperties.LOGGING_PARAMETERS, Boolean.TRUE.toString());
@@ -97,50 +87,45 @@ public class EclipseLinkJpaVendorAdapter extends AbstractJpaVendorAdapter
 
 	/**
 	 * Determine the EclipseLink target database name for the given database.
-	 * 
-	 * @param database
-	 *            the specified database
+	 *
+	 * @param database the specified database
 	 * @return the EclipseLink target database name, or {@code null} if none found
 	 */
 	@Nullable
-	protected String determineTargetDatabaseName(Database database)
-	{
-		switch (database)
-		{
-		case DB2:
-			return TargetDatabase.DB2;
-		case DERBY:
-			return TargetDatabase.Derby;
-		case HANA:
-			return TargetDatabase.HANA;
-		case HSQL:
-			return TargetDatabase.HSQL;
-		case INFORMIX:
-			return TargetDatabase.Informix;
-		case MYSQL:
-			return TargetDatabase.MySQL;
-		case ORACLE:
-			return TargetDatabase.Oracle;
-		case POSTGRESQL:
-			return TargetDatabase.PostgreSQL;
-		case SQL_SERVER:
-			return TargetDatabase.SQLServer;
-		case SYBASE:
-			return TargetDatabase.Sybase;
-		default:
-			return null;
+	protected String determineTargetDatabaseName(Database database) {
+		switch (database) {
+			case DB2:
+				return TargetDatabase.DB2;
+			case DERBY:
+				return TargetDatabase.Derby;
+			case HANA:
+				return TargetDatabase.HANA;
+			case HSQL:
+				return TargetDatabase.HSQL;
+			case INFORMIX:
+				return TargetDatabase.Informix;
+			case MYSQL:
+				return TargetDatabase.MySQL;
+			case ORACLE:
+				return TargetDatabase.Oracle;
+			case POSTGRESQL:
+				return TargetDatabase.PostgreSQL;
+			case SQL_SERVER:
+				return TargetDatabase.SQLServer;
+			case SYBASE:
+				return TargetDatabase.Sybase;
+			default:
+				return null;
 		}
 	}
 
 	@Override
-	public EclipseLinkJpaDialect getJpaDialect()
-	{
+	public EclipseLinkJpaDialect getJpaDialect() {
 		return this.jpaDialect;
 	}
 
 	@Override
-	public Class<? extends EntityManager> getEntityManagerInterface()
-	{
+	public Class<? extends EntityManager> getEntityManagerInterface() {
 		return JpaEntityManager.class;
 	}
 

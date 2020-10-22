@@ -22,16 +22,13 @@ import reactor.core.publisher.Mono;
  * {@link TransactionSynchronization} implementation that manages a
  * resource object bound through {@link TransactionSynchronizationManager}.
  *
+ * @param <O> the resource holder type
+ * @param <K> the resource key type
  * @author Mark Paluch
  * @author Juergen Hoeller
  * @since 5.2
- * @param <O>
- *            the resource holder type
- * @param <K>
- *            the resource key type
  */
-public abstract class ReactiveResourceSynchronization<O, K> implements TransactionSynchronization
-{
+public abstract class ReactiveResourceSynchronization<O, K> implements TransactionSynchronization {
 
 	private final O resourceObject;
 
@@ -43,18 +40,14 @@ public abstract class ReactiveResourceSynchronization<O, K> implements Transacti
 
 	/**
 	 * Create a new ReactiveResourceSynchronization for the given holder.
-	 * 
-	 * @param resourceObject
-	 *            the resource object to manage
-	 * @param resourceKey
-	 *            the key to bind the resource object for
-	 * @param synchronizationManager
-	 *            the synchronization manager bound to the current transaction
+	 *
+	 * @param resourceObject         the resource object to manage
+	 * @param resourceKey            the key to bind the resource object for
+	 * @param synchronizationManager the synchronization manager bound to the current transaction
 	 * @see TransactionSynchronizationManager#bindResource
 	 */
 	public ReactiveResourceSynchronization(O resourceObject, K resourceKey,
-			TransactionSynchronizationManager synchronizationManager)
-	{
+										   TransactionSynchronizationManager synchronizationManager) {
 
 		this.resourceObject = resourceObject;
 		this.resourceKey = resourceKey;
@@ -62,40 +55,32 @@ public abstract class ReactiveResourceSynchronization<O, K> implements Transacti
 	}
 
 	@Override
-	public Mono<Void> suspend()
-	{
-		if (this.holderActive)
-		{
+	public Mono<Void> suspend() {
+		if (this.holderActive) {
 			this.synchronizationManager.unbindResource(this.resourceKey);
 		}
 		return Mono.empty();
 	}
 
 	@Override
-	public Mono<Void> resume()
-	{
-		if (this.holderActive)
-		{
+	public Mono<Void> resume() {
+		if (this.holderActive) {
 			this.synchronizationManager.bindResource(this.resourceKey, this.resourceObject);
 		}
 		return Mono.empty();
 	}
 
 	@Override
-	public Mono<Void> beforeCommit(boolean readOnly)
-	{
+	public Mono<Void> beforeCommit(boolean readOnly) {
 		return Mono.empty();
 	}
 
 	@Override
-	public Mono<Void> beforeCompletion()
-	{
-		if (shouldUnbindAtCompletion())
-		{
+	public Mono<Void> beforeCompletion() {
+		if (shouldUnbindAtCompletion()) {
 			this.synchronizationManager.unbindResource(this.resourceKey);
 			this.holderActive = false;
-			if (shouldReleaseBeforeCompletion())
-			{
+			if (shouldReleaseBeforeCompletion()) {
 				return releaseResource(this.resourceObject, this.resourceKey);
 			}
 		}
@@ -103,43 +88,33 @@ public abstract class ReactiveResourceSynchronization<O, K> implements Transacti
 	}
 
 	@Override
-	public Mono<Void> afterCommit()
-	{
-		if (!shouldReleaseBeforeCompletion())
-		{
+	public Mono<Void> afterCommit() {
+		if (!shouldReleaseBeforeCompletion()) {
 			return processResourceAfterCommit(this.resourceObject);
 		}
 		return Mono.empty();
 	}
 
 	@Override
-	public Mono<Void> afterCompletion(int status)
-	{
+	public Mono<Void> afterCompletion(int status) {
 		return Mono.defer(() ->
 		{
 			Mono<Void> sync = Mono.empty();
-			if (shouldUnbindAtCompletion())
-			{
+			if (shouldUnbindAtCompletion()) {
 				boolean releaseNecessary = false;
-				if (this.holderActive)
-				{
+				if (this.holderActive) {
 					// The thread-bound resource holder might not be available anymore,
 					// since afterCompletion might get called from a different thread.
 					this.holderActive = false;
 					this.synchronizationManager.unbindResourceIfPossible(this.resourceKey);
 					releaseNecessary = true;
-				}
-				else
-				{
+				} else {
 					releaseNecessary = shouldReleaseAfterCompletion(this.resourceObject);
 				}
-				if (releaseNecessary)
-				{
+				if (releaseNecessary) {
 					sync = releaseResource(this.resourceObject, this.resourceKey);
 				}
-			}
-			else
-			{
+			} else {
 				// Probably a pre-bound resource...
 				sync = cleanupResource(this.resourceObject, this.resourceKey,
 						(status == STATUS_COMMITTED));
@@ -154,8 +129,7 @@ public abstract class ReactiveResourceSynchronization<O, K> implements Transacti
 	 * <p>
 	 * The default implementation returns {@code true}.
 	 */
-	protected boolean shouldUnbindAtCompletion()
-	{
+	protected boolean shouldUnbindAtCompletion() {
 		return true;
 	}
 
@@ -168,11 +142,10 @@ public abstract class ReactiveResourceSynchronization<O, K> implements Transacti
 	 * unbound from the thread ({@link #shouldUnbindAtCompletion()}).
 	 * <p>
 	 * The default implementation returns {@code true}.
-	 * 
+	 *
 	 * @see #releaseResource
 	 */
-	protected boolean shouldReleaseBeforeCompletion()
-	{
+	protected boolean shouldReleaseBeforeCompletion() {
 		return true;
 	}
 
@@ -182,11 +155,10 @@ public abstract class ReactiveResourceSynchronization<O, K> implements Transacti
 	 * <p>
 	 * The default implementation returns {@code !shouldReleaseBeforeCompletion()},
 	 * releasing after completion if no attempt was made before completion.
-	 * 
+	 *
 	 * @see #releaseResource
 	 */
-	protected boolean shouldReleaseAfterCompletion(O resourceHolder)
-	{
+	protected boolean shouldReleaseAfterCompletion(O resourceHolder) {
 		return !shouldReleaseBeforeCompletion();
 	}
 
@@ -194,41 +166,32 @@ public abstract class ReactiveResourceSynchronization<O, K> implements Transacti
 	 * After-commit callback for the given resource holder.
 	 * Only called when the resource hasn't been released yet
 	 * ({@link #shouldReleaseBeforeCompletion()}).
-	 * 
-	 * @param resourceHolder
-	 *            the resource holder to process
+	 *
+	 * @param resourceHolder the resource holder to process
 	 */
-	protected Mono<Void> processResourceAfterCommit(O resourceHolder)
-	{
+	protected Mono<Void> processResourceAfterCommit(O resourceHolder) {
 		return Mono.empty();
 	}
 
 	/**
 	 * Release the given resource (after it has been unbound from the thread).
-	 * 
-	 * @param resourceHolder
-	 *            the resource holder to process
-	 * @param resourceKey
-	 *            the key that the resource object was bound for
+	 *
+	 * @param resourceHolder the resource holder to process
+	 * @param resourceKey    the key that the resource object was bound for
 	 */
-	protected Mono<Void> releaseResource(O resourceHolder, K resourceKey)
-	{
+	protected Mono<Void> releaseResource(O resourceHolder, K resourceKey) {
 		return Mono.empty();
 	}
 
 	/**
 	 * Perform a cleanup on the given resource (which is left bound to the thread).
-	 * 
-	 * @param resourceHolder
-	 *            the resource holder to process
-	 * @param resourceKey
-	 *            the key that the resource object was bound for
-	 * @param committed
-	 *            whether the transaction has committed ({@code true})
-	 *            or rolled back ({@code false})
+	 *
+	 * @param resourceHolder the resource holder to process
+	 * @param resourceKey    the key that the resource object was bound for
+	 * @param committed      whether the transaction has committed ({@code true})
+	 *                       or rolled back ({@code false})
 	 */
-	protected Mono<Void> cleanupResource(O resourceHolder, K resourceKey, boolean committed)
-	{
+	protected Mono<Void> cleanupResource(O resourceHolder, K resourceKey, boolean committed) {
 		return Mono.empty();
 	}
 

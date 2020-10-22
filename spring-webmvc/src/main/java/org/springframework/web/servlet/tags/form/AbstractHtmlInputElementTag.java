@@ -16,9 +16,9 @@
 
 package org.springframework.web.servlet.tags.form;
 
-import javax.servlet.jsp.JspException;
-
 import org.springframework.lang.Nullable;
+
+import javax.servlet.jsp.JspException;
 
 /**
  * Base class for databinding-aware JSP tags that render HTML form input element.

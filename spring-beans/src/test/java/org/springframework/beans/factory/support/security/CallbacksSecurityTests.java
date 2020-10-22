@@ -16,35 +16,10 @@
 
 package org.springframework.beans.factory.support.security;
 
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.security.AccessControlContext;
-import java.security.AccessController;
-import java.security.Permissions;
-import java.security.Policy;
-import java.security.Principal;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
-import java.security.ProtectionDomain;
-import java.util.PropertyPermission;
-import java.util.Set;
-import java.util.function.Consumer;
-
-import javax.security.auth.AuthPermission;
-import javax.security.auth.Subject;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanClassLoaderAware;
-import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.SmartFactoryBean;
+import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -56,6 +31,15 @@ import org.springframework.core.NestedRuntimeException;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.testfixture.security.TestPrincipal;
+
+import javax.security.auth.AuthPermission;
+import javax.security.auth.Subject;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.security.*;
+import java.util.PropertyPermission;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -163,7 +147,7 @@ public class CallbacksSecurityTests {
 		}
 	}
 
-	@SuppressWarnings({ "unused", "rawtypes" })
+	@SuppressWarnings({"unused", "rawtypes"})
 	private static class NonPrivilegedFactoryBean implements SmartFactoryBean {
 		private String expectedName;
 
@@ -276,7 +260,7 @@ public class CallbacksSecurityTests {
 
 		provider = new SecurityContextProvider() {
 			private final AccessControlContext acc = new AccessControlContext(
-					new ProtectionDomain[] { empty });
+					new ProtectionDomain[]{empty});
 
 			@Override
 			public AccessControlContext getAccessControlContext() {
@@ -305,9 +289,9 @@ public class CallbacksSecurityTests {
 
 		assertThatExceptionOfType(Exception.class).isThrownBy(() ->
 				AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
-						method.invoke(bean);
-						return null;
-					}, acc));
+					method.invoke(bean);
+					return null;
+				}, acc));
 
 		Class<ConstructorBean> cl = ConstructorBean.class;
 		assertThatExceptionOfType(Exception.class).isThrownBy(() ->
@@ -319,14 +303,14 @@ public class CallbacksSecurityTests {
 	public void testSpringInitBean() throws Exception {
 		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
 				beanFactory.getBean("spring-init"))
-			.withCauseInstanceOf(SecurityException.class);
+				.withCauseInstanceOf(SecurityException.class);
 	}
 
 	@Test
 	public void testCustomInitBean() throws Exception {
 		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
 				beanFactory.getBean("custom-init"))
-			.withCauseInstanceOf(SecurityException.class);
+				.withCauseInstanceOf(SecurityException.class);
 	}
 
 	@Test
@@ -347,7 +331,7 @@ public class CallbacksSecurityTests {
 	public void testCustomFactoryObject() throws Exception {
 		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
 				beanFactory.getBean("spring-factory"))
-			.withCauseInstanceOf(SecurityException.class);
+				.withCauseInstanceOf(SecurityException.class);
 	}
 
 	@Test
@@ -360,28 +344,28 @@ public class CallbacksSecurityTests {
 	public void testCustomStaticFactoryMethod() throws Exception {
 		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
 				beanFactory.getBean("custom-static-factory-method"))
-			.satisfies(ex -> assertThat(ex.getMostSpecificCause()).isInstanceOf(SecurityException.class));
+				.satisfies(ex -> assertThat(ex.getMostSpecificCause()).isInstanceOf(SecurityException.class));
 	}
 
 	@Test
 	public void testCustomInstanceFactoryMethod() throws Exception {
 		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
 				beanFactory.getBean("custom-factory-method"))
-			.satisfies(ex -> assertThat(ex.getMostSpecificCause()).isInstanceOf(SecurityException.class));
+				.satisfies(ex -> assertThat(ex.getMostSpecificCause()).isInstanceOf(SecurityException.class));
 	}
 
 	@Test
 	public void testTrustedFactoryMethod() throws Exception {
 		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
 				beanFactory.getBean("privileged-static-factory-method"))
-			.satisfies(mostSpecificCauseOf(SecurityException.class));
+				.satisfies(mostSpecificCauseOf(SecurityException.class));
 	}
 
 	@Test
 	public void testConstructor() throws Exception {
 		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
 				beanFactory.getBean("constructor"))
-			.satisfies(mostSpecificCauseOf(SecurityException.class));
+				.satisfies(mostSpecificCauseOf(SecurityException.class));
 	}
 
 	@Test
@@ -403,7 +387,7 @@ public class CallbacksSecurityTests {
 	public void testPropertyInjection() throws Exception {
 		assertThatExceptionOfType(BeanCreationException.class).isThrownBy(() ->
 				beanFactory.getBean("property-injection"))
-			.withMessageContaining("security");
+				.withMessageContaining("security");
 		beanFactory.getBean("working-property-injection");
 	}
 
@@ -437,7 +421,7 @@ public class CallbacksSecurityTests {
 		perms.add(new AuthPermission("getSubject"));
 		ProtectionDomain pd = new ProtectionDomain(null, perms);
 
-		new AccessControlContext(new ProtectionDomain[] { pd });
+		new AccessControlContext(new ProtectionDomain[]{pd});
 
 		final Subject subject = new Subject();
 		subject.getPrincipals().add(new TestPrincipal("user1"));

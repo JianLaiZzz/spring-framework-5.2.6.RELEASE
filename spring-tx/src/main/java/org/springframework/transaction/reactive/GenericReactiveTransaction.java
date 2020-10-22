@@ -36,12 +36,11 @@ import org.springframework.util.Assert;
  *
  * @author Mark Paluch
  * @author Juergen Hoeller
- * @since 5.2
  * @see AbstractReactiveTransactionManager
  * @see #getTransaction
+ * @since 5.2
  */
-public class GenericReactiveTransaction implements ReactiveTransaction
-{
+public class GenericReactiveTransaction implements ReactiveTransaction {
 
 	@Nullable
 	private final Object transaction;
@@ -63,30 +62,23 @@ public class GenericReactiveTransaction implements ReactiveTransaction
 
 	/**
 	 * Create a new {@code DefaultReactiveTransactionStatus} instance.
-	 * 
-	 * @param transaction
-	 *            underlying transaction object that can hold state
-	 *            for the internal transaction implementation
-	 * @param newTransaction
-	 *            if the transaction is new, otherwise participating
-	 *            in an existing transaction
-	 * @param newSynchronization
-	 *            if a new transaction synchronization has been
-	 *            opened for the given transaction
-	 * @param readOnly
-	 *            whether the transaction is marked as read-only
-	 * @param debug
-	 *            should debug logging be enabled for the handling of this transaction?
-	 *            Caching it in here can prevent repeated calls to ask the logging system whether
-	 *            debug logging should be enabled.
-	 * @param suspendedResources
-	 *            a holder for resources that have been suspended
-	 *            for this transaction, if any
+	 *
+	 * @param transaction        underlying transaction object that can hold state
+	 *                           for the internal transaction implementation
+	 * @param newTransaction     if the transaction is new, otherwise participating
+	 *                           in an existing transaction
+	 * @param newSynchronization if a new transaction synchronization has been
+	 *                           opened for the given transaction
+	 * @param readOnly           whether the transaction is marked as read-only
+	 * @param debug              should debug logging be enabled for the handling of this transaction?
+	 *                           Caching it in here can prevent repeated calls to ask the logging system whether
+	 *                           debug logging should be enabled.
+	 * @param suspendedResources a holder for resources that have been suspended
+	 *                           for this transaction, if any
 	 */
 	public GenericReactiveTransaction(@Nullable Object transaction, boolean newTransaction,
-			boolean newSynchronization, boolean readOnly, boolean debug,
-			@Nullable Object suspendedResources)
-	{
+									  boolean newSynchronization, boolean readOnly, boolean debug,
+									  @Nullable Object suspendedResources) {
 
 		this.transaction = transaction;
 		this.newTransaction = newTransaction;
@@ -98,12 +90,10 @@ public class GenericReactiveTransaction implements ReactiveTransaction
 
 	/**
 	 * Return the underlying transaction object.
-	 * 
-	 * @throws IllegalStateException
-	 *             if no transaction is active
+	 *
+	 * @throws IllegalStateException if no transaction is active
 	 */
-	public Object getTransaction()
-	{
+	public Object getTransaction() {
 		Assert.state(this.transaction != null, "No transaction active");
 		return this.transaction;
 	}
@@ -111,14 +101,12 @@ public class GenericReactiveTransaction implements ReactiveTransaction
 	/**
 	 * Return whether there is an actual transaction active.
 	 */
-	public boolean hasTransaction()
-	{
+	public boolean hasTransaction() {
 		return (this.transaction != null);
 	}
 
 	@Override
-	public boolean isNewTransaction()
-	{
+	public boolean isNewTransaction() {
 		return (hasTransaction() && this.newTransaction);
 	}
 
@@ -126,16 +114,14 @@ public class GenericReactiveTransaction implements ReactiveTransaction
 	 * Return if a new transaction synchronization has been opened
 	 * for this transaction.
 	 */
-	public boolean isNewSynchronization()
-	{
+	public boolean isNewSynchronization() {
 		return this.newSynchronization;
 	}
 
 	/**
 	 * Return if this transaction is defined as read-only transaction.
 	 */
-	public boolean isReadOnly()
-	{
+	public boolean isReadOnly() {
 		return this.readOnly;
 	}
 
@@ -144,8 +130,7 @@ public class GenericReactiveTransaction implements ReactiveTransaction
 	 * {@link AbstractReactiveTransactionManager} as an optimization, to prevent repeated
 	 * calls to {@code logger.isDebugEnabled()}. Not really intended for client code.
 	 */
-	public boolean isDebug()
-	{
+	public boolean isDebug() {
 		return this.debug;
 	}
 
@@ -154,14 +139,12 @@ public class GenericReactiveTransaction implements ReactiveTransaction
 	 * if any.
 	 */
 	@Nullable
-	public Object getSuspendedResources()
-	{
+	public Object getSuspendedResources() {
 		return this.suspendedResources;
 	}
 
 	@Override
-	public void setRollbackOnly()
-	{
+	public void setRollbackOnly() {
 		this.rollbackOnly = true;
 	}
 
@@ -172,22 +155,19 @@ public class GenericReactiveTransaction implements ReactiveTransaction
 	 * on this TransactionStatus object.
 	 */
 	@Override
-	public boolean isRollbackOnly()
-	{
+	public boolean isRollbackOnly() {
 		return this.rollbackOnly;
 	}
 
 	/**
 	 * Mark this transaction as completed, that is, committed or rolled back.
 	 */
-	public void setCompleted()
-	{
+	public void setCompleted() {
 		this.completed = true;
 	}
 
 	@Override
-	public boolean isCompleted()
-	{
+	public boolean isCompleted() {
 		return this.completed;
 	}
 

@@ -16,21 +16,15 @@
 
 package org.springframework.jdbc.datasource.init;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.EncodedResource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.jdbc.datasource.init.ScriptUtils.DEFAULT_BLOCK_COMMENT_END_DELIMITER;
-import static org.springframework.jdbc.datasource.init.ScriptUtils.DEFAULT_BLOCK_COMMENT_START_DELIMITER;
-import static org.springframework.jdbc.datasource.init.ScriptUtils.DEFAULT_COMMENT_PREFIXES;
-import static org.springframework.jdbc.datasource.init.ScriptUtils.DEFAULT_STATEMENT_SEPARATOR;
-import static org.springframework.jdbc.datasource.init.ScriptUtils.containsSqlScriptDelimiters;
-import static org.springframework.jdbc.datasource.init.ScriptUtils.splitSqlScript;
+import static org.springframework.jdbc.datasource.init.ScriptUtils.*;
 
 /**
  * Unit tests for {@link ScriptUtils}.
@@ -40,8 +34,8 @@ import static org.springframework.jdbc.datasource.init.ScriptUtils.splitSqlScrip
  * @author Phillip Webb
  * @author Chris Baldwin
  * @author Nicolas Debeissat
- * @since 4.0.3
  * @see ScriptUtilsIntegrationTests
+ * @since 4.0.3
  */
 public class ScriptUtilsUnitTests {
 

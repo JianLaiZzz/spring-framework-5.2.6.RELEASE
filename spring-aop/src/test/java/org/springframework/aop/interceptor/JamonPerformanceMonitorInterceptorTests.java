@@ -16,25 +16,23 @@
 
 package org.springframework.aop.interceptor;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
+import com.jamonapi.MonitorFactory;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.jamonapi.MonitorFactory;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 /**
  * @author Steve Souza
  * @since 4.1
  */
-public class JamonPerformanceMonitorInterceptorTests
-{
+public class JamonPerformanceMonitorInterceptorTests {
 
 	private final JamonPerformanceMonitorInterceptor interceptor = new JamonPerformanceMonitorInterceptor();
 
@@ -43,20 +41,17 @@ public class JamonPerformanceMonitorInterceptorTests
 	private final Log log = mock(Log.class);
 
 	@BeforeEach
-	public void setUp()
-	{
+	public void setUp() {
 		MonitorFactory.reset();
 	}
 
 	@AfterEach
-	public void tearDown()
-	{
+	public void tearDown() {
 		MonitorFactory.reset();
 	}
 
 	@Test
-	public void testInvokeUnderTraceWithNormalProcessing() throws Throwable
-	{
+	public void testInvokeUnderTraceWithNormalProcessing() throws Throwable {
 		given(mi.getMethod()).willReturn(String.class.getMethod("toString"));
 
 		interceptor.invokeUnderTrace(mi, log);
@@ -68,8 +63,7 @@ public class JamonPerformanceMonitorInterceptorTests
 	}
 
 	@Test
-	public void testInvokeUnderTraceWithExceptionTracking() throws Throwable
-	{
+	public void testInvokeUnderTraceWithExceptionTracking() throws Throwable {
 		given(mi.getMethod()).willReturn(String.class.getMethod("toString"));
 		given(mi.proceed()).willThrow(new IllegalArgumentException());
 

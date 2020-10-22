@@ -16,6 +16,12 @@
 
 package org.springframework.core.annotation;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
+import org.springframework.lang.Nullable;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ReflectionUtils;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -26,13 +32,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-
-import org.junit.jupiter.api.Test;
-
-import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
-import org.springframework.lang.Nullable;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.ReflectionUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -123,7 +122,7 @@ class AnnotationsScannerTests {
 		Class<?> source = WithSingleSuperclassAndDoubleInherited.class;
 		assertThat(Arrays.stream(source.getAnnotations()).map(
 				Annotation::annotationType).map(Class::getName)).containsExactly(
-						TestInheritedAnnotation2.class.getName());
+				TestInheritedAnnotation2.class.getName());
 		assertThat(scan(source, SearchStrategy.INHERITED_ANNOTATIONS)).containsOnly("0:TestInheritedAnnotation2");
 	}
 
@@ -456,7 +455,7 @@ class AnnotationsScannerTests {
 					@Override
 					@Nullable
 					public String doWithAnnotations(Object context, int aggregateIndex,
-							Object source, Annotation[] annotations) {
+													Object source, Annotation[] annotations) {
 						throw new IllegalStateException("Should not call");
 					}
 
@@ -485,7 +484,7 @@ class AnnotationsScannerTests {
 					@Override
 					@Nullable
 					public String doWithAnnotations(Object context, int aggregateIndex,
-							Object source, Annotation[] annotations) {
+													Object source, Annotation[] annotations) {
 						return "K";
 					}
 

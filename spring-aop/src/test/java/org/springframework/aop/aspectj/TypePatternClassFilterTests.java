@@ -16,8 +16,6 @@
 
 package org.springframework.aop.aspectj;
 
-import static org.assertj.core.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -27,6 +25,8 @@ import org.springframework.beans.testfixture.beans.ITestBean;
 import org.springframework.beans.testfixture.beans.TestBean;
 import org.springframework.beans.testfixture.beans.subpkg.DeepBean;
 
+import static org.assertj.core.api.Assertions.*;
+
 /**
  * Unit tests for the {@link TypePatternClassFilter} class.
  *
@@ -35,31 +35,26 @@ import org.springframework.beans.testfixture.beans.subpkg.DeepBean;
  * @author Chris Beams
  * @author Sam Brannen
  */
-class TypePatternClassFilterTests
-{
+class TypePatternClassFilterTests {
 
 	@Test
-	void nullPattern()
-	{
+	void nullPattern() {
 		assertThatIllegalArgumentException().isThrownBy(() -> new TypePatternClassFilter(null));
 	}
 
 	@Test
-	void invalidPattern()
-	{
+	void invalidPattern() {
 		assertThatIllegalArgumentException().isThrownBy(() -> new TypePatternClassFilter("-"));
 	}
 
 	@Test
-	void invocationOfMatchesMethodBlowsUpWhenNoTypePatternHasBeenSet() throws Exception
-	{
+	void invocationOfMatchesMethodBlowsUpWhenNoTypePatternHasBeenSet() throws Exception {
 		assertThatIllegalStateException()
 				.isThrownBy(() -> new TypePatternClassFilter().matches(String.class));
 	}
 
 	@Test
-	void validPatternMatching()
-	{
+	void validPatternMatching() {
 		TypePatternClassFilter tpcf = new TypePatternClassFilter(
 				"org.springframework.beans.testfixture.beans.*");
 
@@ -74,8 +69,7 @@ class TypePatternClassFilterTests
 	}
 
 	@Test
-	void subclassMatching()
-	{
+	void subclassMatching() {
 		TypePatternClassFilter tpcf = new TypePatternClassFilter(
 				"org.springframework.beans.testfixture.beans.ITestBean+");
 
@@ -89,8 +83,7 @@ class TypePatternClassFilterTests
 	}
 
 	@Test
-	void andOrNotReplacement()
-	{
+	void andOrNotReplacement() {
 		TypePatternClassFilter tpcf = new TypePatternClassFilter("java.lang.Object or java.lang.String");
 		assertThat(tpcf.matches(Number.class)).as("matches Number").isFalse();
 		assertThat(tpcf.matches(Object.class)).as("matches Object").isTrue();
@@ -106,8 +99,7 @@ class TypePatternClassFilterTests
 	}
 
 	@Test
-	void testEquals()
-	{
+	void testEquals() {
 		TypePatternClassFilter filter1 = new TypePatternClassFilter(
 				"org.springframework.beans.testfixture.beans.*");
 		TypePatternClassFilter filter2 = new TypePatternClassFilter(
@@ -119,8 +111,7 @@ class TypePatternClassFilterTests
 	}
 
 	@Test
-	void testHashCode()
-	{
+	void testHashCode() {
 		TypePatternClassFilter filter1 = new TypePatternClassFilter(
 				"org.springframework.beans.testfixture.beans.*");
 		TypePatternClassFilter filter2 = new TypePatternClassFilter(
@@ -132,8 +123,7 @@ class TypePatternClassFilterTests
 	}
 
 	@Test
-	void testToString()
-	{
+	void testToString() {
 		TypePatternClassFilter filter1 = new TypePatternClassFilter(
 				"org.springframework.beans.testfixture.beans.*");
 		TypePatternClassFilter filter2 = new TypePatternClassFilter(

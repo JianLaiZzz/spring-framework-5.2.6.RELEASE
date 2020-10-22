@@ -16,14 +16,6 @@
 
 package org.springframework.web.reactive.function.server;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
@@ -34,6 +26,13 @@ import org.springframework.web.reactive.result.view.ViewResolver;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.i18n.FixedLocaleContextResolver;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.HttpServer;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -105,7 +104,7 @@ class LocaleContextResolverIntegrationTests extends AbstractRouterFunctionIntegr
 
 		@Override
 		public Mono<Void> render(@Nullable Map<String, ?> model, @Nullable MediaType contentType,
-				ServerWebExchange exchange) {
+								 ServerWebExchange exchange) {
 			exchange.getResponse().getHeaders().setContentLanguage(locale);
 			return Mono.empty();
 		}

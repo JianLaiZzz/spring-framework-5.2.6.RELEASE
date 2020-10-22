@@ -16,35 +16,25 @@
 
 package org.springframework.http.server.reactive;
 
+import io.undertow.connector.ByteBufferPool;
+import io.undertow.connector.PooledByteBuffer;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.server.handlers.Cookie;
+import org.springframework.core.io.buffer.*;
+import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpHeaders;
+import org.springframework.lang.Nullable;
+import org.springframework.util.*;
+import org.xnio.channels.StreamSourceChannel;
+import reactor.core.publisher.Flux;
+
+import javax.net.ssl.SSLSession;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.net.ssl.SSLSession;
-
-import io.undertow.connector.ByteBufferPool;
-import io.undertow.connector.PooledByteBuffer;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.server.handlers.Cookie;
-import org.xnio.channels.StreamSourceChannel;
-import reactor.core.publisher.Flux;
-
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.core.io.buffer.DataBufferWrapper;
-import org.springframework.core.io.buffer.PooledDataBuffer;
-import org.springframework.http.HttpCookie;
-import org.springframework.http.HttpHeaders;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * Adapt {@link ServerHttpRequest} to the Undertow {@link HttpServerExchange}.
@@ -189,13 +179,11 @@ class UndertowServerHttpRequest extends AbstractServerHttpRequest {
 					DataBuffer dataBuffer = this.bufferFactory.wrap(byteBuffer);
 					release = false;
 					return new UndertowDataBuffer(dataBuffer, pooledByteBuffer);
-				}
-				else if (read == -1) {
+				} else if (read == -1) {
 					onAllDataRead();
 				}
 				return null;
-			}
-			finally {
+			} finally {
 				if (release && pooledByteBuffer.isOpen()) {
 					pooledByteBuffer.close();
 				}
@@ -223,7 +211,7 @@ class UndertowServerHttpRequest extends AbstractServerHttpRequest {
 		}
 
 		private UndertowDataBuffer(DataBuffer dataBuffer, PooledByteBuffer pooledByteBuffer,
-				AtomicInteger refCount) {
+								   AtomicInteger refCount) {
 			super(dataBuffer);
 			this.refCount = refCount;
 			this.pooledByteBuffer = pooledByteBuffer;
@@ -247,8 +235,7 @@ class UndertowServerHttpRequest extends AbstractServerHttpRequest {
 			if (refCount == 0) {
 				try {
 					return DataBufferUtils.release(dataBuffer());
-				}
-				finally {
+				} finally {
 					this.pooledByteBuffer.close();
 				}
 			}

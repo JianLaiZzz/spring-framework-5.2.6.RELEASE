@@ -16,16 +16,15 @@
 
 package org.springframework.web.server.session;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import org.springframework.util.Assert;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebSession;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * Default implementation of {@link WebSessionManager} delegating to a
@@ -49,6 +48,7 @@ public class DefaultWebSessionManager implements WebSessionManager {
 	/**
 	 * Configure the id resolution strategy.
 	 * <p>By default an instance of {@link CookieWebSessionIdResolver}.
+	 *
 	 * @param sessionIdResolver the resolver to use
 	 */
 	public void setSessionIdResolver(WebSessionIdResolver sessionIdResolver) {
@@ -66,6 +66,7 @@ public class DefaultWebSessionManager implements WebSessionManager {
 	/**
 	 * Configure the persistence strategy.
 	 * <p>By default an instance of {@link InMemoryWebSessionStore}.
+	 *
 	 * @param sessionStore the persistence strategy to use
 	 */
 	public void setSessionStore(WebSessionStore sessionStore) {

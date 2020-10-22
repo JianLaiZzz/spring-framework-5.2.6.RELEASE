@@ -16,12 +16,11 @@
 
 package org.springframework.util;
 
-import java.util.LinkedList;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.core.testfixture.io.SerializationTestUtils;
 import org.springframework.tests.sample.objects.TestObject;
+
+import java.util.LinkedList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -22,8 +22,7 @@ package org.springframework.jms.config;
  * @author Juergen Hoeller
  * @since 4.1
  */
-public abstract class JmsListenerConfigUtils
-{
+public abstract class JmsListenerConfigUtils {
 
 	/**
 	 * The bean name of the internally managed JMS listener annotation processor.

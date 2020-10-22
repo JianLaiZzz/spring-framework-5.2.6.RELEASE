@@ -16,16 +16,15 @@
 
 package org.springframework.orm.jpa.vendor;
 
-import java.util.Collections;
-import java.util.Map;
+import org.springframework.lang.Nullable;
+import org.springframework.orm.jpa.JpaDialect;
+import org.springframework.orm.jpa.JpaVendorAdapter;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceUnitInfo;
-
-import org.springframework.lang.Nullable;
-import org.springframework.orm.jpa.JpaDialect;
-import org.springframework.orm.jpa.JpaVendorAdapter;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Abstract {@link JpaVendorAdapter} implementation that defines common properties,
@@ -35,8 +34,7 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
  * @author Rod Johnson
  * @since 2.0
  */
-public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter
-{
+public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter {
 
 	private Database database = Database.DEFAULT;
 
@@ -56,16 +54,14 @@ public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter
 	 * there may nevertheless be conflicts: For example, specify either this setting
 	 * or Hibernate's "hibernate.dialect_resolvers" property, not both.
 	 */
-	public void setDatabase(Database database)
-	{
+	public void setDatabase(Database database) {
 		this.database = database;
 	}
 
 	/**
 	 * Return the target database to operate on.
 	 */
-	protected Database getDatabase()
-	{
+	protected Database getDatabase() {
 		return this.database;
 	}
 
@@ -73,8 +69,7 @@ public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter
 	 * Specify the name of the target database to operate on.
 	 * The supported values are vendor-dependent platform identifiers.
 	 */
-	public void setDatabasePlatform(@Nullable String databasePlatform)
-	{
+	public void setDatabasePlatform(@Nullable String databasePlatform) {
 		this.databasePlatform = databasePlatform;
 	}
 
@@ -82,8 +77,7 @@ public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter
 	 * Return the name of the target database to operate on.
 	 */
 	@Nullable
-	protected String getDatabasePlatform()
-	{
+	protected String getDatabasePlatform() {
 		return this.databasePlatform;
 	}
 
@@ -99,11 +93,10 @@ public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter
 	 * {@code javax.persistence.schema-generation.database.action} property.</b>
 	 * These two schema generation mechanisms - standard JPA versus provider-native -
 	 * are mutually exclusive, e.g. with Hibernate 5.
-	 * 
+	 *
 	 * @see org.springframework.orm.jpa.AbstractEntityManagerFactoryBean#setJpaProperties
 	 */
-	public void setGenerateDdl(boolean generateDdl)
-	{
+	public void setGenerateDdl(boolean generateDdl) {
 		this.generateDdl = generateDdl;
 	}
 
@@ -111,8 +104,7 @@ public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter
 	 * Return whether to generate DDL after the EntityManagerFactory has been initialized
 	 * creating/updating all relevant tables.
 	 */
-	protected boolean isGenerateDdl()
-	{
+	protected boolean isGenerateDdl() {
 		return this.generateDdl;
 	}
 
@@ -121,63 +113,54 @@ public abstract class AbstractJpaVendorAdapter implements JpaVendorAdapter
 	 * <p>
 	 * For more specific logging configuration, specify the appropriate
 	 * vendor-specific settings as "jpaProperties".
-	 * 
+	 *
 	 * @see org.springframework.orm.jpa.AbstractEntityManagerFactoryBean#setJpaProperties
 	 */
-	public void setShowSql(boolean showSql)
-	{
+	public void setShowSql(boolean showSql) {
 		this.showSql = showSql;
 	}
 
 	/**
 	 * Return whether to show SQL in the log (or in the console).
 	 */
-	protected boolean isShowSql()
-	{
+	protected boolean isShowSql() {
 		return this.showSql;
 	}
 
 	@Override
 	@Nullable
-	public String getPersistenceProviderRootPackage()
-	{
+	public String getPersistenceProviderRootPackage() {
 		return null;
 	}
 
 	@Override
-	public Map<String, ?> getJpaPropertyMap(PersistenceUnitInfo pui)
-	{
+	public Map<String, ?> getJpaPropertyMap(PersistenceUnitInfo pui) {
 		return getJpaPropertyMap();
 	}
 
 	@Override
-	public Map<String, ?> getJpaPropertyMap()
-	{
+	public Map<String, ?> getJpaPropertyMap() {
 		return Collections.emptyMap();
 	}
 
 	@Override
 	@Nullable
-	public JpaDialect getJpaDialect()
-	{
+	public JpaDialect getJpaDialect() {
 		return null;
 	}
 
 	@Override
-	public Class<? extends EntityManagerFactory> getEntityManagerFactoryInterface()
-	{
+	public Class<? extends EntityManagerFactory> getEntityManagerFactoryInterface() {
 		return EntityManagerFactory.class;
 	}
 
 	@Override
-	public Class<? extends EntityManager> getEntityManagerInterface()
-	{
+	public Class<? extends EntityManager> getEntityManagerInterface() {
 		return EntityManager.class;
 	}
 
 	@Override
-	public void postProcessEntityManagerFactory(EntityManagerFactory emf)
-	{
+	public void postProcessEntityManagerFactory(EntityManagerFactory emf) {
 	}
 
 }

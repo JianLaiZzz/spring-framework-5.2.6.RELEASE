@@ -30,30 +30,24 @@ import org.springframework.lang.Nullable;
  * @see PessimisticLockingFailureException
  */
 @SuppressWarnings("serial")
-public class OptimisticLockingFailureException extends ConcurrencyFailureException
-{
+public class OptimisticLockingFailureException extends ConcurrencyFailureException {
 
 	/**
 	 * Constructor for OptimisticLockingFailureException.
-	 * 
-	 * @param msg
-	 *            the detail message
+	 *
+	 * @param msg the detail message
 	 */
-	public OptimisticLockingFailureException(String msg)
-	{
+	public OptimisticLockingFailureException(String msg) {
 		super(msg);
 	}
 
 	/**
 	 * Constructor for OptimisticLockingFailureException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the root cause from the data access API in use
+	 *
+	 * @param msg   the detail message
+	 * @param cause the root cause from the data access API in use
 	 */
-	public OptimisticLockingFailureException(String msg, @Nullable Throwable cause)
-	{
+	public OptimisticLockingFailureException(String msg, @Nullable Throwable cause) {
 		super(msg, cause);
 	}
 

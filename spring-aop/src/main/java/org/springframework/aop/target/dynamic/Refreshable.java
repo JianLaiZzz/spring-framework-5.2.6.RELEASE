@@ -24,8 +24,7 @@ package org.springframework.aop.target.dynamic;
  * @author Rob Harrop
  * @since 2.0
  */
-public interface Refreshable
-{
+public interface Refreshable {
 
 	/**
 	 * Refresh the underlying target object.

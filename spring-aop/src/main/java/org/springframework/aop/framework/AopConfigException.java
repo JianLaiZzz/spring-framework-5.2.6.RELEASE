@@ -25,30 +25,24 @@ import org.springframework.core.NestedRuntimeException;
  * @since 13.03.2003
  */
 @SuppressWarnings("serial")
-public class AopConfigException extends NestedRuntimeException
-{
+public class AopConfigException extends NestedRuntimeException {
 
 	/**
 	 * Constructor for AopConfigException.
-	 * 
-	 * @param msg
-	 *            the detail message
+	 *
+	 * @param msg the detail message
 	 */
-	public AopConfigException(String msg)
-	{
+	public AopConfigException(String msg) {
 		super(msg);
 	}
 
 	/**
 	 * Constructor for AopConfigException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the root cause
+	 *
+	 * @param msg   the detail message
+	 * @param cause the root cause
 	 */
-	public AopConfigException(String msg, Throwable cause)
-	{
+	public AopConfigException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 

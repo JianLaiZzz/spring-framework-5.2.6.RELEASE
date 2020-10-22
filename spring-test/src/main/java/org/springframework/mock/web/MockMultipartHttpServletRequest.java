@@ -16,17 +16,6 @@
 
 package org.springframework.mock.web;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.Part;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.Nullable;
@@ -35,6 +24,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.Part;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Mock implementation of the
@@ -48,8 +43,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  * @author Juergen Hoeller
  * @author Eric Crampton
  * @author Arjen Poutsma
- * @since 2.0
  * @see MockMultipartFile
+ * @since 2.0
  */
 public class MockMultipartHttpServletRequest extends MockHttpServletRequest implements MultipartHttpServletRequest {
 
@@ -59,6 +54,7 @@ public class MockMultipartHttpServletRequest extends MockHttpServletRequest impl
 	/**
 	 * Create a new {@code MockMultipartHttpServletRequest} with a default
 	 * {@link MockServletContext}.
+	 *
 	 * @see #MockMultipartHttpServletRequest(ServletContext)
 	 */
 	public MockMultipartHttpServletRequest() {
@@ -67,8 +63,9 @@ public class MockMultipartHttpServletRequest extends MockHttpServletRequest impl
 
 	/**
 	 * Create a new {@code MockMultipartHttpServletRequest} with the supplied {@link ServletContext}.
+	 *
 	 * @param servletContext the ServletContext that the request runs in
-	 * (may be {@code null} to use a default {@link MockServletContext})
+	 *                       (may be {@code null} to use a default {@link MockServletContext})
 	 */
 	public MockMultipartHttpServletRequest(@Nullable ServletContext servletContext) {
 		super(servletContext);
@@ -80,6 +77,7 @@ public class MockMultipartHttpServletRequest extends MockHttpServletRequest impl
 	/**
 	 * Add a file to this request. The parameter name from the multipart
 	 * form is taken from the {@link MultipartFile#getName()}.
+	 *
 	 * @param file multipart file to be added
 	 */
 	public void addFile(MultipartFile file) {
@@ -102,8 +100,7 @@ public class MockMultipartHttpServletRequest extends MockHttpServletRequest impl
 		List<MultipartFile> multipartFiles = this.multipartFiles.get(name);
 		if (multipartFiles != null) {
 			return multipartFiles;
-		}
-		else {
+		} else {
 			return Collections.emptyList();
 		}
 	}
@@ -129,8 +126,7 @@ public class MockMultipartHttpServletRequest extends MockHttpServletRequest impl
 			if (part != null) {
 				return part.getContentType();
 			}
-		}
-		catch (ServletException | IOException ex) {
+		} catch (ServletException | IOException ex) {
 			// Should never happen (we're not actually parsing)
 			throw new IllegalStateException(ex);
 		}
@@ -160,8 +156,7 @@ public class MockMultipartHttpServletRequest extends MockHttpServletRequest impl
 			HttpHeaders headers = new HttpHeaders();
 			headers.add("Content-Type", contentType);
 			return headers;
-		}
-		else {
+		} else {
 			return null;
 		}
 	}

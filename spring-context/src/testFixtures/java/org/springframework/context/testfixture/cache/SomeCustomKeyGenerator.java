@@ -16,9 +16,9 @@
 
 package org.springframework.context.testfixture.cache;
 
-import java.lang.reflect.Method;
-
 import org.springframework.cache.interceptor.KeyGenerator;
+
+import java.lang.reflect.Method;
 
 /**
  * A custom {@link KeyGenerator} that exposes the algorithm used to compute the key

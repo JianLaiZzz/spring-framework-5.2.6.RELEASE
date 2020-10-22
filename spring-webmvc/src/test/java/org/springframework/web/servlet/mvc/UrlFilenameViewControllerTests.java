@@ -17,7 +17,6 @@
 package org.springframework.web.servlet.mvc;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.ui.ModelMap;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;

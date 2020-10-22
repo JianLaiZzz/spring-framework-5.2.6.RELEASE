@@ -16,27 +16,10 @@
 
 package org.springframework.web.reactive.function;
 
-import java.io.IOException;
-import java.net.URI;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import com.fasterxml.jackson.annotation.JsonView;
 import io.reactivex.Single;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.codec.ByteBufferEncoder;
 import org.springframework.core.codec.CharSequenceEncoder;
 import org.springframework.core.io.ClassPathResource;
@@ -50,12 +33,7 @@ import org.springframework.http.HttpRange;
 import org.springframework.http.MediaType;
 import org.springframework.http.ReactiveHttpOutputMessage;
 import org.springframework.http.client.reactive.ClientHttpRequest;
-import org.springframework.http.codec.EncoderHttpMessageWriter;
-import org.springframework.http.codec.FormHttpMessageWriter;
-import org.springframework.http.codec.HttpMessageWriter;
-import org.springframework.http.codec.ResourceHttpMessageWriter;
-import org.springframework.http.codec.ServerSentEvent;
-import org.springframework.http.codec.ServerSentEventHttpMessageWriter;
+import org.springframework.http.codec.*;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.http.codec.multipart.MultipartHttpMessageWriter;
 import org.springframework.http.codec.xml.Jaxb2XmlEncoder;
@@ -66,6 +44,16 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.testfixture.http.client.reactive.MockClientHttpRequest;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpResponse;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.io.IOException;
+import java.net.URI;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -101,10 +89,12 @@ public class BodyInsertersTests {
 			public List<HttpMessageWriter<?>> messageWriters() {
 				return messageWriters;
 			}
+
 			@Override
 			public Optional<ServerHttpRequest> serverRequest() {
 				return Optional.empty();
 			}
+
 			@Override
 			public Map<String, Object> hints() {
 				return hints;
@@ -439,7 +429,8 @@ public class BodyInsertersTests {
 	}
 
 
-	interface SafeToSerialize {}
+	interface SafeToSerialize {
+	}
 
 
 	@SuppressWarnings("unused")

@@ -16,16 +16,11 @@
 
 package org.springframework.mock.web;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+
+import java.util.*;
 
 /**
  * Internal helper class that serves as value holder for request headers.
@@ -88,8 +83,9 @@ class HeaderValueHolder {
 
 	/**
 	 * Find a HeaderValueHolder by name, ignoring casing.
+	 *
 	 * @param headers the Map of header names to HeaderValueHolders
-	 * @param name the name of the desired header
+	 * @param name    the name of the desired header
 	 * @return the corresponding HeaderValueHolder, or {@code null} if none found
 	 * @deprecated as of 5.1.10 in favor of using
 	 * {@link org.springframework.util.LinkedCaseInsensitiveMap}.

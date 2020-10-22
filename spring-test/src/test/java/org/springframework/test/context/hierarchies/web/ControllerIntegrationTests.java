@@ -16,11 +16,8 @@
 
 package org.springframework.test.context.hierarchies.web;
 
-import javax.servlet.ServletContext;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +30,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.ServletContext;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -42,9 +41,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextHierarchy({
-	//
-	@ContextConfiguration(name = "root", classes = AppConfig.class),
-	@ContextConfiguration(name = "dispatcher", classes = WebConfig.class) //
+		//
+		@ContextConfiguration(name = "root", classes = AppConfig.class),
+		@ContextConfiguration(name = "dispatcher", classes = WebConfig.class) //
 })
 class ControllerIntegrationTests {
 

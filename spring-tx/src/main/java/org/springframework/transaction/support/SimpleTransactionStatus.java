@@ -30,11 +30,10 @@ package org.springframework.transaction.support;
  * as argument passed into a {@link TransactionCallback} to be tested).
  *
  * @author Juergen Hoeller
- * @since 1.2.3
  * @see TransactionCallback#doInTransaction
+ * @since 1.2.3
  */
-public class SimpleTransactionStatus extends AbstractTransactionStatus
-{
+public class SimpleTransactionStatus extends AbstractTransactionStatus {
 
 	private final boolean newTransaction;
 
@@ -42,25 +41,21 @@ public class SimpleTransactionStatus extends AbstractTransactionStatus
 	 * Create a new {@code SimpleTransactionStatus} instance,
 	 * indicating a new transaction.
 	 */
-	public SimpleTransactionStatus()
-	{
+	public SimpleTransactionStatus() {
 		this(true);
 	}
 
 	/**
 	 * Create a new {@code SimpleTransactionStatus} instance.
-	 * 
-	 * @param newTransaction
-	 *            whether to indicate a new transaction
+	 *
+	 * @param newTransaction whether to indicate a new transaction
 	 */
-	public SimpleTransactionStatus(boolean newTransaction)
-	{
+	public SimpleTransactionStatus(boolean newTransaction) {
 		this.newTransaction = newTransaction;
 	}
 
 	@Override
-	public boolean isNewTransaction()
-	{
+	public boolean isNewTransaction() {
 		return this.newTransaction;
 	}
 

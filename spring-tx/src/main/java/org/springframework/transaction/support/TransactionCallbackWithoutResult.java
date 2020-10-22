@@ -25,16 +25,14 @@ import org.springframework.transaction.TransactionStatus;
  * i.e. without the need for a return statement.
  *
  * @author Juergen Hoeller
- * @since 28.03.2003
  * @see TransactionTemplate
+ * @since 28.03.2003
  */
-public abstract class TransactionCallbackWithoutResult implements TransactionCallback<Object>
-{
+public abstract class TransactionCallbackWithoutResult implements TransactionCallback<Object> {
 
 	@Override
 	@Nullable
-	public final Object doInTransaction(TransactionStatus status)
-	{
+	public final Object doInTransaction(TransactionStatus status) {
 		doInTransactionWithoutResult(status);
 		return null;
 	}
@@ -52,9 +50,8 @@ public abstract class TransactionCallbackWithoutResult implements TransactionCal
 	 * Note when using JTA: JTA transactions only work with transactional
 	 * JNDI resources, so implementations need to use such resources if they
 	 * want transaction support.
-	 * 
-	 * @param status
-	 *            associated transaction status
+	 *
+	 * @param status associated transaction status
 	 * @see TransactionTemplate#execute
 	 */
 	protected abstract void doInTransactionWithoutResult(TransactionStatus status);

@@ -16,11 +16,11 @@
 
 package org.springframework.aop.target;
 
-import java.io.Serializable;
-
 import org.springframework.aop.TargetSource;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
+
+import java.io.Serializable;
 
 /**
  * Canonical {@code TargetSource} when there is no target
@@ -30,10 +30,11 @@ import org.springframework.util.ObjectUtils;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
-public final class EmptyTargetSource implements TargetSource, Serializable
-{
+public final class EmptyTargetSource implements TargetSource, Serializable {
 
-	/** use serialVersionUID from Spring 1.2 for interoperability. */
+	/**
+	 * use serialVersionUID from Spring 1.2 for interoperability.
+	 */
 	private static final long serialVersionUID = 3680494563553489691L;
 
 	//---------------------------------------------------------------------
@@ -47,27 +48,22 @@ public final class EmptyTargetSource implements TargetSource, Serializable
 
 	/**
 	 * Return an EmptyTargetSource for the given target Class.
-	 * 
-	 * @param targetClass
-	 *            the target Class (may be {@code null})
+	 *
+	 * @param targetClass the target Class (may be {@code null})
 	 * @see #getTargetClass()
 	 */
-	public static EmptyTargetSource forClass(@Nullable Class<?> targetClass)
-	{
+	public static EmptyTargetSource forClass(@Nullable Class<?> targetClass) {
 		return forClass(targetClass, true);
 	}
 
 	/**
 	 * Return an EmptyTargetSource for the given target Class.
-	 * 
-	 * @param targetClass
-	 *            the target Class (may be {@code null})
-	 * @param isStatic
-	 *            whether the TargetSource should be marked as static
+	 *
+	 * @param targetClass the target Class (may be {@code null})
+	 * @param isStatic    whether the TargetSource should be marked as static
 	 * @see #getTargetClass()
 	 */
-	public static EmptyTargetSource forClass(@Nullable Class<?> targetClass, boolean isStatic)
-	{
+	public static EmptyTargetSource forClass(@Nullable Class<?> targetClass, boolean isStatic) {
 		return (targetClass == null && isStatic ? INSTANCE
 				: new EmptyTargetSource(targetClass, isStatic));
 	}
@@ -85,14 +81,11 @@ public final class EmptyTargetSource implements TargetSource, Serializable
 	 * <p>
 	 * This constructor is {@code private} to enforce the
 	 * Singleton pattern / factory method pattern.
-	 * 
-	 * @param targetClass
-	 *            the target class to expose (may be {@code null})
-	 * @param isStatic
-	 *            whether the TargetSource is marked as static
+	 *
+	 * @param targetClass the target class to expose (may be {@code null})
+	 * @param isStatic    whether the TargetSource is marked as static
 	 */
-	private EmptyTargetSource(@Nullable Class<?> targetClass, boolean isStatic)
-	{
+	private EmptyTargetSource(@Nullable Class<?> targetClass, boolean isStatic) {
 		this.targetClass = targetClass;
 		this.isStatic = isStatic;
 	}
@@ -102,8 +95,7 @@ public final class EmptyTargetSource implements TargetSource, Serializable
 	 */
 	@Override
 	@Nullable
-	public Class<?> getTargetClass()
-	{
+	public Class<?> getTargetClass() {
 		return this.targetClass;
 	}
 
@@ -111,8 +103,7 @@ public final class EmptyTargetSource implements TargetSource, Serializable
 	 * Always returns {@code true}.
 	 */
 	@Override
-	public boolean isStatic()
-	{
+	public boolean isStatic() {
 		return this.isStatic;
 	}
 
@@ -121,8 +112,7 @@ public final class EmptyTargetSource implements TargetSource, Serializable
 	 */
 	@Override
 	@Nullable
-	public Object getTarget()
-	{
+	public Object getTarget() {
 		return null;
 	}
 
@@ -130,28 +120,23 @@ public final class EmptyTargetSource implements TargetSource, Serializable
 	 * Nothing to release.
 	 */
 	@Override
-	public void releaseTarget(Object target)
-	{
+	public void releaseTarget(Object target) {
 	}
 
 	/**
 	 * Returns the canonical instance on deserialization in case
 	 * of no target class, thus protecting the Singleton pattern.
 	 */
-	private Object readResolve()
-	{
+	private Object readResolve() {
 		return (this.targetClass == null && this.isStatic ? INSTANCE : this);
 	}
 
 	@Override
-	public boolean equals(Object other)
-	{
-		if (this == other)
-		{
+	public boolean equals(Object other) {
+		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof EmptyTargetSource))
-		{
+		if (!(other instanceof EmptyTargetSource)) {
 			return false;
 		}
 		EmptyTargetSource otherTs = (EmptyTargetSource) other;
@@ -160,17 +145,15 @@ public final class EmptyTargetSource implements TargetSource, Serializable
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return EmptyTargetSource.class.hashCode() * 13 + ObjectUtils.nullSafeHashCode(this.targetClass);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "EmptyTargetSource: "
 				+ (this.targetClass != null ? "target class [" + this.targetClass.getName() + "]"
-						: "no target class")
+				: "no target class")
 				+ ", " + (this.isStatic ? "static" : "dynamic");
 	}
 

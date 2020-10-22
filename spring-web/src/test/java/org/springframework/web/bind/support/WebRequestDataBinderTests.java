@@ -16,15 +16,7 @@
 
 package org.springframework.web.bind.support;
 
-import java.beans.PropertyEditorSupport;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.testfixture.beans.ITestBean;
@@ -35,6 +27,9 @@ import org.springframework.web.multipart.support.StringMultipartFileEditor;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockMultipartFile;
 import org.springframework.web.testfixture.servlet.MockMultipartHttpServletRequest;
+
+import java.beans.PropertyEditorSupport;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -340,7 +335,7 @@ public class WebRequestDataBinderTests {
 	@Test
 	public void testMultipleValuesForParameter() throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
-		String[] original = new String[] {"Tony", "Rod"};
+		String[] original = new String[]{"Tony", "Rod"};
 		request.addParameter("forname", original);
 
 		ServletRequestParameterPropertyValues pvs = new ServletRequestParameterPropertyValues(request);

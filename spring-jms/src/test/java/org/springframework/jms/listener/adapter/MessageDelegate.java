@@ -26,8 +26,7 @@ import javax.jms.TextMessage;
  *
  * @author Rick Evans
  */
-public interface MessageDelegate
-{
+public interface MessageDelegate {
 
 	void handleMessage(TextMessage message);
 

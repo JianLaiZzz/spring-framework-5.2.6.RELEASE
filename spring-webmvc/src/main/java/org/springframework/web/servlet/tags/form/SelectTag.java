@@ -16,15 +16,14 @@
 
 package org.springframework.web.servlet.tags.form;
 
-import java.util.Collection;
-import java.util.Map;
-
-import javax.servlet.jsp.JspException;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.support.BindStatus;
+
+import javax.servlet.jsp.JspException;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * The {@code <select>} tag renders an HTML 'select' element.
@@ -236,8 +235,8 @@ import org.springframework.web.servlet.support.BindStatus;
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
- * @since 2.0
  * @see OptionTag
+ * @since 2.0
  */
 @SuppressWarnings("serial")
 public class SelectTag extends AbstractHtmlInputElementTag {
@@ -305,6 +304,7 @@ public class SelectTag extends AbstractHtmlInputElementTag {
 	 * <p>Required when wishing to render '{@code option}' tags from
 	 * an array, {@link Collection} or {@link Map}.
 	 * <p>Typically a runtime expression.
+	 *
 	 * @param items the items that comprise the options of this selection
 	 */
 	public void setItems(@Nullable Object items) {
@@ -432,8 +432,7 @@ public class SelectTag extends AbstractHtmlInputElementTag {
 			tagWriter.endTag(true);
 			writeHiddenTagIfNecessary(tagWriter);
 			return SKIP_BODY;
-		}
-		else {
+		} else {
 			// Using nested <form:option/> tags, so just expose the value in the PageContext...
 			tagWriter.forceBlock();
 			this.tagWriter = tagWriter;
@@ -476,8 +475,7 @@ public class SelectTag extends AbstractHtmlInputElementTag {
 		Class<?> valueType = bindStatus.getValueType();
 		if (valueType != null && typeRequiresMultiple(valueType)) {
 			return true;
-		}
-		else if (bindStatus.getEditor() != null) {
+		} else if (bindStatus.getEditor() != null) {
 			Object editorValue = bindStatus.getEditor().getValue();
 			if (editorValue != null && typeRequiresMultiple(editorValue.getClass())) {
 				return true;

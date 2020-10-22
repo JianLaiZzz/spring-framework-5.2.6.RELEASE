@@ -41,14 +41,13 @@ import org.springframework.transaction.TransactionManager;
  * of the {@code TransactionManager} bean.
  *
  * @author Chris Beams
- * @since 3.1
  * @see EnableTransactionManagement
  * @see org.springframework.context.annotation.Primary
  * @see org.springframework.transaction.PlatformTransactionManager
  * @see org.springframework.transaction.ReactiveTransactionManager
+ * @since 3.1
  */
-public interface TransactionManagementConfigurer
-{
+public interface TransactionManagementConfigurer {
 
 	/**
 	 * Return the default transaction manager bean to use for annotation-driven database
@@ -59,7 +58,7 @@ public interface TransactionManagementConfigurer
 	 * In this case, the implementing {@code @Configuration} class implements this method,
 	 * marks it with {@code @Bean}, and configures and returns the transaction manager
 	 * directly within the method body:
-	 * 
+	 *
 	 * <pre class="code">
 	 * &#064;Bean
 	 * &#064;Override
@@ -68,10 +67,10 @@ public interface TransactionManagementConfigurer
 	 * 	return new DataSourceTransactionManager(dataSource());
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * <h3>2. Implement the method without {@code @Bean} and delegate to another existing
 	 * {@code @Bean} method</h3>
-	 * 
+	 *
 	 * <pre class="code">
 	 * &#064;Bean
 	 * public PlatformTransactionManager txManager()
@@ -85,7 +84,7 @@ public interface TransactionManagementConfigurer
 	 * 	return txManager(); // reference the existing {@code @Bean} method above
 	 * }
 	 * </pre>
-	 * 
+	 * <p>
 	 * If taking approach #2, be sure that <em>only one</em> of the methods is marked
 	 * with {@code @Bean}!
 	 * <p>
@@ -95,9 +94,9 @@ public interface TransactionManagementConfigurer
 	 * of Spring lifecycle callbacks such as {@code InitializingBean} and
 	 * {@code BeanFactoryAware}. Note that the same guidelines apply to
 	 * {@code ReactiveTransactionManager} beans.
-	 * 
+	 *
 	 * @return a {@link org.springframework.transaction.PlatformTransactionManager} or
-	 *         {@link org.springframework.transaction.ReactiveTransactionManager} implementation
+	 * {@link org.springframework.transaction.ReactiveTransactionManager} implementation
 	 */
 	TransactionManager annotationDrivenTransactionManager();
 

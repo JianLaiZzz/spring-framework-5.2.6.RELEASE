@@ -16,10 +16,6 @@
 
 package org.springframework.aop.aspectj.autoproxy;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.lang.reflect.Method;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.Advisor;
@@ -28,12 +24,15 @@ import org.springframework.aop.BeforeAdvice;
 import org.springframework.aop.aspectj.*;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 
+import java.lang.reflect.Method;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * @author Adrian Colyer
  * @author Chris Beams
  */
-public class AspectJPrecedenceComparatorTests
-{
+public class AspectJPrecedenceComparatorTests {
 
 	private static final int HIGH_PRECEDENCE_ADVISOR_ORDER = 100;
 	private static final int LOW_PRECEDENCE_ADVISOR_ORDER = 200;
@@ -47,8 +46,7 @@ public class AspectJPrecedenceComparatorTests
 	private AspectJExpressionPointcut anyOldPointcut;
 
 	@BeforeEach
-	public void setUp() throws Exception
-	{
+	public void setUp() throws Exception {
 		this.comparator = new AspectJPrecedenceComparator();
 		this.anyOldMethod = getClass().getMethods()[0];
 		this.anyOldPointcut = new AspectJExpressionPointcut();
@@ -56,8 +54,7 @@ public class AspectJPrecedenceComparatorTests
 	}
 
 	@Test
-	public void testSameAspectNoAfterAdvice()
-	{
+	public void testSameAspectNoAfterAdvice() {
 		Advisor advisor1 = createAspectJBeforeAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
 				EARLY_ADVICE_DECLARATION_ORDER, "someAspect");
 		Advisor advisor2 = createAspectJBeforeAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
@@ -74,8 +71,7 @@ public class AspectJPrecedenceComparatorTests
 	}
 
 	@Test
-	public void testSameAspectAfterAdvice()
-	{
+	public void testSameAspectAfterAdvice() {
 		Advisor advisor1 = createAspectJAfterAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
 				EARLY_ADVICE_DECLARATION_ORDER, "someAspect");
 		Advisor advisor2 = createAspectJAroundAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
@@ -92,8 +88,7 @@ public class AspectJPrecedenceComparatorTests
 	}
 
 	@Test
-	public void testSameAspectOneOfEach()
-	{
+	public void testSameAspectOneOfEach() {
 		Advisor advisor1 = createAspectJAfterAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
 				EARLY_ADVICE_DECLARATION_ORDER, "someAspect");
 		Advisor advisor2 = createAspectJBeforeAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
@@ -103,8 +98,7 @@ public class AspectJPrecedenceComparatorTests
 	}
 
 	@Test
-	public void testSameAdvisorPrecedenceDifferentAspectNoAfterAdvice()
-	{
+	public void testSameAdvisorPrecedenceDifferentAspectNoAfterAdvice() {
 		Advisor advisor1 = createAspectJBeforeAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
 				EARLY_ADVICE_DECLARATION_ORDER, "someAspect");
 		Advisor advisor2 = createAspectJBeforeAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
@@ -121,8 +115,7 @@ public class AspectJPrecedenceComparatorTests
 	}
 
 	@Test
-	public void testSameAdvisorPrecedenceDifferentAspectAfterAdvice()
-	{
+	public void testSameAdvisorPrecedenceDifferentAspectAfterAdvice() {
 		Advisor advisor1 = createAspectJAfterAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
 				EARLY_ADVICE_DECLARATION_ORDER, "someAspect");
 		Advisor advisor2 = createAspectJAroundAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
@@ -139,8 +132,7 @@ public class AspectJPrecedenceComparatorTests
 	}
 
 	@Test
-	public void testHigherAdvisorPrecedenceNoAfterAdvice()
-	{
+	public void testHigherAdvisorPrecedenceNoAfterAdvice() {
 		Advisor advisor1 = createSpringAOPBeforeAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER);
 		Advisor advisor2 = createAspectJBeforeAdvice(LOW_PRECEDENCE_ADVISOR_ORDER,
 				EARLY_ADVICE_DECLARATION_ORDER, "someOtherAspect");
@@ -156,8 +148,7 @@ public class AspectJPrecedenceComparatorTests
 	}
 
 	@Test
-	public void testHigherAdvisorPrecedenceAfterAdvice()
-	{
+	public void testHigherAdvisorPrecedenceAfterAdvice() {
 		Advisor advisor1 = createAspectJAfterAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
 				EARLY_ADVICE_DECLARATION_ORDER, "someAspect");
 		Advisor advisor2 = createAspectJAroundAdvice(LOW_PRECEDENCE_ADVISOR_ORDER,
@@ -174,8 +165,7 @@ public class AspectJPrecedenceComparatorTests
 	}
 
 	@Test
-	public void testLowerAdvisorPrecedenceNoAfterAdvice()
-	{
+	public void testLowerAdvisorPrecedenceNoAfterAdvice() {
 		Advisor advisor1 = createAspectJBeforeAdvice(LOW_PRECEDENCE_ADVISOR_ORDER,
 				EARLY_ADVICE_DECLARATION_ORDER, "someAspect");
 		Advisor advisor2 = createAspectJBeforeAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
@@ -192,8 +182,7 @@ public class AspectJPrecedenceComparatorTests
 	}
 
 	@Test
-	public void testLowerAdvisorPrecedenceAfterAdvice()
-	{
+	public void testLowerAdvisorPrecedenceAfterAdvice() {
 		Advisor advisor1 = createAspectJAfterAdvice(LOW_PRECEDENCE_ADVISOR_ORDER,
 				EARLY_ADVICE_DECLARATION_ORDER, "someAspect");
 		Advisor advisor2 = createAspectJAroundAdvice(HIGH_PRECEDENCE_ADVISOR_ORDER,
@@ -209,47 +198,41 @@ public class AspectJPrecedenceComparatorTests
 	}
 
 	private Advisor createAspectJBeforeAdvice(int advisorOrder, int adviceDeclarationOrder,
-			String aspectName)
-	{
+											  String aspectName) {
 		AspectJMethodBeforeAdvice advice = new AspectJMethodBeforeAdvice(this.anyOldMethod,
 				this.anyOldPointcut, null);
 		return createAspectJAdvice(advisorOrder, adviceDeclarationOrder, aspectName, advice);
 	}
 
 	private Advisor createAspectJAroundAdvice(int advisorOrder, int adviceDeclarationOrder,
-			String aspectName)
-	{
+											  String aspectName) {
 		AspectJAroundAdvice advice = new AspectJAroundAdvice(this.anyOldMethod, this.anyOldPointcut,
 				null);
 		return createAspectJAdvice(advisorOrder, adviceDeclarationOrder, aspectName, advice);
 	}
 
 	private Advisor createAspectJAfterAdvice(int advisorOrder, int adviceDeclarationOrder,
-			String aspectName)
-	{
+											 String aspectName) {
 		AspectJAfterAdvice advice = new AspectJAfterAdvice(this.anyOldMethod, this.anyOldPointcut, null);
 		return createAspectJAdvice(advisorOrder, adviceDeclarationOrder, aspectName, advice);
 	}
 
 	private Advisor createAspectJAfterReturningAdvice(int advisorOrder, int adviceDeclarationOrder,
-			String aspectName)
-	{
+													  String aspectName) {
 		AspectJAfterReturningAdvice advice = new AspectJAfterReturningAdvice(this.anyOldMethod,
 				this.anyOldPointcut, null);
 		return createAspectJAdvice(advisorOrder, adviceDeclarationOrder, aspectName, advice);
 	}
 
 	private Advisor createAspectJAfterThrowingAdvice(int advisorOrder, int adviceDeclarationOrder,
-			String aspectName)
-	{
+													 String aspectName) {
 		AspectJAfterThrowingAdvice advice = new AspectJAfterThrowingAdvice(this.anyOldMethod,
 				this.anyOldPointcut, null);
 		return createAspectJAdvice(advisorOrder, adviceDeclarationOrder, aspectName, advice);
 	}
 
 	private Advisor createAspectJAdvice(int advisorOrder, int adviceDeclarationOrder, String aspectName,
-			AbstractAspectJAdvice advice)
-	{
+										AbstractAspectJAdvice advice) {
 		advice.setDeclarationOrder(adviceDeclarationOrder);
 		advice.setAspectName(aspectName);
 		AspectJPointcutAdvisor advisor = new AspectJPointcutAdvisor(advice);
@@ -257,8 +240,7 @@ public class AspectJPrecedenceComparatorTests
 		return advisor;
 	}
 
-	private Advisor createSpringAOPAfterAdvice(int order)
-	{
+	private Advisor createSpringAOPAfterAdvice(int order) {
 		AfterReturningAdvice advice = (returnValue, method, args, target) ->
 		{
 		};
@@ -267,10 +249,8 @@ public class AspectJPrecedenceComparatorTests
 		return advisor;
 	}
 
-	private Advisor createSpringAOPBeforeAdvice(int order)
-	{
-		BeforeAdvice advice = new BeforeAdvice()
-		{
+	private Advisor createSpringAOPBeforeAdvice(int order) {
+		BeforeAdvice advice = new BeforeAdvice() {
 		};
 		DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor(this.anyOldPointcut, advice);
 		advisor.setOrder(order);

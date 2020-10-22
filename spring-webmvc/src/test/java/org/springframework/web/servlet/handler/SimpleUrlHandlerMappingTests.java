@@ -16,10 +16,7 @@
 
 package org.springframework.web.servlet.handler;
 
-import java.util.Collections;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.support.StaticApplicationContext;
@@ -30,6 +27,8 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockServletContext;
 import org.springframework.web.util.WebUtils;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -55,8 +54,8 @@ public class SimpleUrlHandlerMappingTests {
 		wac.setConfigLocations("/org/springframework/web/servlet/handler/map2err.xml");
 		assertThatExceptionOfType(FatalBeanException.class).isThrownBy(
 				wac::refresh)
-			.withCauseInstanceOf(NoSuchBeanDefinitionException.class)
-			.satisfies(ex -> assertThat(((NoSuchBeanDefinitionException) ex.getCause()).getBeanName()).isEqualTo("mainControlle"));
+				.withCauseInstanceOf(NoSuchBeanDefinitionException.class)
+				.satisfies(ex -> assertThat(((NoSuchBeanDefinitionException) ex.getCause()).getBeanName()).isEqualTo("mainControlle"));
 	}
 
 	@Test
@@ -73,7 +72,7 @@ public class SimpleUrlHandlerMappingTests {
 	public void testNewlineInRequest() throws Exception {
 		Object controller = new Object();
 		SimpleUrlHandlerMapping handlerMapping = new SimpleUrlHandlerMapping(
-			Collections.singletonMap("/*/baz", controller));
+				Collections.singletonMap("/*/baz", controller));
 		handlerMapping.setUrlDecode(false);
 		handlerMapping.setApplicationContext(new StaticApplicationContext());
 

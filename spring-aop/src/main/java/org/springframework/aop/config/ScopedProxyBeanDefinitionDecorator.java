@@ -33,21 +33,17 @@ import org.w3c.dom.Node;
  * @author Mark Fisher
  * @since 2.0
  */
-class ScopedProxyBeanDefinitionDecorator implements BeanDefinitionDecorator
-{
+class ScopedProxyBeanDefinitionDecorator implements BeanDefinitionDecorator {
 
 	private static final String PROXY_TARGET_CLASS = "proxy-target-class";
 
 	@Override
 	public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition,
-			ParserContext parserContext)
-	{
+										 ParserContext parserContext) {
 		boolean proxyTargetClass = true;
-		if (node instanceof Element)
-		{
+		if (node instanceof Element) {
 			Element ele = (Element) node;
-			if (ele.hasAttribute(PROXY_TARGET_CLASS))
-			{
+			if (ele.hasAttribute(PROXY_TARGET_CLASS)) {
 				proxyTargetClass = Boolean.parseBoolean(ele.getAttribute(PROXY_TARGET_CLASS));
 			}
 		}

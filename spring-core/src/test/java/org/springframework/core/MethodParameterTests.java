@@ -16,6 +16,9 @@
 
 package org.springframework.core;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,9 +27,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -119,7 +119,8 @@ class MethodParameterTests {
 		assertThat(methodParameter.getParameterAnnotation(Param.class)).as("Failed to find @Param annotation").isNotNull();
 	}
 
-	@Test  // SPR-16652
+	@Test
+		// SPR-16652
 	void annotatedConstructorParameterInInnerClass() throws Exception {
 		Constructor<?> constructor = InnerClass.class.getConstructor(getClass(), String.class, Callable.class);
 
@@ -136,7 +137,8 @@ class MethodParameterTests {
 		assertThat(methodParameter.getParameterAnnotation(Param.class)).isNull();
 	}
 
-	@Test  // SPR-16734
+	@Test
+		// SPR-16734
 	void genericConstructorParameterInInnerClass() throws Exception {
 		Constructor<?> constructor = InnerClass.class.getConstructor(getClass(), String.class, Callable.class);
 

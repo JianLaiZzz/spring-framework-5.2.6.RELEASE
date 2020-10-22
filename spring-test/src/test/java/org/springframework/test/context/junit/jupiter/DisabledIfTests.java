@@ -18,7 +18,6 @@ package org.springframework.test.context.junit.jupiter;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.TestPropertySource;
@@ -36,10 +35,10 @@ import static org.assertj.core.api.Assertions.fail;
  *
  * @author Tadaya Tsuyukubo
  * @author Sam Brannen
- * @since 5.0
  * @see DisabledIfConditionTests
  * @see DisabledIf
  * @see SpringExtension
+ * @since 5.0
  */
 class DisabledIfTests {
 

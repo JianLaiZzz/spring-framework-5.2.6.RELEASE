@@ -16,10 +16,7 @@
 
 package org.springframework.web.servlet.mvc.method.annotation;
 
-import javax.servlet.ServletException;
-
 import org.junit.jupiter.api.AfterEach;
-
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.lang.Nullable;
@@ -29,6 +26,8 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver;
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 import org.springframework.web.testfixture.servlet.MockServletConfig;
+
+import javax.servlet.ServletException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

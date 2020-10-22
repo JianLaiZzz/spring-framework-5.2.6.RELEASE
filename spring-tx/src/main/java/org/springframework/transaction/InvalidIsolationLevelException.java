@@ -25,17 +25,14 @@ package org.springframework.transaction;
  * @since 12.05.2003
  */
 @SuppressWarnings("serial")
-public class InvalidIsolationLevelException extends TransactionUsageException
-{
+public class InvalidIsolationLevelException extends TransactionUsageException {
 
 	/**
 	 * Constructor for InvalidIsolationLevelException.
-	 * 
-	 * @param msg
-	 *            the detail message
+	 *
+	 * @param msg the detail message
 	 */
-	public InvalidIsolationLevelException(String msg)
-	{
+	public InvalidIsolationLevelException(String msg) {
 		super(msg);
 	}
 

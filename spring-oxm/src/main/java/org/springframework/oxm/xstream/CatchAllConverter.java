@@ -38,7 +38,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
  *
  * <p>
  * For instance:
- * 
+ *
  * <pre class="code">
  * XStreamMarshaller unmarshaller = new XStreamMarshaller();
  * unmarshaller.getXStream().registerConverter(new MyDomainClassConverter(), XStream.PRIORITY_VERY_HIGH);
@@ -49,25 +49,21 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
  * @author Arjen Poutsma
  * @since 3.2.5
  */
-public class CatchAllConverter implements Converter
-{
+public class CatchAllConverter implements Converter {
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public boolean canConvert(Class type)
-	{
+	public boolean canConvert(Class type) {
 		return true;
 	}
 
 	@Override
-	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context)
-	{
+	public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
 		throw new UnsupportedOperationException("Marshalling not supported");
 	}
 
 	@Override
-	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context)
-	{
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		throw new UnsupportedOperationException("Unmarshalling not supported");
 	}
 

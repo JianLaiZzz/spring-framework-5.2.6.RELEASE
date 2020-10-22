@@ -16,8 +16,6 @@
 
 package org.springframework.web.reactive.function.server.support;
 
-import reactor.core.publisher.Mono;
-
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +31,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.AbstractHttpHandlerIntegrationTests;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.HttpServer;
+import reactor.core.publisher.Mono;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;

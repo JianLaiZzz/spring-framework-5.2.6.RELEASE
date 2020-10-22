@@ -26,11 +26,9 @@ import org.springframework.web.util.pattern.PathPattern.MatchingContext;
  * @author Andy Clement
  * @since 5.0
  */
-class SeparatorPathElement extends PathElement
-{
+class SeparatorPathElement extends PathElement {
 
-	SeparatorPathElement(int pos, char separator)
-	{
+	SeparatorPathElement(int pos, char separator) {
 		super(pos, separator);
 	}
 
@@ -39,24 +37,16 @@ class SeparatorPathElement extends PathElement
 	 * must be the separator.
 	 */
 	@Override
-	public boolean matches(int pathIndex, MatchingContext matchingContext)
-	{
-		if (pathIndex < matchingContext.pathLength && matchingContext.isSeparator(pathIndex))
-		{
-			if (isNoMorePattern())
-			{
-				if (matchingContext.determineRemainingPath)
-				{
+	public boolean matches(int pathIndex, MatchingContext matchingContext) {
+		if (pathIndex < matchingContext.pathLength && matchingContext.isSeparator(pathIndex)) {
+			if (isNoMorePattern()) {
+				if (matchingContext.determineRemainingPath) {
 					matchingContext.remainingPathIndex = pathIndex + 1;
 					return true;
-				}
-				else
-				{
+				} else {
 					return (pathIndex + 1 == matchingContext.pathLength);
 				}
-			}
-			else
-			{
+			} else {
 				pathIndex++;
 				return (this.next != null && this.next.matches(pathIndex, matchingContext));
 			}
@@ -65,21 +55,18 @@ class SeparatorPathElement extends PathElement
 	}
 
 	@Override
-	public int getNormalizedLength()
-	{
+	public int getNormalizedLength() {
 		return 1;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Separator(" + this.separator + ")";
 	}
 
 	@Override
-	public char[] getChars()
-	{
-		return new char[] { this.separator };
+	public char[] getChars() {
+		return new char[]{this.separator};
 	}
 
 }

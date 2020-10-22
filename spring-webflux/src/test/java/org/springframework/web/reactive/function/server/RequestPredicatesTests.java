@@ -16,18 +16,17 @@
 
 package org.springframework.web.reactive.function.server;
 
-import java.net.URI;
-import java.util.Collections;
-import java.util.function.Function;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
 import org.springframework.web.util.pattern.PathPatternParser;
+
+import java.net.URI;
+import java.util.Collections;
+import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;

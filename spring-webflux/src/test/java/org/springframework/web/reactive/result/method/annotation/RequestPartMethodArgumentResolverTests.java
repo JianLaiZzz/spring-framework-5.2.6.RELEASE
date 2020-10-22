@@ -16,18 +16,10 @@
 
 package org.springframework.web.reactive.result.method.annotation;
 
-import java.time.Duration;
-import java.util.Collections;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -50,6 +42,13 @@ import org.springframework.web.testfixture.http.client.reactive.MockClientHttpRe
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.method.ResolvableMethod;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,6 +57,7 @@ import static org.springframework.web.testfixture.method.MvcAnnotationPredicates
 
 /**
  * Unit tests for {@link RequestPartMethodArgumentResolver}.
+ *
  * @author Rossen Stoyanchev
  * @author Ilya Lukyanovich
  */
@@ -339,7 +339,8 @@ public class RequestPartMethodArgumentResolverTests {
 			@RequestPart(name = "name", required = false) Mono<Part> anotherPartMono,
 			@RequestPart(name = "name", required = false) Flux<Part> anotherPartFlux,
 			@RequestPart(name = "name", required = false) List<Part> anotherPartList,
-			Person notAnnotated) {}
+			Person notAnnotated) {
+	}
 
 
 	private static class Person {

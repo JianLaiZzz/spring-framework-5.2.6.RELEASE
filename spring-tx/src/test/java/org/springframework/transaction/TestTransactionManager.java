@@ -24,8 +24,7 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
  * @since 29.04.2003
  */
 @SuppressWarnings("serial")
-class TestTransactionManager extends AbstractPlatformTransactionManager
-{
+class TestTransactionManager extends AbstractPlatformTransactionManager {
 
 	private static final Object TRANSACTION = "transaction";
 
@@ -41,64 +40,52 @@ class TestTransactionManager extends AbstractPlatformTransactionManager
 
 	protected boolean rollbackOnly = false;
 
-	protected TestTransactionManager(boolean existingTransaction, boolean canCreateTransaction)
-	{
+	protected TestTransactionManager(boolean existingTransaction, boolean canCreateTransaction) {
 		this.existingTransaction = existingTransaction;
 		this.canCreateTransaction = canCreateTransaction;
 		setTransactionSynchronization(SYNCHRONIZATION_NEVER);
 	}
 
 	@Override
-	protected Object doGetTransaction()
-	{
+	protected Object doGetTransaction() {
 		return TRANSACTION;
 	}
 
 	@Override
-	protected boolean isExistingTransaction(Object transaction)
-	{
+	protected boolean isExistingTransaction(Object transaction) {
 		return existingTransaction;
 	}
 
 	@Override
-	protected void doBegin(Object transaction, TransactionDefinition definition)
-	{
-		if (!TRANSACTION.equals(transaction))
-		{
+	protected void doBegin(Object transaction, TransactionDefinition definition) {
+		if (!TRANSACTION.equals(transaction)) {
 			throw new IllegalArgumentException("Not the same transaction object");
 		}
-		if (!this.canCreateTransaction)
-		{
+		if (!this.canCreateTransaction) {
 			throw new CannotCreateTransactionException("Cannot create transaction");
 		}
 		this.begin = true;
 	}
 
 	@Override
-	protected void doCommit(DefaultTransactionStatus status)
-	{
-		if (!TRANSACTION.equals(status.getTransaction()))
-		{
+	protected void doCommit(DefaultTransactionStatus status) {
+		if (!TRANSACTION.equals(status.getTransaction())) {
 			throw new IllegalArgumentException("Not the same transaction object");
 		}
 		this.commit = true;
 	}
 
 	@Override
-	protected void doRollback(DefaultTransactionStatus status)
-	{
-		if (!TRANSACTION.equals(status.getTransaction()))
-		{
+	protected void doRollback(DefaultTransactionStatus status) {
+		if (!TRANSACTION.equals(status.getTransaction())) {
 			throw new IllegalArgumentException("Not the same transaction object");
 		}
 		this.rollback = true;
 	}
 
 	@Override
-	protected void doSetRollbackOnly(DefaultTransactionStatus status)
-	{
-		if (!TRANSACTION.equals(status.getTransaction()))
-		{
+	protected void doSetRollbackOnly(DefaultTransactionStatus status) {
+		if (!TRANSACTION.equals(status.getTransaction())) {
 			throw new IllegalArgumentException("Not the same transaction object");
 		}
 		this.rollbackOnly = true;

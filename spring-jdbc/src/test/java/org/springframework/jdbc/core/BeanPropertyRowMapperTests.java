@@ -16,17 +16,12 @@
 
 package org.springframework.jdbc.core;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.jdbc.core.test.ConcretePerson;
-import org.springframework.jdbc.core.test.DatePerson;
-import org.springframework.jdbc.core.test.ExtendedPerson;
-import org.springframework.jdbc.core.test.Person;
-import org.springframework.jdbc.core.test.SpacePerson;
+import org.springframework.jdbc.core.test.*;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -39,7 +34,7 @@ public class BeanPropertyRowMapperTests extends AbstractRowMapperTests {
 
 
 	@Test
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public void testOverridingDifferentClassDefinedForMapping() {
 		BeanPropertyRowMapper mapper = new BeanPropertyRowMapper(Person.class);
 		assertThatExceptionOfType(InvalidDataAccessApiUsageException.class).isThrownBy(() ->

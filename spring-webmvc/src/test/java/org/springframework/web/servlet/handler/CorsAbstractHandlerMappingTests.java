@@ -16,16 +16,8 @@
 
 package org.springframework.web.servlet.handler;
 
-import java.io.IOException;
-import java.util.Collections;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,11 +32,18 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.support.WebContentGenerator;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collections;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 /**
  * Unit tests for CORS-related handling in {@link AbstractHandlerMapping}.
+ *
  * @author Sebastien Deleuze
  * @author Rossen Stoyanchev
  */
@@ -103,7 +102,8 @@ class CorsAbstractHandlerMappingTests {
 		assertThat(getRequiredCorsConfiguration(chain, false).getAllowedOrigins()).containsExactly("*");
 	}
 
-	@Test // see gh-23843
+	@Test
+		// see gh-23843
 	void actualRequestWithCorsConfigurationProviderForHandlerChain() throws Exception {
 		this.request.setMethod(RequestMethod.GET.name());
 		this.request.setRequestURI("/chain");
@@ -207,8 +207,7 @@ class CorsAbstractHandlerMappingTests {
 			assertThat(handler.getClass().getSimpleName()).isEqualTo("PreFlightHandler");
 			DirectFieldAccessor accessor = new DirectFieldAccessor(handler);
 			corsConfig = (CorsConfiguration) accessor.getPropertyValue("config");
-		}
-		else {
+		} else {
 			HandlerInterceptor[] interceptors = chain.getInterceptors();
 			if (!ObjectUtils.isEmpty(interceptors)) {
 				DirectFieldAccessor accessor = new DirectFieldAccessor(interceptors[0]);
@@ -225,8 +224,7 @@ class CorsAbstractHandlerMappingTests {
 		protected Object getHandlerInternal(HttpServletRequest request) throws Exception {
 			if (request.getRequestURI().equals("/cors")) {
 				return new CorsAwareHandler();
-			}
-			else if (request.getRequestURI().equals("/chain")) {
+			} else if (request.getRequestURI().equals("/chain")) {
 				return new HandlerExecutionChain(new CorsAwareHandler());
 			}
 			return new SimpleHandler();

@@ -34,13 +34,11 @@ import org.w3c.dom.Element;
  * @author Stephane Nicoll
  * @since 4.1
  */
-class AnnotationDrivenJmsBeanDefinitionParser implements BeanDefinitionParser
-{
+class AnnotationDrivenJmsBeanDefinitionParser implements BeanDefinitionParser {
 
 	@Override
 	@Nullable
-	public BeanDefinition parse(Element element, ParserContext parserContext)
-	{
+	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		Object source = parserContext.extractSource(element);
 
 		// Register component for the surrounding <jms:annotation-driven> element.
@@ -52,36 +50,28 @@ class AnnotationDrivenJmsBeanDefinitionParser implements BeanDefinitionParser
 		BeanDefinitionRegistry registry = parserContext.getRegistry();
 
 		if (registry.containsBeanDefinition(
-				JmsListenerConfigUtils.JMS_LISTENER_ANNOTATION_PROCESSOR_BEAN_NAME))
-		{
+				JmsListenerConfigUtils.JMS_LISTENER_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			parserContext.getReaderContext().error(
 					"Only one JmsListenerAnnotationBeanPostProcessor may exist within the context.",
 					source);
-		}
-		else
-		{
+		} else {
 			BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(
 					"org.springframework.jms.annotation.JmsListenerAnnotationBeanPostProcessor");
 			builder.getRawBeanDefinition().setSource(source);
 			String endpointRegistry = element.getAttribute("registry");
-			if (StringUtils.hasText(endpointRegistry))
-			{
+			if (StringUtils.hasText(endpointRegistry)) {
 				builder.addPropertyReference("endpointRegistry", endpointRegistry);
-			}
-			else
-			{
+			} else {
 				registerDefaultEndpointRegistry(source, parserContext);
 			}
 
 			String containerFactory = element.getAttribute("container-factory");
-			if (StringUtils.hasText(containerFactory))
-			{
+			if (StringUtils.hasText(containerFactory)) {
 				builder.addPropertyValue("containerFactoryBeanName", containerFactory);
 			}
 
 			String handlerMethodFactory = element.getAttribute("handler-method-factory");
-			if (StringUtils.hasText(handlerMethodFactory))
-			{
+			if (StringUtils.hasText(handlerMethodFactory)) {
 				builder.addPropertyReference("messageHandlerMethodFactory", handlerMethodFactory);
 			}
 
@@ -96,8 +86,7 @@ class AnnotationDrivenJmsBeanDefinitionParser implements BeanDefinitionParser
 	}
 
 	private static void registerDefaultEndpointRegistry(@Nullable Object source,
-			ParserContext parserContext)
-	{
+														ParserContext parserContext) {
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder
 				.genericBeanDefinition("org.springframework.jms.config.JmsListenerEndpointRegistry");
 		builder.getRawBeanDefinition().setSource(source);
@@ -106,8 +95,7 @@ class AnnotationDrivenJmsBeanDefinitionParser implements BeanDefinitionParser
 	}
 
 	private static void registerInfrastructureBean(ParserContext parserContext,
-			BeanDefinitionBuilder builder, String beanName)
-	{
+												   BeanDefinitionBuilder builder, String beanName) {
 
 		builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		parserContext.getRegistry().registerBeanDefinition(beanName, builder.getBeanDefinition());

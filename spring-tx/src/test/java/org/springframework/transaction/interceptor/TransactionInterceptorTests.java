@@ -16,14 +16,6 @@
 
 package org.springframework.transaction.interceptor;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-
-import java.io.Serializable;
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -32,6 +24,14 @@ import org.springframework.core.testfixture.io.SerializationTestUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.*;
 
+import java.io.Serializable;
+import java.util.Properties;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+
 /**
  * Mock object based tests for TransactionInterceptor.
  *
@@ -39,13 +39,11 @@ import org.springframework.transaction.*;
  * @author Juergen Hoeller
  * @since 16.03.2003
  */
-public class TransactionInterceptorTests extends AbstractTransactionAspectTests
-{
+public class TransactionInterceptorTests extends AbstractTransactionAspectTests {
 
 	@Override
 	protected Object advised(Object target, PlatformTransactionManager ptm,
-			TransactionAttributeSource[] tas)
-	{
+							 TransactionAttributeSource[] tas) {
 		TransactionInterceptor ti = new TransactionInterceptor();
 		ti.setTransactionManager(ptm);
 		ti.setTransactionAttributeSources(tas);
@@ -62,8 +60,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	 */
 	@Override
 	protected Object advised(Object target, PlatformTransactionManager ptm,
-			TransactionAttributeSource tas)
-	{
+							 TransactionAttributeSource tas) {
 		TransactionInterceptor ti = new TransactionInterceptor();
 		ti.setTransactionManager(ptm);
 		assertThat(ti.getTransactionManager()).isEqualTo(ptm);
@@ -80,8 +77,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	 * PlatformTransactionManager is.
 	 */
 	@Test
-	public void serializableWithAttributeProperties() throws Exception
-	{
+	public void serializableWithAttributeProperties() throws Exception {
 		TransactionInterceptor ti = new TransactionInterceptor();
 		Properties props = new Properties();
 		props.setProperty("methodName", "PROPAGATION_REQUIRED");
@@ -98,8 +94,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	@Test
-	public void serializableWithCompositeSource() throws Exception
-	{
+	public void serializableWithCompositeSource() throws Exception {
 		NameMatchTransactionAttributeSource tas1 = new NameMatchTransactionAttributeSource();
 		Properties props = new Properties();
 		props.setProperty("methodName", "PROPAGATION_REQUIRED");
@@ -132,8 +127,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	@Test
-	public void determineTransactionManagerWithNoBeanFactory()
-	{
+	public void determineTransactionManagerWithNoBeanFactory() {
 		PlatformTransactionManager transactionManager = mock(PlatformTransactionManager.class);
 		TransactionInterceptor ti = transactionInterceptorWithTransactionManager(transactionManager,
 				null);
@@ -143,8 +137,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	@Test
-	public void determineTransactionManagerWithNoBeanFactoryAndNoTransactionAttribute()
-	{
+	public void determineTransactionManagerWithNoBeanFactoryAndNoTransactionAttribute() {
 		PlatformTransactionManager transactionManager = mock(PlatformTransactionManager.class);
 		TransactionInterceptor ti = transactionInterceptorWithTransactionManager(transactionManager,
 				null);
@@ -153,8 +146,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	@Test
-	public void determineTransactionManagerWithNoTransactionAttribute()
-	{
+	public void determineTransactionManagerWithNoTransactionAttribute() {
 		BeanFactory beanFactory = mock(BeanFactory.class);
 		TransactionInterceptor ti = simpleTransactionInterceptor(beanFactory);
 
@@ -162,8 +154,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	@Test
-	public void determineTransactionManagerWithQualifierUnknown()
-	{
+	public void determineTransactionManagerWithQualifierUnknown() {
 		BeanFactory beanFactory = mock(BeanFactory.class);
 		TransactionInterceptor ti = simpleTransactionInterceptor(beanFactory);
 		DefaultTransactionAttribute attribute = new DefaultTransactionAttribute();
@@ -175,8 +166,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	@Test
-	public void determineTransactionManagerWithQualifierAndDefault()
-	{
+	public void determineTransactionManagerWithQualifierAndDefault() {
 		BeanFactory beanFactory = mock(BeanFactory.class);
 		PlatformTransactionManager transactionManager = mock(PlatformTransactionManager.class);
 		TransactionInterceptor ti = transactionInterceptorWithTransactionManager(transactionManager,
@@ -191,8 +181,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	@Test
-	public void determineTransactionManagerWithQualifierAndDefaultName()
-	{
+	public void determineTransactionManagerWithQualifierAndDefaultName() {
 		BeanFactory beanFactory = mock(BeanFactory.class);
 		associateTransactionManager(beanFactory, "defaultTransactionManager");
 		TransactionInterceptor ti = transactionInterceptorWithTransactionManagerName(
@@ -207,8 +196,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	@Test
-	public void determineTransactionManagerWithEmptyQualifierAndDefaultName()
-	{
+	public void determineTransactionManagerWithEmptyQualifierAndDefaultName() {
 		BeanFactory beanFactory = mock(BeanFactory.class);
 		PlatformTransactionManager defaultTransactionManager = associateTransactionManager(beanFactory,
 				"defaultTransactionManager");
@@ -222,8 +210,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	@Test
-	public void determineTransactionManagerWithQualifierSeveralTimes()
-	{
+	public void determineTransactionManagerWithQualifierSeveralTimes() {
 		BeanFactory beanFactory = mock(BeanFactory.class);
 		TransactionInterceptor ti = simpleTransactionInterceptor(beanFactory);
 
@@ -243,8 +230,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	@Test
-	public void determineTransactionManagerWithBeanNameSeveralTimes()
-	{
+	public void determineTransactionManagerWithBeanNameSeveralTimes() {
 		BeanFactory beanFactory = mock(BeanFactory.class);
 		TransactionInterceptor ti = transactionInterceptorWithTransactionManagerName(
 				"fooTransactionManager", beanFactory);
@@ -263,8 +249,7 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	@Test
-	public void determineTransactionManagerDefaultSeveralTimes()
-	{
+	public void determineTransactionManagerDefaultSeveralTimes() {
 		BeanFactory beanFactory = mock(BeanFactory.class);
 		TransactionInterceptor ti = simpleTransactionInterceptor(beanFactory);
 
@@ -282,21 +267,17 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	private TransactionInterceptor createTransactionInterceptor(BeanFactory beanFactory,
-			String transactionManagerName, PlatformTransactionManager transactionManager)
-	{
+																String transactionManagerName, PlatformTransactionManager transactionManager) {
 
 		TransactionInterceptor ti = new TransactionInterceptor();
-		if (beanFactory != null)
-		{
+		if (beanFactory != null) {
 			ti.setBeanFactory(beanFactory);
 		}
-		if (transactionManagerName != null)
-		{
+		if (transactionManagerName != null) {
 			ti.setTransactionManagerBeanName(transactionManagerName);
 
 		}
-		if (transactionManager != null)
-		{
+		if (transactionManager != null) {
 			ti.setTransactionManager(transactionManager);
 		}
 		ti.setTransactionAttributeSource(new NameMatchTransactionAttributeSource());
@@ -305,26 +286,22 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	}
 
 	private TransactionInterceptor transactionInterceptorWithTransactionManager(
-			PlatformTransactionManager transactionManager, BeanFactory beanFactory)
-	{
+			PlatformTransactionManager transactionManager, BeanFactory beanFactory) {
 
 		return createTransactionInterceptor(beanFactory, null, transactionManager);
 	}
 
 	private TransactionInterceptor transactionInterceptorWithTransactionManagerName(
-			String transactionManagerName, BeanFactory beanFactory)
-	{
+			String transactionManagerName, BeanFactory beanFactory) {
 
 		return createTransactionInterceptor(beanFactory, transactionManagerName, null);
 	}
 
-	private TransactionInterceptor simpleTransactionInterceptor(BeanFactory beanFactory)
-	{
+	private TransactionInterceptor simpleTransactionInterceptor(BeanFactory beanFactory) {
 		return createTransactionInterceptor(beanFactory, null, null);
 	}
 
-	private PlatformTransactionManager associateTransactionManager(BeanFactory beanFactory, String name)
-	{
+	private PlatformTransactionManager associateTransactionManager(BeanFactory beanFactory, String name) {
 		PlatformTransactionManager transactionManager = mock(PlatformTransactionManager.class);
 		given(beanFactory.containsBean(name)).willReturn(true);
 		given(beanFactory.getBean(name, TransactionManager.class)).willReturn(transactionManager);
@@ -335,25 +312,21 @@ public class TransactionInterceptorTests extends AbstractTransactionAspectTests
 	 * We won't use this: we just want to know it's serializable.
 	 */
 	@SuppressWarnings("serial")
-	public static class SerializableTransactionManager implements PlatformTransactionManager, Serializable
-	{
+	public static class SerializableTransactionManager implements PlatformTransactionManager, Serializable {
 
 		@Override
 		public TransactionStatus getTransaction(@Nullable TransactionDefinition definition)
-				throws TransactionException
-		{
+				throws TransactionException {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public void commit(TransactionStatus status) throws TransactionException
-		{
+		public void commit(TransactionStatus status) throws TransactionException {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public void rollback(TransactionStatus status) throws TransactionException
-		{
+		public void rollback(TransactionStatus status) throws TransactionException {
 			throw new UnsupportedOperationException();
 		}
 	}

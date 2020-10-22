@@ -16,20 +16,18 @@
 
 package org.springframework.orm.jpa;
 
-import static org.mockito.Mockito.verify;
-
 import org.junit.jupiter.api.Test;
+
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Rod Johnson
  * @author Phillip Webb
  */
-public class EntityManagerFactoryBeanSupportTests extends AbstractEntityManagerFactoryBeanTests
-{
+public class EntityManagerFactoryBeanSupportTests extends AbstractEntityManagerFactoryBeanTests {
 
 	@Test
-	public void testHookIsCalled() throws Exception
-	{
+	public void testHookIsCalled() throws Exception {
 		DummyEntityManagerFactoryBean demf = new DummyEntityManagerFactoryBean(mockEmf);
 
 		demf.afterPropertiesSet();

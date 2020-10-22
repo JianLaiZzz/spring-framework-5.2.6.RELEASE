@@ -16,13 +16,13 @@
 
 package org.springframework.test.context;
 
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
-
-import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toCollection;
@@ -38,8 +38,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * are only be visible to the thread in which the mutation occurred.
  *
  * @author Sam Brannen
- * @since 5.0
  * @see org.springframework.test.context.junit4.concurrency.SpringJUnit4ConcurrencyTests
+ * @since 5.0
  */
 class TestContextConcurrencyTests {
 
@@ -70,8 +70,7 @@ class TestContextConcurrencyTests {
 					// no need to invoke the actual test method
 					tcm.afterTestMethod(testInstance, testMethod, null);
 					tcm.afterTestClass();
-				}
-				catch (Exception ex) {
+				} catch (Exception ex) {
 					throw new RuntimeException(ex);
 				}
 			});

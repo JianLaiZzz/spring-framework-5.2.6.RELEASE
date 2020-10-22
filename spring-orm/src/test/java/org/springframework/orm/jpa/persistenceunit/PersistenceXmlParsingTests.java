@@ -16,18 +16,6 @@
 
 package org.springframework.orm.jpa.persistenceunit;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.persistence.spi.PersistenceUnitInfo;
-import javax.persistence.spi.PersistenceUnitTransactionType;
-import javax.sql.DataSource;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.testfixture.jndi.SimpleNamingContextBuilder;
@@ -39,6 +27,17 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.jdbc.datasource.lookup.MapDataSourceLookup;
 
+import javax.persistence.spi.PersistenceUnitInfo;
+import javax.persistence.spi.PersistenceUnitTransactionType;
+import javax.sql.DataSource;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 /**
  * Unit and integration tests for the JPA XML resource parsing support.
  *
@@ -46,12 +45,10 @@ import org.springframework.jdbc.datasource.lookup.MapDataSourceLookup;
  * @author Juergen Hoeller
  * @author Nicholas Williams
  */
-public class PersistenceXmlParsingTests
-{
+public class PersistenceXmlParsingTests {
 
 	@Test
-	public void testMetaInfCase() throws Exception
-	{
+	public void testMetaInfCase() throws Exception {
 		PersistenceUnitReader reader = new PersistenceUnitReader(
 				new PathMatchingResourcePatternResolver(), new JndiDataSourceLookup());
 		String resource = "/org/springframework/orm/jpa/META-INF/persistence.xml";
@@ -72,8 +69,7 @@ public class PersistenceXmlParsingTests
 	}
 
 	@Test
-	public void testExample1() throws Exception
-	{
+	public void testExample1() throws Exception {
 		PersistenceUnitReader reader = new PersistenceUnitReader(
 				new PathMatchingResourcePatternResolver(), new JndiDataSourceLookup());
 		String resource = "/org/springframework/orm/jpa/persistence-example1.xml";
@@ -88,8 +84,7 @@ public class PersistenceXmlParsingTests
 	}
 
 	@Test
-	public void testExample2() throws Exception
-	{
+	public void testExample2() throws Exception {
 		PersistenceUnitReader reader = new PersistenceUnitReader(
 				new PathMatchingResourcePatternResolver(), new JndiDataSourceLookup());
 		String resource = "/org/springframework/orm/jpa/persistence-example2.xml";
@@ -109,8 +104,7 @@ public class PersistenceXmlParsingTests
 	}
 
 	@Test
-	public void testExample3() throws Exception
-	{
+	public void testExample3() throws Exception {
 		PersistenceUnitReader reader = new PersistenceUnitReader(
 				new PathMatchingResourcePatternResolver(), new JndiDataSourceLookup());
 		String resource = "/org/springframework/orm/jpa/persistence-example3.xml";
@@ -135,8 +129,7 @@ public class PersistenceXmlParsingTests
 	}
 
 	@Test
-	public void testExample4() throws Exception
-	{
+	public void testExample4() throws Exception {
 		SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
 		DataSource ds = new DriverManagerDataSource();
 		builder.bind("java:comp/env/jdbc/MyDB", ds);
@@ -168,8 +161,7 @@ public class PersistenceXmlParsingTests
 	}
 
 	@Test
-	public void testExample5() throws Exception
-	{
+	public void testExample5() throws Exception {
 		PersistenceUnitReader reader = new PersistenceUnitReader(
 				new PathMatchingResourcePatternResolver(), new JndiDataSourceLookup());
 		String resource = "/org/springframework/orm/jpa/persistence-example5.xml";
@@ -197,8 +189,7 @@ public class PersistenceXmlParsingTests
 	}
 
 	@Test
-	public void testExampleComplex() throws Exception
-	{
+	public void testExampleComplex() throws Exception {
 		DataSource ds = new DriverManagerDataSource();
 
 		String resource = "/org/springframework/orm/jpa/persistence-complex.xml";
@@ -263,8 +254,7 @@ public class PersistenceXmlParsingTests
 	}
 
 	@Test
-	public void testExample6() throws Exception
-	{
+	public void testExample6() throws Exception {
 		PersistenceUnitReader reader = new PersistenceUnitReader(
 				new PathMatchingResourcePatternResolver(), new JndiDataSourceLookup());
 		String resource = "/org/springframework/orm/jpa/persistence-example6.xml";
@@ -279,8 +269,7 @@ public class PersistenceXmlParsingTests
 
 	@Disabled("not doing schema parsing anymore for JPA 2.0 compatibility")
 	@Test
-	public void testInvalidPersistence() throws Exception
-	{
+	public void testInvalidPersistence() throws Exception {
 		PersistenceUnitReader reader = new PersistenceUnitReader(
 				new PathMatchingResourcePatternResolver(), new JndiDataSourceLookup());
 		String resource = "/org/springframework/orm/jpa/persistence-invalid.xml";
@@ -290,8 +279,7 @@ public class PersistenceXmlParsingTests
 
 	@Disabled("not doing schema parsing anymore for JPA 2.0 compatibility")
 	@Test
-	public void testNoSchemaPersistence() throws Exception
-	{
+	public void testNoSchemaPersistence() throws Exception {
 		PersistenceUnitReader reader = new PersistenceUnitReader(
 				new PathMatchingResourcePatternResolver(), new JndiDataSourceLookup());
 		String resource = "/org/springframework/orm/jpa/persistence-no-schema.xml";
@@ -300,8 +288,7 @@ public class PersistenceXmlParsingTests
 	}
 
 	@Test
-	public void testPersistenceUnitRootUrl() throws Exception
-	{
+	public void testPersistenceUnitRootUrl() throws Exception {
 		URL url = PersistenceUnitReader.determinePersistenceUnitRootUrl(
 				new ClassPathResource("/org/springframework/orm/jpa/persistence-no-schema.xml"));
 		assertThat(url).isNull();
@@ -313,8 +300,7 @@ public class PersistenceXmlParsingTests
 	}
 
 	@Test
-	public void testPersistenceUnitRootUrlWithJar() throws Exception
-	{
+	public void testPersistenceUnitRootUrlWithJar() throws Exception {
 		ClassPathResource archive = new ClassPathResource("/org/springframework/orm/jpa/jpa-archive.jar");
 		String newRoot = "jar:" + archive.getURL().toExternalForm() + "!/META-INF/persist.xml";
 		Resource insideArchive = new UrlResource(newRoot);
@@ -326,8 +312,7 @@ public class PersistenceXmlParsingTests
 	}
 
 	@Test
-	public void testJpa1ExcludeUnlisted() throws Exception
-	{
+	public void testJpa1ExcludeUnlisted() throws Exception {
 		PersistenceUnitReader reader = new PersistenceUnitReader(
 				new PathMatchingResourcePatternResolver(), new JndiDataSourceLookup());
 		String resource = "/org/springframework/orm/jpa/persistence-exclude-1.0.xml";
@@ -363,8 +348,7 @@ public class PersistenceXmlParsingTests
 	}
 
 	@Test
-	public void testJpa2ExcludeUnlisted() throws Exception
-	{
+	public void testJpa2ExcludeUnlisted() throws Exception {
 		PersistenceUnitReader reader = new PersistenceUnitReader(
 				new PathMatchingResourcePatternResolver(), new JndiDataSourceLookup());
 		String resource = "/org/springframework/orm/jpa/persistence-exclude-2.0.xml";

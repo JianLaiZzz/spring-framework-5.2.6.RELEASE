@@ -16,12 +16,12 @@
 
 package org.springframework.beans.factory.support;
 
-import java.lang.reflect.Method;
-
 import org.springframework.beans.BeanMetadataElement;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
+
+import java.lang.reflect.Method;
 
 /**
  * Object representing the override of a method on a managed object by the IoC
@@ -47,6 +47,7 @@ public abstract class MethodOverride implements BeanMetadataElement {
 
 	/**
 	 * Construct a new override for the given method.
+	 *
 	 * @param methodName the name of the method to override
 	 */
 	protected MethodOverride(String methodName) {
@@ -98,6 +99,7 @@ public abstract class MethodOverride implements BeanMetadataElement {
 	 * Subclasses must override this to indicate whether they <em>match</em> the
 	 * given method. This allows for argument list checking as well as method
 	 * name checking.
+	 *
 	 * @param method the method to check
 	 * @return whether this override matches the given method
 	 */

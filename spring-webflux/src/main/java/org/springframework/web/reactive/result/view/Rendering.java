@@ -16,13 +16,13 @@
 
 package org.springframework.web.reactive.result.view;
 
-import java.util.Collection;
-import java.util.Map;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.ui.Model;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Public API for HTML rendering. Supported as a return value in Spring WebFlux
@@ -68,6 +68,7 @@ public interface Rendering {
 
 	/**
 	 * Create a new builder for response rendering based on the given view name.
+	 *
 	 * @param name the view name to be resolved to a {@link View}
 	 * @return the builder
 	 */
@@ -77,6 +78,7 @@ public interface Rendering {
 
 	/**
 	 * Create a new builder for a redirect through a {@link RedirectView}.
+	 *
 	 * @param url the redirect URL
 	 * @return the builder
 	 */
@@ -94,6 +96,7 @@ public interface Rendering {
 
 		/**
 		 * Add the given model attribute with the supplied name.
+		 *
 		 * @see Model#addAttribute(String, Object)
 		 */
 		B modelAttribute(String name, Object value);
@@ -101,6 +104,7 @@ public interface Rendering {
 		/**
 		 * Add an attribute to the model using a
 		 * {@link org.springframework.core.Conventions#getVariableName generated name}.
+		 *
 		 * @see Model#addAttribute(Object)
 		 */
 		B modelAttribute(Object value);
@@ -108,12 +112,14 @@ public interface Rendering {
 		/**
 		 * Add all given attributes to the model using
 		 * {@link org.springframework.core.Conventions#getVariableName generated names}.
+		 *
 		 * @see Model#addAllAttributes(Collection)
 		 */
 		B modelAttributes(Object... values);
 
 		/**
 		 * Add the given attributes to the model.
+		 *
 		 * @see Model#addAllAttributes(Map)
 		 */
 		B model(Map<String, ?> map);

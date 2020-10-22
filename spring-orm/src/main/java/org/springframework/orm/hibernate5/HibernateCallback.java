@@ -26,16 +26,14 @@ import org.springframework.lang.Nullable;
  * A typical implementation will call {@code Session.load/find/update} to perform
  * some operations on persistent objects.
  *
+ * @param <T> the result type
  * @author Juergen Hoeller
- * @since 4.2
- * @param <T>
- *            the result type
  * @see HibernateTemplate
  * @see HibernateTransactionManager
+ * @since 4.2
  */
 @FunctionalInterface
-public interface HibernateCallback<T>
-{
+public interface HibernateCallback<T> {
 
 	/**
 	 * Gets called by {@code HibernateTemplate.execute} with an active
@@ -46,12 +44,10 @@ public interface HibernateCallback<T>
 	 * i.e. a domain object or a collection of domain objects.
 	 * A thrown custom RuntimeException is treated as an application exception:
 	 * It gets propagated to the caller of the template.
-	 * 
-	 * @param session
-	 *            active Hibernate session
+	 *
+	 * @param session active Hibernate session
 	 * @return a result object, or {@code null} if none
-	 * @throws HibernateException
-	 *             if thrown by the Hibernate API
+	 * @throws HibernateException if thrown by the Hibernate API
 	 * @see HibernateTemplate#execute
 	 */
 	@Nullable

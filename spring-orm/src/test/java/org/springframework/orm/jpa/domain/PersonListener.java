@@ -16,23 +16,21 @@
 
 package org.springframework.orm.jpa.domain;
 
-import javax.persistence.PostLoad;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+
+import javax.persistence.PostLoad;
 
 /**
  * @author Juergen Hoeller
  */
-public class PersonListener
-{
+public class PersonListener {
 
 	@Autowired
 	ApplicationContext context;
 
 	@PostLoad
-	public void postLoad(Person person)
-	{
+	public void postLoad(Person person) {
 		person.postLoaded = this.context;
 	}
 

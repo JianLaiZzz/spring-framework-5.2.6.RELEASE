@@ -16,12 +16,7 @@
 
 package org.springframework.test.context;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * {@code @TestConstructor} is a type-level annotation that is used to configure
@@ -49,7 +44,6 @@ import java.lang.annotation.Target;
  * or various test-related annotations from Spring Boot Test.
  *
  * @author Sam Brannen
- * @since 5.2
  * @see org.springframework.beans.factory.annotation.Autowired @Autowired
  * @see org.springframework.test.context.junit.jupiter.SpringExtension SpringExtension
  * @see org.springframework.test.context.junit.jupiter.SpringJUnitConfig @SpringJUnitConfig
@@ -58,6 +52,7 @@ import java.lang.annotation.Target;
  * @see ContextHierarchy @ContextHierarchy
  * @see ActiveProfiles @ActiveProfiles
  * @see TestPropertySource @TestPropertySource
+ * @since 5.2
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -78,6 +73,7 @@ public @interface TestConstructor {
 	 * <p>May alternatively be configured via the
 	 * {@link org.springframework.core.SpringProperties SpringProperties}
 	 * mechanism.
+	 *
 	 * @see #autowireMode
 	 */
 	String TEST_CONSTRUCTOR_AUTOWIRE_MODE_PROPERTY_NAME = "spring.test.constructor.autowire.mode";
@@ -89,6 +85,7 @@ public @interface TestConstructor {
 	 * <p>Setting this flag overrides the global default. See
 	 * {@link #TEST_CONSTRUCTOR_AUTOWIRE_MODE_PROPERTY_NAME} for details on how
 	 * to change the global default.
+	 *
 	 * @return an {@link AutowireMode} to take precedence over the global default
 	 * @see #TEST_CONSTRUCTOR_AUTOWIRE_MODE_PROPERTY_NAME
 	 * @see org.springframework.beans.factory.annotation.Autowired @Autowired
@@ -100,6 +97,7 @@ public @interface TestConstructor {
 
 	/**
 	 * Defines autowiring modes for parameters in a test constructor.
+	 *
 	 * @see #ALL
 	 * @see #ANNOTATED
 	 */
@@ -109,6 +107,7 @@ public @interface TestConstructor {
 		 * All test constructor parameters will be autowired as if the constructor
 		 * itself were annotated with
 		 * {@link org.springframework.beans.factory.annotation.Autowired @Autowired}.
+		 *
 		 * @see #ANNOTATED
 		 */
 		ALL,
@@ -120,6 +119,7 @@ public @interface TestConstructor {
 		 * {@link org.springframework.beans.factory.annotation.Qualifier @Qualifier},
 		 * or {@link org.springframework.beans.factory.annotation.Value @Value},
 		 * or if the constructor itself is annotated with {@code @Autowired}.
+		 *
 		 * @see #ALL
 		 */
 		ANNOTATED;

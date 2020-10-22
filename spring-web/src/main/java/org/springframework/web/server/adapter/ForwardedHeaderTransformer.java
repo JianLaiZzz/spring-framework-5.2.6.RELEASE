@@ -16,18 +16,18 @@
 
 package org.springframework.web.server.adapter;
 
-import java.net.URI;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Set;
-import java.util.function.Function;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.Nullable;
 import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Extract values from "Forwarded" and "X-Forwarded-*" headers to override
@@ -44,8 +44,8 @@ import org.springframework.web.util.UriComponentsBuilder;
  * {@link WebHttpHandlerBuilder#forwardedHeaderTransformer(ForwardedHeaderTransformer)}.
  *
  * @author Rossen Stoyanchev
- * @since 5.1
  * @see <a href="https://tools.ietf.org/html/rfc7239">https://tools.ietf.org/html/rfc7239</a>
+ * @since 5.1
  */
 public class ForwardedHeaderTransformer implements Function<ServerHttpRequest, ServerHttpRequest> {
 
@@ -68,6 +68,7 @@ public class ForwardedHeaderTransformer implements Function<ServerHttpRequest, S
 	/**
 	 * Enable mode in which any "Forwarded" or "X-Forwarded-*" headers are
 	 * removed only and the information in them ignored.
+	 *
 	 * @param removeOnly whether to discard and ignore forwarded headers
 	 */
 	public void setRemoveOnly(boolean removeOnly) {
@@ -76,6 +77,7 @@ public class ForwardedHeaderTransformer implements Function<ServerHttpRequest, S
 
 	/**
 	 * Whether the "remove only" mode is on.
+	 *
 	 * @see #setRemoveOnly
 	 */
 	public boolean isRemoveOnly() {
@@ -85,6 +87,7 @@ public class ForwardedHeaderTransformer implements Function<ServerHttpRequest, S
 
 	/**
 	 * Apply and remove, or remove Forwarded type headers.
+	 *
 	 * @param request the request
 	 */
 	@Override
@@ -108,6 +111,7 @@ public class ForwardedHeaderTransformer implements Function<ServerHttpRequest, S
 
 	/**
 	 * Whether the request has any Forwarded headers.
+	 *
 	 * @param request the request
 	 */
 	protected boolean hasForwardedHeaders(ServerHttpRequest request) {

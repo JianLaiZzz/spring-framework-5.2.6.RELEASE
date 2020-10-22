@@ -16,12 +16,6 @@
 
 package org.springframework.aop.config;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.core.testfixture.io.ResourceTestUtils.qualifiedResource;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -34,13 +28,18 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.beans.testfixture.beans.CollectingReaderEventListener;
 import org.springframework.core.io.Resource;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.core.testfixture.io.ResourceTestUtils.qualifiedResource;
+
 /**
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @author Chris Beams
  */
-public class AopNamespaceHandlerEventTests
-{
+public class AopNamespaceHandlerEventTests {
 
 	private static final Class<?> CLASS = AopNamespaceHandlerEventTests.class;
 
@@ -59,15 +58,13 @@ public class AopNamespaceHandlerEventTests
 	private XmlBeanDefinitionReader reader;
 
 	@BeforeEach
-	public void setup()
-	{
+	public void setup() {
 		this.reader = new XmlBeanDefinitionReader(this.beanFactory);
 		this.reader.setEventListener(this.eventListener);
 	}
 
 	@Test
-	public void testPointcutEvents()
-	{
+	public void testPointcutEvents() {
 		this.reader.loadBeanDefinitions(POINTCUT_EVENTS_CONTEXT);
 		ComponentDefinition[] componentDefinitions = this.eventListener.getComponentDefinitions();
 		assertThat(componentDefinitions.length).as("Incorrect number of events fired").isEqualTo(1);
@@ -80,10 +77,8 @@ public class AopNamespaceHandlerEventTests
 		ComponentDefinition[] nestedComponentDefs = compositeDef.getNestedComponents();
 		assertThat(nestedComponentDefs.length).as("Incorrect number of inner components").isEqualTo(2);
 		PointcutComponentDefinition pcd = null;
-		for (ComponentDefinition componentDefinition : nestedComponentDefs)
-		{
-			if (componentDefinition instanceof PointcutComponentDefinition)
-			{
+		for (ComponentDefinition componentDefinition : nestedComponentDefs) {
+			if (componentDefinition instanceof PointcutComponentDefinition) {
 				pcd = (PointcutComponentDefinition) componentDefinition;
 				break;
 			}
@@ -94,8 +89,7 @@ public class AopNamespaceHandlerEventTests
 	}
 
 	@Test
-	public void testAdvisorEventsWithPointcutRef()
-	{
+	public void testAdvisorEventsWithPointcutRef() {
 		this.reader.loadBeanDefinitions(POINTCUT_REF_CONTEXT);
 		ComponentDefinition[] componentDefinitions = this.eventListener.getComponentDefinitions();
 		assertThat(componentDefinitions.length).as("Incorrect number of events fired").isEqualTo(2);
@@ -108,11 +102,9 @@ public class AopNamespaceHandlerEventTests
 		ComponentDefinition[] nestedComponentDefs = compositeDef.getNestedComponents();
 		assertThat(nestedComponentDefs.length).as("Incorrect number of inner components").isEqualTo(3);
 		AdvisorComponentDefinition acd = null;
-		for (int i = 0; i < nestedComponentDefs.length; i++)
-		{
+		for (int i = 0; i < nestedComponentDefs.length; i++) {
 			ComponentDefinition componentDefinition = nestedComponentDefs[i];
-			if (componentDefinition instanceof AdvisorComponentDefinition)
-			{
+			if (componentDefinition instanceof AdvisorComponentDefinition) {
 				acd = (AdvisorComponentDefinition) componentDefinition;
 				break;
 			}
@@ -128,8 +120,7 @@ public class AopNamespaceHandlerEventTests
 	}
 
 	@Test
-	public void testAdvisorEventsWithDirectPointcut()
-	{
+	public void testAdvisorEventsWithDirectPointcut() {
 		this.reader.loadBeanDefinitions(DIRECT_POINTCUT_EVENTS_CONTEXT);
 		ComponentDefinition[] componentDefinitions = this.eventListener.getComponentDefinitions();
 		assertThat(componentDefinitions.length).as("Incorrect number of events fired").isEqualTo(2);
@@ -142,11 +133,9 @@ public class AopNamespaceHandlerEventTests
 		ComponentDefinition[] nestedComponentDefs = compositeDef.getNestedComponents();
 		assertThat(nestedComponentDefs.length).as("Incorrect number of inner components").isEqualTo(2);
 		AdvisorComponentDefinition acd = null;
-		for (int i = 0; i < nestedComponentDefs.length; i++)
-		{
+		for (int i = 0; i < nestedComponentDefs.length; i++) {
 			ComponentDefinition componentDefinition = nestedComponentDefs[i];
-			if (componentDefinition instanceof AdvisorComponentDefinition)
-			{
+			if (componentDefinition instanceof AdvisorComponentDefinition) {
 				acd = (AdvisorComponentDefinition) componentDefinition;
 				break;
 			}
@@ -162,8 +151,7 @@ public class AopNamespaceHandlerEventTests
 	}
 
 	@Test
-	public void testAspectEvent()
-	{
+	public void testAspectEvent() {
 		this.reader.loadBeanDefinitions(CONTEXT);
 		ComponentDefinition[] componentDefinitions = this.eventListener.getComponentDefinitions();
 		assertThat(componentDefinitions.length).as("Incorrect number of events fired").isEqualTo(5);
@@ -176,10 +164,8 @@ public class AopNamespaceHandlerEventTests
 		ComponentDefinition[] nestedComponentDefs = compositeDef.getNestedComponents();
 		assertThat(nestedComponentDefs.length).as("Incorrect number of inner components").isEqualTo(2);
 		AspectComponentDefinition acd = null;
-		for (ComponentDefinition componentDefinition : nestedComponentDefs)
-		{
-			if (componentDefinition instanceof AspectComponentDefinition)
-			{
+		for (ComponentDefinition componentDefinition : nestedComponentDefs) {
+			if (componentDefinition instanceof AspectComponentDefinition) {
 				acd = (AspectComponentDefinition) componentDefinition;
 				break;
 			}
@@ -194,14 +180,12 @@ public class AopNamespaceHandlerEventTests
 		Set<String> expectedReferences = new HashSet<>();
 		expectedReferences.add("pc");
 		expectedReferences.add("countingAdvice");
-		for (BeanReference beanReference : beanReferences)
-		{
+		for (BeanReference beanReference : beanReferences) {
 			expectedReferences.remove(beanReference.getBeanName());
 		}
 		assertThat(expectedReferences.size()).as("Incorrect references found").isEqualTo(0);
 
-		for (int i = 1; i < componentDefinitions.length; i++)
-		{
+		for (int i = 1; i < componentDefinitions.length; i++) {
 			boolean condition1 = componentDefinitions[i] instanceof BeanComponentDefinition;
 			assertThat(condition1).isTrue();
 		}

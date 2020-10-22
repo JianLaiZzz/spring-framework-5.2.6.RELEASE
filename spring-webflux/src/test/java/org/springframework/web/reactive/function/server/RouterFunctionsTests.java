@@ -16,14 +16,7 @@
 
 package org.springframework.web.reactive.function.server;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -37,6 +30,12 @@ import org.springframework.web.server.WebFilterChain;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpResponse;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.util.Collections;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -200,18 +199,22 @@ public class RouterFunctionsTests {
 					public HttpStatus statusCode() {
 						return HttpStatus.OK;
 					}
+
 					@Override
 					public int rawStatusCode() {
 						return 200;
 					}
+
 					@Override
 					public HttpHeaders headers() {
 						return new HttpHeaders();
 					}
+
 					@Override
 					public MultiValueMap<String, ResponseCookie> cookies() {
 						return new LinkedMultiValueMap<>();
 					}
+
 					@Override
 					public Mono<Void> writeTo(ServerWebExchange exchange, Context context) {
 						return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found"));
@@ -238,18 +241,22 @@ public class RouterFunctionsTests {
 					public HttpStatus statusCode() {
 						return HttpStatus.OK;
 					}
+
 					@Override
 					public int rawStatusCode() {
 						return 200;
 					}
+
 					@Override
 					public HttpHeaders headers() {
 						return new HttpHeaders();
 					}
+
 					@Override
 					public MultiValueMap<String, ResponseCookie> cookies() {
 						return new LinkedMultiValueMap<>();
 					}
+
 					@Override
 					public Mono<Void> writeTo(ServerWebExchange exchange, Context context) {
 						throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found");

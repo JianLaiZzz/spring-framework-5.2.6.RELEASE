@@ -16,27 +16,18 @@
 
 package org.springframework.test.context.support;
 
+import org.mockito.Mockito;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.*;
+import org.springframework.test.context.web.WebAppConfiguration;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Collections;
 import java.util.Set;
-
-import org.mockito.Mockito;
-
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.BootstrapContext;
-import org.springframework.test.context.BootstrapTestUtils;
-import org.springframework.test.context.CacheAwareContextLoaderDelegate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.ContextConfigurationAttributes;
-import org.springframework.test.context.ContextLoader;
-import org.springframework.test.context.MergedContextConfiguration;
-import org.springframework.test.context.TestContextBootstrapper;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,7 +45,7 @@ abstract class AbstractContextConfigurationUtilsTests {
 	static final String[] EMPTY_STRING_ARRAY = new String[0];
 
 	static final Set<Class<? extends ApplicationContextInitializer<?>>>
-			EMPTY_INITIALIZER_CLASSES = Collections.<Class<? extends ApplicationContextInitializer<?>>> emptySet();
+			EMPTY_INITIALIZER_CLASSES = Collections.<Class<? extends ApplicationContextInitializer<?>>>emptySet();
 
 
 	MergedContextConfiguration buildMergedContextConfiguration(Class<?> testClass) {
@@ -65,8 +56,8 @@ abstract class AbstractContextConfigurationUtilsTests {
 	}
 
 	void assertAttributes(ContextConfigurationAttributes attributes, Class<?> expectedDeclaringClass,
-			String[] expectedLocations, Class<?>[] expectedClasses,
-			Class<? extends ContextLoader> expectedContextLoaderClass, boolean expectedInheritLocations) {
+						  String[] expectedLocations, Class<?>[] expectedClasses,
+						  Class<? extends ContextLoader> expectedContextLoaderClass, boolean expectedInheritLocations) {
 
 		assertThat(attributes.getDeclaringClass()).as("declaring class").isEqualTo(expectedDeclaringClass);
 		assertThat(attributes.getLocations()).as("locations").isEqualTo(expectedLocations);
@@ -76,8 +67,8 @@ abstract class AbstractContextConfigurationUtilsTests {
 	}
 
 	void assertMergedConfig(MergedContextConfiguration mergedConfig, Class<?> expectedTestClass,
-			String[] expectedLocations, Class<?>[] expectedClasses,
-			Class<? extends ContextLoader> expectedContextLoaderClass) {
+							String[] expectedLocations, Class<?>[] expectedClasses,
+							Class<? extends ContextLoader> expectedContextLoaderClass) {
 
 		assertMergedConfig(mergedConfig, expectedTestClass, expectedLocations, expectedClasses,
 				EMPTY_INITIALIZER_CLASSES, expectedContextLoaderClass);
@@ -100,8 +91,7 @@ abstract class AbstractContextConfigurationUtilsTests {
 		assertThat(mergedConfig.getActiveProfiles()).isNotNull();
 		if (expectedContextLoaderClass == null) {
 			assertThat(mergedConfig.getContextLoader()).isNull();
-		}
-		else {
+		} else {
 			assertThat(mergedConfig.getContextLoader().getClass()).isEqualTo(expectedContextLoaderClass);
 		}
 		assertThat(mergedConfig.getContextInitializerClasses()).isNotNull();

@@ -16,12 +16,12 @@
 
 package org.springframework.transaction.interceptor;
 
+import org.springframework.beans.propertyeditors.PropertiesEditor;
+import org.springframework.util.StringUtils;
+
 import java.beans.PropertyEditorSupport;
 import java.util.Enumeration;
 import java.util.Properties;
-
-import org.springframework.beans.propertyeditors.PropertiesEditor;
-import org.springframework.util.StringUtils;
 
 /**
  * Property editor that converts a String into a {@link TransactionAttributeSource}.
@@ -47,18 +47,15 @@ import org.springframework.util.StringUtils;
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
- * @since 26.04.2003
  * @see TransactionAttributeEditor
+ * @since 26.04.2003
  */
-public class TransactionAttributeSourceEditor extends PropertyEditorSupport
-{
+public class TransactionAttributeSourceEditor extends PropertyEditorSupport {
 
 	@Override
-	public void setAsText(String text) throws IllegalArgumentException
-	{
+	public void setAsText(String text) throws IllegalArgumentException {
 		MethodMapTransactionAttributeSource source = new MethodMapTransactionAttributeSource();
-		if (StringUtils.hasLength(text))
-		{
+		if (StringUtils.hasLength(text)) {
 			// Use properties editor to tokenize the hold string.
 			PropertiesEditor propertiesEditor = new PropertiesEditor();
 			propertiesEditor.setAsText(text);
@@ -67,8 +64,7 @@ public class TransactionAttributeSourceEditor extends PropertyEditorSupport
 			// Now we have properties, process each one individually.
 			TransactionAttributeEditor tae = new TransactionAttributeEditor();
 			Enumeration<?> propNames = props.propertyNames();
-			while (propNames.hasMoreElements())
-			{
+			while (propNames.hasMoreElements()) {
 				String name = (String) propNames.nextElement();
 				String value = props.getProperty(name);
 				// Convert value to a transaction attribute.

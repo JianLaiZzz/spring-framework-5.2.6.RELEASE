@@ -24,25 +24,21 @@ import org.springframework.beans.factory.parsing.ParseState;
  * @author Mark Fisher
  * @since 2.0
  */
-public class PointcutEntry implements ParseState.Entry
-{
+public class PointcutEntry implements ParseState.Entry {
 
 	private final String name;
 
 	/**
 	 * Creates a new instance of the {@link PointcutEntry} class.
-	 * 
-	 * @param name
-	 *            the bean name of the pointcut
+	 *
+	 * @param name the bean name of the pointcut
 	 */
-	public PointcutEntry(String name)
-	{
+	public PointcutEntry(String name) {
 		this.name = name;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Pointcut '" + this.name + "'";
 	}
 

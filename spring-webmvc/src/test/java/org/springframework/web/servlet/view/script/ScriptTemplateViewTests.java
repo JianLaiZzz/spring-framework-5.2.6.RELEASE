@@ -16,22 +16,8 @@
 
 package org.springframework.web.servlet.view.script;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.context.support.StaticApplicationContext;
@@ -43,9 +29,15 @@ import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
 import org.springframework.web.testfixture.servlet.MockServletContext;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -90,7 +82,7 @@ public class ScriptTemplateViewTests {
 	public void missingScriptTemplateConfig() {
 		assertThatExceptionOfType(ApplicationContextException.class).isThrownBy(() ->
 				this.view.setApplicationContext(new StaticApplicationContext()))
-			.withMessageContaining("ScriptTemplateConfig");
+				.withMessageContaining("ScriptTemplateConfig");
 	}
 
 	@Test
@@ -185,7 +177,7 @@ public class ScriptTemplateViewTests {
 		this.view.setRenderFunction("render");
 		assertThatIllegalArgumentException().isThrownBy(() ->
 				this.view.setApplicationContext(this.wac))
-			.withMessageContaining("You should define either 'engine', 'engineSupplier' or 'engineName'.");
+				.withMessageContaining("You should define either 'engine', 'engineSupplier' or 'engineName'.");
 	}
 
 	@Test  // gh-23258
@@ -216,7 +208,7 @@ public class ScriptTemplateViewTests {
 		this.view.setSharedEngine(false);
 		assertThatIllegalArgumentException().isThrownBy(() ->
 				this.view.setApplicationContext(this.wac))
-			.withMessageContaining("sharedEngine");
+				.withMessageContaining("sharedEngine");
 	}
 
 	@Test // SPR-14210

@@ -37,8 +37,7 @@ import org.springframework.util.Assert;
  * @author Sam Brannen
  * @since 2.5
  */
-public abstract class ScopedProxyUtils
-{
+public abstract class ScopedProxyUtils {
 
 	private static final String TARGET_NAME_PREFIX = "scopedTarget.";
 
@@ -47,20 +46,16 @@ public abstract class ScopedProxyUtils
 	/**
 	 * Generate a scoped proxy for the supplied target bean, registering the target
 	 * bean with an internal name and setting 'targetBeanName' on the scoped proxy.
-	 * 
-	 * @param definition
-	 *            the original bean definition
-	 * @param registry
-	 *            the bean definition registry
-	 * @param proxyTargetClass
-	 *            whether to create a target class proxy
+	 *
+	 * @param definition       the original bean definition
+	 * @param registry         the bean definition registry
+	 * @param proxyTargetClass whether to create a target class proxy
 	 * @return the scoped proxy definition
 	 * @see #getTargetBeanName(String)
 	 * @see #getOriginalBeanName(String)
 	 */
 	public static BeanDefinitionHolder createScopedProxy(BeanDefinitionHolder definition,
-			BeanDefinitionRegistry registry, boolean proxyTargetClass)
-	{
+														 BeanDefinitionRegistry registry, boolean proxyTargetClass) {
 
 		String originalBeanName = definition.getBeanName();
 		BeanDefinition targetDefinition = definition.getBeanDefinition();
@@ -76,21 +71,17 @@ public abstract class ScopedProxyUtils
 		proxyDefinition.setRole(targetDefinition.getRole());
 
 		proxyDefinition.getPropertyValues().add("targetBeanName", targetBeanName);
-		if (proxyTargetClass)
-		{
+		if (proxyTargetClass) {
 			targetDefinition.setAttribute(AutoProxyUtils.PRESERVE_TARGET_CLASS_ATTRIBUTE, Boolean.TRUE);
 			// ScopedProxyFactoryBean's "proxyTargetClass" default is TRUE, so we don't need to set it explicitly here.
-		}
-		else
-		{
+		} else {
 			proxyDefinition.getPropertyValues().add("proxyTargetClass", Boolean.FALSE);
 		}
 
 		// Copy autowire settings from original bean definition.
 		proxyDefinition.setAutowireCandidate(targetDefinition.isAutowireCandidate());
 		proxyDefinition.setPrimary(targetDefinition.isPrimary());
-		if (targetDefinition instanceof AbstractBeanDefinition)
-		{
+		if (targetDefinition instanceof AbstractBeanDefinition) {
 			proxyDefinition.copyQualifiersFrom((AbstractBeanDefinition) targetDefinition);
 		}
 
@@ -108,33 +99,28 @@ public abstract class ScopedProxyUtils
 
 	/**
 	 * Generate the bean name that is used within the scoped proxy to reference the target bean.
-	 * 
-	 * @param originalBeanName
-	 *            the original name of bean
+	 *
+	 * @param originalBeanName the original name of bean
 	 * @return the generated bean to be used to reference the target bean
 	 * @see #getOriginalBeanName(String)
 	 */
-	public static String getTargetBeanName(String originalBeanName)
-	{
+	public static String getTargetBeanName(String originalBeanName) {
 		return TARGET_NAME_PREFIX + originalBeanName;
 	}
 
 	/**
 	 * Get the original bean name for the provided {@linkplain #getTargetBeanName
 	 * target bean name}.
-	 * 
-	 * @param targetBeanName
-	 *            the target bean name for the scoped proxy
+	 *
+	 * @param targetBeanName the target bean name for the scoped proxy
 	 * @return the original bean name
-	 * @throws IllegalArgumentException
-	 *             if the supplied bean name does not refer
-	 *             to the target of a scoped proxy
-	 * @since 5.1.10
+	 * @throws IllegalArgumentException if the supplied bean name does not refer
+	 *                                  to the target of a scoped proxy
 	 * @see #getTargetBeanName(String)
 	 * @see #isScopedTarget(String)
+	 * @since 5.1.10
 	 */
-	public static String getOriginalBeanName(@Nullable String targetBeanName)
-	{
+	public static String getOriginalBeanName(@Nullable String targetBeanName) {
 		Assert.isTrue(isScopedTarget(targetBeanName), () -> "bean name '" + targetBeanName
 				+ "' does not refer to the target of a scoped proxy");
 		return targetBeanName.substring(TARGET_NAME_PREFIX_LENGTH);
@@ -143,11 +129,10 @@ public abstract class ScopedProxyUtils
 	/**
 	 * Determine if the {@code beanName} is the name of a bean that references
 	 * the target bean within a scoped proxy.
-	 * 
+	 *
 	 * @since 4.1.4
 	 */
-	public static boolean isScopedTarget(@Nullable String beanName)
-	{
+	public static boolean isScopedTarget(@Nullable String beanName) {
 		return (beanName != null && beanName.startsWith(TARGET_NAME_PREFIX));
 	}
 

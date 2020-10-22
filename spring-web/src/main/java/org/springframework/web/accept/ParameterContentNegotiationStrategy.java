@@ -16,12 +16,12 @@
 
 package org.springframework.web.accept;
 
-import java.util.Map;
-
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.NativeWebRequest;
+
+import java.util.Map;
 
 /**
  * Strategy that resolves the requested content type from a query parameter.
@@ -36,16 +36,14 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Rossen Stoyanchev
  * @since 3.2
  */
-public class ParameterContentNegotiationStrategy extends AbstractMappingContentNegotiationStrategy
-{
+public class ParameterContentNegotiationStrategy extends AbstractMappingContentNegotiationStrategy {
 
 	private String parameterName = "format";
 
 	/**
 	 * Create an instance with the given map of file extensions and media types.
 	 */
-	public ParameterContentNegotiationStrategy(Map<String, MediaType> mediaTypes)
-	{
+	public ParameterContentNegotiationStrategy(Map<String, MediaType> mediaTypes) {
 		super(mediaTypes);
 	}
 
@@ -54,21 +52,18 @@ public class ParameterContentNegotiationStrategy extends AbstractMappingContentN
 	 * <p>
 	 * By default this is set to {@code "format"}.
 	 */
-	public void setParameterName(String parameterName)
-	{
+	public void setParameterName(String parameterName) {
 		Assert.notNull(parameterName, "'parameterName' is required");
 		this.parameterName = parameterName;
 	}
 
-	public String getParameterName()
-	{
+	public String getParameterName() {
 		return this.parameterName;
 	}
 
 	@Override
 	@Nullable
-	protected String getMediaTypeKey(NativeWebRequest request)
-	{
+	protected String getMediaTypeKey(NativeWebRequest request) {
 		return request.getParameter(getParameterName());
 	}
 

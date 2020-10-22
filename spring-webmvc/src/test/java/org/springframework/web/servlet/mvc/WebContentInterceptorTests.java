@@ -16,16 +16,14 @@
 
 package org.springframework.web.servlet.mvc;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
 
+import java.util.Properties;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-
 
 
 /**

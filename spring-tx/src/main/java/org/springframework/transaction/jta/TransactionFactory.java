@@ -16,11 +16,11 @@
 
 package org.springframework.transaction.jta;
 
+import org.springframework.lang.Nullable;
+
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
-
-import org.springframework.lang.Nullable;
 
 /**
  * Strategy interface for creating JTA {@link javax.transaction.Transaction}
@@ -33,28 +33,23 @@ import org.springframework.lang.Nullable;
  * that adapt to vendor-specific JTA extensions.
  *
  * @author Juergen Hoeller
- * @since 2.5
  * @see javax.transaction.TransactionManager#getTransaction()
  * @see SimpleTransactionFactory
  * @see JtaTransactionManager
+ * @since 2.5
  */
-public interface TransactionFactory
-{
+public interface TransactionFactory {
 
 	/**
 	 * Create an active Transaction object based on the given name and timeout.
-	 * 
-	 * @param name
-	 *            the transaction name (may be {@code null})
-	 * @param timeout
-	 *            the transaction timeout (may be -1 for the default timeout)
+	 *
+	 * @param name    the transaction name (may be {@code null})
+	 * @param timeout the transaction timeout (may be -1 for the default timeout)
 	 * @return the active Transaction object (never {@code null})
-	 * @throws NotSupportedException
-	 *             if the transaction manager does not support
-	 *             a transaction of the specified type
-	 * @throws SystemException
-	 *             if the transaction manager failed to create the
-	 *             transaction
+	 * @throws NotSupportedException if the transaction manager does not support
+	 *                               a transaction of the specified type
+	 * @throws SystemException       if the transaction manager failed to create the
+	 *                               transaction
 	 */
 	Transaction createTransaction(@Nullable String name, int timeout)
 			throws NotSupportedException, SystemException;
@@ -67,7 +62,7 @@ public interface TransactionFactory
 	 * {@link org.springframework.jca.endpoint.AbstractMessageEndpointFactory}
 	 * in order to differentiate between invalid configuration and valid
 	 * ResourceAdapter-managed transactions.
-	 * 
+	 *
 	 * @see javax.resource.spi.ResourceAdapter#endpointActivation
 	 * @see javax.resource.spi.endpoint.MessageEndpointFactory#isDeliveryTransacted
 	 */

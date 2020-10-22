@@ -16,16 +16,6 @@
 
 package org.springframework.web.reactive.result.view;
 
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import reactor.core.publisher.Mono;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -38,6 +28,15 @@ import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * View that redirects to an absolute or context relative URL. The URL may be a
@@ -145,6 +144,7 @@ public class RedirectView extends AbstractUrlBasedView {
 	 * <p>In effect this provides a way turn off encoding for URLs that
 	 * have a host and that host is not listed as a known host.
 	 * <p>If not set (the default) all redirect URLs are encoded.
+	 *
 	 * @param hosts one or more application hosts
 	 */
 	public void setHosts(@Nullable String... hosts) {
@@ -232,7 +232,7 @@ public class RedirectView extends AbstractUrlBasedView {
 	 * current request. Values are encoded.
 	 */
 	protected StringBuilder expandTargetUrlTemplate(String targetUrl,
-			Map<String, Object> model, Map<String, String> uriVariables) {
+													Map<String, Object> model, Map<String, String> uriVariables) {
 
 		Matcher matcher = URI_TEMPLATE_VARIABLE_PATTERN.matcher(targetUrl);
 		boolean found = matcher.find();
@@ -284,8 +284,9 @@ public class RedirectView extends AbstractUrlBasedView {
 
 	/**
 	 * Send a redirect back to the HTTP client.
+	 *
 	 * @param targetUrl the target URL to redirect to
-	 * @param exchange current exchange
+	 * @param exchange  current exchange
 	 */
 	protected Mono<Void> sendRedirect(String targetUrl, ServerWebExchange exchange) {
 		String transformedUrl = (isRemoteHost(targetUrl) ? targetUrl : exchange.transformUrl(targetUrl));
@@ -300,6 +301,7 @@ public class RedirectView extends AbstractUrlBasedView {
 	 * case {@link javax.servlet.http.HttpServletResponse#encodeRedirectURL} will not be applied.
 	 * This method returns {@code true} if the {@link #setHosts(String[])}
 	 * property is configured and the target URL has a host that does not match.
+	 *
 	 * @param targetUrl the target redirect URL
 	 * @return {@code true} the target URL has a remote host, {@code false} if it
 	 * the URL does not have a host or the "host" property is not configured.

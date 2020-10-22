@@ -25,30 +25,24 @@ package org.springframework.transaction;
  * @since 21.01.2004
  */
 @SuppressWarnings("serial")
-public class IllegalTransactionStateException extends TransactionUsageException
-{
+public class IllegalTransactionStateException extends TransactionUsageException {
 
 	/**
 	 * Constructor for IllegalTransactionStateException.
-	 * 
-	 * @param msg
-	 *            the detail message
+	 *
+	 * @param msg the detail message
 	 */
-	public IllegalTransactionStateException(String msg)
-	{
+	public IllegalTransactionStateException(String msg) {
 		super(msg);
 	}
 
 	/**
 	 * Constructor for IllegalTransactionStateException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the root cause from the transaction API in use
+	 *
+	 * @param msg   the detail message
+	 * @param cause the root cause from the transaction API in use
 	 */
-	public IllegalTransactionStateException(String msg, Throwable cause)
-	{
+	public IllegalTransactionStateException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 

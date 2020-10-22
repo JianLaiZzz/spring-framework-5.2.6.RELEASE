@@ -16,26 +16,25 @@
 
 package org.springframework.web.filter;
 
-import java.io.IOException;
-import java.util.Arrays;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import java.io.IOException;
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Unit tests for {@link CorsFilter}.
+ *
  * @author Sebastien Deleuze
  */
 public class CorsFilterTests {
@@ -109,7 +108,7 @@ public class CorsFilterTests {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 
 		FilterChain filterChain = (filterRequest, filterResponse) ->
-			fail("Invalid requests must not be forwarded to the filter chain");
+				fail("Invalid requests must not be forwarded to the filter chain");
 		filter.doFilter(request, response, filterChain);
 		assertThat(response.getHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN)).isNull();
 	}

@@ -24,38 +24,32 @@ package org.springframework.transaction.interceptor;
  * @since 09.04.2003
  */
 @SuppressWarnings("serial")
-public class NoRollbackRuleAttribute extends RollbackRuleAttribute
-{
+public class NoRollbackRuleAttribute extends RollbackRuleAttribute {
 
 	/**
 	 * Create a new instance of the {@code NoRollbackRuleAttribute} class
 	 * for the supplied {@link Throwable} class.
-	 * 
-	 * @param clazz
-	 *            the {@code Throwable} class
+	 *
+	 * @param clazz the {@code Throwable} class
 	 * @see RollbackRuleAttribute#RollbackRuleAttribute(Class)
 	 */
-	public NoRollbackRuleAttribute(Class<?> clazz)
-	{
+	public NoRollbackRuleAttribute(Class<?> clazz) {
 		super(clazz);
 	}
 
 	/**
 	 * Create a new instance of the {@code NoRollbackRuleAttribute} class
 	 * for the supplied {@code exceptionName}.
-	 * 
-	 * @param exceptionName
-	 *            the exception name pattern
+	 *
+	 * @param exceptionName the exception name pattern
 	 * @see RollbackRuleAttribute#RollbackRuleAttribute(String)
 	 */
-	public NoRollbackRuleAttribute(String exceptionName)
-	{
+	public NoRollbackRuleAttribute(String exceptionName) {
 		super(exceptionName);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "No" + super.toString();
 	}
 

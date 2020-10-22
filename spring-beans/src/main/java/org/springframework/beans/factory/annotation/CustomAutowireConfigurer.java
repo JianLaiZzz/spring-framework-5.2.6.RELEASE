@@ -16,9 +16,6 @@
 
 package org.springframework.beans.factory.annotation;
 
-import java.lang.annotation.Annotation;
-import java.util.Set;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -27,6 +24,9 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.core.Ordered;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
+
+import java.lang.annotation.Annotation;
+import java.util.Set;
 
 /**
  * A {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor}
@@ -44,8 +44,8 @@ import org.springframework.util.ClassUtils;
  *
  * @author Mark Fisher
  * @author Juergen Hoeller
- * @since 2.5
  * @see org.springframework.beans.factory.annotation.Qualifier
+ * @since 2.5
  */
 public class CustomAutowireConfigurer implements BeanFactoryPostProcessor, BeanClassLoaderAware, Ordered {
 
@@ -80,6 +80,7 @@ public class CustomAutowireConfigurer implements BeanFactoryPostProcessor, BeanC
 	 * <p>Note that any annotation that is itself annotated with Spring's
 	 * {@link org.springframework.beans.factory.annotation.Qualifier}
 	 * does not require explicit registration.
+	 *
 	 * @param customQualifierTypes the custom types to register
 	 */
 	public void setCustomQualifierTypes(Set<?> customQualifierTypes) {
@@ -105,12 +106,10 @@ public class CustomAutowireConfigurer implements BeanFactoryPostProcessor, BeanC
 				Class<? extends Annotation> customType = null;
 				if (value instanceof Class) {
 					customType = (Class<? extends Annotation>) value;
-				}
-				else if (value instanceof String) {
+				} else if (value instanceof String) {
 					String className = (String) value;
 					customType = (Class<? extends Annotation>) ClassUtils.resolveClassName(className, this.beanClassLoader);
-				}
-				else {
+				} else {
 					throw new IllegalArgumentException(
 							"Invalid value [" + value + "] for custom qualifier type: needs to be Class or String.");
 				}

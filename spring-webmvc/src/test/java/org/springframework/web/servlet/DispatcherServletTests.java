@@ -16,20 +16,8 @@
 
 package org.springframework.web.servlet;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.testfixture.beans.TestBean;
@@ -37,12 +25,7 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.context.ConfigurableWebApplicationContext;
-import org.springframework.web.context.ConfigurableWebEnvironment;
-import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.ServletConfigAwareBean;
-import org.springframework.web.context.ServletContextAwareBean;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.*;
 import org.springframework.web.context.support.StandardServletEnvironment;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -58,13 +41,19 @@ import org.springframework.web.testfixture.servlet.MockServletConfig;
 import org.springframework.web.testfixture.servlet.MockServletContext;
 import org.springframework.web.util.WebUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Locale;
+
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Rod Johnson
@@ -109,13 +98,13 @@ public class DispatcherServletTests {
 	public void configuredDispatcherServlets() {
 		assertThat(("simple" + FrameworkServlet.DEFAULT_NAMESPACE_SUFFIX).equals(simpleDispatcherServlet.getNamespace())).as("Correct namespace").isTrue();
 		assertThat((FrameworkServlet.SERVLET_CONTEXT_PREFIX + "simple").equals(
-		simpleDispatcherServlet.getServletContextAttributeName())).as("Correct attribute").isTrue();
+				simpleDispatcherServlet.getServletContextAttributeName())).as("Correct attribute").isTrue();
 		assertThat(simpleDispatcherServlet.getWebApplicationContext() ==
-		getServletContext().getAttribute(FrameworkServlet.SERVLET_CONTEXT_PREFIX + "simple")).as("Context published").isTrue();
+				getServletContext().getAttribute(FrameworkServlet.SERVLET_CONTEXT_PREFIX + "simple")).as("Context published").isTrue();
 
 		assertThat("test".equals(complexDispatcherServlet.getNamespace())).as("Correct namespace").isTrue();
 		assertThat((FrameworkServlet.SERVLET_CONTEXT_PREFIX + "complex").equals(
-		complexDispatcherServlet.getServletContextAttributeName())).as("Correct attribute").isTrue();
+				complexDispatcherServlet.getServletContextAttributeName())).as("Correct attribute").isTrue();
 		assertThat(getServletContext().getAttribute(FrameworkServlet.SERVLET_CONTEXT_PREFIX + "complex") == null).as("Context not published").isTrue();
 
 		simpleDispatcherServlet.destroy();
@@ -256,7 +245,7 @@ public class DispatcherServletTests {
 		assertThat("failed0.jsp".equals(response.getForwardedUrl())).as("forwarded to failed").isTrue();
 		assertThat(response.getStatus()).isEqualTo(200);
 		assertThat(request.getAttribute(
-		SimpleMappingExceptionResolver.DEFAULT_EXCEPTION_ATTRIBUTE) instanceof MaxUploadSizeExceededException).as("correct exception").isTrue();
+				SimpleMappingExceptionResolver.DEFAULT_EXCEPTION_ATTRIBUTE) instanceof MaxUploadSizeExceededException).as("correct exception").isTrue();
 	}
 
 	@Test
@@ -546,7 +535,7 @@ public class DispatcherServletTests {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		assertThatExceptionOfType(ServletException.class).isThrownBy(() ->
 				complexDispatcherServlet.service(request, response))
-			.withMessageContaining("No adapter for handler");
+				.withMessageContaining("No adapter for handler");
 	}
 
 	@Test
@@ -561,7 +550,7 @@ public class DispatcherServletTests {
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		assertThatExceptionOfType(ServletException.class).isThrownBy(() ->
 				complexDispatcherServlet.service(request, response))
-			.withMessageContaining("failed0");
+				.withMessageContaining("failed0");
 	}
 
 	@Test
@@ -771,7 +760,8 @@ public class DispatcherServletTests {
 		assertThat(servlet.getEnvironment()).isSameAs(env1);
 		assertThatIllegalArgumentException().as("non-configurable Environment").isThrownBy(() ->
 				servlet.setEnvironment(new DummyEnvironment()));
-		class CustomServletEnvironment extends StandardServletEnvironment { }
+		class CustomServletEnvironment extends StandardServletEnvironment {
+		}
 		@SuppressWarnings("serial")
 		DispatcherServlet custom = new DispatcherServlet() {
 			@Override

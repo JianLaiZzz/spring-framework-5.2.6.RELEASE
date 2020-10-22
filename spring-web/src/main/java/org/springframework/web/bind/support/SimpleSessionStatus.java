@@ -23,20 +23,17 @@ package org.springframework.web.bind.support;
  * @author Juergen Hoeller
  * @since 2.5
  */
-public class SimpleSessionStatus implements SessionStatus
-{
+public class SimpleSessionStatus implements SessionStatus {
 
 	private boolean complete = false;
 
 	@Override
-	public void setComplete()
-	{
+	public void setComplete() {
 		this.complete = true;
 	}
 
 	@Override
-	public boolean isComplete()
-	{
+	public boolean isComplete() {
 		return this.complete;
 	}
 

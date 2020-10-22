@@ -16,9 +16,9 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.lang.annotation.*;
-
 import org.springframework.core.annotation.AliasFor;
+
+import java.lang.annotation.*;
 
 /**
  * Annotation to bind a method parameter to a session attribute.
@@ -38,16 +38,15 @@ import org.springframework.core.annotation.AliasFor;
  * workflow for a controller, consider using {@link SessionAttributes} instead.
  *
  * @author Rossen Stoyanchev
- * @since 4.3
  * @see RequestMapping
  * @see SessionAttributes
  * @see RequestAttribute
+ * @since 4.3
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface SessionAttribute
-{
+public @interface SessionAttribute {
 
 	/**
 	 * Alias for {@link #name}.

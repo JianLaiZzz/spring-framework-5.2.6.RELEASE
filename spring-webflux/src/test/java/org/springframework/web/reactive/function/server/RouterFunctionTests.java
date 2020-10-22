@@ -16,14 +16,13 @@
 
 package org.springframework.web.reactive.function.server;
 
-import java.util.Collections;
-
 import org.junit.jupiter.api.Test;
+import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
+import org.springframework.web.testfixture.server.MockServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
-import org.springframework.web.testfixture.server.MockServerWebExchange;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -117,11 +116,11 @@ public class RouterFunctionTests {
 		StepVerifier.create(responseMono)
 				.consumeNextWith(
 						serverResponse ->
-							StepVerifier.create(serverResponse.entity())
-									.expectNext(42)
-									.expectComplete()
-									.verify()
-						)
+								StepVerifier.create(serverResponse.entity())
+										.expectNext(42)
+										.expectComplete()
+										.verify()
+				)
 				.expectComplete()
 				.verify();
 	}

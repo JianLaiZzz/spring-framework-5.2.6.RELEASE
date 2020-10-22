@@ -1,15 +1,12 @@
 package com.zhw.example.service.impl;
 
+import com.zhw.example.service.IUserService;
 import org.springframework.stereotype.Service;
 
-import com.zhw.example.service.IUserService;
-
 @Service
-public class UserServiceImpl implements IUserService
-{
+public class UserServiceImpl implements IUserService {
 
-	public UserServiceImpl()
-	{
+	public UserServiceImpl() {
 		System.out.println(this.getClass().getSimpleName() + " 构造函数执行...");
 	}
 }

@@ -16,15 +16,9 @@
 
 package org.springframework.web.reactive.result.method.annotation;
 
-import java.time.Duration;
-import java.util.Optional;
-
 import io.reactivex.Single;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ReactiveAdapterRegistry;
@@ -36,6 +30,11 @@ import org.springframework.web.server.ServerWebInputException;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.method.ResolvableMethod;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.time.Duration;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.web.testfixture.method.MvcAnnotationPredicates.requestAttribute;
@@ -170,8 +169,8 @@ public class RequestAttributeMethodArgumentResolverTests {
 	private void handleWithRequestAttribute(
 			@RequestAttribute Foo foo,
 			@RequestAttribute("specialFoo") Foo namedFoo,
-			@RequestAttribute(name="foo", required = false) Foo notRequiredFoo,
-			@RequestAttribute(name="foo") Optional<Foo> optionalFoo,
+			@RequestAttribute(name = "foo", required = false) Foo notRequiredFoo,
+			@RequestAttribute(name = "foo") Optional<Foo> optionalFoo,
 			@RequestAttribute Mono<Foo> fooMono,
 			String notSupported) {
 	}

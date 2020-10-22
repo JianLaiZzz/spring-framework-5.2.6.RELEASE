@@ -18,7 +18,6 @@ package org.springframework.test.context.junit.jupiter.nested;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,9 +36,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Platform, simply run {@link SpringJUnitJupiterTestSuite} as a JUnit 4 test.
  *
  * @author Sam Brannen
- * @since 5.0
  * @see NestedTestsWithConstructorInjectionWithSpringAndJUnitJupiterTests
  * @see org.springframework.test.context.junit4.nested.NestedTestsWithSpringRulesTests
+ * @since 5.0
  */
 @SpringJUnitConfig(TopLevelConfig.class)
 class NestedTestsWithSpringAndJUnitJupiterTests {

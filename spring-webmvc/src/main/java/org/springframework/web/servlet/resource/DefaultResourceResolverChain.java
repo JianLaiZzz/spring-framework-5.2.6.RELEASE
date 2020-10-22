@@ -16,16 +16,15 @@
 
 package org.springframework.web.servlet.resource;
 
+import org.springframework.core.io.Resource;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.core.io.Resource;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
 
 /**
  * Default immutable implementation of {@link ResourceResolverChain}.

@@ -16,16 +16,15 @@
 
 package org.springframework.web.testfixture.http.server.reactive.bootstrap;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.http.server.reactive.ContextPathCompositeHandler;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.util.Assert;
 import org.springframework.util.StopWatch;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Rossen Stoyanchev
@@ -128,8 +127,7 @@ public abstract class AbstractHttpServer implements HttpServer {
 					if (logger.isDebugEnabled()) {
 						logger.debug("Server started on port " + getPort() + "(" + millis + " millis).");
 					}
-				}
-				catch (Throwable ex) {
+				} catch (Throwable ex) {
 					throw new IllegalStateException(ex);
 				}
 			}
@@ -151,11 +149,9 @@ public abstract class AbstractHttpServer implements HttpServer {
 					stopWatch.start();
 					stopInternal();
 					logger.debug("Server stopped (" + stopWatch.getTotalTimeMillis() + " millis).");
-				}
-				catch (Throwable ex) {
+				} catch (Throwable ex) {
 					throw new IllegalStateException(ex);
-				}
-				finally {
+				} finally {
 					reset();
 				}
 			}

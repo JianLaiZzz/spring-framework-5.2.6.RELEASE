@@ -16,24 +16,9 @@
 
 package org.springframework.web.reactive.socket.server.upgrade;
 
-import java.util.Collections;
-import java.util.function.Supplier;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.websocket.Endpoint;
-import javax.websocket.server.ServerContainer;
-
 import org.apache.tomcat.websocket.server.WsServerContainer;
-import reactor.core.publisher.Mono;
-
 import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.http.server.reactive.AbstractServerHttpRequest;
-import org.springframework.http.server.reactive.AbstractServerHttpResponse;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
-import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
+import org.springframework.http.server.reactive.*;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.web.reactive.socket.HandshakeInfo;
@@ -42,6 +27,14 @@ import org.springframework.web.reactive.socket.adapter.StandardWebSocketHandlerA
 import org.springframework.web.reactive.socket.adapter.TomcatWebSocketSession;
 import org.springframework.web.reactive.socket.server.RequestUpgradeStrategy;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.websocket.Endpoint;
+import javax.websocket.server.ServerContainer;
+import java.util.Collections;
+import java.util.function.Supplier;
 
 /**
  * A {@link RequestUpgradeStrategy} for use with Tomcat.
@@ -126,7 +119,7 @@ public class TomcatRequestUpgradeStrategy implements RequestUpgradeStrategy {
 
 	@Override
 	public Mono<Void> upgrade(ServerWebExchange exchange, WebSocketHandler handler,
-			@Nullable String subProtocol, Supplier<HandshakeInfo> handshakeInfoFactory){
+							  @Nullable String subProtocol, Supplier<HandshakeInfo> handshakeInfoFactory) {
 
 		ServerHttpRequest request = exchange.getRequest();
 		ServerHttpResponse response = exchange.getResponse();
@@ -157,11 +150,9 @@ public class TomcatRequestUpgradeStrategy implements RequestUpgradeStrategy {
 	private static HttpServletRequest getNativeRequest(ServerHttpRequest request) {
 		if (request instanceof AbstractServerHttpRequest) {
 			return ((AbstractServerHttpRequest) request).getNativeRequest();
-		}
-		else if (request instanceof ServerHttpRequestDecorator) {
+		} else if (request instanceof ServerHttpRequestDecorator) {
 			return getNativeRequest(((ServerHttpRequestDecorator) request).getDelegate());
-		}
-		else {
+		} else {
 			throw new IllegalArgumentException(
 					"Couldn't find HttpServletRequest in " + request.getClass().getName());
 		}
@@ -170,11 +161,9 @@ public class TomcatRequestUpgradeStrategy implements RequestUpgradeStrategy {
 	private static HttpServletResponse getNativeResponse(ServerHttpResponse response) {
 		if (response instanceof AbstractServerHttpResponse) {
 			return ((AbstractServerHttpResponse) response).getNativeResponse();
-		}
-		else if (response instanceof ServerHttpResponseDecorator) {
+		} else if (response instanceof ServerHttpResponseDecorator) {
 			return getNativeResponse(((ServerHttpResponseDecorator) response).getDelegate());
-		}
-		else {
+		} else {
 			throw new IllegalArgumentException(
 					"Couldn't find HttpServletResponse in " + response.getClass().getName());
 		}

@@ -16,28 +16,27 @@
 
 package org.springframework.web.util;
 
+import org.springframework.lang.Nullable;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.lang.Nullable;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.ObjectUtils;
-
 /**
  * Extension of {@link UriComponents} for opaque URIs.
  *
  * @author Arjen Poutsma
  * @author Phillip Webb
- * @since 3.2
  * @see <a href="https://tools.ietf.org/html/rfc3986#section-1.2.3">Hierarchical vs Opaque URIs</a>
+ * @since 3.2
  */
 @SuppressWarnings("serial")
-final class OpaqueUriComponents extends UriComponents
-{
+final class OpaqueUriComponents extends UriComponents {
 
 	private static final MultiValueMap<String, String> QUERY_PARAMS_NONE = new LinkedMultiValueMap<>();
 
@@ -45,74 +44,63 @@ final class OpaqueUriComponents extends UriComponents
 	private final String ssp;
 
 	OpaqueUriComponents(@Nullable String scheme, @Nullable String schemeSpecificPart,
-			@Nullable String fragment)
-	{
+						@Nullable String fragment) {
 		super(scheme, fragment);
 		this.ssp = schemeSpecificPart;
 	}
 
 	@Override
 	@Nullable
-	public String getSchemeSpecificPart()
-	{
+	public String getSchemeSpecificPart() {
 		return this.ssp;
 	}
 
 	@Override
 	@Nullable
-	public String getUserInfo()
-	{
+	public String getUserInfo() {
 		return null;
 	}
 
 	@Override
 	@Nullable
-	public String getHost()
-	{
+	public String getHost() {
 		return null;
 	}
 
 	@Override
-	public int getPort()
-	{
+	public int getPort() {
 		return -1;
 	}
 
 	@Override
 	@Nullable
-	public String getPath()
-	{
+	public String getPath() {
 		return null;
 	}
 
 	@Override
-	public List<String> getPathSegments()
-	{
+	public List<String> getPathSegments() {
 		return Collections.emptyList();
 	}
 
 	@Override
 	@Nullable
-	public String getQuery()
-	{
+	public String getQuery() {
 		return null;
 	}
 
 	@Override
-	public MultiValueMap<String, String> getQueryParams()
-	{
+	public MultiValueMap<String, String> getQueryParams() {
 		return QUERY_PARAMS_NONE;
 	}
 
 	@Override
-	public UriComponents encode(Charset charset)
-	{
+	public UriComponents encode(Charset charset) {
 		return this;
 	}
 
 	@Override
-	protected UriComponents expandInternal(UriTemplateVariables uriVariables)
-	{
+	protected UriComponents expandInternal(UriTemplateVariables uriVariables) {
 		String expandedScheme = expandUriComponent(getScheme(), uriVariables);
 		String expandedSsp = expandUriComponent(getSchemeSpecificPart(), uriVariables);
 		String expandedFragment = expandUriComponent(getFragment(), uriVariables);
@@ -120,27 +108,22 @@ final class OpaqueUriComponents extends UriComponents
 	}
 
 	@Override
-	public UriComponents normalize()
-	{
+	public UriComponents normalize() {
 		return this;
 	}
 
 	@Override
-	public String toUriString()
-	{
+	public String toUriString() {
 		StringBuilder uriBuilder = new StringBuilder();
 
-		if (getScheme() != null)
-		{
+		if (getScheme() != null) {
 			uriBuilder.append(getScheme());
 			uriBuilder.append(':');
 		}
-		if (this.ssp != null)
-		{
+		if (this.ssp != null) {
 			uriBuilder.append(this.ssp);
 		}
-		if (getFragment() != null)
-		{
+		if (getFragment() != null) {
 			uriBuilder.append('#');
 			uriBuilder.append(getFragment());
 		}
@@ -149,44 +132,33 @@ final class OpaqueUriComponents extends UriComponents
 	}
 
 	@Override
-	public URI toUri()
-	{
-		try
-		{
+	public URI toUri() {
+		try {
 			return new URI(getScheme(), this.ssp, getFragment());
-		}
-		catch (URISyntaxException ex)
-		{
+		} catch (URISyntaxException ex) {
 			throw new IllegalStateException("Could not create URI object: " + ex.getMessage(), ex);
 		}
 	}
 
 	@Override
-	protected void copyToUriComponentsBuilder(UriComponentsBuilder builder)
-	{
-		if (getScheme() != null)
-		{
+	protected void copyToUriComponentsBuilder(UriComponentsBuilder builder) {
+		if (getScheme() != null) {
 			builder.scheme(getScheme());
 		}
-		if (getSchemeSpecificPart() != null)
-		{
+		if (getSchemeSpecificPart() != null) {
 			builder.schemeSpecificPart(getSchemeSpecificPart());
 		}
-		if (getFragment() != null)
-		{
+		if (getFragment() != null) {
 			builder.fragment(getFragment());
 		}
 	}
 
 	@Override
-	public boolean equals(@Nullable Object other)
-	{
-		if (this == other)
-		{
+	public boolean equals(@Nullable Object other) {
+		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof OpaqueUriComponents))
-		{
+		if (!(other instanceof OpaqueUriComponents)) {
 			return false;
 		}
 		OpaqueUriComponents otherComp = (OpaqueUriComponents) other;
@@ -196,8 +168,7 @@ final class OpaqueUriComponents extends UriComponents
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		int result = ObjectUtils.nullSafeHashCode(getScheme());
 		result = 31 * result + ObjectUtils.nullSafeHashCode(this.ssp);
 		result = 31 * result + ObjectUtils.nullSafeHashCode(getFragment());

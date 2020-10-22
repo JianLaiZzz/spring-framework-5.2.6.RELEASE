@@ -16,29 +16,12 @@
 
 package org.springframework.web.reactive.function.server;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-
 import io.reactivex.Single;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.codec.CharSequenceEncoder;
-import org.springframework.http.CacheControl;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseCookie;
+import org.springframework.http.*;
 import org.springframework.http.codec.EncoderHttpMessageWriter;
 import org.springframework.http.codec.HttpMessageWriter;
 import org.springframework.util.LinkedMultiValueMap;
@@ -47,6 +30,17 @@ import org.springframework.web.reactive.result.view.ViewResolver;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpResponse;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -72,7 +66,8 @@ public class DefaultEntityResponseBuilderTests {
 	@Test
 	public void fromPublisher() {
 		Flux<String> body = Flux.just("foo", "bar");
-		ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {};
+		ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {
+		};
 		EntityResponse<Flux<String>> response = EntityResponse.fromPublisher(body, typeReference).build().block();
 		assertThat(response.entity()).isSameAs(body);
 	}
@@ -80,7 +75,8 @@ public class DefaultEntityResponseBuilderTests {
 	@Test
 	public void fromProducer() {
 		Single<String> body = Single.just("foo");
-		ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {};
+		ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {
+		};
 		EntityResponse<Single<String>> response = EntityResponse.fromProducer(body, typeReference).build().block();
 		assertThat(response.entity()).isSameAs(body);
 	}

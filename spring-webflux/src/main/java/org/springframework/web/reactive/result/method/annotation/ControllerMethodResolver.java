@@ -16,19 +16,8 @@
 
 package org.springframework.web.reactive.result.method.annotation;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -50,6 +39,11 @@ import org.springframework.web.reactive.result.method.HandlerMethodArgumentResol
 import org.springframework.web.reactive.result.method.InvocableHandlerMethod;
 import org.springframework.web.reactive.result.method.SyncHandlerMethodArgumentResolver;
 import org.springframework.web.reactive.result.method.SyncInvocableHandlerMethod;
+
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Package-private class to assist {@link RequestMappingHandlerAdapter} with
@@ -114,7 +108,7 @@ class ControllerMethodResolver {
 
 
 	ControllerMethodResolver(ArgumentResolverConfigurer customResolvers, ReactiveAdapterRegistry adapterRegistry,
-			ConfigurableApplicationContext context, List<HttpMessageReader<?>> readers) {
+							 ConfigurableApplicationContext context, List<HttpMessageReader<?>> readers) {
 
 		Assert.notNull(customResolvers, "ArgumentResolverConfigurer is required");
 		Assert.notNull(adapterRegistry, "ReactiveAdapterRegistry is required");
@@ -162,8 +156,8 @@ class ControllerMethodResolver {
 	}
 
 	private static List<HandlerMethodArgumentResolver> initResolvers(ArgumentResolverConfigurer customResolvers,
-			ReactiveAdapterRegistry adapterRegistry, ConfigurableApplicationContext context,
-			boolean supportDataBinding, List<HttpMessageReader<?>> readers) {
+																	 ReactiveAdapterRegistry adapterRegistry, ConfigurableApplicationContext context,
+																	 boolean supportDataBinding, List<HttpMessageReader<?>> readers) {
 
 		ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
 		boolean requestMappingMethod = !readers.isEmpty() && supportDataBinding;
@@ -246,8 +240,7 @@ class ControllerMethodResolver {
 			int handlerSize = this.exceptionHandlerAdviceCache.size();
 			if (modelSize == 0 && binderSize == 0 && handlerSize == 0) {
 				logger.debug("ControllerAdvice beans: none");
-			}
-			else {
+			} else {
 				logger.debug("ControllerAdvice beans: " + modelSize + " @ModelAttribute, " + binderSize +
 						" @InitBinder, " + handlerSize + " @ExceptionHandler");
 			}

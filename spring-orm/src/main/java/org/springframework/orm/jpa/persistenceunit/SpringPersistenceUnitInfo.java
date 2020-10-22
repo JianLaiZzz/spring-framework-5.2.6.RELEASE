@@ -16,13 +16,13 @@
 
 package org.springframework.orm.jpa.persistenceunit;
 
-import javax.persistence.spi.ClassTransformer;
-
 import org.springframework.core.DecoratingClassLoader;
 import org.springframework.instrument.classloading.LoadTimeWeaver;
 import org.springframework.instrument.classloading.SimpleThrowawayClassLoader;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import javax.persistence.spi.ClassTransformer;
 
 /**
  * Subclass of {@link MutablePersistenceUnitInfo} that adds instrumentation hooks based on
@@ -34,11 +34,10 @@ import org.springframework.util.Assert;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @author Costin Leau
- * @since 2.0
  * @see PersistenceUnitManager
+ * @since 2.0
  */
-class SpringPersistenceUnitInfo extends MutablePersistenceUnitInfo
-{
+class SpringPersistenceUnitInfo extends MutablePersistenceUnitInfo {
 
 	@Nullable
 	private LoadTimeWeaver loadTimeWeaver;
@@ -50,8 +49,7 @@ class SpringPersistenceUnitInfo extends MutablePersistenceUnitInfo
 	 * Initialize this PersistenceUnitInfo with the LoadTimeWeaver SPI interface
 	 * used by Spring to add instrumentation to the current class loader.
 	 */
-	public void init(LoadTimeWeaver loadTimeWeaver)
-	{
+	public void init(LoadTimeWeaver loadTimeWeaver) {
 		Assert.notNull(loadTimeWeaver, "LoadTimeWeaver must not be null");
 		this.loadTimeWeaver = loadTimeWeaver;
 		this.classLoader = loadTimeWeaver.getInstrumentableClassLoader();
@@ -61,8 +59,7 @@ class SpringPersistenceUnitInfo extends MutablePersistenceUnitInfo
 	 * Initialize this PersistenceUnitInfo with the current class loader
 	 * (instead of with a LoadTimeWeaver).
 	 */
-	public void init(@Nullable ClassLoader classLoader)
-	{
+	public void init(@Nullable ClassLoader classLoader) {
 		this.classLoader = classLoader;
 	}
 
@@ -72,8 +69,7 @@ class SpringPersistenceUnitInfo extends MutablePersistenceUnitInfo
 	 */
 	@Override
 	@Nullable
-	public ClassLoader getClassLoader()
-	{
+	public ClassLoader getClassLoader() {
 		return this.classLoader;
 	}
 
@@ -81,10 +77,8 @@ class SpringPersistenceUnitInfo extends MutablePersistenceUnitInfo
 	 * This implementation delegates to the LoadTimeWeaver, if specified.
 	 */
 	@Override
-	public void addTransformer(ClassTransformer classTransformer)
-	{
-		if (this.loadTimeWeaver == null)
-		{
+	public void addTransformer(ClassTransformer classTransformer) {
+		if (this.loadTimeWeaver == null) {
 			throw new IllegalStateException(
 					"Cannot apply class transformer without LoadTimeWeaver specified");
 		}
@@ -95,13 +89,11 @@ class SpringPersistenceUnitInfo extends MutablePersistenceUnitInfo
 	 * This implementation delegates to the LoadTimeWeaver, if specified.
 	 */
 	@Override
-	public ClassLoader getNewTempClassLoader()
-	{
+	public ClassLoader getNewTempClassLoader() {
 		ClassLoader tcl = (this.loadTimeWeaver != null ? this.loadTimeWeaver.getThrowawayClassLoader()
 				: new SimpleThrowawayClassLoader(this.classLoader));
 		String packageToExclude = getPersistenceProviderPackageName();
-		if (packageToExclude != null && tcl instanceof DecoratingClassLoader)
-		{
+		if (packageToExclude != null && tcl instanceof DecoratingClassLoader) {
 			((DecoratingClassLoader) tcl).excludePackage(packageToExclude);
 		}
 		return tcl;

@@ -16,7 +16,13 @@
 
 package org.springframework.jca.endpoint;
 
-import java.lang.reflect.Method;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.lang.Nullable;
+import org.springframework.transaction.jta.SimpleTransactionFactory;
+import org.springframework.transaction.jta.TransactionFactory;
+import org.springframework.util.Assert;
 
 import javax.resource.ResourceException;
 import javax.resource.spi.ApplicationServerInternalException;
@@ -26,14 +32,7 @@ import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.xa.XAResource;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.lang.Nullable;
-import org.springframework.transaction.jta.SimpleTransactionFactory;
-import org.springframework.transaction.jta.TransactionFactory;
-import org.springframework.util.Assert;
+import java.lang.reflect.Method;
 
 /**
  * Abstract base implementation of the JCA 1.7
@@ -42,13 +41,14 @@ import org.springframework.util.Assert;
  * exposure for endpoint invocations.
  *
  * @author Juergen Hoeller
- * @since 2.5
  * @see #setTransactionManager
+ * @since 2.5
  */
-public abstract class AbstractMessageEndpointFactory implements MessageEndpointFactory, BeanNameAware
-{
+public abstract class AbstractMessageEndpointFactory implements MessageEndpointFactory, BeanNameAware {
 
-	/** Logger available to subclasses. */
+	/**
+	 * Logger available to subclasses.
+	 */
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	@Nullable
@@ -74,23 +74,17 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 	 * will simply not be wrapped in an XA transaction. Check out your
 	 * resource provider's ActivationSpec documentation for local
 	 * transaction options of your particular provider.
-	 * 
+	 *
 	 * @see #setTransactionName
 	 * @see #setTransactionTimeout
 	 */
-	public void setTransactionManager(Object transactionManager)
-	{
-		if (transactionManager instanceof TransactionFactory)
-		{
+	public void setTransactionManager(Object transactionManager) {
+		if (transactionManager instanceof TransactionFactory) {
 			this.transactionFactory = (TransactionFactory) transactionManager;
-		}
-		else if (transactionManager instanceof TransactionManager)
-		{
+		} else if (transactionManager instanceof TransactionManager) {
 			this.transactionFactory = new SimpleTransactionFactory(
 					(TransactionManager) transactionManager);
-		}
-		else
-		{
+		} else {
 			throw new IllegalArgumentException("Transaction manager [" + transactionManager
 					+ "] is neither a [org.springframework.transaction.jta.TransactionFactory} nor a "
 					+ "[javax.transaction.TransactionManager]");
@@ -108,12 +102,11 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 	 * will simply not be wrapped in an XA transaction. Check out your
 	 * resource provider's ActivationSpec documentation for local
 	 * transaction options of your particular provider.
-	 * 
+	 *
 	 * @see #setTransactionName
 	 * @see #setTransactionTimeout
 	 */
-	public void setTransactionFactory(TransactionFactory transactionFactory)
-	{
+	public void setTransactionFactory(TransactionFactory transactionFactory) {
 		this.transactionFactory = transactionFactory;
 	}
 
@@ -123,8 +116,7 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 	 * Default is none. A specified name will be passed on to the transaction
 	 * manager, allowing to identify the transaction in a transaction monitor.
 	 */
-	public void setTransactionName(String transactionName)
-	{
+	public void setTransactionName(String transactionName) {
 		this.transactionName = transactionName;
 	}
 
@@ -135,8 +127,7 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 	 * Specify a concrete timeout to restrict the maximum duration of each
 	 * endpoint invocation.
 	 */
-	public void setTransactionTimeout(int transactionTimeout)
-	{
+	public void setTransactionTimeout(int transactionTimeout) {
 		this.transactionTimeout = transactionTimeout;
 	}
 
@@ -145,21 +136,19 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 	 * automatically when defined within Spring's bean factory.
 	 */
 	@Override
-	public void setBeanName(String beanName)
-	{
+	public void setBeanName(String beanName) {
 		this.beanName = beanName;
 	}
 
 	/**
 	 * Implementation of the JCA 1.7 {@code #getActivationName()} method,
 	 * returning the bean name as set on this MessageEndpointFactory.
-	 * 
+	 *
 	 * @see #setBeanName
 	 */
 	@Override
 	@Nullable
-	public String getActivationName()
-	{
+	public String getActivationName() {
 		return this.beanName;
 	}
 
@@ -169,21 +158,19 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 	 */
 	@Override
 	@Nullable
-	public Class<?> getEndpointClass()
-	{
+	public Class<?> getEndpointClass() {
 		return null;
 	}
 
 	/**
 	 * This implementation returns {@code true} if a transaction manager
 	 * has been specified; {@code false} otherwise.
-	 * 
+	 *
 	 * @see #setTransactionManager
 	 * @see #setTransactionFactory
 	 */
 	@Override
-	public boolean isDeliveryTransacted(Method method) throws NoSuchMethodException
-	{
+	public boolean isDeliveryTransacted(Method method) throws NoSuchMethodException {
 		return (this.transactionFactory != null);
 	}
 
@@ -194,8 +181,7 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 	 * initializing the endpoint's XAResource before the endpoint gets invoked.
 	 */
 	@Override
-	public MessageEndpoint createEndpoint(XAResource xaResource) throws UnavailableException
-	{
+	public MessageEndpoint createEndpoint(XAResource xaResource) throws UnavailableException {
 		AbstractMessageEndpoint endpoint = createEndpointInternal();
 		endpoint.initXAResource(xaResource);
 		return endpoint;
@@ -208,8 +194,7 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 	 * ignoring the specified timeout. It is only here for JCA 1.6 compliance.
 	 */
 	@Override
-	public MessageEndpoint createEndpoint(XAResource xaResource, long timeout) throws UnavailableException
-	{
+	public MessageEndpoint createEndpoint(XAResource xaResource, long timeout) throws UnavailableException {
 		AbstractMessageEndpoint endpoint = createEndpointInternal();
 		endpoint.initXAResource(xaResource);
 		return endpoint;
@@ -218,10 +203,9 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 	/**
 	 * Create the actual endpoint instance, as a subclass of the
 	 * {@link AbstractMessageEndpoint} inner class of this factory.
-	 * 
+	 *
 	 * @return the actual endpoint instance (never {@code null})
-	 * @throws UnavailableException
-	 *             if no endpoint is available at present
+	 * @throws UnavailableException if no endpoint is available at present
 	 */
 	protected abstract AbstractMessageEndpoint createEndpointInternal() throws UnavailableException;
 
@@ -229,8 +213,7 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 	 * Inner class for actual endpoint implementations, based on template
 	 * method to allow for any kind of concrete endpoint implementation.
 	 */
-	protected abstract class AbstractMessageEndpoint implements MessageEndpoint
-	{
+	protected abstract class AbstractMessageEndpoint implements MessageEndpoint {
 
 		@Nullable
 		private TransactionDelegate transactionDelegate;
@@ -242,12 +225,10 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 
 		/**
 		 * Initialize this endpoint's TransactionDelegate.
-		 * 
-		 * @param xaResource
-		 *            the XAResource for this endpoint
+		 *
+		 * @param xaResource the XAResource for this endpoint
 		 */
-		void initXAResource(XAResource xaResource)
-		{
+		void initXAResource(XAResource xaResource) {
 			this.transactionDelegate = new TransactionDelegate(xaResource);
 		}
 
@@ -263,16 +244,12 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 		 * sibling {@link #afterDelivery()} explicitly, as part of its own processing.
 		 */
 		@Override
-		public void beforeDelivery(@Nullable Method method) throws ResourceException
-		{
+		public void beforeDelivery(@Nullable Method method) throws ResourceException {
 			this.beforeDeliveryCalled = true;
 			Assert.state(this.transactionDelegate != null, "Not initialized");
-			try
-			{
+			try {
 				this.transactionDelegate.beginTransaction();
-			}
-			catch (Throwable ex)
-			{
+			} catch (Throwable ex) {
 				throw new ApplicationServerInternalException("Failed to begin transaction", ex);
 			}
 			Thread currentThread = Thread.currentThread();
@@ -284,7 +261,7 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 		 * Template method for exposing the endpoint's ClassLoader
 		 * (typically the ClassLoader that the message listener class
 		 * has been loaded with).
-		 * 
+		 *
 		 * @return the endpoint ClassLoader (never {@code null})
 		 */
 		protected abstract ClassLoader getEndpointClassLoader();
@@ -293,8 +270,7 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 		 * Return whether the {@link #beforeDelivery} method of this endpoint
 		 * has already been called.
 		 */
-		protected final boolean hasBeforeDeliveryBeenCalled()
-		{
+		protected final boolean hasBeforeDeliveryBeenCalled() {
 			return this.beforeDeliveryCalled;
 		}
 
@@ -304,12 +280,10 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 		 * <p>
 		 * To be invoked by subclasses in case of the concrete
 		 * endpoint throwing an exception.
-		 * 
-		 * @param ex
-		 *            the exception thrown from the concrete endpoint
+		 *
+		 * @param ex the exception thrown from the concrete endpoint
 		 */
-		protected void onEndpointException(Throwable ex)
-		{
+		protected void onEndpointException(Throwable ex) {
 			Assert.state(this.transactionDelegate != null, "Not initialized");
 			this.transactionDelegate.setRollbackOnly();
 			logger.debug("Transaction marked as rollback-only after endpoint exception", ex);
@@ -324,35 +298,26 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 		 * explanation in {@link #beforeDelivery}'s javadoc.
 		 */
 		@Override
-		public void afterDelivery() throws ResourceException
-		{
+		public void afterDelivery() throws ResourceException {
 			Assert.state(this.transactionDelegate != null, "Not initialized");
 			this.beforeDeliveryCalled = false;
 			Thread.currentThread().setContextClassLoader(this.previousContextClassLoader);
 			this.previousContextClassLoader = null;
-			try
-			{
+			try {
 				this.transactionDelegate.endTransaction();
-			}
-			catch (Throwable ex)
-			{
+			} catch (Throwable ex) {
 				logger.warn("Failed to complete transaction after endpoint delivery", ex);
 				throw new ApplicationServerInternalException("Failed to complete transaction", ex);
 			}
 		}
 
 		@Override
-		public void release()
-		{
-			if (this.transactionDelegate != null)
-			{
-				try
-				{
+		public void release() {
+			if (this.transactionDelegate != null) {
+				try {
 					this.transactionDelegate.setRollbackOnly();
 					this.transactionDelegate.endTransaction();
-				}
-				catch (Throwable ex)
-				{
+				} catch (Throwable ex) {
 					logger.warn("Could not complete unfinished transaction on endpoint release", ex);
 				}
 			}
@@ -363,8 +328,7 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 	 * Private inner class that performs the actual transaction handling,
 	 * including enlistment of the endpoint's XAResource.
 	 */
-	private class TransactionDelegate
-	{
+	private class TransactionDelegate {
 
 		@Nullable
 		private final XAResource xaResource;
@@ -374,52 +338,38 @@ public abstract class AbstractMessageEndpointFactory implements MessageEndpointF
 
 		private boolean rollbackOnly;
 
-		public TransactionDelegate(@Nullable XAResource xaResource)
-		{
+		public TransactionDelegate(@Nullable XAResource xaResource) {
 			if (xaResource == null && transactionFactory != null
-					&& !transactionFactory.supportsResourceAdapterManagedTransactions())
-			{
+					&& !transactionFactory.supportsResourceAdapterManagedTransactions()) {
 				throw new IllegalStateException("ResourceAdapter-provided XAResource is required for "
 						+ "transaction management. Check your ResourceAdapter's configuration.");
 			}
 			this.xaResource = xaResource;
 		}
 
-		public void beginTransaction() throws Exception
-		{
-			if (transactionFactory != null && this.xaResource != null)
-			{
+		public void beginTransaction() throws Exception {
+			if (transactionFactory != null && this.xaResource != null) {
 				this.transaction = transactionFactory.createTransaction(transactionName,
 						transactionTimeout);
 				this.transaction.enlistResource(this.xaResource);
 			}
 		}
 
-		public void setRollbackOnly()
-		{
-			if (this.transaction != null)
-			{
+		public void setRollbackOnly() {
+			if (this.transaction != null) {
 				this.rollbackOnly = true;
 			}
 		}
 
-		public void endTransaction() throws Exception
-		{
-			if (this.transaction != null)
-			{
-				try
-				{
-					if (this.rollbackOnly)
-					{
+		public void endTransaction() throws Exception {
+			if (this.transaction != null) {
+				try {
+					if (this.rollbackOnly) {
 						this.transaction.rollback();
-					}
-					else
-					{
+					} else {
 						this.transaction.commit();
 					}
-				}
-				finally
-				{
+				} finally {
 					this.transaction = null;
 					this.rollbackOnly = false;
 				}

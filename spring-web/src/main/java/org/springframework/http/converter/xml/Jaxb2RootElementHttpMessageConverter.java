@@ -16,33 +16,25 @@
 
 package org.springframework.http.converter.xml;
 
-import java.io.StringReader;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.MarshalException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
-import javax.xml.bind.UnmarshalException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamSource;
-
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
+import javax.xml.bind.*;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
+import java.io.StringReader;
 
 /**
  * Implementation of {@link org.springframework.http.converter.HttpMessageConverter
@@ -58,8 +50,8 @@ import org.springframework.util.ClassUtils;
  * @author Arjen Poutsma
  * @author Sebastien Deleuze
  * @author Rossen Stoyanchev
- * @since 3.0
  * @see MarshallingHttpMessageConverter
+ * @since 3.0
  */
 public class Jaxb2RootElementHttpMessageConverter extends AbstractJaxb2HttpMessageConverter<Object> {
 
@@ -128,23 +120,19 @@ public class Jaxb2RootElementHttpMessageConverter extends AbstractJaxb2HttpMessa
 			Unmarshaller unmarshaller = createUnmarshaller(clazz);
 			if (clazz.isAnnotationPresent(XmlRootElement.class)) {
 				return unmarshaller.unmarshal(source);
-			}
-			else {
+			} else {
 				JAXBElement<?> jaxbElement = unmarshaller.unmarshal(source, clazz);
 				return jaxbElement.getValue();
 			}
-		}
-		catch (NullPointerException ex) {
+		} catch (NullPointerException ex) {
 			if (!isSupportDtd()) {
 				throw new IllegalStateException("NPE while unmarshalling. " +
 						"This can happen due to the presence of DTD declarations which are disabled.", ex);
 			}
 			throw ex;
-		}
-		catch (UnmarshalException ex) {
+		} catch (UnmarshalException ex) {
 			throw ex;
-		}
-		catch (JAXBException ex) {
+		} catch (JAXBException ex) {
 			throw new HttpMessageConversionException("Invalid JAXB setup: " + ex.getMessage(), ex);
 		}
 	}
@@ -163,13 +151,11 @@ public class Jaxb2RootElementHttpMessageConverter extends AbstractJaxb2HttpMessa
 					xmlReader.setEntityResolver(NO_OP_ENTITY_RESOLVER);
 				}
 				return new SAXSource(xmlReader, inputSource);
-			}
-			catch (SAXException ex) {
+			} catch (SAXException ex) {
 				logger.warn("Processing of external entities could not be disabled", ex);
 				return source;
 			}
-		}
-		else {
+		} else {
 			return source;
 		}
 	}
@@ -181,11 +167,9 @@ public class Jaxb2RootElementHttpMessageConverter extends AbstractJaxb2HttpMessa
 			Marshaller marshaller = createMarshaller(clazz);
 			setCharset(headers.getContentType(), marshaller);
 			marshaller.marshal(o, result);
-		}
-		catch (MarshalException ex) {
+		} catch (MarshalException ex) {
 			throw ex;
-		}
-		catch (JAXBException ex) {
+		} catch (JAXBException ex) {
 			throw new HttpMessageConversionException("Invalid JAXB setup: " + ex.getMessage(), ex);
 		}
 	}

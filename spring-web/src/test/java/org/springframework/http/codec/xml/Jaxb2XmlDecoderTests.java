@@ -16,32 +16,25 @@
 
 package org.springframework.http.codec.xml;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.XMLEvent;
-
 import org.junit.jupiter.api.Test;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.testfixture.io.buffer.AbstractLeakCheckingTests;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.xml.jaxb.*;
+import org.springframework.web.testfixture.xml.Pojo;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import org.springframework.core.ResolvableType;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.testfixture.io.buffer.AbstractLeakCheckingTests;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.xml.jaxb.XmlRootElement;
-import org.springframework.http.codec.xml.jaxb.XmlRootElementWithName;
-import org.springframework.http.codec.xml.jaxb.XmlRootElementWithNameAndNamespace;
-import org.springframework.http.codec.xml.jaxb.XmlType;
-import org.springframework.http.codec.xml.jaxb.XmlTypeWithName;
-import org.springframework.http.codec.xml.jaxb.XmlTypeWithNameAndNamespace;
-import org.springframework.web.testfixture.xml.Pojo;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.XMLEvent;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

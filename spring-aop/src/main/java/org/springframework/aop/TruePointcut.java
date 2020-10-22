@@ -24,27 +24,23 @@ import java.io.Serializable;
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
-final class TruePointcut implements Pointcut, Serializable
-{
+final class TruePointcut implements Pointcut, Serializable {
 
 	public static final TruePointcut INSTANCE = new TruePointcut();
 
 	/**
 	 * Enforce Singleton pattern.
 	 */
-	private TruePointcut()
-	{
+	private TruePointcut() {
 	}
 
 	@Override
-	public ClassFilter getClassFilter()
-	{
+	public ClassFilter getClassFilter() {
 		return ClassFilter.TRUE;
 	}
 
 	@Override
-	public MethodMatcher getMethodMatcher()
-	{
+	public MethodMatcher getMethodMatcher() {
 		return MethodMatcher.TRUE;
 	}
 
@@ -53,14 +49,12 @@ final class TruePointcut implements Pointcut, Serializable
 	 * instance on deserialization, protecting Singleton pattern.
 	 * Alternative to overriding {@code equals()}.
 	 */
-	private Object readResolve()
-	{
+	private Object readResolve() {
 		return INSTANCE;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Pointcut.TRUE";
 	}
 

@@ -16,16 +16,8 @@
 
 package org.springframework.web.reactive.function.client;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.codec.CharSequenceEncoder;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -35,15 +27,19 @@ import org.springframework.http.codec.EncoderHttpMessageWriter;
 import org.springframework.http.codec.HttpMessageWriter;
 import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.testfixture.http.client.reactive.MockClientHttpRequest;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.springframework.http.HttpMethod.DELETE;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.OPTIONS;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 
 /**
  * @author Arjen Poutsma
@@ -58,7 +54,7 @@ public class DefaultClientRequestBuilderTests {
 		ClientRequest result = ClientRequest.from(other)
 				.headers(httpHeaders -> httpHeaders.set("foo", "baar"))
 				.cookies(cookies -> cookies.set("baz", "quux"))
-		.build();
+				.build();
 		assertThat(result.url()).isEqualTo(new URI("https://example.com"));
 		assertThat(result.method()).isEqualTo(GET);
 		assertThat(result.headers().size()).isEqualTo(1);
@@ -167,7 +163,8 @@ public class DefaultClientRequestBuilderTests {
 	public void bodyParameterizedTypeReference() {
 		String body = "foo";
 		Publisher<String> publisher = Mono.just(body);
-		ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {};
+		ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {
+		};
 		ClientRequest result = ClientRequest.create(POST, URI.create("https://example.com"))
 				.body(publisher, typeReference).build();
 

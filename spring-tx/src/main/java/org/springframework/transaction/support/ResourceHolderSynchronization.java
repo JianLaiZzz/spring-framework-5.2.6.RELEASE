@@ -20,16 +20,13 @@ package org.springframework.transaction.support;
  * {@link TransactionSynchronization} implementation that manages a
  * {@link ResourceHolder} bound through {@link TransactionSynchronizationManager}.
  *
+ * @param <H> the resource holder type
+ * @param <K> the resource key type
  * @author Juergen Hoeller
  * @since 2.5.5
- * @param <H>
- *            the resource holder type
- * @param <K>
- *            the resource key type
  */
 public abstract class ResourceHolderSynchronization<H extends ResourceHolder, K>
-		implements TransactionSynchronization
-{
+		implements TransactionSynchronization {
 
 	private final H resourceHolder;
 
@@ -39,97 +36,75 @@ public abstract class ResourceHolderSynchronization<H extends ResourceHolder, K>
 
 	/**
 	 * Create a new ResourceHolderSynchronization for the given holder.
-	 * 
-	 * @param resourceHolder
-	 *            the ResourceHolder to manage
-	 * @param resourceKey
-	 *            the key to bind the ResourceHolder for
+	 *
+	 * @param resourceHolder the ResourceHolder to manage
+	 * @param resourceKey    the key to bind the ResourceHolder for
 	 * @see TransactionSynchronizationManager#bindResource
 	 */
-	public ResourceHolderSynchronization(H resourceHolder, K resourceKey)
-	{
+	public ResourceHolderSynchronization(H resourceHolder, K resourceKey) {
 		this.resourceHolder = resourceHolder;
 		this.resourceKey = resourceKey;
 	}
 
 	@Override
-	public void suspend()
-	{
-		if (this.holderActive)
-		{
+	public void suspend() {
+		if (this.holderActive) {
 			TransactionSynchronizationManager.unbindResource(this.resourceKey);
 		}
 	}
 
 	@Override
-	public void resume()
-	{
-		if (this.holderActive)
-		{
+	public void resume() {
+		if (this.holderActive) {
 			TransactionSynchronizationManager.bindResource(this.resourceKey, this.resourceHolder);
 		}
 	}
 
 	@Override
-	public void flush()
-	{
+	public void flush() {
 		flushResource(this.resourceHolder);
 	}
 
 	@Override
-	public void beforeCommit(boolean readOnly)
-	{
+	public void beforeCommit(boolean readOnly) {
 	}
 
 	@Override
-	public void beforeCompletion()
-	{
-		if (shouldUnbindAtCompletion())
-		{
+	public void beforeCompletion() {
+		if (shouldUnbindAtCompletion()) {
 			TransactionSynchronizationManager.unbindResource(this.resourceKey);
 			this.holderActive = false;
-			if (shouldReleaseBeforeCompletion())
-			{
+			if (shouldReleaseBeforeCompletion()) {
 				releaseResource(this.resourceHolder, this.resourceKey);
 			}
 		}
 	}
 
 	@Override
-	public void afterCommit()
-	{
-		if (!shouldReleaseBeforeCompletion())
-		{
+	public void afterCommit() {
+		if (!shouldReleaseBeforeCompletion()) {
 			processResourceAfterCommit(this.resourceHolder);
 		}
 	}
 
 	@Override
-	public void afterCompletion(int status)
-	{
-		if (shouldUnbindAtCompletion())
-		{
+	public void afterCompletion(int status) {
+		if (shouldUnbindAtCompletion()) {
 			boolean releaseNecessary = false;
-			if (this.holderActive)
-			{
+			if (this.holderActive) {
 				// The thread-bound resource holder might not be available anymore,
 				// since afterCompletion might get called from a different thread.
 				this.holderActive = false;
 				TransactionSynchronizationManager.unbindResourceIfPossible(this.resourceKey);
 				this.resourceHolder.unbound();
 				releaseNecessary = true;
-			}
-			else
-			{
+			} else {
 				releaseNecessary = shouldReleaseAfterCompletion(this.resourceHolder);
 			}
-			if (releaseNecessary)
-			{
+			if (releaseNecessary) {
 				releaseResource(this.resourceHolder, this.resourceKey);
 			}
-		}
-		else
-		{
+		} else {
 			// Probably a pre-bound resource...
 			cleanupResource(this.resourceHolder, this.resourceKey, (status == STATUS_COMMITTED));
 		}
@@ -142,8 +117,7 @@ public abstract class ResourceHolderSynchronization<H extends ResourceHolder, K>
 	 * <p>
 	 * The default implementation returns {@code true}.
 	 */
-	protected boolean shouldUnbindAtCompletion()
-	{
+	protected boolean shouldUnbindAtCompletion() {
 		return true;
 	}
 
@@ -156,11 +130,10 @@ public abstract class ResourceHolderSynchronization<H extends ResourceHolder, K>
 	 * unbound from the thread ({@link #shouldUnbindAtCompletion()}).
 	 * <p>
 	 * The default implementation returns {@code true}.
-	 * 
+	 *
 	 * @see #releaseResource
 	 */
-	protected boolean shouldReleaseBeforeCompletion()
-	{
+	protected boolean shouldReleaseBeforeCompletion() {
 		return true;
 	}
 
@@ -170,61 +143,49 @@ public abstract class ResourceHolderSynchronization<H extends ResourceHolder, K>
 	 * <p>
 	 * The default implementation returns {@code !shouldReleaseBeforeCompletion()},
 	 * releasing after completion if no attempt was made before completion.
-	 * 
+	 *
 	 * @see #releaseResource
 	 */
-	protected boolean shouldReleaseAfterCompletion(H resourceHolder)
-	{
+	protected boolean shouldReleaseAfterCompletion(H resourceHolder) {
 		return !shouldReleaseBeforeCompletion();
 	}
 
 	/**
 	 * Flush callback for the given resource holder.
-	 * 
-	 * @param resourceHolder
-	 *            the resource holder to flush
+	 *
+	 * @param resourceHolder the resource holder to flush
 	 */
-	protected void flushResource(H resourceHolder)
-	{
+	protected void flushResource(H resourceHolder) {
 	}
 
 	/**
 	 * After-commit callback for the given resource holder.
 	 * Only called when the resource hasn't been released yet
 	 * ({@link #shouldReleaseBeforeCompletion()}).
-	 * 
-	 * @param resourceHolder
-	 *            the resource holder to process
+	 *
+	 * @param resourceHolder the resource holder to process
 	 */
-	protected void processResourceAfterCommit(H resourceHolder)
-	{
+	protected void processResourceAfterCommit(H resourceHolder) {
 	}
 
 	/**
 	 * Release the given resource (after it has been unbound from the thread).
-	 * 
-	 * @param resourceHolder
-	 *            the resource holder to process
-	 * @param resourceKey
-	 *            the key that the ResourceHolder was bound for
+	 *
+	 * @param resourceHolder the resource holder to process
+	 * @param resourceKey    the key that the ResourceHolder was bound for
 	 */
-	protected void releaseResource(H resourceHolder, K resourceKey)
-	{
+	protected void releaseResource(H resourceHolder, K resourceKey) {
 	}
 
 	/**
 	 * Perform a cleanup on the given resource (which is left bound to the thread).
-	 * 
-	 * @param resourceHolder
-	 *            the resource holder to process
-	 * @param resourceKey
-	 *            the key that the ResourceHolder was bound for
-	 * @param committed
-	 *            whether the transaction has committed ({@code true})
-	 *            or rolled back ({@code false})
+	 *
+	 * @param resourceHolder the resource holder to process
+	 * @param resourceKey    the key that the ResourceHolder was bound for
+	 * @param committed      whether the transaction has committed ({@code true})
+	 *                       or rolled back ({@code false})
 	 */
-	protected void cleanupResource(H resourceHolder, K resourceKey, boolean committed)
-	{
+	protected void cleanupResource(H resourceHolder, K resourceKey, boolean committed) {
 	}
 
 }

@@ -16,14 +16,8 @@
 
 package org.springframework.web.reactive.result.method;
 
-import java.lang.reflect.Method;
-import java.util.Comparator;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.http.server.PathContainer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +27,11 @@ import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRe
 import org.springframework.web.testfixture.server.MockServerWebExchange;
 import org.springframework.web.util.pattern.PathPattern;
 import org.springframework.web.util.pattern.PathPatternParser;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.lang.reflect.Method;
+import java.util.Comparator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;

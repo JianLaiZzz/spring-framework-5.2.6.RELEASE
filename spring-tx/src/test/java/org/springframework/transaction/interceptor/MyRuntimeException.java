@@ -24,10 +24,8 @@ import org.springframework.core.NestedRuntimeException;
  * @author Chris Beams
  */
 @SuppressWarnings("serial")
-class MyRuntimeException extends NestedRuntimeException
-{
-	public MyRuntimeException(String msg)
-	{
+class MyRuntimeException extends NestedRuntimeException {
+	public MyRuntimeException(String msg) {
 		super(msg);
 	}
 }

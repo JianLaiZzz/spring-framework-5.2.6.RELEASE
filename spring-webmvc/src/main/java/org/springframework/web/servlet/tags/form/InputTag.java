@@ -16,11 +16,10 @@
 
 package org.springframework.web.servlet.tags.form;
 
-import java.util.Map;
+import org.springframework.lang.Nullable;
 
 import javax.servlet.jsp.JspException;
-
-import org.springframework.lang.Nullable;
+import java.util.Map;
 
 /**
  * The {@code <input>} tag renders an HTML 'input' tag with type 'text' using

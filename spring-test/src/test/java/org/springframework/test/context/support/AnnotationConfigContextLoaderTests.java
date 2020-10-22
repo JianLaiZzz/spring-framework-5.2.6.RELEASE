@@ -17,7 +17,6 @@
 package org.springframework.test.context.support;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.test.context.MergedContextConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,10 +42,10 @@ class AnnotationConfigContextLoaderTests {
 	@Test
 	void configMustNotContainLocations() throws Exception {
 		MergedContextConfiguration mergedConfig = new MergedContextConfiguration(getClass(),
-			new String[] { "config.xml" }, EMPTY_CLASS_ARRAY, EMPTY_STRING_ARRAY, contextLoader);
+				new String[]{"config.xml"}, EMPTY_CLASS_ARRAY, EMPTY_STRING_ARRAY, contextLoader);
 		assertThatIllegalStateException().isThrownBy(() ->
 				contextLoader.loadContext(mergedConfig))
-			.withMessageContaining("does not support resource locations");
+				.withMessageContaining("does not support resource locations");
 	}
 
 	@Test

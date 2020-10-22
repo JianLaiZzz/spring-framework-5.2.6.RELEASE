@@ -16,10 +16,10 @@
 
 package org.springframework.orm.jpa.domain;
 
-import javax.persistence.*;
-
 import org.springframework.beans.testfixture.beans.TestBean;
 import org.springframework.context.ApplicationContext;
+
+import javax.persistence.*;
 
 /**
  * Simple JavaBean domain object representing an person.
@@ -28,8 +28,7 @@ import org.springframework.context.ApplicationContext;
  */
 @Entity
 @EntityListeners(PersonListener.class)
-public class Person
-{
+public class Person {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,54 +48,44 @@ public class Person
 
 	public transient ApplicationContext postLoaded;
 
-	public Integer getId()
-	{
+	public Integer getId() {
 		return id;
 	}
 
-	public void setTestBean(TestBean testBean)
-	{
+	public void setTestBean(TestBean testBean) {
 		this.testBean = testBean;
 	}
 
-	public TestBean getTestBean()
-	{
+	public TestBean getTestBean() {
 		return testBean;
 	}
 
-	public void setFirstName(String firstName)
-	{
+	public void setFirstName(String firstName) {
 		this.first_name = firstName;
 	}
 
-	public String getFirstName()
-	{
+	public String getFirstName() {
 		return this.first_name;
 	}
 
-	public void setLastName(String lastName)
-	{
+	public void setLastName(String lastName) {
 		this.last_name = lastName;
 	}
 
-	public String getLastName()
-	{
+	public String getLastName() {
 		return this.last_name;
 	}
 
-	public void setDriversLicense(DriversLicense driversLicense)
-	{
+	public void setDriversLicense(DriversLicense driversLicense) {
 		this.driversLicense = driversLicense;
 	}
 
-	public DriversLicense getDriversLicense()
-	{
+	public DriversLicense getDriversLicense() {
 		return this.driversLicense;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getClass().getName() + ":(" + hashCode() + ") id=" + id + "; firstName=" + first_name
 				+ "; lastName=" + last_name + "; testBean=" + testBean;
 	}

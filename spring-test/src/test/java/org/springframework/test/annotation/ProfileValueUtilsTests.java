@@ -16,12 +16,12 @@
 
 package org.springframework.test.annotation;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -190,7 +190,7 @@ class ProfileValueUtilsTests {
 	}
 
 	@SuppressWarnings("unused")
-	@IfProfileValue(name = NAME, values = { "foo", VALUE, "bar" })
+	@IfProfileValue(name = NAME, values = {"foo", VALUE, "bar"})
 	private static class EnabledAnnotatedMultiValue {
 
 		public void nonAnnotatedMethod() {
@@ -222,7 +222,7 @@ class ProfileValueUtilsTests {
 	}
 
 	@SuppressWarnings("unused")
-	@IfProfileValue(name = NAME, values = { "foo", "bar" })
+	@IfProfileValue(name = NAME, values = {"foo", "bar"})
 	private static class DisabledAnnotatedMultiValue {
 
 		public void nonAnnotatedMethod() {

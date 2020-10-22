@@ -16,13 +16,13 @@
 
 package org.springframework.jca.support;
 
-import javax.resource.ResourceException;
-import javax.resource.spi.ConnectionManager;
-import javax.resource.spi.ManagedConnectionFactory;
-
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
+
+import javax.resource.ResourceException;
+import javax.resource.spi.ConnectionManager;
+import javax.resource.spi.ManagedConnectionFactory;
 
 /**
  * {@link org.springframework.beans.factory.FactoryBean} that creates
@@ -66,15 +66,14 @@ import org.springframework.lang.Nullable;
  * to drive local transactions.
  *
  * @author Juergen Hoeller
- * @since 1.2
  * @see #setManagedConnectionFactory
  * @see #setConnectionManager
  * @see javax.resource.cci.ConnectionFactory
  * @see javax.resource.cci.Connection#getLocalTransaction
  * @see org.springframework.jca.cci.connection.CciLocalTransactionManager
+ * @since 1.2
  */
-public class LocalConnectionFactoryBean implements FactoryBean<Object>, InitializingBean
-{
+public class LocalConnectionFactoryBean implements FactoryBean<Object>, InitializingBean {
 
 	@Nullable
 	private ManagedConnectionFactory managedConnectionFactory;
@@ -101,11 +100,10 @@ public class LocalConnectionFactoryBean implements FactoryBean<Object>, Initiali
 	 * Simply inject the corresponding ResourceAdapter instance into its
 	 * "resourceAdapter" bean property in this case, before passing the
 	 * ManagerConnectionFactory into this LocalConnectionFactoryBean.
-	 * 
+	 *
 	 * @see javax.resource.spi.ManagedConnectionFactory#createConnectionFactory()
 	 */
-	public void setManagedConnectionFactory(ManagedConnectionFactory managedConnectionFactory)
-	{
+	public void setManagedConnectionFactory(ManagedConnectionFactory managedConnectionFactory) {
 		this.managedConnectionFactory = managedConnectionFactory;
 	}
 
@@ -116,48 +114,39 @@ public class LocalConnectionFactoryBean implements FactoryBean<Object>, Initiali
 	 * A ConnectionManager implementation for local usage is often
 	 * included with a JCA connector. Such an included ConnectionManager
 	 * might be set as default, with no need to explicitly specify one.
-	 * 
+	 *
 	 * @see javax.resource.spi.ManagedConnectionFactory#createConnectionFactory(javax.resource.spi.ConnectionManager)
 	 */
-	public void setConnectionManager(ConnectionManager connectionManager)
-	{
+	public void setConnectionManager(ConnectionManager connectionManager) {
 		this.connectionManager = connectionManager;
 	}
 
 	@Override
-	public void afterPropertiesSet() throws ResourceException
-	{
-		if (this.managedConnectionFactory == null)
-		{
+	public void afterPropertiesSet() throws ResourceException {
+		if (this.managedConnectionFactory == null) {
 			throw new IllegalArgumentException("Property 'managedConnectionFactory' is required");
 		}
-		if (this.connectionManager != null)
-		{
+		if (this.connectionManager != null) {
 			this.connectionFactory = this.managedConnectionFactory
 					.createConnectionFactory(this.connectionManager);
-		}
-		else
-		{
+		} else {
 			this.connectionFactory = this.managedConnectionFactory.createConnectionFactory();
 		}
 	}
 
 	@Override
 	@Nullable
-	public Object getObject()
-	{
+	public Object getObject() {
 		return this.connectionFactory;
 	}
 
 	@Override
-	public Class<?> getObjectType()
-	{
+	public Class<?> getObjectType() {
 		return (this.connectionFactory != null ? this.connectionFactory.getClass() : null);
 	}
 
 	@Override
-	public boolean isSingleton()
-	{
+	public boolean isSingleton() {
 		return true;
 	}
 

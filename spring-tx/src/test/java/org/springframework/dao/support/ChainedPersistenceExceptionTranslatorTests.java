@@ -16,23 +16,21 @@
 
 package org.springframework.dao.support;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.dao.support.DataAccessUtilsTests.MapPersistenceExceptionTranslator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * @author Rod Johnson
  * @since 2.0
  */
-public class ChainedPersistenceExceptionTranslatorTests
-{
+public class ChainedPersistenceExceptionTranslatorTests {
 
 	@Test
-	public void empty()
-	{
+	public void empty() {
 		ChainedPersistenceExceptionTranslator pet = new ChainedPersistenceExceptionTranslator();
 		//MapPersistenceExceptionTranslator mpet = new MapPersistenceExceptionTranslator();
 		RuntimeException in = new RuntimeException("in");
@@ -40,8 +38,7 @@ public class ChainedPersistenceExceptionTranslatorTests
 	}
 
 	@Test
-	public void exceptionTranslationWithTranslation()
-	{
+	public void exceptionTranslationWithTranslation() {
 		MapPersistenceExceptionTranslator mpet1 = new MapPersistenceExceptionTranslator();
 		RuntimeException in1 = new RuntimeException("in");
 		InvalidDataAccessApiUsageException out1 = new InvalidDataAccessApiUsageException("out");

@@ -16,12 +16,12 @@
 
 package org.springframework.aop.support.annotation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests for {@link AnnotationMatchingPointcut}.
@@ -29,12 +29,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * @author Sam Brannen
  * @since 5.1.10
  */
-class AnnotationMatchingPointcutTests
-{
+class AnnotationMatchingPointcutTests {
 
 	@Test
-	void classLevelPointcuts()
-	{
+	void classLevelPointcuts() {
 		Pointcut pointcut1 = new AnnotationMatchingPointcut(Qualifier.class, true);
 		Pointcut pointcut2 = new AnnotationMatchingPointcut(Qualifier.class, true);
 		Pointcut pointcut3 = new AnnotationMatchingPointcut(Qualifier.class);
@@ -57,8 +55,7 @@ class AnnotationMatchingPointcutTests
 	}
 
 	@Test
-	void methodLevelPointcuts()
-	{
+	void methodLevelPointcuts() {
 		Pointcut pointcut1 = new AnnotationMatchingPointcut(null, Qualifier.class, true);
 		Pointcut pointcut2 = new AnnotationMatchingPointcut(null, Qualifier.class, true);
 		Pointcut pointcut3 = new AnnotationMatchingPointcut(null, Qualifier.class);
@@ -84,8 +81,7 @@ class AnnotationMatchingPointcutTests
 	}
 
 	@Test
-	void classLevelAndMethodLevelPointcuts()
-	{
+	void classLevelAndMethodLevelPointcuts() {
 		Pointcut pointcut1 = new AnnotationMatchingPointcut(Qualifier.class, Qualifier.class, true);
 		Pointcut pointcut2 = new AnnotationMatchingPointcut(Qualifier.class, Qualifier.class, true);
 		Pointcut pointcut3 = new AnnotationMatchingPointcut(Qualifier.class, Qualifier.class);

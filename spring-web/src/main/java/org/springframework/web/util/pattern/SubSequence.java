@@ -24,8 +24,7 @@ package org.springframework.web.util.pattern;
  * @author Andy Clement
  * @since 5.0
  */
-class SubSequence implements CharSequence
-{
+class SubSequence implements CharSequence {
 
 	private final char[] chars;
 
@@ -33,34 +32,29 @@ class SubSequence implements CharSequence
 
 	private final int end;
 
-	SubSequence(char[] chars, int start, int end)
-	{
+	SubSequence(char[] chars, int start, int end) {
 		this.chars = chars;
 		this.start = start;
 		this.end = end;
 	}
 
 	@Override
-	public int length()
-	{
+	public int length() {
 		return (this.end - this.start);
 	}
 
 	@Override
-	public char charAt(int index)
-	{
+	public char charAt(int index) {
 		return this.chars[this.start + index];
 	}
 
 	@Override
-	public CharSequence subSequence(int start, int end)
-	{
+	public CharSequence subSequence(int start, int end) {
 		return new SubSequence(this.chars, this.start + start, this.start + end);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return new String(this.chars, this.start, this.end - this.start);
 	}
 

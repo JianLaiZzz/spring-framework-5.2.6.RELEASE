@@ -18,7 +18,6 @@ package org.springframework.test.context.hierarchies.standard;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -35,8 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(SpringExtension.class)
 @ContextHierarchy({
-	@ContextConfiguration(classes = SingleTestClassWithTwoLevelContextHierarchyAndMixedConfigTypesTests.ParentConfig.class),
-	@ContextConfiguration("SingleTestClassWithTwoLevelContextHierarchyAndMixedConfigTypesTests-ChildConfig.xml") })
+		@ContextConfiguration(classes = SingleTestClassWithTwoLevelContextHierarchyAndMixedConfigTypesTests.ParentConfig.class),
+		@ContextConfiguration("SingleTestClassWithTwoLevelContextHierarchyAndMixedConfigTypesTests-ChildConfig.xml")})
 class SingleTestClassWithTwoLevelContextHierarchyAndMixedConfigTypesTests {
 
 	@Configuration

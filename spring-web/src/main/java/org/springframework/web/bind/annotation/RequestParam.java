@@ -16,10 +16,10 @@
 
 package org.springframework.web.bind.annotation;
 
+import org.springframework.core.annotation.AliasFor;
+
 import java.lang.annotation.*;
 import java.util.Map;
-
-import org.springframework.core.annotation.AliasFor;
 
 /**
  * Annotation which indicates that a method parameter should be bound to a web
@@ -52,16 +52,15 @@ import org.springframework.core.annotation.AliasFor;
  * @author Arjen Poutsma
  * @author Juergen Hoeller
  * @author Sam Brannen
- * @since 2.5
  * @see RequestMapping
  * @see RequestHeader
  * @see CookieValue
+ * @since 2.5
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface RequestParam
-{
+public @interface RequestParam {
 
 	/**
 	 * Alias for {@link #name}.
@@ -71,7 +70,7 @@ public @interface RequestParam
 
 	/**
 	 * The name of the request parameter to bind to.
-	 * 
+	 *
 	 * @since 4.2
 	 */
 	@AliasFor("value")

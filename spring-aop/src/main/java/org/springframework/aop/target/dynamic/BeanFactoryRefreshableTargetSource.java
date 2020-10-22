@@ -31,13 +31,12 @@ import org.springframework.util.Assert;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @author Mark Fisher
- * @since 2.0
  * @see org.springframework.beans.factory.BeanFactory
  * @see #requiresRefresh()
  * @see #setRefreshCheckDelay
+ * @since 2.0
  */
-public class BeanFactoryRefreshableTargetSource extends AbstractRefreshableTargetSource
-{
+public class BeanFactoryRefreshableTargetSource extends AbstractRefreshableTargetSource {
 
 	private final BeanFactory beanFactory;
 
@@ -49,14 +48,11 @@ public class BeanFactoryRefreshableTargetSource extends AbstractRefreshableTarge
 	 * <p>
 	 * Note that the passed-in BeanFactory should have an appropriate
 	 * bean definition set up for the given bean name.
-	 * 
-	 * @param beanFactory
-	 *            the BeanFactory to fetch beans from
-	 * @param beanName
-	 *            the name of the target bean
+	 *
+	 * @param beanFactory the BeanFactory to fetch beans from
+	 * @param beanName    the name of the target bean
 	 */
-	public BeanFactoryRefreshableTargetSource(BeanFactory beanFactory, String beanName)
-	{
+	public BeanFactoryRefreshableTargetSource(BeanFactory beanFactory, String beanName) {
 		Assert.notNull(beanFactory, "BeanFactory is required");
 		Assert.notNull(beanName, "Bean name is required");
 		this.beanFactory = beanFactory;
@@ -67,8 +63,7 @@ public class BeanFactoryRefreshableTargetSource extends AbstractRefreshableTarge
 	 * Retrieve a fresh target object.
 	 */
 	@Override
-	protected final Object freshTarget()
-	{
+	protected final Object freshTarget() {
 		return this.obtainFreshBean(this.beanFactory, this.beanName);
 	}
 
@@ -78,11 +73,10 @@ public class BeanFactoryRefreshableTargetSource extends AbstractRefreshableTarge
 	 * <p>
 	 * This default implementation fetches a new target bean
 	 * instance from the bean factory.
-	 * 
+	 *
 	 * @see org.springframework.beans.factory.BeanFactory#getBean
 	 */
-	protected Object obtainFreshBean(BeanFactory beanFactory, String beanName)
-	{
+	protected Object obtainFreshBean(BeanFactory beanFactory, String beanName) {
 		return beanFactory.getBean(beanName);
 	}
 

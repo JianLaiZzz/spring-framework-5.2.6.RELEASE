@@ -16,33 +16,14 @@
 
 package org.springframework.web.servlet.mvc.method.annotation;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.MatrixVariable;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.servlet.View;
@@ -50,6 +31,13 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.AbstractView;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -88,14 +76,14 @@ public class UriTemplateServletAnnotationControllerHandlerMethodTests extends Ab
 		pathVars.put("other", "other");
 
 		WebApplicationContext wac =
-			initServlet(new ApplicationContextInitializer<GenericWebApplicationContext>() {
-				@Override
-				public void initialize(GenericWebApplicationContext context) {
-					RootBeanDefinition beanDef = new RootBeanDefinition(ModelValidatingViewResolver.class);
-					beanDef.getConstructorArgumentValues().addGenericArgumentValue(pathVars);
-					context.registerBeanDefinition("viewResolver", beanDef);
-				}
-			}, ViewRenderingController.class);
+				initServlet(new ApplicationContextInitializer<GenericWebApplicationContext>() {
+					@Override
+					public void initialize(GenericWebApplicationContext context) {
+						RootBeanDefinition beanDef = new RootBeanDefinition(ModelValidatingViewResolver.class);
+						beanDef.getConstructorArgumentValues().addGenericArgumentValue(pathVars);
+						context.registerBeanDefinition("viewResolver", beanDef);
+					}
+				}, ViewRenderingController.class);
 
 		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/hotels/42;q=1,2/bookings/21-other;q=3;r=R");
 		getServlet().service(request, new MockHttpServletResponse());
@@ -364,8 +352,8 @@ public class UriTemplateServletAnnotationControllerHandlerMethodTests extends Ab
 	public static class SimpleUriTemplateController {
 
 		@RequestMapping("/{root}")
-		public void handle(@PathVariable("root") int root, @MatrixVariable(required=false, defaultValue="7") int q,
-				Writer writer) throws IOException {
+		public void handle(@PathVariable("root") int root, @MatrixVariable(required = false, defaultValue = "7") int q,
+						   Writer writer) throws IOException {
 
 			assertThat(root).as("Invalid path variable value").isEqualTo(42);
 			writer.write("test-" + root + "-" + q);
@@ -378,11 +366,11 @@ public class UriTemplateServletAnnotationControllerHandlerMethodTests extends Ab
 
 		@RequestMapping("/hotels/{hotel}/bookings/{booking}-{other}")
 		public void handle(@PathVariable("hotel") String hotel,
-				@PathVariable int booking,
-				@PathVariable String other,
-				@MatrixVariable(name = "q", pathVar = "hotel") int qHotel,
-				@MatrixVariable(name = "q", pathVar = "other") int qOther,
-				Writer writer) throws IOException {
+						   @PathVariable int booking,
+						   @PathVariable String other,
+						   @MatrixVariable(name = "q", pathVar = "hotel") int qHotel,
+						   @MatrixVariable(name = "q", pathVar = "other") int qOther,
+						   Writer writer) throws IOException {
 			assertThat(hotel).as("Invalid path variable value").isEqualTo("42");
 			assertThat(booking).as("Invalid path variable value").isEqualTo(21);
 			writer.write("test-" + hotel + "-q" + qHotel + "-" + booking + "-" + other + "-q" + qOther);
@@ -395,7 +383,7 @@ public class UriTemplateServletAnnotationControllerHandlerMethodTests extends Ab
 
 		@RequestMapping("/hotels/{hotel}/bookings/{booking}-{other}")
 		public void handle(@PathVariable("hotel") String hotel, @PathVariable int booking,
-				@PathVariable String other, @MatrixVariable MultiValueMap<String, String> params) {
+						   @PathVariable String other, @MatrixVariable MultiValueMap<String, String> params) {
 
 			assertThat(hotel).as("Invalid path variable value").isEqualTo("42");
 			assertThat(booking).as("Invalid path variable value").isEqualTo(21);
@@ -498,7 +486,7 @@ public class UriTemplateServletAnnotationControllerHandlerMethodTests extends Ab
 
 		@RequestMapping("/{root:\\d+}{params}")
 		public void handle(@PathVariable("root") int root, @PathVariable("params") String paramString,
-				@MatrixVariable List<Integer> q, Writer writer) throws IOException {
+						   @MatrixVariable List<Integer> q, Writer writer) throws IOException {
 
 			assertThat(root).as("Invalid path variable value").isEqualTo(42);
 			writer.write("test-" + root + "-" + paramString + "-" + q);
@@ -510,7 +498,7 @@ public class UriTemplateServletAnnotationControllerHandlerMethodTests extends Ab
 
 		@RequestMapping("/lat/{latitude}/long/{longitude}")
 		public void testLatLong(@PathVariable Double latitude, @PathVariable Double longitude, Writer writer)
-			throws IOException {
+				throws IOException {
 			writer.write("latitude-" + latitude + "-longitude-" + longitude);
 		}
 	}
@@ -612,12 +600,12 @@ public class UriTemplateServletAnnotationControllerHandlerMethodTests extends Ab
 	@RequestMapping("/test")
 	public static class VariableNamesController {
 
-		@RequestMapping(value = "/{foo}", method=RequestMethod.GET)
+		@RequestMapping(value = "/{foo}", method = RequestMethod.GET)
 		public void foo(@PathVariable String foo, Writer writer) throws IOException {
 			writer.write("foo-" + foo);
 		}
 
-		@RequestMapping(value = "/{bar}", method=RequestMethod.DELETE)
+		@RequestMapping(value = "/{bar}", method = RequestMethod.DELETE)
 		public void bar(@PathVariable String bar, Writer writer) throws IOException {
 			writer.write("bar-" + bar);
 		}
@@ -656,14 +644,15 @@ public class UriTemplateServletAnnotationControllerHandlerMethodTests extends Ab
 
 		@Override
 		public View resolveViewName(final String viewName, Locale locale) throws Exception {
-			return new AbstractView () {
+			return new AbstractView() {
 				@Override
 				public String getContentType() {
 					return null;
 				}
+
 				@Override
 				protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
-						HttpServletResponse response) throws Exception {
+													   HttpServletResponse response) throws Exception {
 					for (String key : attrsToValidate.keySet()) {
 						assertThat(model.containsKey(key)).as("Model should contain attribute named " + key).isTrue();
 						assertThat(model.get(key)).isEqualTo(attrsToValidate.get(key));

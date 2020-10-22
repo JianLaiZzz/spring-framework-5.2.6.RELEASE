@@ -16,11 +16,6 @@
 
 package org.springframework.core;
 
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import kotlinx.coroutines.Deferred;
@@ -33,10 +28,16 @@ import rx.Completable;
 import rx.Observable;
 import rx.Single;
 
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests for {@link ReactiveAdapterRegistry}.
+ *
  * @author Rossen Stoyanchev
  */
 @SuppressWarnings("unchecked")

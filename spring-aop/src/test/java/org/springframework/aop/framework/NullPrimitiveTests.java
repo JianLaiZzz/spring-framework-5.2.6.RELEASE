@@ -16,11 +16,11 @@
 
 package org.springframework.aop.framework;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.AopInvocationException;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * Test for SPR-4675. A null value returned from around advice is very hard to debug if
@@ -28,23 +28,18 @@ import org.springframework.aop.AopInvocationException;
  *
  * @author Dave Syer
  */
-public class NullPrimitiveTests
-{
+public class NullPrimitiveTests {
 
-	interface Foo
-	{
+	interface Foo {
 		int getValue();
 	}
 
 	@Test
-	public void testNullPrimitiveWithJdkProxy()
-	{
+	public void testNullPrimitiveWithJdkProxy() {
 
-		class SimpleFoo implements Foo
-		{
+		class SimpleFoo implements Foo {
 			@Override
-			public int getValue()
-			{
+			public int getValue() {
 				return 100;
 			}
 		}
@@ -59,17 +54,14 @@ public class NullPrimitiveTests
 				.withMessageContaining("Foo.getValue()");
 	}
 
-	public static class Bar
-	{
-		public int getValue()
-		{
+	public static class Bar {
+		public int getValue() {
 			return 100;
 		}
 	}
 
 	@Test
-	public void testNullPrimitiveWithCglibProxy()
-	{
+	public void testNullPrimitiveWithCglibProxy() {
 
 		Bar target = new Bar();
 		ProxyFactory factory = new ProxyFactory(target);

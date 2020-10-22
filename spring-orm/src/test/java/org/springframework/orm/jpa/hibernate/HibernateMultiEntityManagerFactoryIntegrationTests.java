@@ -16,16 +16,16 @@
 
 package org.springframework.orm.jpa.hibernate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.AbstractContainerEntityManagerFactoryIntegrationTests;
 import org.springframework.orm.jpa.EntityManagerFactoryInfo;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 /**
  * Hibernate-specific JPA tests with multiple EntityManagerFactory instances.
@@ -33,23 +33,20 @@ import org.springframework.orm.jpa.EntityManagerFactoryInfo;
  * @author Juergen Hoeller
  */
 public class HibernateMultiEntityManagerFactoryIntegrationTests
-		extends AbstractContainerEntityManagerFactoryIntegrationTests
-{
+		extends AbstractContainerEntityManagerFactoryIntegrationTests {
 
 	@Autowired
 	private EntityManagerFactory entityManagerFactory2;
 
 	@Override
-	protected String[] getConfigLocations()
-	{
-		return new String[] { "/org/springframework/orm/jpa/hibernate/hibernate-manager-multi.xml",
-				"/org/springframework/orm/jpa/memdb.xml" };
+	protected String[] getConfigLocations() {
+		return new String[]{"/org/springframework/orm/jpa/hibernate/hibernate-manager-multi.xml",
+				"/org/springframework/orm/jpa/memdb.xml"};
 	}
 
 	@Override
 	@Test
-	public void testEntityManagerFactoryImplementsEntityManagerFactoryInfo()
-	{
+	public void testEntityManagerFactoryImplementsEntityManagerFactoryInfo() {
 		boolean condition = this.entityManagerFactory instanceof EntityManagerFactoryInfo;
 		assertThat(condition).as("Must have introduced config interface").isTrue();
 		EntityManagerFactoryInfo emfi = (EntityManagerFactoryInfo) this.entityManagerFactory;
@@ -60,16 +57,12 @@ public class HibernateMultiEntityManagerFactoryIntegrationTests
 	}
 
 	@Test
-	public void testEntityManagerFactory2()
-	{
+	public void testEntityManagerFactory2() {
 		EntityManager em = this.entityManagerFactory2.createEntityManager();
-		try
-		{
+		try {
 			assertThatIllegalArgumentException()
 					.isThrownBy(() -> em.createQuery("select tb from TestBean"));
-		}
-		finally
-		{
+		} finally {
 			em.close();
 		}
 	}

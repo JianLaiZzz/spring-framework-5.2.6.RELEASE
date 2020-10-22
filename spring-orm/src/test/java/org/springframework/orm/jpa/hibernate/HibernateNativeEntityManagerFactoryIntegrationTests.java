@@ -16,10 +16,6 @@
 
 package org.springframework.orm.jpa.hibernate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
 import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -30,6 +26,10 @@ import org.springframework.orm.jpa.AbstractContainerEntityManagerFactoryIntegrat
 import org.springframework.orm.jpa.EntityManagerFactoryInfo;
 import org.springframework.orm.jpa.domain.Person;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Hibernate-specific JPA tests with native SessionFactory setup and getCurrentSession interaction.
  *
@@ -37,8 +37,7 @@ import org.springframework.orm.jpa.domain.Person;
  * @since 5.1
  */
 public class HibernateNativeEntityManagerFactoryIntegrationTests
-		extends AbstractContainerEntityManagerFactoryIntegrationTests
-{
+		extends AbstractContainerEntityManagerFactoryIntegrationTests {
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -47,24 +46,21 @@ public class HibernateNativeEntityManagerFactoryIntegrationTests
 	private ApplicationContext applicationContext;
 
 	@Override
-	protected String[] getConfigLocations()
-	{
-		return new String[] { "/org/springframework/orm/jpa/hibernate/hibernate-manager-native.xml",
-				"/org/springframework/orm/jpa/memdb.xml", "/org/springframework/orm/jpa/inject.xml" };
+	protected String[] getConfigLocations() {
+		return new String[]{"/org/springframework/orm/jpa/hibernate/hibernate-manager-native.xml",
+				"/org/springframework/orm/jpa/memdb.xml", "/org/springframework/orm/jpa/inject.xml"};
 	}
 
 	@Override
 	@Test
-	public void testEntityManagerFactoryImplementsEntityManagerFactoryInfo()
-	{
+	public void testEntityManagerFactoryImplementsEntityManagerFactoryInfo() {
 		boolean condition = entityManagerFactory instanceof EntityManagerFactoryInfo;
 		assertThat(condition).as("Must not have introduced config interface").isFalse();
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testEntityListener()
-	{
+	public void testEntityListener() {
 		String firstName = "Tony";
 		insertPerson(firstName);
 
@@ -76,9 +72,8 @@ public class HibernateNativeEntityManagerFactoryIntegrationTests
 	}
 
 	@Test
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void testCurrentSession()
-	{
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	public void testCurrentSession() {
 		String firstName = "Tony";
 		insertPerson(firstName);
 
@@ -90,8 +85,7 @@ public class HibernateNativeEntityManagerFactoryIntegrationTests
 	}
 
 	@Test // SPR-16956
-	public void testReadOnly()
-	{
+	public void testReadOnly() {
 		assertThat(sessionFactory.getCurrentSession().getHibernateFlushMode()).isSameAs(FlushMode.AUTO);
 		assertThat(sessionFactory.getCurrentSession().isDefaultReadOnly()).isFalse();
 		endTransaction();

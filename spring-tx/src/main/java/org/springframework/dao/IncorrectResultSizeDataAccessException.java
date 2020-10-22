@@ -22,12 +22,11 @@ package org.springframework.dao;
  *
  * @author Juergen Hoeller
  * @author Chris Beams
- * @since 1.0.2
  * @see EmptyResultDataAccessException
+ * @since 1.0.2
  */
 @SuppressWarnings("serial")
-public class IncorrectResultSizeDataAccessException extends DataRetrievalFailureException
-{
+public class IncorrectResultSizeDataAccessException extends DataRetrievalFailureException {
 
 	private final int expectedSize;
 
@@ -35,12 +34,10 @@ public class IncorrectResultSizeDataAccessException extends DataRetrievalFailure
 
 	/**
 	 * Constructor for IncorrectResultSizeDataAccessException.
-	 * 
-	 * @param expectedSize
-	 *            the expected result size
+	 *
+	 * @param expectedSize the expected result size
 	 */
-	public IncorrectResultSizeDataAccessException(int expectedSize)
-	{
+	public IncorrectResultSizeDataAccessException(int expectedSize) {
 		super("Incorrect result size: expected " + expectedSize);
 		this.expectedSize = expectedSize;
 		this.actualSize = -1;
@@ -48,14 +45,11 @@ public class IncorrectResultSizeDataAccessException extends DataRetrievalFailure
 
 	/**
 	 * Constructor for IncorrectResultSizeDataAccessException.
-	 * 
-	 * @param expectedSize
-	 *            the expected result size
-	 * @param actualSize
-	 *            the actual result size (or -1 if unknown)
+	 *
+	 * @param expectedSize the expected result size
+	 * @param actualSize   the actual result size (or -1 if unknown)
 	 */
-	public IncorrectResultSizeDataAccessException(int expectedSize, int actualSize)
-	{
+	public IncorrectResultSizeDataAccessException(int expectedSize, int actualSize) {
 		super("Incorrect result size: expected " + expectedSize + ", actual " + actualSize);
 		this.expectedSize = expectedSize;
 		this.actualSize = actualSize;
@@ -63,14 +57,11 @@ public class IncorrectResultSizeDataAccessException extends DataRetrievalFailure
 
 	/**
 	 * Constructor for IncorrectResultSizeDataAccessException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param expectedSize
-	 *            the expected result size
+	 *
+	 * @param msg          the detail message
+	 * @param expectedSize the expected result size
 	 */
-	public IncorrectResultSizeDataAccessException(String msg, int expectedSize)
-	{
+	public IncorrectResultSizeDataAccessException(String msg, int expectedSize) {
 		super(msg);
 		this.expectedSize = expectedSize;
 		this.actualSize = -1;
@@ -78,16 +69,12 @@ public class IncorrectResultSizeDataAccessException extends DataRetrievalFailure
 
 	/**
 	 * Constructor for IncorrectResultSizeDataAccessException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param expectedSize
-	 *            the expected result size
-	 * @param ex
-	 *            the wrapped exception
+	 *
+	 * @param msg          the detail message
+	 * @param expectedSize the expected result size
+	 * @param ex           the wrapped exception
 	 */
-	public IncorrectResultSizeDataAccessException(String msg, int expectedSize, Throwable ex)
-	{
+	public IncorrectResultSizeDataAccessException(String msg, int expectedSize, Throwable ex) {
 		super(msg, ex);
 		this.expectedSize = expectedSize;
 		this.actualSize = -1;
@@ -95,16 +82,12 @@ public class IncorrectResultSizeDataAccessException extends DataRetrievalFailure
 
 	/**
 	 * Constructor for IncorrectResultSizeDataAccessException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param expectedSize
-	 *            the expected result size
-	 * @param actualSize
-	 *            the actual result size (or -1 if unknown)
+	 *
+	 * @param msg          the detail message
+	 * @param expectedSize the expected result size
+	 * @param actualSize   the actual result size (or -1 if unknown)
 	 */
-	public IncorrectResultSizeDataAccessException(String msg, int expectedSize, int actualSize)
-	{
+	public IncorrectResultSizeDataAccessException(String msg, int expectedSize, int actualSize) {
 		super(msg);
 		this.expectedSize = expectedSize;
 		this.actualSize = actualSize;
@@ -112,19 +95,14 @@ public class IncorrectResultSizeDataAccessException extends DataRetrievalFailure
 
 	/**
 	 * Constructor for IncorrectResultSizeDataAccessException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param expectedSize
-	 *            the expected result size
-	 * @param actualSize
-	 *            the actual result size (or -1 if unknown)
-	 * @param ex
-	 *            the wrapped exception
+	 *
+	 * @param msg          the detail message
+	 * @param expectedSize the expected result size
+	 * @param actualSize   the actual result size (or -1 if unknown)
+	 * @param ex           the wrapped exception
 	 */
 	public IncorrectResultSizeDataAccessException(String msg, int expectedSize, int actualSize,
-			Throwable ex)
-	{
+												  Throwable ex) {
 		super(msg, ex);
 		this.expectedSize = expectedSize;
 		this.actualSize = actualSize;
@@ -133,16 +111,14 @@ public class IncorrectResultSizeDataAccessException extends DataRetrievalFailure
 	/**
 	 * Return the expected result size.
 	 */
-	public int getExpectedSize()
-	{
+	public int getExpectedSize() {
 		return this.expectedSize;
 	}
 
 	/**
 	 * Return the actual result size (or -1 if unknown).
 	 */
-	public int getActualSize()
-	{
+	public int getActualSize() {
 		return this.actualSize;
 	}
 

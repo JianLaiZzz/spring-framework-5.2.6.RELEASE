@@ -16,12 +16,6 @@
 
 package org.springframework.aop.aspectj;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
-import java.lang.annotation.*;
-import java.lang.reflect.Method;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.MethodBeforeAdvice;
@@ -31,23 +25,26 @@ import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.core.OverridingClassLoader;
 import org.springframework.lang.Nullable;
 
+import java.lang.annotation.*;
+import java.lang.reflect.Method;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 /**
  * @author Dave Syer
  */
-public class TrickyAspectJPointcutExpressionTests
-{
+public class TrickyAspectJPointcutExpressionTests {
 
 	@Test
-	public void testManualProxyJavaWithUnconditionalPointcut() throws Exception
-	{
+	public void testManualProxyJavaWithUnconditionalPointcut() throws Exception {
 		TestService target = new TestServiceImpl();
 		LogUserAdvice logAdvice = new LogUserAdvice();
 		testAdvice(new DefaultPointcutAdvisor(logAdvice), logAdvice, target, "TestServiceImpl");
 	}
 
 	@Test
-	public void testManualProxyJavaWithStaticPointcut() throws Exception
-	{
+	public void testManualProxyJavaWithStaticPointcut() throws Exception {
 		TestService target = new TestServiceImpl();
 		LogUserAdvice logAdvice = new LogUserAdvice();
 		AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
@@ -56,8 +53,7 @@ public class TrickyAspectJPointcutExpressionTests
 	}
 
 	@Test
-	public void testManualProxyJavaWithDynamicPointcut() throws Exception
-	{
+	public void testManualProxyJavaWithDynamicPointcut() throws Exception {
 		TestService target = new TestServiceImpl();
 		LogUserAdvice logAdvice = new LogUserAdvice();
 		AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
@@ -66,8 +62,7 @@ public class TrickyAspectJPointcutExpressionTests
 	}
 
 	@Test
-	public void testManualProxyJavaWithDynamicPointcutAndProxyTargetClass() throws Exception
-	{
+	public void testManualProxyJavaWithDynamicPointcutAndProxyTargetClass() throws Exception {
 		TestService target = new TestServiceImpl();
 		LogUserAdvice logAdvice = new LogUserAdvice();
 		AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
@@ -77,8 +72,7 @@ public class TrickyAspectJPointcutExpressionTests
 	}
 
 	@Test
-	public void testManualProxyJavaWithStaticPointcutAndTwoClassLoaders() throws Exception
-	{
+	public void testManualProxyJavaWithStaticPointcutAndTwoClassLoaders() throws Exception {
 
 		LogUserAdvice logAdvice = new LogUserAdvice();
 		AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
@@ -100,14 +94,12 @@ public class TrickyAspectJPointcutExpressionTests
 	}
 
 	private void testAdvice(Advisor advisor, LogUserAdvice logAdvice, TestService target, String message)
-			throws Exception
-	{
+			throws Exception {
 		testAdvice(advisor, logAdvice, target, message, false);
 	}
 
 	private void testAdvice(Advisor advisor, LogUserAdvice logAdvice, TestService target, String message,
-			boolean proxyTargetClass) throws Exception
-	{
+							boolean proxyTargetClass) throws Exception {
 
 		logAdvice.reset();
 
@@ -122,88 +114,73 @@ public class TrickyAspectJPointcutExpressionTests
 		assertThat(logAdvice.getCountThrows()).isEqualTo(1);
 	}
 
-	public static class SimpleThrowawayClassLoader extends OverridingClassLoader
-	{
+	public static class SimpleThrowawayClassLoader extends OverridingClassLoader {
 
 		/**
 		 * Create a new SimpleThrowawayClassLoader for the given class loader.
-		 * 
-		 * @param parent
-		 *            the ClassLoader to build a throwaway ClassLoader for
+		 *
+		 * @param parent the ClassLoader to build a throwaway ClassLoader for
 		 */
-		public SimpleThrowawayClassLoader(ClassLoader parent)
-		{
+		public SimpleThrowawayClassLoader(ClassLoader parent) {
 			super(parent);
 		}
 
 	}
 
 	@SuppressWarnings("serial")
-	public static class TestException extends RuntimeException
-	{
+	public static class TestException extends RuntimeException {
 
-		public TestException(String string)
-		{
+		public TestException(String string) {
 			super(string);
 		}
 	}
 
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@Documented
 	@Inherited
-	public static @interface Log
-	{
+	public static @interface Log {
 	}
 
-	public static interface TestService
-	{
+	public static interface TestService {
 
 		public String sayHello();
 	}
 
 	@Log
-	public static class TestServiceImpl implements TestService
-	{
+	public static class TestServiceImpl implements TestService {
 
 		@Override
-		public String sayHello()
-		{
+		public String sayHello() {
 			throw new TestException("TestServiceImpl");
 		}
 	}
 
-	public class LogUserAdvice implements MethodBeforeAdvice, ThrowsAdvice
-	{
+	public class LogUserAdvice implements MethodBeforeAdvice, ThrowsAdvice {
 
 		private int countBefore = 0;
 
 		private int countThrows = 0;
 
 		@Override
-		public void before(Method method, Object[] objects, @Nullable Object o) throws Throwable
-		{
+		public void before(Method method, Object[] objects, @Nullable Object o) throws Throwable {
 			countBefore++;
 		}
 
-		public void afterThrowing(Exception ex) throws Throwable
-		{
+		public void afterThrowing(Exception ex) throws Throwable {
 			countThrows++;
 			throw ex;
 		}
 
-		public int getCountBefore()
-		{
+		public int getCountBefore() {
 			return countBefore;
 		}
 
-		public int getCountThrows()
-		{
+		public int getCountThrows() {
 			return countThrows;
 		}
 
-		public void reset()
-		{
+		public void reset() {
 			countThrows = 0;
 			countBefore = 0;
 		}

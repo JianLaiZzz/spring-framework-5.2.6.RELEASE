@@ -26,12 +26,11 @@ import org.springframework.core.MethodParameter;
  * declared on the method parameter.
  *
  * @author Rossen Stoyanchev
- * @since 4.2
  * @see MissingMatrixVariableException
+ * @since 4.2
  */
 @SuppressWarnings("serial")
-public class MissingPathVariableException extends ServletRequestBindingException
-{
+public class MissingPathVariableException extends ServletRequestBindingException {
 
 	private final String variableName;
 
@@ -39,22 +38,18 @@ public class MissingPathVariableException extends ServletRequestBindingException
 
 	/**
 	 * Constructor for MissingPathVariableException.
-	 * 
-	 * @param variableName
-	 *            the name of the missing path variable
-	 * @param parameter
-	 *            the method parameter
+	 *
+	 * @param variableName the name of the missing path variable
+	 * @param parameter    the method parameter
 	 */
-	public MissingPathVariableException(String variableName, MethodParameter parameter)
-	{
+	public MissingPathVariableException(String variableName, MethodParameter parameter) {
 		super("");
 		this.variableName = variableName;
 		this.parameter = parameter;
 	}
 
 	@Override
-	public String getMessage()
-	{
+	public String getMessage() {
 		return "Missing URI template variable '" + this.variableName + "' for method parameter of type "
 				+ this.parameter.getNestedParameterType().getSimpleName();
 	}
@@ -62,16 +57,14 @@ public class MissingPathVariableException extends ServletRequestBindingException
 	/**
 	 * Return the expected name of the path variable.
 	 */
-	public final String getVariableName()
-	{
+	public final String getVariableName() {
 		return this.variableName;
 	}
 
 	/**
 	 * Return the method parameter bound to the path variable.
 	 */
-	public final MethodParameter getParameter()
-	{
+	public final MethodParameter getParameter() {
 		return this.parameter;
 	}
 

@@ -16,18 +16,17 @@
 
 package org.springframework.test.context.junit4;
 
-import javax.sql.DataSource;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.transaction.TransactionAssert.assertThatTransaction;
@@ -40,10 +39,10 @@ import static org.springframework.test.transaction.TransactionAssert.assertThatT
  * via {@link Transactional @Transactional}.
  *
  * @author Sam Brannen
- * @since 4.2
  * @see Rollback
  * @see Transactional#transactionManager
  * @see DefaultRollbackFalseTransactionalTests
+ * @since 4.2
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = EmbeddedPersonDatabaseTestsConfig.class, inheritLocations = false)

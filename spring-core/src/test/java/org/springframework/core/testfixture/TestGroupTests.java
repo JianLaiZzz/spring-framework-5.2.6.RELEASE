@@ -16,19 +16,16 @@
 
 package org.springframework.core.testfixture;
 
-import java.util.Arrays;
-import java.util.Set;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.TestAbortedException;
 
+import java.util.Arrays;
+import java.util.Set;
+
 import static java.util.stream.Collectors.joining;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.springframework.core.testfixture.TestGroup.LONG_RUNNING;
 import static org.springframework.core.testfixture.TestGroup.PERFORMANCE;
@@ -56,8 +53,7 @@ class TestGroupTests {
 	void restoreOriginalTestGroups() {
 		if (this.originalTestGroups != null) {
 			setTestGroups(this.originalTestGroups);
-		}
-		else {
+		} else {
 			setTestGroups("");
 		}
 	}
@@ -79,8 +75,8 @@ class TestGroupTests {
 	void assumeGroupWithMatchingActiveTestGroup() {
 		setTestGroups(LONG_RUNNING);
 		assertThatCode(() -> assumeGroup(LONG_RUNNING))
-			.as("assumption should NOT have failed")
-			.doesNotThrowAnyException();
+				.as("assumption should NOT have failed")
+				.doesNotThrowAnyException();
 	}
 
 	@Test
@@ -102,13 +98,13 @@ class TestGroupTests {
 
 		setTestGroups(testGroups);
 		assertThatIllegalStateException()
-			.isThrownBy(() -> assumeGroup(LONG_RUNNING))
-			.withMessageStartingWith("Failed to parse '" + TEST_GROUPS_SYSTEM_PROPERTY + "' system property: ")
-			.withCauseInstanceOf(IllegalArgumentException.class)
-			.satisfies(ex ->
-				assertThat(ex.getCause().getMessage()).isEqualTo(
-					"Unable to find test group 'bogus' when parsing testGroups value: '" + testGroups +
-					"'. Available groups include: [LONG_RUNNING,PERFORMANCE]"));
+				.isThrownBy(() -> assumeGroup(LONG_RUNNING))
+				.withMessageStartingWith("Failed to parse '" + TEST_GROUPS_SYSTEM_PROPERTY + "' system property: ")
+				.withCauseInstanceOf(IllegalArgumentException.class)
+				.satisfies(ex ->
+						assertThat(ex.getCause().getMessage()).isEqualTo(
+								"Unable to find test group 'bogus' when parsing testGroups value: '" + testGroups +
+										"'. Available groups include: [LONG_RUNNING,PERFORMANCE]"));
 	}
 
 	private void setTestGroups(TestGroup... testGroups) {
@@ -121,13 +117,14 @@ class TestGroupTests {
 
 	/**
 	 * Assume that a particular {@link TestGroup} is active.
+	 *
 	 * @param group the group that must be active
 	 * @throws org.opentest4j.TestAbortedException if the assumption fails
 	 */
 	private static void assumeGroup(TestGroup group) {
 		Set<TestGroup> testGroups = TestGroup.loadTestGroups();
 		assumeTrue(testGroups.contains(group),
-			() -> "Requires inactive test group " + group + "; active test groups: " + testGroups);
+				() -> "Requires inactive test group " + group + "; active test groups: " + testGroups);
 	}
 
 }

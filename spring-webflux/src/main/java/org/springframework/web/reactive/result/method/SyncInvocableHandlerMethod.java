@@ -16,13 +16,6 @@
 
 package org.springframework.web.reactive.result.method;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import reactor.core.publisher.MonoProcessor;
-
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.lang.Nullable;
@@ -31,6 +24,12 @@ import org.springframework.web.reactive.BindingContext;
 import org.springframework.web.reactive.HandlerResult;
 import org.springframework.web.server.ServerErrorException;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.MonoProcessor;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Extension of {@link HandlerMethod} that invokes the underlying method via
@@ -92,15 +91,16 @@ public class SyncInvocableHandlerMethod extends HandlerMethod {
 
 	/**
 	 * Invoke the method for the given exchange.
-	 * @param exchange the current exchange
+	 *
+	 * @param exchange       the current exchange
 	 * @param bindingContext the binding context to use
-	 * @param providedArgs optional list of argument values to match by type
+	 * @param providedArgs   optional list of argument values to match by type
 	 * @return a Mono with a {@link HandlerResult}.
 	 * @throws ServerErrorException if method argument resolution or method invocation fails
 	 */
 	@Nullable
 	public HandlerResult invokeForHandlerResult(ServerWebExchange exchange,
-			BindingContext bindingContext, Object... providedArgs) {
+												BindingContext bindingContext, Object... providedArgs) {
 
 		MonoProcessor<HandlerResult> processor = MonoProcessor.create();
 		this.delegate.invoke(exchange, bindingContext, providedArgs).subscribeWith(processor);
@@ -112,8 +112,7 @@ public class SyncInvocableHandlerMethod extends HandlerMethod {
 						new ServerErrorException("Failed to invoke: " + getShortLogMessage(), getMethod(), ex));
 			}
 			return processor.peek();
-		}
-		else {
+		} else {
 			// Should never happen...
 			throw new IllegalStateException(
 					"SyncInvocableHandlerMethod should have completed synchronously.");

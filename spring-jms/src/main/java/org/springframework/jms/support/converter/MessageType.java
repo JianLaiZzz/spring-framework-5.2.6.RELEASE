@@ -22,11 +22,10 @@ package org.springframework.jms.support.converter;
  * a {@link javax.jms.MapMessage} or an {@link javax.jms.ObjectMessage}.
  *
  * @author Juergen Hoeller
- * @since 3.0
  * @see MarshallingMessageConverter#setTargetType
+ * @since 3.0
  */
-public enum MessageType
-{
+public enum MessageType {
 
 	/**
 	 * A {@link javax.jms.TextMessage}.

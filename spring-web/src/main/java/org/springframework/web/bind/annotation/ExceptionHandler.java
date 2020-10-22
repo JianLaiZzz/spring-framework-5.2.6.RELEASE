@@ -95,14 +95,13 @@ import java.lang.annotation.*;
  *
  * @author Arjen Poutsma
  * @author Juergen Hoeller
- * @since 3.0
  * @see org.springframework.web.context.request.WebRequest
+ * @since 3.0
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ExceptionHandler
-{
+public @interface ExceptionHandler {
 
 	/**
 	 * Exceptions handled by the annotated method. If empty, will default to any

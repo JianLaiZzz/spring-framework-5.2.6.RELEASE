@@ -16,11 +16,11 @@
 
 package org.springframework.beans;
 
-import java.util.List;
-import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -132,7 +132,7 @@ public class BeanWrapperAutoGrowingTests {
 		wrapper.setAutoGrowCollectionLimit(2);
 		assertThatExceptionOfType(InvalidPropertyException.class).isThrownBy(() ->
 				assertNotNull(wrapper.getPropertyValue("list[4]")))
-			.withRootCauseInstanceOf(IndexOutOfBoundsException.class);
+				.withRootCauseInstanceOf(IndexOutOfBoundsException.class);
 	}
 
 	@Test

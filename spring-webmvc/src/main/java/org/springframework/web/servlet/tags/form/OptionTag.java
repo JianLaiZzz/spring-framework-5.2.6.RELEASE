@@ -16,13 +16,13 @@
 
 package org.springframework.web.servlet.tags.form;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.tagext.BodyTag;
-
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.support.BindStatus;
 import org.springframework.web.util.TagUtils;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.BodyContent;
+import javax.servlet.jsp.tagext.BodyTag;
 
 /**
  * The {@code <option>} tag renders a single HTML 'option'. Sets 'selected' as
@@ -333,16 +333,14 @@ public class OptionTag extends AbstractHtmlElementBodyTag implements BodyTag {
 		if (this.oldValue != null) {
 			this.pageContext.setAttribute(VALUE_ATTRIBUTE, this.oldValue);
 			this.oldValue = null;
-		}
-		else {
+		} else {
 			this.pageContext.removeAttribute(VALUE_VARIABLE_NAME);
 		}
 
 		if (this.oldDisplayValue != null) {
 			this.pageContext.setAttribute(DISPLAY_VALUE_VARIABLE_NAME, this.oldDisplayValue);
 			this.oldDisplayValue = null;
-		}
-		else {
+		} else {
 			this.pageContext.removeAttribute(DISPLAY_VALUE_VARIABLE_NAME);
 		}
 	}

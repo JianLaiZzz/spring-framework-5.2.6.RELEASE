@@ -16,10 +16,6 @@
 
 package org.springframework.test.web.servlet;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -28,6 +24,10 @@ import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A simple implementation of {@link MvcResult} with setters.
@@ -159,8 +159,7 @@ class DefaultMvcResult implements MvcResult {
 				"The asyncDispatch CountDownLatch was not set by the TestDispatcherServlet.");
 		try {
 			return this.asyncDispatchLatch.await(timeout, TimeUnit.MILLISECONDS);
-		}
-		catch (InterruptedException ex) {
+		} catch (InterruptedException ex) {
 			return false;
 		}
 	}

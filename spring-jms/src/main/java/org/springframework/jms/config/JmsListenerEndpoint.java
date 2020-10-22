@@ -26,8 +26,7 @@ import org.springframework.jms.listener.MessageListenerContainer;
  * @author Stephane Nicoll
  * @since 4.1
  */
-public interface JmsListenerEndpoint
-{
+public interface JmsListenerEndpoint {
 
 	/**
 	 * Return the id of this endpoint.
@@ -43,9 +42,8 @@ public interface JmsListenerEndpoint
 	 * setting the {@code destination} and the {@code messageListener} to
 	 * use but an implementation may override any default setting that
 	 * was already set.
-	 * 
-	 * @param listenerContainer
-	 *            the listener container to configure
+	 *
+	 * @param listenerContainer the listener container to configure
 	 */
 	void setupListenerContainer(MessageListenerContainer listenerContainer);
 

@@ -16,16 +16,6 @@
 
 package org.springframework.orm.jpa.support;
 
-import java.io.IOException;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceException;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.lang.Nullable;
 import org.springframework.orm.jpa.EntityManagerFactoryUtils;
@@ -38,6 +28,15 @@ import org.springframework.web.context.request.async.WebAsyncManager;
 import org.springframework.web.context.request.async.WebAsyncUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Servlet Filter that binds a JPA EntityManager to the thread for the
@@ -60,19 +59,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * (as specified in {@code persistence.xml}).
  *
  * @author Juergen Hoeller
- * @since 2.0
  * @see OpenEntityManagerInViewInterceptor
  * @see org.springframework.orm.jpa.JpaTransactionManager
  * @see org.springframework.orm.jpa.SharedEntityManagerCreator
  * @see org.springframework.transaction.support.TransactionSynchronizationManager
+ * @since 2.0
  */
-public class OpenEntityManagerInViewFilter extends OncePerRequestFilter
-{
+public class OpenEntityManagerInViewFilter extends OncePerRequestFilter {
 
 	/**
 	 * Default EntityManagerFactory bean name: "entityManagerFactory".
 	 * Only applies when no "persistenceUnitName" param has been specified.
-	 * 
+	 *
 	 * @see #setEntityManagerFactoryBeanName
 	 * @see #setPersistenceUnitName
 	 */
@@ -93,12 +91,11 @@ public class OpenEntityManagerInViewFilter extends OncePerRequestFilter
 	 * <p>
 	 * Default is "entityManagerFactory". Note that this default only applies
 	 * when no "persistenceUnitName" param has been specified.
-	 * 
+	 *
 	 * @see #setPersistenceUnitName
 	 * @see #DEFAULT_ENTITY_MANAGER_FACTORY_BEAN_NAME
 	 */
-	public void setEntityManagerFactoryBeanName(@Nullable String entityManagerFactoryBeanName)
-	{
+	public void setEntityManagerFactoryBeanName(@Nullable String entityManagerFactoryBeanName) {
 		this.entityManagerFactoryBeanName = entityManagerFactoryBeanName;
 	}
 
@@ -107,8 +104,7 @@ public class OpenEntityManagerInViewFilter extends OncePerRequestFilter
 	 * root application context.
 	 */
 	@Nullable
-	protected String getEntityManagerFactoryBeanName()
-	{
+	protected String getEntityManagerFactoryBeanName() {
 		return this.entityManagerFactoryBeanName;
 	}
 
@@ -120,12 +116,11 @@ public class OpenEntityManagerInViewFilter extends OncePerRequestFilter
 	 * unit name have been specified, we'll check whether a bean exists for the default
 	 * bean name "entityManagerFactory"; if not, a default EntityManagerFactory will
 	 * be retrieved through finding a single unique bean of type EntityManagerFactory.
-	 * 
+	 *
 	 * @see #setEntityManagerFactoryBeanName
 	 * @see #DEFAULT_ENTITY_MANAGER_FACTORY_BEAN_NAME
 	 */
-	public void setPersistenceUnitName(@Nullable String persistenceUnitName)
-	{
+	public void setPersistenceUnitName(@Nullable String persistenceUnitName) {
 		this.persistenceUnitName = persistenceUnitName;
 	}
 
@@ -133,8 +128,7 @@ public class OpenEntityManagerInViewFilter extends OncePerRequestFilter
 	 * Return the name of the persistence unit to access the EntityManagerFactory for, if any.
 	 */
 	@Nullable
-	protected String getPersistenceUnitName()
-	{
+	protected String getPersistenceUnitName() {
 		return this.persistenceUnitName;
 	}
 
@@ -144,8 +138,7 @@ public class OpenEntityManagerInViewFilter extends OncePerRequestFilter
 	 * last asynchronous dispatch.
 	 */
 	@Override
-	protected boolean shouldNotFilterAsyncDispatch()
-	{
+	protected boolean shouldNotFilterAsyncDispatch() {
 		return false;
 	}
 
@@ -154,15 +147,13 @@ public class OpenEntityManagerInViewFilter extends OncePerRequestFilter
 	 * to each error dispatches.
 	 */
 	@Override
-	protected boolean shouldNotFilterErrorDispatch()
-	{
+	protected boolean shouldNotFilterErrorDispatch() {
 		return false;
 	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-			FilterChain filterChain) throws ServletException, IOException
-	{
+									FilterChain filterChain) throws ServletException, IOException {
 
 		EntityManagerFactory emf = lookupEntityManagerFactory(request);
 		boolean participate = false;
@@ -170,19 +161,14 @@ public class OpenEntityManagerInViewFilter extends OncePerRequestFilter
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 		String key = getAlreadyFilteredAttributeName();
 
-		if (TransactionSynchronizationManager.hasResource(emf))
-		{
+		if (TransactionSynchronizationManager.hasResource(emf)) {
 			// Do not modify the EntityManager: just set the participate flag.
 			participate = true;
-		}
-		else
-		{
+		} else {
 			boolean isFirstRequest = !isAsyncDispatch(request);
-			if (isFirstRequest || !applyEntityManagerBindingInterceptor(asyncManager, key))
-			{
+			if (isFirstRequest || !applyEntityManagerBindingInterceptor(asyncManager, key)) {
 				logger.debug("Opening JPA EntityManager in OpenEntityManagerInViewFilter");
-				try
-				{
+				try {
 					EntityManager em = createEntityManager(emf);
 					EntityManagerHolder emHolder = new EntityManagerHolder(em);
 					TransactionSynchronizationManager.bindResource(emf, emHolder);
@@ -190,28 +176,20 @@ public class OpenEntityManagerInViewFilter extends OncePerRequestFilter
 					AsyncRequestInterceptor interceptor = new AsyncRequestInterceptor(emf, emHolder);
 					asyncManager.registerCallableInterceptor(key, interceptor);
 					asyncManager.registerDeferredResultInterceptor(key, interceptor);
-				}
-				catch (PersistenceException ex)
-				{
+				} catch (PersistenceException ex) {
 					throw new DataAccessResourceFailureException("Could not create JPA EntityManager",
 							ex);
 				}
 			}
 		}
 
-		try
-		{
+		try {
 			filterChain.doFilter(request, response);
-		}
-
-		finally
-		{
-			if (!participate)
-			{
+		} finally {
+			if (!participate) {
 				EntityManagerHolder emHolder = (EntityManagerHolder) TransactionSynchronizationManager
 						.unbindResource(emf);
-				if (!isAsyncStarted(request))
-				{
+				if (!isAsyncStarted(request)) {
 					logger.debug("Closing JPA EntityManager in OpenEntityManagerInViewFilter");
 					EntityManagerFactoryUtils.closeEntityManager(emHolder.getEntityManager());
 				}
@@ -225,15 +203,13 @@ public class OpenEntityManagerInViewFilter extends OncePerRequestFilter
 	 * <p>
 	 * The default implementation delegates to the {@code lookupEntityManagerFactory}
 	 * without arguments, caching the EntityManagerFactory reference once obtained.
-	 * 
+	 *
 	 * @return the EntityManagerFactory to use
 	 * @see #lookupEntityManagerFactory()
 	 */
-	protected EntityManagerFactory lookupEntityManagerFactory(HttpServletRequest request)
-	{
+	protected EntityManagerFactory lookupEntityManagerFactory(HttpServletRequest request) {
 		EntityManagerFactory emf = this.entityManagerFactory;
-		if (emf == null)
-		{
+		if (emf == null) {
 			emf = lookupEntityManagerFactory();
 			this.entityManagerFactory = emf;
 		}
@@ -245,27 +221,21 @@ public class OpenEntityManagerInViewFilter extends OncePerRequestFilter
 	 * <p>
 	 * The default implementation looks for a bean with the specified name
 	 * in Spring's root application context.
-	 * 
+	 *
 	 * @return the EntityManagerFactory to use
 	 * @see #getEntityManagerFactoryBeanName
 	 */
-	protected EntityManagerFactory lookupEntityManagerFactory()
-	{
+	protected EntityManagerFactory lookupEntityManagerFactory() {
 		WebApplicationContext wac = WebApplicationContextUtils
 				.getRequiredWebApplicationContext(getServletContext());
 		String emfBeanName = getEntityManagerFactoryBeanName();
 		String puName = getPersistenceUnitName();
-		if (StringUtils.hasLength(emfBeanName))
-		{
+		if (StringUtils.hasLength(emfBeanName)) {
 			return wac.getBean(emfBeanName, EntityManagerFactory.class);
-		}
-		else if (!StringUtils.hasLength(puName)
-				&& wac.containsBean(DEFAULT_ENTITY_MANAGER_FACTORY_BEAN_NAME))
-		{
+		} else if (!StringUtils.hasLength(puName)
+				&& wac.containsBean(DEFAULT_ENTITY_MANAGER_FACTORY_BEAN_NAME)) {
 			return wac.getBean(DEFAULT_ENTITY_MANAGER_FACTORY_BEAN_NAME, EntityManagerFactory.class);
-		}
-		else
-		{
+		} else {
 			// Includes fallback search for single EntityManagerFactory bean by type.
 			return EntityManagerFactoryUtils.findEntityManagerFactory(wac, puName);
 		}
@@ -275,21 +245,17 @@ public class OpenEntityManagerInViewFilter extends OncePerRequestFilter
 	 * Create a JPA EntityManager to be bound to a request.
 	 * <p>
 	 * Can be overridden in subclasses.
-	 * 
-	 * @param emf
-	 *            the EntityManagerFactory to use
+	 *
+	 * @param emf the EntityManagerFactory to use
 	 * @see javax.persistence.EntityManagerFactory#createEntityManager()
 	 */
-	protected EntityManager createEntityManager(EntityManagerFactory emf)
-	{
+	protected EntityManager createEntityManager(EntityManagerFactory emf) {
 		return emf.createEntityManager();
 	}
 
-	private boolean applyEntityManagerBindingInterceptor(WebAsyncManager asyncManager, String key)
-	{
+	private boolean applyEntityManagerBindingInterceptor(WebAsyncManager asyncManager, String key) {
 		CallableProcessingInterceptor cpi = asyncManager.getCallableInterceptor(key);
-		if (cpi == null)
-		{
+		if (cpi == null) {
 			return false;
 		}
 		((AsyncRequestInterceptor) cpi).bindEntityManager();

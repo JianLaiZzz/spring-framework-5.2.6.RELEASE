@@ -16,15 +16,15 @@
 
 package org.springframework.aop.support.annotation;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
 import org.springframework.aop.support.AopUtils;
 import org.springframework.aop.support.StaticMethodMatcher;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * Simple MethodMatcher that looks for a specific Java 5 annotation
@@ -33,11 +33,10 @@ import org.springframework.util.Assert;
  *
  * @author Juergen Hoeller
  * @author Sam Brannen
- * @since 2.0
  * @see AnnotationMatchingPointcut
+ * @since 2.0
  */
-public class AnnotationMethodMatcher extends StaticMethodMatcher
-{
+public class AnnotationMethodMatcher extends StaticMethodMatcher {
 
 	private final Class<? extends Annotation> annotationType;
 
@@ -45,44 +44,36 @@ public class AnnotationMethodMatcher extends StaticMethodMatcher
 
 	/**
 	 * Create a new AnnotationClassFilter for the given annotation type.
-	 * 
-	 * @param annotationType
-	 *            the annotation type to look for
+	 *
+	 * @param annotationType the annotation type to look for
 	 */
-	public AnnotationMethodMatcher(Class<? extends Annotation> annotationType)
-	{
+	public AnnotationMethodMatcher(Class<? extends Annotation> annotationType) {
 		this(annotationType, false);
 	}
 
 	/**
 	 * Create a new AnnotationClassFilter for the given annotation type.
-	 * 
-	 * @param annotationType
-	 *            the annotation type to look for
-	 * @param checkInherited
-	 *            whether to also check the superclasses and
-	 *            interfaces as well as meta-annotations for the annotation type
-	 *            (i.e. whether to use {@link AnnotatedElementUtils#hasAnnotation}
-	 *            semantics instead of standard Java {@link Method#isAnnotationPresent})
+	 *
+	 * @param annotationType the annotation type to look for
+	 * @param checkInherited whether to also check the superclasses and
+	 *                       interfaces as well as meta-annotations for the annotation type
+	 *                       (i.e. whether to use {@link AnnotatedElementUtils#hasAnnotation}
+	 *                       semantics instead of standard Java {@link Method#isAnnotationPresent})
 	 * @since 5.0
 	 */
-	public AnnotationMethodMatcher(Class<? extends Annotation> annotationType, boolean checkInherited)
-	{
+	public AnnotationMethodMatcher(Class<? extends Annotation> annotationType, boolean checkInherited) {
 		Assert.notNull(annotationType, "Annotation type must not be null");
 		this.annotationType = annotationType;
 		this.checkInherited = checkInherited;
 	}
 
 	@Override
-	public boolean matches(Method method, Class<?> targetClass)
-	{
-		if (matchesMethod(method))
-		{
+	public boolean matches(Method method, Class<?> targetClass) {
+		if (matchesMethod(method)) {
 			return true;
 		}
 		// Proxy classes never have annotations on their redeclared methods.
-		if (Proxy.isProxyClass(targetClass))
-		{
+		if (Proxy.isProxyClass(targetClass)) {
 			return false;
 		}
 		// The method may be on an interface, so let's check on the target class as well.
@@ -90,21 +81,17 @@ public class AnnotationMethodMatcher extends StaticMethodMatcher
 		return (specificMethod != method && matchesMethod(specificMethod));
 	}
 
-	private boolean matchesMethod(Method method)
-	{
+	private boolean matchesMethod(Method method) {
 		return (this.checkInherited ? AnnotatedElementUtils.hasAnnotation(method, this.annotationType)
 				: method.isAnnotationPresent(this.annotationType));
 	}
 
 	@Override
-	public boolean equals(@Nullable Object other)
-	{
-		if (this == other)
-		{
+	public boolean equals(@Nullable Object other) {
+		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof AnnotationMethodMatcher))
-		{
+		if (!(other instanceof AnnotationMethodMatcher)) {
 			return false;
 		}
 		AnnotationMethodMatcher otherMm = (AnnotationMethodMatcher) other;
@@ -113,14 +100,12 @@ public class AnnotationMethodMatcher extends StaticMethodMatcher
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return this.annotationType.hashCode();
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getClass().getName() + ": " + this.annotationType;
 	}
 

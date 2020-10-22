@@ -24,11 +24,9 @@ package org.springframework.aop.framework.adapter;
  * @author Phillip Webb
  * @see DefaultAdvisorAdapterRegistry
  */
-public final class GlobalAdvisorAdapterRegistry
-{
+public final class GlobalAdvisorAdapterRegistry {
 
-	private GlobalAdvisorAdapterRegistry()
-	{
+	private GlobalAdvisorAdapterRegistry() {
 	}
 
 	/**
@@ -39,8 +37,7 @@ public final class GlobalAdvisorAdapterRegistry
 	/**
 	 * Return the singleton {@link DefaultAdvisorAdapterRegistry} instance.
 	 */
-	public static AdvisorAdapterRegistry getInstance()
-	{
+	public static AdvisorAdapterRegistry getInstance() {
 		return instance;
 	}
 
@@ -49,8 +46,7 @@ public final class GlobalAdvisorAdapterRegistry
 	 * {@link AdvisorAdapterRegistry#registerAdvisorAdapter(AdvisorAdapter) registered}
 	 * adapters.
 	 */
-	static void reset()
-	{
+	static void reset() {
 		instance = new DefaultAdvisorAdapterRegistry();
 	}
 

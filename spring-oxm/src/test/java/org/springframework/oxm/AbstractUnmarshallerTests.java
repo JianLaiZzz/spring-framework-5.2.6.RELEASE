@@ -16,10 +16,14 @@
 
 package org.springframework.oxm;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.ByteArrayInputStream;
-import java.io.StringReader;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.util.xml.StaxUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -32,22 +36,16 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.util.xml.StaxUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Arjen Poutsma
  * @author Sam Brannen
  */
-public abstract class AbstractUnmarshallerTests<U extends Unmarshaller>
-{
+public abstract class AbstractUnmarshallerTests<U extends Unmarshaller> {
 
 	protected U unmarshaller;
 
@@ -55,8 +53,7 @@ public abstract class AbstractUnmarshallerTests<U extends Unmarshaller>
 			+ "<tns:flight><tns:number>42</tns:number></tns:flight></tns:flights>";
 
 	@BeforeEach
-	public final void setUp() throws Exception
-	{
+	public final void setUp() throws Exception {
 		unmarshaller = createUnmarshaller();
 	}
 
@@ -67,8 +64,7 @@ public abstract class AbstractUnmarshallerTests<U extends Unmarshaller>
 	protected abstract void testFlight(Object o);
 
 	@Test
-	public void unmarshalDomSource() throws Exception
-	{
+	public void unmarshalDomSource() throws Exception {
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		Document document = builder.newDocument();
 		Element flightsElement = document.createElementNS("http://samples.springframework.org/flight",
@@ -88,16 +84,14 @@ public abstract class AbstractUnmarshallerTests<U extends Unmarshaller>
 	}
 
 	@Test
-	public void unmarshalStreamSourceReader() throws Exception
-	{
+	public void unmarshalStreamSourceReader() throws Exception {
 		StreamSource source = new StreamSource(new StringReader(INPUT_STRING));
 		Object flights = unmarshaller.unmarshal(source);
 		testFlights(flights);
 	}
 
 	@Test
-	public void unmarshalStreamSourceInputStream() throws Exception
-	{
+	public void unmarshalStreamSourceInputStream() throws Exception {
 		StreamSource source = new StreamSource(new ByteArrayInputStream(INPUT_STRING.getBytes("UTF-8")));
 		Object flights = unmarshaller.unmarshal(source);
 		testFlights(flights);
@@ -105,8 +99,7 @@ public abstract class AbstractUnmarshallerTests<U extends Unmarshaller>
 
 	@Test
 	@SuppressWarnings("deprecation")
-	public void unmarshalSAXSource() throws Exception
-	{
+	public void unmarshalSAXSource() throws Exception {
 		XMLReader reader = org.xml.sax.helpers.XMLReaderFactory.createXMLReader();
 		SAXSource source = new SAXSource(reader, new InputSource(new StringReader(INPUT_STRING)));
 		Object flights = unmarshaller.unmarshal(source);
@@ -114,8 +107,7 @@ public abstract class AbstractUnmarshallerTests<U extends Unmarshaller>
 	}
 
 	@Test
-	public void unmarshalStaxSourceXmlStreamReader() throws Exception
-	{
+	public void unmarshalStaxSourceXmlStreamReader() throws Exception {
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		XMLStreamReader streamReader = inputFactory.createXMLStreamReader(new StringReader(INPUT_STRING));
 		Source source = StaxUtils.createStaxSource(streamReader);
@@ -124,8 +116,7 @@ public abstract class AbstractUnmarshallerTests<U extends Unmarshaller>
 	}
 
 	@Test
-	public void unmarshalStaxSourceXmlEventReader() throws Exception
-	{
+	public void unmarshalStaxSourceXmlEventReader() throws Exception {
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		XMLEventReader eventReader = inputFactory.createXMLEventReader(new StringReader(INPUT_STRING));
 		Source source = StaxUtils.createStaxSource(eventReader);
@@ -134,8 +125,7 @@ public abstract class AbstractUnmarshallerTests<U extends Unmarshaller>
 	}
 
 	@Test
-	public void unmarshalJaxp14StaxSourceXmlStreamReader() throws Exception
-	{
+	public void unmarshalJaxp14StaxSourceXmlStreamReader() throws Exception {
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		XMLStreamReader streamReader = inputFactory.createXMLStreamReader(new StringReader(INPUT_STRING));
 		StAXSource source = new StAXSource(streamReader);
@@ -144,8 +134,7 @@ public abstract class AbstractUnmarshallerTests<U extends Unmarshaller>
 	}
 
 	@Test
-	public void unmarshalJaxp14StaxSourceXmlEventReader() throws Exception
-	{
+	public void unmarshalJaxp14StaxSourceXmlEventReader() throws Exception {
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		XMLEventReader eventReader = inputFactory.createXMLEventReader(new StringReader(INPUT_STRING));
 		StAXSource source = new StAXSource(eventReader);
@@ -154,8 +143,7 @@ public abstract class AbstractUnmarshallerTests<U extends Unmarshaller>
 	}
 
 	@Test
-	public void unmarshalPartialStaxSourceXmlStreamReader() throws Exception
-	{
+	public void unmarshalPartialStaxSourceXmlStreamReader() throws Exception {
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		XMLStreamReader streamReader = inputFactory.createXMLStreamReader(new StringReader(INPUT_STRING));
 		streamReader.nextTag(); // skip to flights

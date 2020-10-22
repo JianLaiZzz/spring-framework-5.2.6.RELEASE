@@ -48,14 +48,13 @@ import org.springframework.util.Assert;
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
- * @since 16.11.2003
  * @see #suppressInterface
  * @see DelegatePerTargetObjectIntroductionInterceptor
+ * @since 16.11.2003
  */
 @SuppressWarnings("serial")
 public class DelegatingIntroductionInterceptor extends IntroductionInfoSupport
-		implements IntroductionInterceptor
-{
+		implements IntroductionInterceptor {
 
 	/**
 	 * Object that actually implements the interfaces.
@@ -67,12 +66,10 @@ public class DelegatingIntroductionInterceptor extends IntroductionInfoSupport
 	/**
 	 * Construct a new DelegatingIntroductionInterceptor, providing
 	 * a delegate that implements the interfaces to be introduced.
-	 * 
-	 * @param delegate
-	 *            the delegate that implements the introduced interfaces
+	 *
+	 * @param delegate the delegate that implements the introduced interfaces
 	 */
-	public DelegatingIntroductionInterceptor(Object delegate)
-	{
+	public DelegatingIntroductionInterceptor(Object delegate) {
 		init(delegate);
 	}
 
@@ -81,20 +78,17 @@ public class DelegatingIntroductionInterceptor extends IntroductionInfoSupport
 	 * The delegate will be the subclass, which must implement
 	 * additional interfaces.
 	 */
-	protected DelegatingIntroductionInterceptor()
-	{
+	protected DelegatingIntroductionInterceptor() {
 		init(this);
 	}
 
 	/**
 	 * Both constructors use this init method, as it is impossible to pass
 	 * a "this" reference from one constructor to another.
-	 * 
-	 * @param delegate
-	 *            the delegate object
+	 *
+	 * @param delegate the delegate object
 	 */
-	private void init(Object delegate)
-	{
+	private void init(Object delegate) {
 		Assert.notNull(delegate, "Delegate must not be null");
 		this.delegate = delegate;
 		implementInterfacesOnObject(delegate);
@@ -111,10 +105,8 @@ public class DelegatingIntroductionInterceptor extends IntroductionInfoSupport
 	 */
 	@Override
 	@Nullable
-	public Object invoke(MethodInvocation mi) throws Throwable
-	{
-		if (isMethodOnIntroducedInterface(mi))
-		{
+	public Object invoke(MethodInvocation mi) throws Throwable {
+		if (isMethodOnIntroducedInterface(mi)) {
 			// Using the following method rather than direct reflection, we
 			// get correct handling of InvocationTargetException
 			// if the introduced method throws an exception.
@@ -123,11 +115,9 @@ public class DelegatingIntroductionInterceptor extends IntroductionInfoSupport
 
 			// Massage return value if possible: if the delegate returned itself,
 			// we really want to return the proxy.
-			if (retVal == this.delegate && mi instanceof ProxyMethodInvocation)
-			{
+			if (retVal == this.delegate && mi instanceof ProxyMethodInvocation) {
 				Object proxy = ((ProxyMethodInvocation) mi).getProxy();
-				if (mi.getMethod().getReturnType().isInstance(proxy))
-				{
+				if (mi.getMethod().getReturnType().isInstance(proxy)) {
 					retVal = proxy;
 				}
 			}
@@ -144,8 +134,7 @@ public class DelegatingIntroductionInterceptor extends IntroductionInfoSupport
 	 * that it is introduced into. This method is <strong>never</strong> called for
 	 * {@link MethodInvocation MethodInvocations} on the introduced interfaces.
 	 */
-	protected Object doProceed(MethodInvocation mi) throws Throwable
-	{
+	protected Object doProceed(MethodInvocation mi) throws Throwable {
 		// If we get here, just pass the invocation on.
 		return mi.proceed();
 	}

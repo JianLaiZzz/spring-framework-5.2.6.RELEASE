@@ -16,8 +16,11 @@
 
 package org.springframework.web.filter;
 
-import java.io.IOException;
-import java.util.Enumeration;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.web.testfixture.servlet.MockFilterChain;
+import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
+import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
@@ -26,13 +29,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import org.springframework.web.testfixture.servlet.MockFilterChain;
-import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
-import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
+import java.io.IOException;
+import java.util.Enumeration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -67,7 +65,8 @@ public class ForwardedHeaderFilterTests {
 		this.request.setScheme("http");
 		this.request.setServerName("localhost");
 		this.request.setServerPort(80);
-		this.filterChain = new MockFilterChain(new HttpServlet() {});
+		this.filterChain = new MockFilterChain(new HttpServlet() {
+		});
 	}
 
 
@@ -503,7 +502,7 @@ public class ForwardedHeaderFilterTests {
 		Filter filter = new OncePerRequestFilter() {
 			@Override
 			protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
-					FilterChain chain) throws IOException {
+											FilterChain chain) throws IOException {
 
 				res.sendRedirect(location);
 			}

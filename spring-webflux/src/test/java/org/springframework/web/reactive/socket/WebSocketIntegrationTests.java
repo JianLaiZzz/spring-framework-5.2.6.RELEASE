@@ -16,21 +16,8 @@
 
 package org.springframework.web.reactive.socket;
 
-import java.time.Duration;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.publisher.MonoProcessor;
-import reactor.core.publisher.ReplayProcessor;
-import reactor.util.retry.Retry;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +28,18 @@ import org.springframework.web.reactive.socket.client.WebSocketClient;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.HttpServer;
 import org.springframework.web.testfixture.http.server.reactive.bootstrap.TomcatHttpServer;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.MonoProcessor;
+import reactor.core.publisher.ReplayProcessor;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -72,8 +71,7 @@ class WebSocketIntegrationTests extends AbstractWebSocketIntegrationTests {
 			Mono.fromRunnable(this::testEcho)
 					.retryWhen(Retry.max(3).filter(ex -> ex instanceof IllegalStateException))
 					.block();
-		}
-		else {
+		} else {
 			testEcho();
 		}
 	}

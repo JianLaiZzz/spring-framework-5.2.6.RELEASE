@@ -16,13 +16,13 @@
 
 package org.springframework.jms.config;
 
-import javax.resource.spi.ResourceAdapter;
-
 import org.springframework.jms.listener.endpoint.JmsActivationSpecConfig;
 import org.springframework.jms.listener.endpoint.JmsActivationSpecFactory;
 import org.springframework.jms.listener.endpoint.JmsMessageEndpointManager;
 import org.springframework.jms.support.destination.DestinationResolver;
 import org.springframework.lang.Nullable;
+
+import javax.resource.spi.ResourceAdapter;
 
 /**
  * A {@link JmsListenerContainerFactory} implementation to build a
@@ -32,8 +32,7 @@ import org.springframework.lang.Nullable;
  * @since 4.1
  */
 public class DefaultJcaListenerContainerFactory extends JmsActivationSpecConfig
-		implements JmsListenerContainerFactory<JmsMessageEndpointManager>
-{
+		implements JmsListenerContainerFactory<JmsMessageEndpointManager> {
 
 	@Nullable
 	private ResourceAdapter resourceAdapter;
@@ -53,48 +52,41 @@ public class DefaultJcaListenerContainerFactory extends JmsActivationSpecConfig
 	/**
 	 * @see JmsMessageEndpointManager#setResourceAdapter(ResourceAdapter)
 	 */
-	public void setResourceAdapter(ResourceAdapter resourceAdapter)
-	{
+	public void setResourceAdapter(ResourceAdapter resourceAdapter) {
 		this.resourceAdapter = resourceAdapter;
 	}
 
 	/**
 	 * @see JmsMessageEndpointManager#setActivationSpecFactory(JmsActivationSpecFactory)
 	 */
-	public void setActivationSpecFactory(JmsActivationSpecFactory activationSpecFactory)
-	{
+	public void setActivationSpecFactory(JmsActivationSpecFactory activationSpecFactory) {
 		this.activationSpecFactory = activationSpecFactory;
 	}
 
 	/**
 	 * @see JmsMessageEndpointManager#setDestinationResolver(DestinationResolver)
 	 */
-	public void setDestinationResolver(DestinationResolver destinationResolver)
-	{
+	public void setDestinationResolver(DestinationResolver destinationResolver) {
 		this.destinationResolver = destinationResolver;
 	}
 
 	/**
 	 * @see JmsMessageEndpointManager#setTransactionManager(Object)
 	 */
-	public void setTransactionManager(Object transactionManager)
-	{
+	public void setTransactionManager(Object transactionManager) {
 		this.transactionManager = transactionManager;
 	}
 
 	/**
 	 * @see JmsMessageEndpointManager#setPhase(int)
 	 */
-	public void setPhase(int phase)
-	{
+	public void setPhase(int phase) {
 		this.phase = phase;
 	}
 
 	@Override
-	public JmsMessageEndpointManager createListenerContainer(JmsListenerEndpoint endpoint)
-	{
-		if (this.destinationResolver != null && this.activationSpecFactory != null)
-		{
+	public JmsMessageEndpointManager createListenerContainer(JmsListenerEndpoint endpoint) {
+		if (this.destinationResolver != null && this.activationSpecFactory != null) {
 			throw new IllegalStateException("Specify either 'activationSpecFactory' or "
 					+ "'destinationResolver', not both. If you define a dedicated JmsActivationSpecFactory bean, "
 					+ "specify the custom DestinationResolver there (if possible)");
@@ -102,24 +94,19 @@ public class DefaultJcaListenerContainerFactory extends JmsActivationSpecConfig
 
 		JmsMessageEndpointManager instance = createContainerInstance();
 
-		if (this.resourceAdapter != null)
-		{
+		if (this.resourceAdapter != null) {
 			instance.setResourceAdapter(this.resourceAdapter);
 		}
-		if (this.activationSpecFactory != null)
-		{
+		if (this.activationSpecFactory != null) {
 			instance.setActivationSpecFactory(this.activationSpecFactory);
 		}
-		if (this.destinationResolver != null)
-		{
+		if (this.destinationResolver != null) {
 			instance.setDestinationResolver(this.destinationResolver);
 		}
-		if (this.transactionManager != null)
-		{
+		if (this.transactionManager != null) {
 			instance.setTransactionManager(this.transactionManager);
 		}
-		if (this.phase != null)
-		{
+		if (this.phase != null) {
 			instance.setPhase(this.phase);
 		}
 
@@ -132,8 +119,7 @@ public class DefaultJcaListenerContainerFactory extends JmsActivationSpecConfig
 	/**
 	 * Create an empty container instance.
 	 */
-	protected JmsMessageEndpointManager createContainerInstance()
-	{
+	protected JmsMessageEndpointManager createContainerInstance() {
 		return new JmsMessageEndpointManager();
 	}
 

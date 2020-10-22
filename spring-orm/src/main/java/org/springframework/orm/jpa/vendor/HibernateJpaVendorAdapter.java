@@ -16,18 +16,17 @@
 
 package org.springframework.orm.jpa.vendor;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.dialect.*;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceProvider;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
-
-import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.dialect.*;
-import org.springframework.lang.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * {@link org.springframework.orm.jpa.JpaVendorAdapter} implementation for Hibernate
@@ -54,11 +53,10 @@ import org.springframework.lang.Nullable;
  *
  * @author Juergen Hoeller
  * @author Rod Johnson
- * @since 2.0
  * @see HibernateJpaDialect
+ * @since 2.0
  */
-public class HibernateJpaVendorAdapter extends AbstractJpaVendorAdapter
-{
+public class HibernateJpaVendorAdapter extends AbstractJpaVendorAdapter {
 
 	private final HibernateJpaDialect jpaDialect = new HibernateJpaDialect();
 
@@ -69,8 +67,7 @@ public class HibernateJpaVendorAdapter extends AbstractJpaVendorAdapter
 	private final Class<? extends EntityManager> entityManagerInterface;
 
 	@SuppressWarnings("deprecation")
-	public HibernateJpaVendorAdapter()
-	{
+	public HibernateJpaVendorAdapter() {
 		this.persistenceProvider = new SpringHibernateJpaPersistenceProvider();
 		this.entityManagerFactoryInterface = org.hibernate.jpa.HibernateEntityManagerFactory.class;
 		this.entityManagerInterface = org.hibernate.jpa.HibernateEntityManager.class;
@@ -97,87 +94,68 @@ public class HibernateJpaVendorAdapter extends AbstractJpaVendorAdapter
 	 * Alternatively, set Hibernate 5.2's "hibernate.connection.handling_mode"
 	 * property to "DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION" or even
 	 * "DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT" in such a scenario.
-	 * 
-	 * @since 4.3.1
+	 *
 	 * @see PersistenceUnitInfo#getTransactionType()
 	 * @see #getJpaPropertyMap(PersistenceUnitInfo)
 	 * @see HibernateJpaDialect#beginTransaction
+	 * @since 4.3.1
 	 */
-	public void setPrepareConnection(boolean prepareConnection)
-	{
+	public void setPrepareConnection(boolean prepareConnection) {
 		this.jpaDialect.setPrepareConnection(prepareConnection);
 	}
 
 	@Override
-	public PersistenceProvider getPersistenceProvider()
-	{
+	public PersistenceProvider getPersistenceProvider() {
 		return this.persistenceProvider;
 	}
 
 	@Override
-	public String getPersistenceProviderRootPackage()
-	{
+	public String getPersistenceProviderRootPackage() {
 		return "org.hibernate";
 	}
 
 	@Override
-	public Map<String, Object> getJpaPropertyMap(PersistenceUnitInfo pui)
-	{
+	public Map<String, Object> getJpaPropertyMap(PersistenceUnitInfo pui) {
 		return buildJpaPropertyMap(this.jpaDialect.prepareConnection
 				&& pui.getTransactionType() != PersistenceUnitTransactionType.JTA);
 	}
 
 	@Override
-	public Map<String, Object> getJpaPropertyMap()
-	{
+	public Map<String, Object> getJpaPropertyMap() {
 		return buildJpaPropertyMap(this.jpaDialect.prepareConnection);
 	}
 
-	private Map<String, Object> buildJpaPropertyMap(boolean connectionReleaseOnClose)
-	{
+	private Map<String, Object> buildJpaPropertyMap(boolean connectionReleaseOnClose) {
 		Map<String, Object> jpaProperties = new HashMap<>();
 
-		if (getDatabasePlatform() != null)
-		{
+		if (getDatabasePlatform() != null) {
 			jpaProperties.put(AvailableSettings.DIALECT, getDatabasePlatform());
-		}
-		else
-		{
+		} else {
 			Class<?> databaseDialectClass = determineDatabaseDialectClass(getDatabase());
-			if (databaseDialectClass != null)
-			{
+			if (databaseDialectClass != null) {
 				jpaProperties.put(AvailableSettings.DIALECT, databaseDialectClass.getName());
 			}
 		}
 
-		if (isGenerateDdl())
-		{
+		if (isGenerateDdl()) {
 			jpaProperties.put(AvailableSettings.HBM2DDL_AUTO, "update");
 		}
-		if (isShowSql())
-		{
+		if (isShowSql()) {
 			jpaProperties.put(AvailableSettings.SHOW_SQL, "true");
 		}
 
-		if (connectionReleaseOnClose)
-		{
+		if (connectionReleaseOnClose) {
 			// Hibernate 5.1/5.2: manually enforce connection release mode ON_CLOSE (the former default)
-			try
-			{
+			try {
 				// Try Hibernate 5.2
 				AvailableSettings.class.getField("CONNECTION_HANDLING");
 				jpaProperties.put("hibernate.connection.handling_mode", "DELAYED_ACQUISITION_AND_HOLD");
-			}
-			catch (NoSuchFieldException ex)
-			{
+			} catch (NoSuchFieldException ex) {
 				// Try Hibernate 5.1
-				try
-				{
+				try {
 					AvailableSettings.class.getField("ACQUIRE_CONNECTIONS");
 					jpaProperties.put("hibernate.connection.release_mode", "ON_CLOSE");
-				}
-				catch (NoSuchFieldException ex2)
-				{
+				} catch (NoSuchFieldException ex2) {
 					// on Hibernate 5.0.x or lower - no need to change the default there
 				}
 			}
@@ -188,58 +166,52 @@ public class HibernateJpaVendorAdapter extends AbstractJpaVendorAdapter
 
 	/**
 	 * Determine the Hibernate database dialect class for the given target database.
-	 * 
-	 * @param database
-	 *            the target database
+	 *
+	 * @param database the target database
 	 * @return the Hibernate database dialect class, or {@code null} if none found
 	 */
 	@Nullable
-	protected Class<?> determineDatabaseDialectClass(Database database)
-	{
-		switch (database)
-		{
-		case DB2:
-			return DB2Dialect.class;
-		case DERBY:
-			return DerbyTenSevenDialect.class;
-		case H2:
-			return H2Dialect.class;
-		case HANA:
-			return HANAColumnStoreDialect.class;
-		case HSQL:
-			return HSQLDialect.class;
-		case INFORMIX:
-			return InformixDialect.class;
-		case MYSQL:
-			return MySQL5Dialect.class;
-		case ORACLE:
-			return Oracle12cDialect.class;
-		case POSTGRESQL:
-			return PostgreSQL95Dialect.class;
-		case SQL_SERVER:
-			return SQLServer2012Dialect.class;
-		case SYBASE:
-			return SybaseDialect.class;
-		default:
-			return null;
+	protected Class<?> determineDatabaseDialectClass(Database database) {
+		switch (database) {
+			case DB2:
+				return DB2Dialect.class;
+			case DERBY:
+				return DerbyTenSevenDialect.class;
+			case H2:
+				return H2Dialect.class;
+			case HANA:
+				return HANAColumnStoreDialect.class;
+			case HSQL:
+				return HSQLDialect.class;
+			case INFORMIX:
+				return InformixDialect.class;
+			case MYSQL:
+				return MySQL5Dialect.class;
+			case ORACLE:
+				return Oracle12cDialect.class;
+			case POSTGRESQL:
+				return PostgreSQL95Dialect.class;
+			case SQL_SERVER:
+				return SQLServer2012Dialect.class;
+			case SYBASE:
+				return SybaseDialect.class;
+			default:
+				return null;
 		}
 	}
 
 	@Override
-	public HibernateJpaDialect getJpaDialect()
-	{
+	public HibernateJpaDialect getJpaDialect() {
 		return this.jpaDialect;
 	}
 
 	@Override
-	public Class<? extends EntityManagerFactory> getEntityManagerFactoryInterface()
-	{
+	public Class<? extends EntityManagerFactory> getEntityManagerFactoryInterface() {
 		return this.entityManagerFactoryInterface;
 	}
 
 	@Override
-	public Class<? extends EntityManager> getEntityManagerInterface()
-	{
+	public Class<? extends EntityManager> getEntityManagerInterface() {
 		return this.entityManagerInterface;
 	}
 

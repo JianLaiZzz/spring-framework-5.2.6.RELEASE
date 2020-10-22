@@ -31,48 +31,39 @@ import org.springframework.core.Ordered;
  * @author Juergen Hoeller
  * @since 22.01.2004
  */
-public abstract class TransactionSynchronizationAdapter implements TransactionSynchronization, Ordered
-{
+public abstract class TransactionSynchronizationAdapter implements TransactionSynchronization, Ordered {
 
 	@Override
-	public int getOrder()
-	{
+	public int getOrder() {
 		return Ordered.LOWEST_PRECEDENCE;
 	}
 
 	@Override
-	public void suspend()
-	{
+	public void suspend() {
 	}
 
 	@Override
-	public void resume()
-	{
+	public void resume() {
 	}
 
 	@Override
-	public void flush()
-	{
+	public void flush() {
 	}
 
 	@Override
-	public void beforeCommit(boolean readOnly)
-	{
+	public void beforeCommit(boolean readOnly) {
 	}
 
 	@Override
-	public void beforeCompletion()
-	{
+	public void beforeCompletion() {
 	}
 
 	@Override
-	public void afterCommit()
-	{
+	public void afterCommit() {
 	}
 
 	@Override
-	public void afterCompletion(int status)
-	{
+	public void afterCompletion(int status) {
 	}
 
 }

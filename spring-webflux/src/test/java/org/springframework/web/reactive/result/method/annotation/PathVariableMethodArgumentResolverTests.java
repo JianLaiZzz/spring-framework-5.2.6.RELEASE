@@ -16,16 +16,8 @@
 
 package org.springframework.web.reactive.result.method.annotation;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.core.annotation.SynthesizingMethodParameter;
@@ -38,6 +30,13 @@ import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.server.ServerErrorException;
 import org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest;
 import org.springframework.web.testfixture.server.MockServerWebExchange;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
@@ -52,7 +51,7 @@ public class PathVariableMethodArgumentResolverTests {
 
 	private PathVariableMethodArgumentResolver resolver;
 
-	private final MockServerWebExchange exchange= MockServerWebExchange.from(MockServerHttpRequest.get("/"));
+	private final MockServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/"));
 
 	private MethodParameter paramNamedString;
 	private MethodParameter paramString;
@@ -80,7 +79,7 @@ public class PathVariableMethodArgumentResolverTests {
 		assertThat(this.resolver.supportsParameter(this.paramString)).isFalse();
 		assertThatIllegalStateException().isThrownBy(() ->
 				this.resolver.supportsParameter(this.paramMono))
-			.withMessageStartingWith("PathVariableMethodArgumentResolver does not support reactive type wrapper");
+				.withMessageStartingWith("PathVariableMethodArgumentResolver does not support reactive type wrapper");
 	}
 
 	@Test

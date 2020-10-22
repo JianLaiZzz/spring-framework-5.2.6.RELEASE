@@ -16,12 +16,6 @@
 
 package org.springframework.transaction.support;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -30,16 +24,20 @@ import org.springframework.beans.testfixture.beans.TestBean;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.transaction.testfixture.CallCountingTransactionManager;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 /**
  * @author Juergen Hoeller
  */
-public class SimpleTransactionScopeTests
-{
+public class SimpleTransactionScopeTests {
 
 	@Test
 	@SuppressWarnings("resource")
-	public void getFromScope() throws Exception
-	{
+	public void getFromScope() throws Exception {
 		GenericApplicationContext context = new GenericApplicationContext();
 		context.getBeanFactory().registerScope("tx", new SimpleTransactionScope());
 
@@ -70,8 +68,7 @@ public class SimpleTransactionScopeTests
 		DerivedTestBean bean2b = null;
 
 		TransactionSynchronizationManager.initSynchronization();
-		try
-		{
+		try {
 			bean1 = context.getBean(TestBean.class);
 			assertThat(context.getBean(TestBean.class)).isSameAs(bean1);
 
@@ -92,9 +89,7 @@ public class SimpleTransactionScopeTests
 			assertThat(context.getBean(DerivedTestBean.class)).isSameAs(bean2b);
 			assertThat(bean2b).isNotSameAs(bean2);
 			assertThat(bean2b).isNotSameAs(bean2a);
-		}
-		finally
-		{
+		} finally {
 			TransactionSynchronizationUtils
 					.triggerAfterCompletion(TransactionSynchronization.STATUS_COMMITTED);
 			TransactionSynchronizationManager.clearSynchronization();
@@ -114,10 +109,8 @@ public class SimpleTransactionScopeTests
 	}
 
 	@Test
-	public void getWithTransactionManager() throws Exception
-	{
-		try (GenericApplicationContext context = new GenericApplicationContext())
-		{
+	public void getWithTransactionManager() throws Exception {
+		try (GenericApplicationContext context = new GenericApplicationContext()) {
 			context.getBeanFactory().registerScope("tx", new SimpleTransactionScope());
 
 			GenericBeanDefinition bd1 = new GenericBeanDefinition();

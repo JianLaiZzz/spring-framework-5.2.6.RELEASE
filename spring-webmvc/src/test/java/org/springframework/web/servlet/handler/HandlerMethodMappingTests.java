@@ -16,17 +16,8 @@
 
 package org.springframework.web.servlet.handler;
 
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
@@ -38,6 +29,13 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.util.UrlPathHelper;
+
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
@@ -245,7 +243,6 @@ public class HandlerMethodMappingTests {
 		assertThat(config).isNotNull();
 		assertThat(config.getAllowedOrigins().get(0)).isEqualTo(("http://" + beanName.hashCode() + this.method1.getName()));
 	}
-
 
 
 	private static class MyHandlerMethodMapping extends AbstractHandlerMethodMapping<String> {

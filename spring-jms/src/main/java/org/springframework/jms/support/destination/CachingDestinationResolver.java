@@ -23,8 +23,7 @@ package org.springframework.jms.support.destination;
  * @author Juergen Hoeller
  * @since 2.0
  */
-public interface CachingDestinationResolver extends DestinationResolver
-{
+public interface CachingDestinationResolver extends DestinationResolver {
 
 	/**
 	 * Remove the destination with the given name from the cache
@@ -32,9 +31,8 @@ public interface CachingDestinationResolver extends DestinationResolver
 	 * <p>
 	 * To be called if access to the specified destination failed,
 	 * assuming that the JMS Destination object might have become invalid.
-	 * 
-	 * @param destinationName
-	 *            the name of the destination
+	 *
+	 * @param destinationName the name of the destination
 	 */
 	void removeFromCache(String destinationName);
 

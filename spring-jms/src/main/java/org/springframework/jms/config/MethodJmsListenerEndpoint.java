@@ -16,9 +16,6 @@
 
 package org.springframework.jms.config;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.BeanFactory;
@@ -39,6 +36,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
 /**
  * A {@link JmsListenerEndpoint} providing the method to invoke to process
  * an incoming message for this endpoint.
@@ -47,8 +47,7 @@ import org.springframework.util.StringValueResolver;
  * @author Juergen Hoeller
  * @since 4.1
  */
-public class MethodJmsListenerEndpoint extends AbstractJmsListenerEndpoint implements BeanFactoryAware
-{
+public class MethodJmsListenerEndpoint extends AbstractJmsListenerEndpoint implements BeanFactoryAware {
 
 	@Nullable
 	private Object bean;
@@ -68,28 +67,24 @@ public class MethodJmsListenerEndpoint extends AbstractJmsListenerEndpoint imple
 	/**
 	 * Set the actual bean instance to invoke this endpoint method on.
 	 */
-	public void setBean(@Nullable Object bean)
-	{
+	public void setBean(@Nullable Object bean) {
 		this.bean = bean;
 	}
 
 	@Nullable
-	public Object getBean()
-	{
+	public Object getBean() {
 		return this.bean;
 	}
 
 	/**
 	 * Set the method to invoke for processing a message managed by this endpoint.
 	 */
-	public void setMethod(@Nullable Method method)
-	{
+	public void setMethod(@Nullable Method method) {
 		this.method = method;
 	}
 
 	@Nullable
-	public Method getMethod()
-	{
+	public Method getMethod() {
 		return this.method;
 	}
 
@@ -98,27 +93,22 @@ public class MethodJmsListenerEndpoint extends AbstractJmsListenerEndpoint imple
 	 * <p>
 	 * In case of a proxy, this will be the method on the target class
 	 * (if annotated itself, that is, if not just annotated in an interface).
-	 * 
+	 *
 	 * @since 4.2.3
 	 */
-	public void setMostSpecificMethod(@Nullable Method mostSpecificMethod)
-	{
+	public void setMostSpecificMethod(@Nullable Method mostSpecificMethod) {
 		this.mostSpecificMethod = mostSpecificMethod;
 	}
 
 	@Nullable
-	public Method getMostSpecificMethod()
-	{
-		if (this.mostSpecificMethod != null)
-		{
+	public Method getMostSpecificMethod() {
+		if (this.mostSpecificMethod != null) {
 			return this.mostSpecificMethod;
 		}
 		Method method = getMethod();
-		if (method != null)
-		{
+		if (method != null) {
 			Object bean = getBean();
-			if (AopUtils.isAopProxy(bean))
-			{
+			if (AopUtils.isAopProxy(bean)) {
 				Class<?> targetClass = AopProxyUtils.ultimateTargetClass(bean);
 				method = AopUtils.getMostSpecificMethod(method, targetClass);
 			}
@@ -131,16 +121,14 @@ public class MethodJmsListenerEndpoint extends AbstractJmsListenerEndpoint imple
 	 * {@link InvocableHandlerMethod} responsible to manage the invocation
 	 * of this endpoint.
 	 */
-	public void setMessageHandlerMethodFactory(MessageHandlerMethodFactory messageHandlerMethodFactory)
-	{
+	public void setMessageHandlerMethodFactory(MessageHandlerMethodFactory messageHandlerMethodFactory) {
 		this.messageHandlerMethodFactory = messageHandlerMethodFactory;
 	}
 
 	/**
 	 * Set a value resolver for embedded placeholders and expressions.
 	 */
-	public void setEmbeddedValueResolver(@Nullable StringValueResolver embeddedValueResolver)
-	{
+	public void setEmbeddedValueResolver(@Nullable StringValueResolver embeddedValueResolver) {
 		this.embeddedValueResolver = embeddedValueResolver;
 	}
 
@@ -148,17 +136,14 @@ public class MethodJmsListenerEndpoint extends AbstractJmsListenerEndpoint imple
 	 * Set the {@link BeanFactory} to use to resolve expressions (may be {@code null}).
 	 */
 	@Override
-	public void setBeanFactory(@Nullable BeanFactory beanFactory)
-	{
-		if (this.embeddedValueResolver == null && beanFactory instanceof ConfigurableBeanFactory)
-		{
+	public void setBeanFactory(@Nullable BeanFactory beanFactory) {
+		if (this.embeddedValueResolver == null && beanFactory instanceof ConfigurableBeanFactory) {
 			this.embeddedValueResolver = new EmbeddedValueResolver((ConfigurableBeanFactory) beanFactory);
 		}
 	}
 
 	@Override
-	protected MessagingMessageListenerAdapter createMessageListener(MessageListenerContainer container)
-	{
+	protected MessagingMessageListenerAdapter createMessageListener(MessageListenerContainer container) {
 		Assert.state(this.messageHandlerMethodFactory != null,
 				"Could not create message listener - MessageHandlerMethodFactory not set");
 		MessagingMessageListenerAdapter messageListener = createMessageListenerInstance();
@@ -169,30 +154,23 @@ public class MethodJmsListenerEndpoint extends AbstractJmsListenerEndpoint imple
 				.createInvocableHandlerMethod(bean, method);
 		messageListener.setHandlerMethod(invocableHandlerMethod);
 		String responseDestination = getDefaultResponseDestination();
-		if (StringUtils.hasText(responseDestination))
-		{
-			if (container.isReplyPubSubDomain())
-			{
+		if (StringUtils.hasText(responseDestination)) {
+			if (container.isReplyPubSubDomain()) {
 				messageListener.setDefaultResponseTopicName(responseDestination);
-			}
-			else
-			{
+			} else {
 				messageListener.setDefaultResponseQueueName(responseDestination);
 			}
 		}
 		QosSettings responseQosSettings = container.getReplyQosSettings();
-		if (responseQosSettings != null)
-		{
+		if (responseQosSettings != null) {
 			messageListener.setResponseQosSettings(responseQosSettings);
 		}
 		MessageConverter messageConverter = container.getMessageConverter();
-		if (messageConverter != null)
-		{
+		if (messageConverter != null) {
 			messageListener.setMessageConverter(messageConverter);
 		}
 		DestinationResolver destinationResolver = container.getDestinationResolver();
-		if (destinationResolver != null)
-		{
+		if (destinationResolver != null) {
 			messageListener.setDestinationResolver(destinationResolver);
 		}
 		return messageListener;
@@ -200,11 +178,10 @@ public class MethodJmsListenerEndpoint extends AbstractJmsListenerEndpoint imple
 
 	/**
 	 * Create an empty {@link MessagingMessageListenerAdapter} instance.
-	 * 
+	 *
 	 * @return a new {@code MessagingMessageListenerAdapter} or subclass thereof
 	 */
-	protected MessagingMessageListenerAdapter createMessageListenerInstance()
-	{
+	protected MessagingMessageListenerAdapter createMessageListenerInstance() {
 		return new MessagingMessageListenerAdapter();
 	}
 
@@ -212,19 +189,15 @@ public class MethodJmsListenerEndpoint extends AbstractJmsListenerEndpoint imple
 	 * Return the default response destination, if any.
 	 */
 	@Nullable
-	protected String getDefaultResponseDestination()
-	{
+	protected String getDefaultResponseDestination() {
 		Method specificMethod = getMostSpecificMethod();
-		if (specificMethod == null)
-		{
+		if (specificMethod == null) {
 			return null;
 		}
 		SendTo ann = getSendTo(specificMethod);
-		if (ann != null)
-		{
+		if (ann != null) {
 			Object[] destinations = ann.value();
-			if (destinations.length != 1)
-			{
+			if (destinations.length != 1) {
 				throw new IllegalStateException("Invalid @" + SendTo.class.getSimpleName()
 						+ " annotation on '" + specificMethod + "' one destination must be set (got "
 						+ Arrays.toString(destinations) + ")");
@@ -235,11 +208,9 @@ public class MethodJmsListenerEndpoint extends AbstractJmsListenerEndpoint imple
 	}
 
 	@Nullable
-	private SendTo getSendTo(Method specificMethod)
-	{
+	private SendTo getSendTo(Method specificMethod) {
 		SendTo ann = AnnotatedElementUtils.findMergedAnnotation(specificMethod, SendTo.class);
-		if (ann == null)
-		{
+		if (ann == null) {
 			ann = AnnotatedElementUtils.findMergedAnnotation(specificMethod.getDeclaringClass(),
 					SendTo.class);
 		}
@@ -247,15 +218,13 @@ public class MethodJmsListenerEndpoint extends AbstractJmsListenerEndpoint imple
 	}
 
 	@Nullable
-	private String resolve(String value)
-	{
+	private String resolve(String value) {
 		return (this.embeddedValueResolver != null ? this.embeddedValueResolver.resolveStringValue(value)
 				: value);
 	}
 
 	@Override
-	protected StringBuilder getEndpointDescription()
-	{
+	protected StringBuilder getEndpointDescription() {
 		return super.getEndpointDescription().append(" | bean='").append(this.bean).append("'")
 				.append(" | method='").append(this.method).append("'");
 	}

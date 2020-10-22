@@ -16,25 +16,6 @@
 
 package org.springframework.web.servlet.config;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.servlet.RequestDispatcher;
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +24,6 @@ import org.apache.tiles.definition.UnresolvingLocaleDefinitionsFactory;
 import org.joda.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.cache.Cache;
@@ -89,13 +69,7 @@ import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.handler.AbstractHandlerMapping;
-import org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping;
-import org.springframework.web.servlet.handler.ConversionServiceExposingInterceptor;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
-import org.springframework.web.servlet.handler.MappedInterceptor;
-import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
-import org.springframework.web.servlet.handler.UserRoleAuthorizationInterceptor;
+import org.springframework.web.servlet.handler.*;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
@@ -103,29 +77,9 @@ import org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.servlet.resource.AppCacheManifestTransformer;
-import org.springframework.web.servlet.resource.CachingResourceResolver;
-import org.springframework.web.servlet.resource.CachingResourceTransformer;
-import org.springframework.web.servlet.resource.ContentVersionStrategy;
-import org.springframework.web.servlet.resource.CssLinkResourceTransformer;
-import org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler;
-import org.springframework.web.servlet.resource.EncodedResourceResolver;
-import org.springframework.web.servlet.resource.FixedVersionStrategy;
-import org.springframework.web.servlet.resource.PathResourceResolver;
-import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
-import org.springframework.web.servlet.resource.ResourceResolver;
-import org.springframework.web.servlet.resource.ResourceTransformer;
-import org.springframework.web.servlet.resource.ResourceUrlProvider;
-import org.springframework.web.servlet.resource.ResourceUrlProviderExposingInterceptor;
-import org.springframework.web.servlet.resource.VersionResourceResolver;
-import org.springframework.web.servlet.resource.WebJarsResourceResolver;
+import org.springframework.web.servlet.resource.*;
 import org.springframework.web.servlet.theme.ThemeChangeInterceptor;
-import org.springframework.web.servlet.view.BeanNameViewResolver;
-import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
-import org.springframework.web.servlet.view.InternalResourceView;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.servlet.view.ViewResolverComposite;
+import org.springframework.web.servlet.view.*;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import org.springframework.web.servlet.view.groovy.GroovyMarkupConfigurer;
@@ -140,6 +94,18 @@ import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
 import org.springframework.web.testfixture.servlet.MockRequestDispatcher;
 import org.springframework.web.testfixture.servlet.MockServletContext;
 import org.springframework.web.util.UrlPathHelper;
+
+import javax.servlet.RequestDispatcher;
+import javax.validation.constraints.NotNull;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -635,7 +601,9 @@ public class MvcNamespaceTests {
 		assertThat(response.getStatus()).isEqualTo(404);
 	}
 
-	/** WebSphere gives trailing servlet path slashes by default!! */
+	/**
+	 * WebSphere gives trailing servlet path slashes by default!!
+	 */
 	@Test
 	public void testViewControllersOnWebSphere() throws Exception {
 		loadBeanDefinitions("mvc-config-view-controllers.xml");
@@ -768,7 +736,7 @@ public class MvcNamespaceTests {
 		accessor = new DirectFieldAccessor(resolver);
 		assertThat(accessor.getPropertyValue("prefix")).isEqualTo("freemarker-");
 		assertThat(accessor.getPropertyValue("suffix")).isEqualTo(".freemarker");
-		assertThat((String[]) accessor.getPropertyValue("viewNames")).isEqualTo(new String[] {"my*", "*Report"});
+		assertThat((String[]) accessor.getPropertyValue("viewNames")).isEqualTo(new String[]{"my*", "*Report"});
 		assertThat(accessor.getPropertyValue("cacheLimit")).isEqualTo(1024);
 
 		resolver = resolvers.get(4);
@@ -803,7 +771,7 @@ public class MvcNamespaceTests {
 		FreeMarkerConfigurer freeMarkerConfigurer = appContext.getBean(FreeMarkerConfigurer.class);
 		assertThat(freeMarkerConfigurer).isNotNull();
 		accessor = new DirectFieldAccessor(freeMarkerConfigurer);
-		assertThat((String[]) accessor.getPropertyValue("templateLoaderPaths")).isEqualTo(new String[] {"/", "/test"});
+		assertThat((String[]) accessor.getPropertyValue("templateLoaderPaths")).isEqualTo(new String[]{"/", "/test"});
 
 		GroovyMarkupConfigurer groovyMarkupConfigurer = appContext.getBean(GroovyMarkupConfigurer.class);
 		assertThat(groovyMarkupConfigurer).isNotNull();
@@ -818,7 +786,7 @@ public class MvcNamespaceTests {
 		assertThat(scriptTemplateConfigurer.getCharset()).isEqualTo(StandardCharsets.ISO_8859_1);
 		assertThat(scriptTemplateConfigurer.getResourceLoaderPath()).isEqualTo("classpath:");
 		assertThat(scriptTemplateConfigurer.isSharedEngine()).isFalse();
-		String[] scripts = { "org/springframework/web/servlet/view/script/nashorn/render.js" };
+		String[] scripts = {"org/springframework/web/servlet/view/script/nashorn/render.js"};
 		accessor = new DirectFieldAccessor(scriptTemplateConfigurer);
 		assertThat((String[]) accessor.getPropertyValue("scripts")).isEqualTo(scripts);
 	}
@@ -885,7 +853,7 @@ public class MvcNamespaceTests {
 		String[] beanNames = appContext.getBeanNamesForType(AbstractHandlerMapping.class);
 		assertThat(beanNames.length).isEqualTo(2);
 		for (String beanName : beanNames) {
-			AbstractHandlerMapping handlerMapping = (AbstractHandlerMapping)appContext.getBean(beanName);
+			AbstractHandlerMapping handlerMapping = (AbstractHandlerMapping) appContext.getBean(beanName);
 			assertThat(handlerMapping).isNotNull();
 			DirectFieldAccessor accessor = new DirectFieldAccessor(handlerMapping);
 			Map<String, CorsConfiguration> configs = ((UrlBasedCorsConfigurationSource) accessor
@@ -910,7 +878,7 @@ public class MvcNamespaceTests {
 		String[] beanNames = appContext.getBeanNamesForType(AbstractHandlerMapping.class);
 		assertThat(beanNames.length).isEqualTo(2);
 		for (String beanName : beanNames) {
-			AbstractHandlerMapping handlerMapping = (AbstractHandlerMapping)appContext.getBean(beanName);
+			AbstractHandlerMapping handlerMapping = (AbstractHandlerMapping) appContext.getBean(beanName);
 			assertThat(handlerMapping).isNotNull();
 			DirectFieldAccessor accessor = new DirectFieldAccessor(handlerMapping);
 			Map<String, CorsConfiguration> configs = ((UrlBasedCorsConfigurationSource) accessor
@@ -974,8 +942,8 @@ public class MvcNamespaceTests {
 
 		@RequestMapping
 		public void testBind(@RequestParam @IsoDate Date date,
-				@RequestParam(required = false) @PercentNumber Double percent,
-				@MyValid TestBean bean, BindingResult result) {
+							 @RequestParam(required = false) @PercentNumber Double percent,
+							 @MyValid TestBean bean, BindingResult result) {
 
 			this.date = date;
 			this.percent = percent;
@@ -1028,8 +996,7 @@ public class MvcNamespaceTests {
 		public RequestDispatcher getNamedDispatcher(String path) {
 			if (path.equals("default") || path.equals("custom")) {
 				return new MockRequestDispatcher("/");
-			}
-			else {
+			} else {
 				return null;
 			}
 		}

@@ -16,13 +16,6 @@
 
 package org.springframework.web.reactive.function.client;
 
-import java.time.Duration;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -30,23 +23,26 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.ClientCodecConfigurer;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.time.Duration;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for {@link DefaultWebClient}.
@@ -98,8 +94,8 @@ public class DefaultWebClientTests {
 	@Test // gh-22705
 	public void uriBuilderWithUriTemplate() {
 		this.builder.build().get()
-					.uri("/path/{id}", builder -> builder.queryParam("q", "12").build("identifier"))
-					.exchange().block(Duration.ofSeconds(10));
+				.uri("/path/{id}", builder -> builder.queryParam("q", "12").build("identifier"))
+				.exchange().block(Duration.ofSeconds(10));
 
 		ClientRequest request = verifyAndGetRequest();
 		assertThat(request.url().toString()).isEqualTo("/base/path/identifier?q=12");
@@ -119,7 +115,7 @@ public class DefaultWebClientTests {
 	@Test
 	public void requestHeaderAndCookie() {
 		this.builder.build().get().uri("/path").accept(MediaType.APPLICATION_JSON)
-				.cookies(cookies -> cookies.add("id", "123"))	// SPR-16178
+				.cookies(cookies -> cookies.add("id", "123"))    // SPR-16178
 				.exchange().block(Duration.ofSeconds(10));
 
 		ClientRequest request = verifyAndGetRequest();
@@ -176,8 +172,7 @@ public class DefaultWebClientTests {
 			context.set("bar");
 			client.get().uri("/path").attribute("foo", "bar")
 					.exchange().block(Duration.ofSeconds(10));
-		}
-		finally {
+		} finally {
 			context.remove();
 		}
 
@@ -235,7 +230,8 @@ public class DefaultWebClientTests {
 
 	@Test
 	void cloneBuilder() {
-		Consumer<ClientCodecConfigurer> codecsConfig = c -> {};
+		Consumer<ClientCodecConfigurer> codecsConfig = c -> {
+		};
 		ExchangeFunction exchangeFunction = request -> Mono.empty();
 		WebClient.Builder builder = WebClient.builder().baseUrl("https://example.org")
 				.exchangeFunction(exchangeFunction)
@@ -317,10 +313,10 @@ public class DefaultWebClientTests {
 	public void shouldApplyFiltersAtSubscription() {
 		WebClient client = this.builder
 				.filter((request, next) ->
-					next.exchange(ClientRequest
-							.from(request)
-							.header("Custom", "value")
-							.build())
+						next.exchange(ClientRequest
+								.from(request)
+								.header("Custom", "value")
+								.build())
 				)
 				.build();
 		Mono<ClientResponse> exchange = client.get().uri("/path").exchange();

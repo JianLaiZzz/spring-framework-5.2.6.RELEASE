@@ -30,16 +30,15 @@ import org.springframework.web.bind.WebDataBinder;
  * initializers with multiple controller/handlers.
  *
  * @author Juergen Hoeller
- * @since 2.5
  * @see #setDirectFieldAccess
  * @see #setMessageCodesResolver
  * @see #setBindingErrorProcessor
  * @see #setValidator(Validator)
  * @see #setConversionService(ConversionService)
  * @see #setPropertyEditorRegistrar
+ * @since 2.5
  */
-public class ConfigurableWebBindingInitializer implements WebBindingInitializer
-{
+public class ConfigurableWebBindingInitializer implements WebBindingInitializer {
 
 	private boolean autoGrowNestedPaths = true;
 
@@ -69,20 +68,18 @@ public class ConfigurableWebBindingInitializer implements WebBindingInitializer
 	 * <p>
 	 * Default is "true" on a standard DataBinder. Note that this feature is only supported
 	 * for bean property access (DataBinder's default mode), not for field access.
-	 * 
+	 *
 	 * @see org.springframework.validation.DataBinder#initBeanPropertyAccess()
 	 * @see org.springframework.validation.DataBinder#setAutoGrowNestedPaths
 	 */
-	public void setAutoGrowNestedPaths(boolean autoGrowNestedPaths)
-	{
+	public void setAutoGrowNestedPaths(boolean autoGrowNestedPaths) {
 		this.autoGrowNestedPaths = autoGrowNestedPaths;
 	}
 
 	/**
 	 * Return whether a binder should attempt to "auto-grow" a nested path that contains a null value.
 	 */
-	public boolean isAutoGrowNestedPaths()
-	{
+	public boolean isAutoGrowNestedPaths() {
 		return this.autoGrowNestedPaths;
 	}
 
@@ -91,20 +88,18 @@ public class ConfigurableWebBindingInitializer implements WebBindingInitializer
 	 * <p>
 	 * Default is {@code false}, using bean property access.
 	 * Switch this to {@code true} in order to enforce direct field access.
-	 * 
+	 *
 	 * @see org.springframework.validation.DataBinder#initDirectFieldAccess()
 	 * @see org.springframework.validation.DataBinder#initBeanPropertyAccess()
 	 */
-	public final void setDirectFieldAccess(boolean directFieldAccess)
-	{
+	public final void setDirectFieldAccess(boolean directFieldAccess) {
 		this.directFieldAccess = directFieldAccess;
 	}
 
 	/**
 	 * Return whether to use direct field access instead of bean property access.
 	 */
-	public boolean isDirectFieldAccess()
-	{
+	public boolean isDirectFieldAccess() {
 		return this.directFieldAccess;
 	}
 
@@ -114,11 +109,10 @@ public class ConfigurableWebBindingInitializer implements WebBindingInitializer
 	 * <p>
 	 * Default is {@code null}, i.e. using the default strategy of
 	 * the data binder.
-	 * 
+	 *
 	 * @see org.springframework.validation.DataBinder#setMessageCodesResolver
 	 */
-	public final void setMessageCodesResolver(@Nullable MessageCodesResolver messageCodesResolver)
-	{
+	public final void setMessageCodesResolver(@Nullable MessageCodesResolver messageCodesResolver) {
 		this.messageCodesResolver = messageCodesResolver;
 	}
 
@@ -126,8 +120,7 @@ public class ConfigurableWebBindingInitializer implements WebBindingInitializer
 	 * Return the strategy to use for resolving errors into message codes.
 	 */
 	@Nullable
-	public final MessageCodesResolver getMessageCodesResolver()
-	{
+	public final MessageCodesResolver getMessageCodesResolver() {
 		return this.messageCodesResolver;
 	}
 
@@ -137,11 +130,10 @@ public class ConfigurableWebBindingInitializer implements WebBindingInitializer
 	 * <p>
 	 * Default is {@code null}, that is, using the default strategy
 	 * of the data binder.
-	 * 
+	 *
 	 * @see org.springframework.validation.DataBinder#setBindingErrorProcessor
 	 */
-	public final void setBindingErrorProcessor(@Nullable BindingErrorProcessor bindingErrorProcessor)
-	{
+	public final void setBindingErrorProcessor(@Nullable BindingErrorProcessor bindingErrorProcessor) {
 		this.bindingErrorProcessor = bindingErrorProcessor;
 	}
 
@@ -149,16 +141,14 @@ public class ConfigurableWebBindingInitializer implements WebBindingInitializer
 	 * Return the strategy to use for processing binding errors.
 	 */
 	@Nullable
-	public final BindingErrorProcessor getBindingErrorProcessor()
-	{
+	public final BindingErrorProcessor getBindingErrorProcessor() {
 		return this.bindingErrorProcessor;
 	}
 
 	/**
 	 * Set the Validator to apply after each binding step.
 	 */
-	public final void setValidator(@Nullable Validator validator)
-	{
+	public final void setValidator(@Nullable Validator validator) {
 		this.validator = validator;
 	}
 
@@ -166,18 +156,16 @@ public class ConfigurableWebBindingInitializer implements WebBindingInitializer
 	 * Return the Validator to apply after each binding step, if any.
 	 */
 	@Nullable
-	public final Validator getValidator()
-	{
+	public final Validator getValidator() {
 		return this.validator;
 	}
 
 	/**
 	 * Specify a ConversionService which will apply to every DataBinder.
-	 * 
+	 *
 	 * @since 3.0
 	 */
-	public final void setConversionService(@Nullable ConversionService conversionService)
-	{
+	public final void setConversionService(@Nullable ConversionService conversionService) {
 		this.conversionService = conversionService;
 	}
 
@@ -185,25 +173,22 @@ public class ConfigurableWebBindingInitializer implements WebBindingInitializer
 	 * Return the ConversionService which will apply to every DataBinder.
 	 */
 	@Nullable
-	public final ConversionService getConversionService()
-	{
+	public final ConversionService getConversionService() {
 		return this.conversionService;
 	}
 
 	/**
 	 * Specify a single PropertyEditorRegistrar to be applied to every DataBinder.
 	 */
-	public final void setPropertyEditorRegistrar(PropertyEditorRegistrar propertyEditorRegistrar)
-	{
-		this.propertyEditorRegistrars = new PropertyEditorRegistrar[] { propertyEditorRegistrar };
+	public final void setPropertyEditorRegistrar(PropertyEditorRegistrar propertyEditorRegistrar) {
+		this.propertyEditorRegistrars = new PropertyEditorRegistrar[]{propertyEditorRegistrar};
 	}
 
 	/**
 	 * Specify multiple PropertyEditorRegistrars to be applied to every DataBinder.
 	 */
 	public final void setPropertyEditorRegistrars(
-			@Nullable PropertyEditorRegistrar[] propertyEditorRegistrars)
-	{
+			@Nullable PropertyEditorRegistrar[] propertyEditorRegistrars) {
 		this.propertyEditorRegistrars = propertyEditorRegistrars;
 	}
 
@@ -211,40 +196,31 @@ public class ConfigurableWebBindingInitializer implements WebBindingInitializer
 	 * Return the PropertyEditorRegistrars to be applied to every DataBinder.
 	 */
 	@Nullable
-	public final PropertyEditorRegistrar[] getPropertyEditorRegistrars()
-	{
+	public final PropertyEditorRegistrar[] getPropertyEditorRegistrars() {
 		return this.propertyEditorRegistrars;
 	}
 
 	@Override
-	public void initBinder(WebDataBinder binder)
-	{
+	public void initBinder(WebDataBinder binder) {
 		binder.setAutoGrowNestedPaths(this.autoGrowNestedPaths);
-		if (this.directFieldAccess)
-		{
+		if (this.directFieldAccess) {
 			binder.initDirectFieldAccess();
 		}
-		if (this.messageCodesResolver != null)
-		{
+		if (this.messageCodesResolver != null) {
 			binder.setMessageCodesResolver(this.messageCodesResolver);
 		}
-		if (this.bindingErrorProcessor != null)
-		{
+		if (this.bindingErrorProcessor != null) {
 			binder.setBindingErrorProcessor(this.bindingErrorProcessor);
 		}
 		if (this.validator != null && binder.getTarget() != null
-				&& this.validator.supports(binder.getTarget().getClass()))
-		{
+				&& this.validator.supports(binder.getTarget().getClass())) {
 			binder.setValidator(this.validator);
 		}
-		if (this.conversionService != null)
-		{
+		if (this.conversionService != null) {
 			binder.setConversionService(this.conversionService);
 		}
-		if (this.propertyEditorRegistrars != null)
-		{
-			for (PropertyEditorRegistrar propertyEditorRegistrar : this.propertyEditorRegistrars)
-			{
+		if (this.propertyEditorRegistrars != null) {
+			for (PropertyEditorRegistrar propertyEditorRegistrar : this.propertyEditorRegistrars) {
 				propertyEditorRegistrar.registerCustomEditors(binder);
 			}
 		}

@@ -22,33 +22,28 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.core.Ordered;
 
 @Aspect("pertarget(execution(* *.getSpouse()))")
-public class PerTargetAspect implements Ordered
-{
+public class PerTargetAspect implements Ordered {
 
 	public int count;
 
 	private int order = Ordered.LOWEST_PRECEDENCE;
 
 	@Around("execution(int *.getAge())")
-	public int returnCountAsAge()
-	{
+	public int returnCountAsAge() {
 		return count++;
 	}
 
 	@Before("execution(void *.set*(int))")
-	public void countSetter()
-	{
+	public void countSetter() {
 		++count;
 	}
 
 	@Override
-	public int getOrder()
-	{
+	public int getOrder() {
 		return this.order;
 	}
 
-	public void setOrder(int order)
-	{
+	public void setOrder(int order) {
 		this.order = order;
 	}
 

@@ -16,13 +16,13 @@
 
 package org.springframework.web.bind;
 
-import javax.servlet.ServletRequest;
-
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.BindException;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.util.WebUtils;
+
+import javax.servlet.ServletRequest;
 
 /**
  * Special {@link org.springframework.validation.DataBinder} to perform data binding
@@ -60,33 +60,27 @@ import org.springframework.web.util.WebUtils;
  * @see #setRequiredFields
  * @see #setFieldMarkerPrefix
  */
-public class ServletRequestDataBinder extends WebDataBinder
-{
+public class ServletRequestDataBinder extends WebDataBinder {
 
 	/**
 	 * Create a new ServletRequestDataBinder instance, with default object name.
-	 * 
-	 * @param target
-	 *            the target object to bind onto (or {@code null}
-	 *            if the binder is just used to convert a plain parameter value)
+	 *
+	 * @param target the target object to bind onto (or {@code null}
+	 *               if the binder is just used to convert a plain parameter value)
 	 * @see #DEFAULT_OBJECT_NAME
 	 */
-	public ServletRequestDataBinder(@Nullable Object target)
-	{
+	public ServletRequestDataBinder(@Nullable Object target) {
 		super(target);
 	}
 
 	/**
 	 * Create a new ServletRequestDataBinder instance.
-	 * 
-	 * @param target
-	 *            the target object to bind onto (or {@code null}
-	 *            if the binder is just used to convert a plain parameter value)
-	 * @param objectName
-	 *            the name of the target object
+	 *
+	 * @param target     the target object to bind onto (or {@code null}
+	 *                   if the binder is just used to convert a plain parameter value)
+	 * @param objectName the name of the target object
 	 */
-	public ServletRequestDataBinder(@Nullable Object target, String objectName)
-	{
+	public ServletRequestDataBinder(@Nullable Object target, String objectName) {
 		super(target, objectName);
 	}
 
@@ -105,19 +99,16 @@ public class ServletRequestDataBinder extends WebDataBinder
 	 * The type of the target property for a multipart file can be MultipartFile,
 	 * byte[], or String. The latter two receive the contents of the uploaded file;
 	 * all metadata like original file name, content type, etc are lost in those cases.
-	 * 
-	 * @param request
-	 *            the request with parameters to bind (can be multipart)
+	 *
+	 * @param request the request with parameters to bind (can be multipart)
 	 * @see org.springframework.web.multipart.MultipartHttpServletRequest
 	 * @see org.springframework.web.multipart.MultipartFile
 	 * @see #bind(org.springframework.beans.PropertyValues)
 	 */
-	public void bind(ServletRequest request)
-	{
+	public void bind(ServletRequest request) {
 		MutablePropertyValues mpvs = new ServletRequestParameterPropertyValues(request);
 		MultipartRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartRequest.class);
-		if (multipartRequest != null)
-		{
+		if (multipartRequest != null) {
 			bindMultipart(multipartRequest.getMultiFileMap(), mpvs);
 		}
 		addBindValues(mpvs, request);
@@ -128,14 +119,11 @@ public class ServletRequestDataBinder extends WebDataBinder
 	 * Extension point that subclasses can use to add extra bind values for a
 	 * request. Invoked before {@link #doBind(MutablePropertyValues)}.
 	 * The default implementation is empty.
-	 * 
-	 * @param mpvs
-	 *            the property values that will be used for data binding
-	 * @param request
-	 *            the current request
+	 *
+	 * @param mpvs    the property values that will be used for data binding
+	 * @param request the current request
 	 */
-	protected void addBindValues(MutablePropertyValues mpvs, ServletRequest request)
-	{
+	protected void addBindValues(MutablePropertyValues mpvs, ServletRequest request) {
 	}
 
 	/**
@@ -143,14 +131,11 @@ public class ServletRequestDataBinder extends WebDataBinder
 	 * <p>
 	 * Use this method only if it's an error if the input isn't valid.
 	 * This might be appropriate if all input is from dropdowns, for example.
-	 * 
-	 * @throws ServletRequestBindingException
-	 *             subclass of ServletException on any binding problem
+	 *
+	 * @throws ServletRequestBindingException subclass of ServletException on any binding problem
 	 */
-	public void closeNoCatch() throws ServletRequestBindingException
-	{
-		if (getBindingResult().hasErrors())
-		{
+	public void closeNoCatch() throws ServletRequestBindingException {
+		if (getBindingResult().hasErrors()) {
 			throw new ServletRequestBindingException(
 					"Errors binding onto object '" + getBindingResult().getObjectName() + "'",
 					new BindException(getBindingResult()));

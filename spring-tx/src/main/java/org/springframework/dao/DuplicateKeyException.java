@@ -25,30 +25,24 @@ package org.springframework.dao;
  * @author Thomas Risberg
  */
 @SuppressWarnings("serial")
-public class DuplicateKeyException extends DataIntegrityViolationException
-{
+public class DuplicateKeyException extends DataIntegrityViolationException {
 
 	/**
 	 * Constructor for DuplicateKeyException.
-	 * 
-	 * @param msg
-	 *            the detail message
+	 *
+	 * @param msg the detail message
 	 */
-	public DuplicateKeyException(String msg)
-	{
+	public DuplicateKeyException(String msg) {
 		super(msg);
 	}
 
 	/**
 	 * Constructor for DuplicateKeyException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the root cause from the data access API in use
+	 *
+	 * @param msg   the detail message
+	 * @param cause the root cause from the data access API in use
 	 */
-	public DuplicateKeyException(String msg, Throwable cause)
-	{
+	public DuplicateKeyException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 

@@ -33,8 +33,7 @@ import org.gradle.plugins.ide.eclipse.model.EclipseModel;
  *
  * @author Andy Wilkinson
  */
-public class OptionalDependenciesPlugin implements Plugin<Project>
-{
+public class OptionalDependenciesPlugin implements Plugin<Project> {
 
 	/**
 	 * Name of the {@code optional} configuration.
@@ -42,8 +41,7 @@ public class OptionalDependenciesPlugin implements Plugin<Project>
 	public static final String OPTIONAL_CONFIGURATION_NAME = "optional";
 
 	@Override
-	public void apply(Project project)
-	{
+	public void apply(Project project) {
 		Configuration optional = project.getConfigurations().create("optional");
 		project.getPlugins().withType(JavaPlugin.class, (javaPlugin) ->
 		{

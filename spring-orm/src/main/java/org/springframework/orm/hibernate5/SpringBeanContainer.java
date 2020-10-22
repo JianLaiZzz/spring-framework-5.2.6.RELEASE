@@ -16,9 +16,6 @@
 
 package org.springframework.orm.hibernate5;
 
-import java.util.Map;
-import java.util.function.Consumer;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.resource.beans.container.spi.BeanContainer;
@@ -31,6 +28,9 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ConcurrentReferenceHashMap;
+
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Spring's implementation of Hibernate 5.3's {@link BeanContainer} SPI,
@@ -54,14 +54,14 @@ import org.springframework.util.ConcurrentReferenceHashMap;
  *   &lt;/property&gt;
  * &lt;/bean&gt;
  * </pre>
- *
+ * <p>
  * Or in Java-based JPA configuration:
  *
  * <pre class="code">
  * LocalContainerEntityManagerFactoryBean emfb = ...
  * emfb.getJpaPropertyMap().put(AvailableSettings.BEAN_CONTAINER, new SpringBeanContainer(beanFactory));
  * </pre>
- *
+ * <p>
  * Please note that Spring's {@link LocalSessionFactoryBean} is an immediate alternative
  * to {@link org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean} for common
  * JPA purposes: In particular with Hibernate 5.3, the Hibernate {@code SessionFactory}
@@ -69,14 +69,13 @@ import org.springframework.util.ConcurrentReferenceHashMap;
  * Hibernate {@code BeanContainer} integration will be registered out of the box.
  *
  * @author Juergen Hoeller
- * @since 5.1
  * @see LocalSessionFactoryBean#setBeanFactory
  * @see LocalSessionFactoryBuilder#setBeanContainer
  * @see org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean#setJpaPropertyMap
  * @see org.hibernate.cfg.AvailableSettings#BEAN_CONTAINER
+ * @since 5.1
  */
-public final class SpringBeanContainer implements BeanContainer
-{
+public final class SpringBeanContainer implements BeanContainer {
 
 	private static final Log logger = LogFactory.getLog(SpringBeanContainer.class);
 
@@ -86,12 +85,10 @@ public final class SpringBeanContainer implements BeanContainer
 
 	/**
 	 * Instantiate a new SpringBeanContainer for the given bean factory.
-	 * 
-	 * @param beanFactory
-	 *            the Spring bean factory to delegate to
+	 *
+	 * @param beanFactory the Spring bean factory to delegate to
 	 */
-	public SpringBeanContainer(ConfigurableListableBeanFactory beanFactory)
-	{
+	public SpringBeanContainer(ConfigurableListableBeanFactory beanFactory) {
 		Assert.notNull(beanFactory, "ConfigurableListableBeanFactory is required");
 		this.beanFactory = beanFactory;
 	}
@@ -99,21 +96,16 @@ public final class SpringBeanContainer implements BeanContainer
 	@Override
 	@SuppressWarnings("unchecked")
 	public <B> ContainedBean<B> getBean(Class<B> beanType, LifecycleOptions lifecycleOptions,
-			BeanInstanceProducer fallbackProducer)
-	{
+										BeanInstanceProducer fallbackProducer) {
 
 		SpringContainedBean<?> bean;
-		if (lifecycleOptions.canUseCachedReferences())
-		{
+		if (lifecycleOptions.canUseCachedReferences()) {
 			bean = this.beanCache.get(beanType);
-			if (bean == null)
-			{
+			if (bean == null) {
 				bean = createBean(beanType, lifecycleOptions, fallbackProducer);
 				this.beanCache.put(beanType, bean);
 			}
-		}
-		else
-		{
+		} else {
 			bean = createBean(beanType, lifecycleOptions, fallbackProducer);
 		}
 		return (SpringContainedBean<B>) bean;
@@ -122,76 +114,55 @@ public final class SpringBeanContainer implements BeanContainer
 	@Override
 	@SuppressWarnings("unchecked")
 	public <B> ContainedBean<B> getBean(String name, Class<B> beanType, LifecycleOptions lifecycleOptions,
-			BeanInstanceProducer fallbackProducer)
-	{
+										BeanInstanceProducer fallbackProducer) {
 
 		SpringContainedBean<?> bean;
-		if (lifecycleOptions.canUseCachedReferences())
-		{
+		if (lifecycleOptions.canUseCachedReferences()) {
 			bean = this.beanCache.get(name);
-			if (bean == null)
-			{
+			if (bean == null) {
 				bean = createBean(name, beanType, lifecycleOptions, fallbackProducer);
 				this.beanCache.put(name, bean);
 			}
-		}
-		else
-		{
+		} else {
 			bean = createBean(name, beanType, lifecycleOptions, fallbackProducer);
 		}
 		return (SpringContainedBean<B>) bean;
 	}
 
 	@Override
-	public void stop()
-	{
+	public void stop() {
 		this.beanCache.values().forEach(SpringContainedBean::destroyIfNecessary);
 		this.beanCache.clear();
 	}
 
 	private SpringContainedBean<?> createBean(Class<?> beanType, LifecycleOptions lifecycleOptions,
-			BeanInstanceProducer fallbackProducer)
-	{
+											  BeanInstanceProducer fallbackProducer) {
 
-		try
-		{
-			if (lifecycleOptions.useJpaCompliantCreation())
-			{
+		try {
+			if (lifecycleOptions.useJpaCompliantCreation()) {
 				return new SpringContainedBean<>(
 						this.beanFactory.createBean(beanType,
 								AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR, false),
 						this.beanFactory::destroyBean);
-			}
-			else
-			{
+			} else {
 				return new SpringContainedBean<>(this.beanFactory.getBean(beanType));
 			}
-		}
-		catch (BeansException ex)
-		{
-			if (logger.isDebugEnabled())
-			{
+		} catch (BeansException ex) {
+			if (logger.isDebugEnabled()) {
 				logger.debug(
 						"Falling back to Hibernate's default producer after bean creation failure for "
 								+ beanType + ": " + ex);
 			}
-			try
-			{
+			try {
 				return new SpringContainedBean<>(fallbackProducer.produceBeanInstance(beanType));
-			}
-			catch (RuntimeException ex2)
-			{
-				if (ex instanceof BeanCreationException)
-				{
-					if (logger.isDebugEnabled())
-					{
+			} catch (RuntimeException ex2) {
+				if (ex instanceof BeanCreationException) {
+					if (logger.isDebugEnabled()) {
 						logger.debug("Fallback producer failed for " + beanType + ": " + ex2);
 					}
 					// Rethrow original Spring exception from first attempt.
 					throw ex;
-				}
-				else
-				{
+				} else {
 					// Throw fallback producer exception since original was probably NoSuchBeanDefinitionException.
 					throw ex2;
 				}
@@ -200,13 +171,10 @@ public final class SpringBeanContainer implements BeanContainer
 	}
 
 	private SpringContainedBean<?> createBean(String name, Class<?> beanType,
-			LifecycleOptions lifecycleOptions, BeanInstanceProducer fallbackProducer)
-	{
+											  LifecycleOptions lifecycleOptions, BeanInstanceProducer fallbackProducer) {
 
-		try
-		{
-			if (lifecycleOptions.useJpaCompliantCreation())
-			{
+		try {
+			if (lifecycleOptions.useJpaCompliantCreation()) {
 				Object bean = this.beanFactory.autowire(beanType,
 						AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR, false);
 				this.beanFactory.autowireBeanProperties(bean, AutowireCapableBeanFactory.AUTOWIRE_NO,
@@ -215,38 +183,26 @@ public final class SpringBeanContainer implements BeanContainer
 				bean = this.beanFactory.initializeBean(bean, name);
 				return new SpringContainedBean<>(bean,
 						beanInstance -> this.beanFactory.destroyBean(name, beanInstance));
-			}
-			else
-			{
+			} else {
 				return new SpringContainedBean<>(this.beanFactory.getBean(name, beanType));
 			}
-		}
-		catch (BeansException ex)
-		{
-			if (logger.isDebugEnabled())
-			{
+		} catch (BeansException ex) {
+			if (logger.isDebugEnabled()) {
 				logger.debug(
 						"Falling back to Hibernate's default producer after bean creation failure for "
 								+ beanType + " with name '" + name + "': " + ex);
 			}
-			try
-			{
+			try {
 				return new SpringContainedBean<>(fallbackProducer.produceBeanInstance(name, beanType));
-			}
-			catch (RuntimeException ex2)
-			{
-				if (ex instanceof BeanCreationException)
-				{
-					if (logger.isDebugEnabled())
-					{
+			} catch (RuntimeException ex2) {
+				if (ex instanceof BeanCreationException) {
+					if (logger.isDebugEnabled()) {
 						logger.debug("Fallback producer failed for " + beanType + " with name '" + name
 								+ "': " + ex2);
 					}
 					// Rethrow original Spring exception from first attempt.
 					throw ex;
-				}
-				else
-				{
+				} else {
 					// Throw fallback producer exception since original was probably NoSuchBeanDefinitionException.
 					throw ex2;
 				}
@@ -254,35 +210,29 @@ public final class SpringBeanContainer implements BeanContainer
 		}
 	}
 
-	private static final class SpringContainedBean<B> implements ContainedBean<B>
-	{
+	private static final class SpringContainedBean<B> implements ContainedBean<B> {
 
 		private final B beanInstance;
 
 		@Nullable
 		private Consumer<B> destructionCallback;
 
-		public SpringContainedBean(B beanInstance)
-		{
+		public SpringContainedBean(B beanInstance) {
 			this.beanInstance = beanInstance;
 		}
 
-		public SpringContainedBean(B beanInstance, Consumer<B> destructionCallback)
-		{
+		public SpringContainedBean(B beanInstance, Consumer<B> destructionCallback) {
 			this.beanInstance = beanInstance;
 			this.destructionCallback = destructionCallback;
 		}
 
 		@Override
-		public B getBeanInstance()
-		{
+		public B getBeanInstance() {
 			return this.beanInstance;
 		}
 
-		public void destroyIfNecessary()
-		{
-			if (this.destructionCallback != null)
-			{
+		public void destroyIfNecessary() {
+			if (this.destructionCallback != null) {
 				this.destructionCallback.accept(this.beanInstance);
 			}
 		}

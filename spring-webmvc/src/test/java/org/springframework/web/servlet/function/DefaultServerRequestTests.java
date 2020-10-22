@@ -16,34 +16,11 @@
 
 package org.springframework.web.servlet.function;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.security.Principal;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalLong;
-
-import javax.servlet.http.Cookie;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpRange;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -54,10 +31,21 @@ import org.springframework.web.testfixture.server.MockServerWebExchange;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
 import org.springframework.web.testfixture.servlet.MockHttpSession;
 
+import javax.servlet.http.Cookie;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.security.Principal;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.web.testfixture.http.server.reactive.MockServerHttpRequest.get;
 
 /**
@@ -264,7 +252,8 @@ public class DefaultServerRequestTests {
 		DefaultServerRequest request = new DefaultServerRequest(servletRequest,
 				Collections.singletonList(new MappingJackson2HttpMessageConverter()));
 
-		List<String> result = request.body(new ParameterizedTypeReference<List<String>>() {});
+		List<String> result = request.body(new ParameterizedTypeReference<List<String>>() {
+		});
 		assertThat(result.size()).isEqualTo(2);
 		assertThat(result.get(0)).isEqualTo("foo");
 		assertThat(result.get(1)).isEqualTo("bar");
@@ -463,7 +452,7 @@ public class DefaultServerRequestTests {
 		MockServerWebExchange exchange = MockServerWebExchange.from(get("/")
 				.ifNoneMatch(eTag)
 				.ifModifiedSince(oneMinuteAgo.toEpochMilli())
-				);
+		);
 
 		DefaultServerRequest request = new DefaultServerRequest(servletRequest, this.messageConverters);
 
@@ -496,7 +485,7 @@ public class DefaultServerRequestTests {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)
 	@ParameterizedTest(name = "[{index}] {0}")
-	@ValueSource(strings = { "GET", "HEAD" })
+	@ValueSource(strings = {"GET", "HEAD"})
 	@interface ParameterizedHttpMethodTest {
 	}
 

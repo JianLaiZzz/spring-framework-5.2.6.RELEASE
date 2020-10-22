@@ -16,21 +16,16 @@
 
 package org.springframework.core.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.junit.jupiter.api.Test;
+import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
+import org.springframework.util.ReflectionUtils;
+
+import java.lang.annotation.*;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import org.junit.jupiter.api.Test;
-
-import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
-import org.springframework.util.ReflectionUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -194,19 +189,21 @@ class MergedAnnotationsComposedOnSingleAnnotatedElementTests {
 
 	// @formatter:off
 
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@Inherited
 	@interface Cacheable {
 		@AliasFor("cacheName")
 		String value() default "";
+
 		@AliasFor("value")
 		String cacheName() default "";
+
 		String key() default "";
 	}
 
 	@Cacheable("fooCache")
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@Inherited
 	@interface FooCache {
@@ -215,7 +212,7 @@ class MergedAnnotationsComposedOnSingleAnnotatedElementTests {
 	}
 
 	@Cacheable("barCache")
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@Inherited
 	@interface BarCache {
@@ -224,7 +221,7 @@ class MergedAnnotationsComposedOnSingleAnnotatedElementTests {
 	}
 
 	@Cacheable("noninheritedCache1")
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface NoninheritedCache1 {
 		@AliasFor(annotation = Cacheable.class)
@@ -232,7 +229,7 @@ class MergedAnnotationsComposedOnSingleAnnotatedElementTests {
 	}
 
 	@Cacheable("noninheritedCache2")
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface NoninheritedCache2 {
 		@AliasFor(annotation = Cacheable.class)
@@ -297,8 +294,13 @@ class MergedAnnotationsComposedOnSingleAnnotatedElementTests {
 		@FooCache(key = "fooKey")
 		@BarCache(key = "barKey")
 		@Override
-		public String getFor(Class<String> cls) { return "foo"; }
-		public String getFor(Integer integer) { return "foo"; }
+		public String getFor(Class<String> cls) {
+			return "foo";
+		}
+
+		public String getFor(Integer integer) {
+			return "foo";
+		}
 	}
 
 	// @formatter:on

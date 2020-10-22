@@ -16,27 +16,25 @@
 
 package org.springframework.aop.framework;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.testfixture.beans.TestBean;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.testfixture.beans.TestBean;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Rod Johnson
  * @author Chris Beams
  * @since 14.03.2003
  */
-class MethodInvocationTests
-{
+class MethodInvocationTests {
 
 	@Test
-	void testValidInvocation() throws Throwable
-	{
+	void testValidInvocation() throws Throwable {
 		Method method = Object.class.getMethod("hashCode");
 		Object proxy = new Object();
 		Object returnValue = new Object();
@@ -52,13 +50,10 @@ class MethodInvocationTests
 	 * toString on target can cause failure.
 	 */
 	@Test
-	void testToStringDoesntHitTarget() throws Throwable
-	{
-		Object target = new TestBean()
-		{
+	void testToStringDoesntHitTarget() throws Throwable {
+		Object target = new TestBean() {
 			@Override
-			public String toString()
-			{
+			public String toString() {
 				throw new UnsupportedOperationException("toString");
 			}
 		};

@@ -16,40 +16,27 @@
 
 package org.springframework.web.servlet.mvc.method.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.lang.reflect.Method;
-import java.security.Principal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.junit.jupiter.api.Test;
-
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.accept.PathExtensionContentNegotiationStrategy;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 import org.springframework.web.method.HandlerTypePredicate;
 import org.springframework.web.servlet.mvc.condition.ConsumesRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Method;
+import java.security.Principal;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -65,6 +52,7 @@ public class RequestMappingHandlerMappingTests {
 	private final StaticWebApplicationContext wac = new StaticWebApplicationContext();
 
 	private final RequestMappingHandlerMapping handlerMapping = new RequestMappingHandlerMapping();
+
 	{
 		this.handlerMapping.setApplicationContext(wac);
 	}
@@ -137,10 +125,10 @@ public class RequestMappingHandlerMappingTests {
 				value -> "/${pattern}/bar".equals(value) ? "/foo/bar" : value
 		);
 
-		String[] patterns = new String[] { "/foo", "/${pattern}/bar" };
+		String[] patterns = new String[]{"/foo", "/${pattern}/bar"};
 		String[] result = this.handlerMapping.resolveEmbeddedValuesInPatterns(patterns);
 
-		assertThat(result).isEqualTo(new String[] { "/foo", "/foo/bar" });
+		assertThat(result).isEqualTo(new String[]{"/foo", "/foo/bar"});
 	}
 
 	@Test
@@ -238,7 +226,7 @@ public class RequestMappingHandlerMappingTests {
 	}
 
 	private RequestMappingInfo assertComposedAnnotationMapping(String methodName, String path,
-			RequestMethod requestMethod) throws Exception {
+															   RequestMethod requestMethod) throws Exception {
 
 		Class<?> clazz = ComposedAnnotationController.class;
 		Method method = ClassUtils.getMethod(clazz, methodName, (Class<?>[]) null);

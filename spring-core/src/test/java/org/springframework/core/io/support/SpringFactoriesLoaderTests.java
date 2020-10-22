@@ -16,10 +16,10 @@
 
 package org.springframework.core.io.support;
 
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.Modifier;
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -55,8 +55,8 @@ class SpringFactoriesLoaderTests {
 	void attemptToLoadFactoryOfIncompatibleType() {
 		assertThatIllegalArgumentException().isThrownBy(() ->
 				SpringFactoriesLoader.loadFactories(String.class, null))
-			.withMessageContaining("Unable to instantiate factory class "
-					+ "[org.springframework.core.io.support.MyDummyFactory1] for factory type [java.lang.String]");
+				.withMessageContaining("Unable to instantiate factory class "
+						+ "[org.springframework.core.io.support.MyDummyFactory1] for factory type [java.lang.String]");
 	}
 
 }

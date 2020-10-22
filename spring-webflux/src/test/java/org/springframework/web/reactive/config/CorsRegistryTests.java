@@ -16,12 +16,11 @@
 
 package org.springframework.web.reactive.config;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.web.cors.CorsConfiguration;
+
 import java.util.Arrays;
 import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
-import org.springframework.web.cors.CorsConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

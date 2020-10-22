@@ -16,24 +16,15 @@
 
 package org.springframework.core.annotation;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.assertj.core.api.ThrowableTypeAssert;
+import org.junit.jupiter.api.Test;
+import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
+
+import java.lang.annotation.*;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Set;
 
-import org.assertj.core.api.ThrowableTypeAssert;
-import org.junit.jupiter.api.Test;
-
-import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * Tests for {@link MergedAnnotations} and {@link RepeatableContainers} that
@@ -50,7 +41,7 @@ class MergedAnnotationsRepeatableAnnotationTests {
 	void inheritedAnnotationsWhenNonRepeatableThrowsException() {
 		assertThatIllegalArgumentException().isThrownBy(() ->
 				getAnnotations(null, NonRepeatable.class, SearchStrategy.INHERITED_ANNOTATIONS, getClass()))
-			.satisfies(this::nonRepeatableRequirements);
+				.satisfies(this::nonRepeatableRequirements);
 	}
 
 	@Test
@@ -58,7 +49,7 @@ class MergedAnnotationsRepeatableAnnotationTests {
 		assertThatAnnotationConfigurationException().isThrownBy(() ->
 				getAnnotations(ContainerMissingValueAttribute.class, InvalidRepeatable.class,
 						SearchStrategy.INHERITED_ANNOTATIONS, getClass()))
-			.satisfies(this::missingValueAttributeRequirements);
+				.satisfies(this::missingValueAttributeRequirements);
 	}
 
 	@Test
@@ -66,7 +57,7 @@ class MergedAnnotationsRepeatableAnnotationTests {
 		assertThatAnnotationConfigurationException().isThrownBy(() ->
 				getAnnotations(ContainerWithNonArrayValueAttribute.class, InvalidRepeatable.class,
 						SearchStrategy.INHERITED_ANNOTATIONS, getClass()))
-			.satisfies(this::nonArrayValueAttributeRequirements);
+				.satisfies(this::nonArrayValueAttributeRequirements);
 	}
 
 	@Test
@@ -74,7 +65,7 @@ class MergedAnnotationsRepeatableAnnotationTests {
 		assertThatAnnotationConfigurationException().isThrownBy(() ->
 				getAnnotations(ContainerWithArrayValueAttributeButWrongComponentType.class,
 						InvalidRepeatable.class, SearchStrategy.INHERITED_ANNOTATIONS, getClass()))
-			.satisfies(this::wrongComponentTypeRequirements);
+				.satisfies(this::wrongComponentTypeRequirements);
 	}
 
 	@Test
@@ -138,7 +129,7 @@ class MergedAnnotationsRepeatableAnnotationTests {
 	void typeHierarchyWhenNonRepeatableThrowsException() {
 		assertThatIllegalArgumentException().isThrownBy(() ->
 				getAnnotations(null, NonRepeatable.class, SearchStrategy.TYPE_HIERARCHY, getClass()))
-			.satisfies(this::nonRepeatableRequirements);
+				.satisfies(this::nonRepeatableRequirements);
 	}
 
 	@Test
@@ -146,7 +137,7 @@ class MergedAnnotationsRepeatableAnnotationTests {
 		assertThatAnnotationConfigurationException().isThrownBy(() ->
 				getAnnotations(ContainerMissingValueAttribute.class, InvalidRepeatable.class,
 						SearchStrategy.TYPE_HIERARCHY, getClass()))
-			.satisfies(this::missingValueAttributeRequirements);
+				.satisfies(this::missingValueAttributeRequirements);
 	}
 
 	@Test
@@ -154,7 +145,7 @@ class MergedAnnotationsRepeatableAnnotationTests {
 		assertThatAnnotationConfigurationException().isThrownBy(() ->
 				getAnnotations(ContainerWithNonArrayValueAttribute.class, InvalidRepeatable.class,
 						SearchStrategy.TYPE_HIERARCHY, getClass()))
-			.satisfies(this::nonArrayValueAttributeRequirements);
+				.satisfies(this::nonArrayValueAttributeRequirements);
 	}
 
 	@Test
@@ -162,7 +153,7 @@ class MergedAnnotationsRepeatableAnnotationTests {
 		assertThatAnnotationConfigurationException().isThrownBy(() ->
 				getAnnotations(ContainerWithArrayValueAttributeButWrongComponentType.class,
 						InvalidRepeatable.class, SearchStrategy.TYPE_HIERARCHY, getClass()))
-			.satisfies(this::wrongComponentTypeRequirements);
+				.satisfies(this::wrongComponentTypeRequirements);
 	}
 
 	@Test
@@ -235,15 +226,15 @@ class MergedAnnotationsRepeatableAnnotationTests {
 	private void nonRepeatableRequirements(Exception ex) {
 		assertThat(ex.getMessage()).startsWith(
 				"Annotation type must be a repeatable annotation").contains(
-						"failed to resolve container type for",
-						NonRepeatable.class.getName());
+				"failed to resolve container type for",
+				NonRepeatable.class.getName());
 	}
 
 	private void missingValueAttributeRequirements(Exception ex) {
 		assertThat(ex.getMessage()).startsWith(
 				"Invalid declaration of container type").contains(
-						ContainerMissingValueAttribute.class.getName(),
-						"for repeatable annotation", InvalidRepeatable.class.getName());
+				ContainerMissingValueAttribute.class.getName(),
+				"for repeatable annotation", InvalidRepeatable.class.getName());
 		assertThat(ex).hasCauseInstanceOf(NoSuchMethodException.class);
 	}
 
@@ -314,7 +305,7 @@ class MergedAnnotationsRepeatableAnnotationTests {
 	}
 
 	@PeteRepeat("shadowed")
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@Inherited
 	@interface ForPetesSake {
@@ -325,7 +316,7 @@ class MergedAnnotationsRepeatableAnnotationTests {
 	}
 
 	@PeteRepeat("shadowed")
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@Inherited
 	@interface ForTheLoveOfFoo {
@@ -335,8 +326,8 @@ class MergedAnnotationsRepeatableAnnotationTests {
 
 	}
 
-	@PeteRepeats({ @PeteRepeat("B"), @PeteRepeat("C") })
-	@Target({ ElementType.METHOD, ElementType.TYPE })
+	@PeteRepeats({@PeteRepeat("B"), @PeteRepeat("C")})
+	@Target({ElementType.METHOD, ElementType.TYPE})
 	@Retention(RetentionPolicy.RUNTIME)
 	@Inherited
 	@interface ComposedContainer {
@@ -344,7 +335,7 @@ class MergedAnnotationsRepeatableAnnotationTests {
 	}
 
 	@PeteRepeat("A")
-	@PeteRepeats({ @PeteRepeat("B"), @PeteRepeat("C") })
+	@PeteRepeats({@PeteRepeat("B"), @PeteRepeat("C")})
 	static class RepeatableClass {
 
 	}
@@ -405,7 +396,7 @@ class MergedAnnotationsRepeatableAnnotationTests {
 	}
 
 	@ComposedNoninherited(name = "C")
-	@Noninheriteds({ @Noninherited(value = "A"), @Noninherited(name = "B") })
+	@Noninheriteds({@Noninherited(value = "A"), @Noninherited(name = "B")})
 	static class NoninheritedRepeatableClass {
 
 	}

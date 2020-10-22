@@ -16,14 +16,14 @@
 
 package org.springframework.web.reactive.result.view;
 
+import org.springframework.core.Ordered;
+import org.springframework.http.MediaType;
+import org.springframework.util.Assert;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.core.Ordered;
-import org.springframework.http.MediaType;
-import org.springframework.util.Assert;
 
 /**
  * Base class for {@code ViewResolver} implementations with shared properties.
@@ -90,6 +90,7 @@ public abstract class ViewResolverSupport implements Ordered {
 	/**
 	 * Specify the order value for this ViewResolver bean.
 	 * <p>The default value is {@code Ordered.LOWEST_PRECEDENCE}, meaning non-ordered.
+	 *
 	 * @see org.springframework.core.Ordered#getOrder()
 	 */
 	public void setOrder(int order) {

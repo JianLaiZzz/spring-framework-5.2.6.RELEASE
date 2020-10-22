@@ -16,17 +16,16 @@
 
 package org.springframework.test.context.junit4;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
 import org.junit.runners.JUnit4;
-
 import org.springframework.test.annotation.Timed;
 import org.springframework.test.context.TestExecutionListeners;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import static org.springframework.test.context.junit4.JUnitTestingUtils.runTestsAndAssertCounters;
 

@@ -16,10 +16,6 @@
 
 package org.springframework.transaction.config;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.Serializable;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.Test;
@@ -32,34 +28,34 @@ import org.springframework.core.testfixture.io.SerializationTestUtils;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.testfixture.CallCountingTransactionManager;
 
+import java.io.Serializable;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * @author Rob Harrop
  * @author Juergen Hoeller
  */
-public class AnnotationDrivenTests
-{
+public class AnnotationDrivenTests {
 
 	@Test
-	public void withProxyTargetClass() throws Exception
-	{
+	public void withProxyTargetClass() throws Exception {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
 				"annotationDrivenProxyTargetClassTests.xml", getClass());
 		doTestWithMultipleTransactionManagers(context);
 	}
 
 	@Test
-	public void withConfigurationClass() throws Exception
-	{
+	public void withConfigurationClass() throws Exception {
 		ApplicationContext parent = new AnnotationConfigApplicationContext(
 				TransactionManagerConfiguration.class);
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-				new String[] { "annotationDrivenConfigurationClassTests.xml" }, getClass(), parent);
+				new String[]{"annotationDrivenConfigurationClassTests.xml"}, getClass(), parent);
 		doTestWithMultipleTransactionManagers(context);
 	}
 
 	@Test
-	public void withAnnotatedTransactionManagers() throws Exception
-	{
+	public void withAnnotatedTransactionManagers() throws Exception {
 		AnnotationConfigApplicationContext parent = new AnnotationConfigApplicationContext();
 		parent.registerBeanDefinition("transactionManager1",
 				new RootBeanDefinition(SynchTransactionManager.class));
@@ -67,12 +63,11 @@ public class AnnotationDrivenTests
 				new RootBeanDefinition(NoSynchTransactionManager.class));
 		parent.refresh();
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-				new String[] { "annotationDrivenConfigurationClassTests.xml" }, getClass(), parent);
+				new String[]{"annotationDrivenConfigurationClassTests.xml"}, getClass(), parent);
 		doTestWithMultipleTransactionManagers(context);
 	}
 
-	private void doTestWithMultipleTransactionManagers(ApplicationContext context)
-	{
+	private void doTestWithMultipleTransactionManagers(ApplicationContext context) {
 		CallCountingTransactionManager tm1 = context.getBean("transactionManager1",
 				CallCountingTransactionManager.class);
 		CallCountingTransactionManager tm2 = context.getBean("transactionManager2",
@@ -95,8 +90,7 @@ public class AnnotationDrivenTests
 
 	@Test
 	@SuppressWarnings("resource")
-	public void serializableWithPreviousUsage() throws Exception
-	{
+	public void serializableWithPreviousUsage() throws Exception {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
 				"annotationDrivenProxyTargetClassTests.xml", getClass());
 		TransactionalService service = context.getBean("service", TransactionalService.class);
@@ -107,8 +101,7 @@ public class AnnotationDrivenTests
 
 	@Test
 	@SuppressWarnings("resource")
-	public void serializableWithoutPreviousUsage() throws Exception
-	{
+	public void serializableWithoutPreviousUsage() throws Exception {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
 				"annotationDrivenProxyTargetClassTests.xml", getClass());
 		TransactionalService service = context.getBean("service", TransactionalService.class);
@@ -117,19 +110,14 @@ public class AnnotationDrivenTests
 	}
 
 	@SuppressWarnings("serial")
-	public static class TransactionCheckingInterceptor implements MethodInterceptor, Serializable
-	{
+	public static class TransactionCheckingInterceptor implements MethodInterceptor, Serializable {
 
 		@Override
-		public Object invoke(MethodInvocation methodInvocation) throws Throwable
-		{
-			if (methodInvocation.getMethod().getName().equals("setSomething"))
-			{
+		public Object invoke(MethodInvocation methodInvocation) throws Throwable {
+			if (methodInvocation.getMethod().getName().equals("setSomething")) {
 				assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isTrue();
 				assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isTrue();
-			}
-			else
-			{
+			} else {
 				assertThat(TransactionSynchronizationManager.isActualTransactionActive()).isFalse();
 				assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isFalse();
 			}

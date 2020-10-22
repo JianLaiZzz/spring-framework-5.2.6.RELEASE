@@ -30,8 +30,7 @@ import org.springframework.lang.Nullable;
  * @author Stephane Nicoll
  * @since 4.1
  */
-public interface MessageListenerContainer extends SmartLifecycle
-{
+public interface MessageListenerContainer extends SmartLifecycle {
 
 	/**
 	 * Setup the message listener to use. Throws an {@link IllegalArgumentException}
@@ -71,7 +70,7 @@ public interface MessageListenerContainer extends SmartLifecycle
 	/**
 	 * Return the {@link QosSettings} to use when sending a reply,
 	 * or {@code null} if the broker's defaults should be used.
-	 * 
+	 *
 	 * @since 5.0
 	 */
 	@Nullable

@@ -27,8 +27,7 @@ import org.springframework.lang.Nullable;
  * @since 13.10.2003
  */
 @SuppressWarnings("serial")
-public class ObjectOptimisticLockingFailureException extends OptimisticLockingFailureException
-{
+public class ObjectOptimisticLockingFailureException extends OptimisticLockingFailureException {
 
 	@Nullable
 	private final Object persistentClass;
@@ -39,14 +38,11 @@ public class ObjectOptimisticLockingFailureException extends OptimisticLockingFa
 	/**
 	 * Create a general ObjectOptimisticLockingFailureException with the given message,
 	 * without any information on the affected object.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the source exception
+	 *
+	 * @param msg   the detail message
+	 * @param cause the source exception
 	 */
-	public ObjectOptimisticLockingFailureException(String msg, Throwable cause)
-	{
+	public ObjectOptimisticLockingFailureException(String msg, Throwable cause) {
 		super(msg, cause);
 		this.persistentClass = null;
 		this.identifier = null;
@@ -55,31 +51,24 @@ public class ObjectOptimisticLockingFailureException extends OptimisticLockingFa
 	/**
 	 * Create a new ObjectOptimisticLockingFailureException for the given object,
 	 * with the default "optimistic locking failed" message.
-	 * 
-	 * @param persistentClass
-	 *            the persistent class
-	 * @param identifier
-	 *            the ID of the object for which the locking failed
+	 *
+	 * @param persistentClass the persistent class
+	 * @param identifier      the ID of the object for which the locking failed
 	 */
-	public ObjectOptimisticLockingFailureException(Class<?> persistentClass, Object identifier)
-	{
+	public ObjectOptimisticLockingFailureException(Class<?> persistentClass, Object identifier) {
 		this(persistentClass, identifier, null);
 	}
 
 	/**
 	 * Create a new ObjectOptimisticLockingFailureException for the given object,
 	 * with the default "optimistic locking failed" message.
-	 * 
-	 * @param persistentClass
-	 *            the persistent class
-	 * @param identifier
-	 *            the ID of the object for which the locking failed
-	 * @param cause
-	 *            the source exception
+	 *
+	 * @param persistentClass the persistent class
+	 * @param identifier      the ID of the object for which the locking failed
+	 * @param cause           the source exception
 	 */
 	public ObjectOptimisticLockingFailureException(Class<?> persistentClass, Object identifier,
-			@Nullable Throwable cause)
-	{
+												   @Nullable Throwable cause) {
 
 		this(persistentClass, identifier, "Object of class [" + persistentClass.getName()
 				+ "] with identifier [" + identifier + "]: optimistic locking failed", cause);
@@ -88,19 +77,14 @@ public class ObjectOptimisticLockingFailureException extends OptimisticLockingFa
 	/**
 	 * Create a new ObjectOptimisticLockingFailureException for the given object,
 	 * with the given explicit message.
-	 * 
-	 * @param persistentClass
-	 *            the persistent class
-	 * @param identifier
-	 *            the ID of the object for which the locking failed
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the source exception
+	 *
+	 * @param persistentClass the persistent class
+	 * @param identifier      the ID of the object for which the locking failed
+	 * @param msg             the detail message
+	 * @param cause           the source exception
 	 */
 	public ObjectOptimisticLockingFailureException(Class<?> persistentClass, Object identifier,
-			String msg, @Nullable Throwable cause)
-	{
+												   String msg, @Nullable Throwable cause) {
 
 		super(msg, cause);
 		this.persistentClass = persistentClass;
@@ -110,31 +94,24 @@ public class ObjectOptimisticLockingFailureException extends OptimisticLockingFa
 	/**
 	 * Create a new ObjectOptimisticLockingFailureException for the given object,
 	 * with the default "optimistic locking failed" message.
-	 * 
-	 * @param persistentClassName
-	 *            the name of the persistent class
-	 * @param identifier
-	 *            the ID of the object for which the locking failed
+	 *
+	 * @param persistentClassName the name of the persistent class
+	 * @param identifier          the ID of the object for which the locking failed
 	 */
-	public ObjectOptimisticLockingFailureException(String persistentClassName, Object identifier)
-	{
+	public ObjectOptimisticLockingFailureException(String persistentClassName, Object identifier) {
 		this(persistentClassName, identifier, null);
 	}
 
 	/**
 	 * Create a new ObjectOptimisticLockingFailureException for the given object,
 	 * with the default "optimistic locking failed" message.
-	 * 
-	 * @param persistentClassName
-	 *            the name of the persistent class
-	 * @param identifier
-	 *            the ID of the object for which the locking failed
-	 * @param cause
-	 *            the source exception
+	 *
+	 * @param persistentClassName the name of the persistent class
+	 * @param identifier          the ID of the object for which the locking failed
+	 * @param cause               the source exception
 	 */
 	public ObjectOptimisticLockingFailureException(String persistentClassName, Object identifier,
-			@Nullable Throwable cause)
-	{
+												   @Nullable Throwable cause) {
 
 		this(persistentClassName, identifier, "Object of class [" + persistentClassName
 				+ "] with identifier [" + identifier + "]: optimistic locking failed", cause);
@@ -143,19 +120,14 @@ public class ObjectOptimisticLockingFailureException extends OptimisticLockingFa
 	/**
 	 * Create a new ObjectOptimisticLockingFailureException for the given object,
 	 * with the given explicit message.
-	 * 
-	 * @param persistentClassName
-	 *            the name of the persistent class
-	 * @param identifier
-	 *            the ID of the object for which the locking failed
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the source exception
+	 *
+	 * @param persistentClassName the name of the persistent class
+	 * @param identifier          the ID of the object for which the locking failed
+	 * @param msg                 the detail message
+	 * @param cause               the source exception
 	 */
 	public ObjectOptimisticLockingFailureException(String persistentClassName, Object identifier,
-			String msg, @Nullable Throwable cause)
-	{
+												   String msg, @Nullable Throwable cause) {
 
 		super(msg, cause);
 		this.persistentClass = persistentClassName;
@@ -167,8 +139,7 @@ public class ObjectOptimisticLockingFailureException extends OptimisticLockingFa
 	 * If no Class was specified, this method returns null.
 	 */
 	@Nullable
-	public Class<?> getPersistentClass()
-	{
+	public Class<?> getPersistentClass() {
 		return (this.persistentClass instanceof Class ? (Class<?>) this.persistentClass : null);
 	}
 
@@ -177,10 +148,8 @@ public class ObjectOptimisticLockingFailureException extends OptimisticLockingFa
 	 * Will work for both Class objects and String names.
 	 */
 	@Nullable
-	public String getPersistentClassName()
-	{
-		if (this.persistentClass instanceof Class)
-		{
+	public String getPersistentClassName() {
+		if (this.persistentClass instanceof Class) {
 			return ((Class<?>) this.persistentClass).getName();
 		}
 		return (this.persistentClass != null ? this.persistentClass.toString() : null);
@@ -190,8 +159,7 @@ public class ObjectOptimisticLockingFailureException extends OptimisticLockingFa
 	 * Return the identifier of the object for which the locking failed.
 	 */
 	@Nullable
-	public Object getIdentifier()
-	{
+	public Object getIdentifier() {
 		return this.identifier;
 	}
 

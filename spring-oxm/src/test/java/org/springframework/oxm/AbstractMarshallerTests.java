@@ -16,10 +16,14 @@
 
 package org.springframework.oxm;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.ByteArrayOutputStream;
-import java.io.StringWriter;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.core.testfixture.xml.XmlContent;
+import org.springframework.util.xml.StaxUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,22 +34,16 @@ import javax.xml.transform.Result;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stax.StAXResult;
 import javax.xml.transform.stream.StreamResult;
+import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.core.testfixture.xml.XmlContent;
-import org.springframework.util.xml.StaxUtils;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Arjen Poutsma
  * @author Sam Brannen
  */
-public abstract class AbstractMarshallerTests<M extends Marshaller>
-{
+public abstract class AbstractMarshallerTests<M extends Marshaller> {
 
 	protected static final String EXPECTED_STRING = "<tns:flights xmlns:tns=\"http://samples.springframework.org/flight\">"
 			+ "<tns:flight><tns:number>42</tns:number></tns:flight></tns:flights>";
@@ -55,8 +53,7 @@ public abstract class AbstractMarshallerTests<M extends Marshaller>
 	protected Object flights;
 
 	@BeforeEach
-	public final void setUp() throws Exception
-	{
+	public final void setUp() throws Exception {
 		marshaller = createMarshaller();
 		flights = createFlights();
 	}
@@ -66,8 +63,7 @@ public abstract class AbstractMarshallerTests<M extends Marshaller>
 	protected abstract Object createFlights();
 
 	@Test
-	public void marshalDOMResult() throws Exception
-	{
+	public void marshalDOMResult() throws Exception {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
@@ -93,8 +89,7 @@ public abstract class AbstractMarshallerTests<M extends Marshaller>
 	}
 
 	@Test
-	public void marshalEmptyDOMResult() throws Exception
-	{
+	public void marshalEmptyDOMResult() throws Exception {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
@@ -122,8 +117,7 @@ public abstract class AbstractMarshallerTests<M extends Marshaller>
 	}
 
 	@Test
-	public void marshalStreamResultWriter() throws Exception
-	{
+	public void marshalStreamResultWriter() throws Exception {
 		StringWriter writer = new StringWriter();
 		StreamResult result = new StreamResult(writer);
 		marshaller.marshal(flights, result);
@@ -131,8 +125,7 @@ public abstract class AbstractMarshallerTests<M extends Marshaller>
 	}
 
 	@Test
-	public void marshalStreamResultOutputStream() throws Exception
-	{
+	public void marshalStreamResultOutputStream() throws Exception {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		StreamResult result = new StreamResult(os);
 		marshaller.marshal(flights, result);
@@ -141,8 +134,7 @@ public abstract class AbstractMarshallerTests<M extends Marshaller>
 	}
 
 	@Test
-	public void marshalStaxResultStreamWriter() throws Exception
-	{
+	public void marshalStaxResultStreamWriter() throws Exception {
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 		StringWriter writer = new StringWriter();
 		XMLStreamWriter streamWriter = outputFactory.createXMLStreamWriter(writer);
@@ -152,8 +144,7 @@ public abstract class AbstractMarshallerTests<M extends Marshaller>
 	}
 
 	@Test
-	public void marshalStaxResultEventWriter() throws Exception
-	{
+	public void marshalStaxResultEventWriter() throws Exception {
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 		StringWriter writer = new StringWriter();
 		XMLEventWriter eventWriter = outputFactory.createXMLEventWriter(writer);
@@ -163,8 +154,7 @@ public abstract class AbstractMarshallerTests<M extends Marshaller>
 	}
 
 	@Test
-	public void marshalJaxp14StaxResultStreamWriter() throws Exception
-	{
+	public void marshalJaxp14StaxResultStreamWriter() throws Exception {
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 		StringWriter writer = new StringWriter();
 		XMLStreamWriter streamWriter = outputFactory.createXMLStreamWriter(writer);
@@ -174,8 +164,7 @@ public abstract class AbstractMarshallerTests<M extends Marshaller>
 	}
 
 	@Test
-	public void marshalJaxp14StaxResultEventWriter() throws Exception
-	{
+	public void marshalJaxp14StaxResultEventWriter() throws Exception {
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 		StringWriter writer = new StringWriter();
 		XMLEventWriter eventWriter = outputFactory.createXMLEventWriter(writer);

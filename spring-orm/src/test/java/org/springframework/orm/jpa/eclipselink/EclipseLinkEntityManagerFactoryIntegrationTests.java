@@ -16,12 +16,12 @@
 
 package org.springframework.orm.jpa.eclipselink;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.eclipse.persistence.jpa.JpaEntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.orm.jpa.AbstractContainerEntityManagerFactoryIntegrationTests;
 import org.springframework.orm.jpa.EntityManagerFactoryInfo;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * EclipseLink-specific JPA tests.
@@ -29,20 +29,17 @@ import org.springframework.orm.jpa.EntityManagerFactoryInfo;
  * @author Juergen Hoeller
  */
 public class EclipseLinkEntityManagerFactoryIntegrationTests
-		extends AbstractContainerEntityManagerFactoryIntegrationTests
-{
+		extends AbstractContainerEntityManagerFactoryIntegrationTests {
 
 	@Test
-	public void testCanCastNativeEntityManagerFactoryToEclipseLinkEntityManagerFactoryImpl()
-	{
+	public void testCanCastNativeEntityManagerFactoryToEclipseLinkEntityManagerFactoryImpl() {
 		EntityManagerFactoryInfo emfi = (EntityManagerFactoryInfo) entityManagerFactory;
 		assertThat(emfi.getNativeEntityManagerFactory().getClass().getName()
 				.endsWith("EntityManagerFactoryImpl")).isTrue();
 	}
 
 	@Test
-	public void testCanCastSharedEntityManagerProxyToEclipseLinkEntityManager()
-	{
+	public void testCanCastSharedEntityManagerProxyToEclipseLinkEntityManager() {
 		boolean condition = sharedEntityManager instanceof JpaEntityManager;
 		assertThat(condition).isTrue();
 		JpaEntityManager eclipselinkEntityManager = (JpaEntityManager) sharedEntityManager;

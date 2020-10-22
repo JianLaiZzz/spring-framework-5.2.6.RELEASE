@@ -25,30 +25,24 @@ package org.springframework.dao;
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
-public class DataIntegrityViolationException extends NonTransientDataAccessException
-{
+public class DataIntegrityViolationException extends NonTransientDataAccessException {
 
 	/**
 	 * Constructor for DataIntegrityViolationException.
-	 * 
-	 * @param msg
-	 *            the detail message
+	 *
+	 * @param msg the detail message
 	 */
-	public DataIntegrityViolationException(String msg)
-	{
+	public DataIntegrityViolationException(String msg) {
 		super(msg);
 	}
 
 	/**
 	 * Constructor for DataIntegrityViolationException.
-	 * 
-	 * @param msg
-	 *            the detail message
-	 * @param cause
-	 *            the root cause from the data access API in use
+	 *
+	 * @param msg   the detail message
+	 * @param cause the root cause from the data access API in use
 	 */
-	public DataIntegrityViolationException(String msg, Throwable cause)
-	{
+	public DataIntegrityViolationException(String msg, Throwable cause) {
 		super(msg, cause);
 	}
 

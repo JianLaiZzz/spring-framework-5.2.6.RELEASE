@@ -16,11 +16,11 @@
 
 package org.springframework.jms.config;
 
-import javax.jms.MessageListener;
-
 import org.springframework.jms.listener.MessageListenerContainer;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+
+import javax.jms.MessageListener;
 
 /**
  * A {@link JmsListenerEndpoint} simply providing the {@link MessageListener} to
@@ -29,8 +29,7 @@ import org.springframework.util.Assert;
  * @author Stephane Nicoll
  * @since 4.1
  */
-public class SimpleJmsListenerEndpoint extends AbstractJmsListenerEndpoint
-{
+public class SimpleJmsListenerEndpoint extends AbstractJmsListenerEndpoint {
 
 	@Nullable
 	private MessageListener messageListener;
@@ -39,8 +38,7 @@ public class SimpleJmsListenerEndpoint extends AbstractJmsListenerEndpoint
 	 * Set the {@link MessageListener} to invoke when a message matching
 	 * the endpoint is received.
 	 */
-	public void setMessageListener(@Nullable MessageListener messageListener)
-	{
+	public void setMessageListener(@Nullable MessageListener messageListener) {
 		this.messageListener = messageListener;
 	}
 
@@ -49,22 +47,19 @@ public class SimpleJmsListenerEndpoint extends AbstractJmsListenerEndpoint
 	 * the endpoint is received.
 	 */
 	@Nullable
-	public MessageListener getMessageListener()
-	{
+	public MessageListener getMessageListener() {
 		return this.messageListener;
 	}
 
 	@Override
-	protected MessageListener createMessageListener(MessageListenerContainer container)
-	{
+	protected MessageListener createMessageListener(MessageListenerContainer container) {
 		MessageListener listener = getMessageListener();
 		Assert.state(listener != null, "No MessageListener set");
 		return listener;
 	}
 
 	@Override
-	protected StringBuilder getEndpointDescription()
-	{
+	protected StringBuilder getEndpointDescription() {
 		return super.getEndpointDescription().append(" | messageListener='").append(this.messageListener)
 				.append("'");
 	}

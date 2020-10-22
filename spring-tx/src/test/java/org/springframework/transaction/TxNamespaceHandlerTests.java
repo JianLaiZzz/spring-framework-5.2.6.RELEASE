@@ -16,11 +16,6 @@
 
 package org.springframework.transaction;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
-import java.lang.reflect.Method;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.support.AopUtils;
@@ -32,12 +27,16 @@ import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.transaction.testfixture.CallCountingTransactionManager;
 
+import java.lang.reflect.Method;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 /**
  * @author Rob Harrop
  * @author Adrian Colyer
  */
-public class TxNamespaceHandlerTests
-{
+public class TxNamespaceHandlerTests {
 
 	private ApplicationContext context;
 
@@ -46,23 +45,20 @@ public class TxNamespaceHandlerTests
 	private Method setAgeMethod;
 
 	@BeforeEach
-	public void setup() throws Exception
-	{
+	public void setup() throws Exception {
 		this.context = new ClassPathXmlApplicationContext("txNamespaceHandlerTests.xml", getClass());
 		this.getAgeMethod = ITestBean.class.getMethod("getAge");
 		this.setAgeMethod = ITestBean.class.getMethod("setAge", int.class);
 	}
 
 	@Test
-	public void isProxy()
-	{
+	public void isProxy() {
 		ITestBean bean = getTestBean();
 		assertThat(AopUtils.isAopProxy(bean)).as("testBean is not a proxy").isTrue();
 	}
 
 	@Test
-	public void invokeTransactional()
-	{
+	public void invokeTransactional() {
 		ITestBean testBean = getTestBean();
 		CallCountingTransactionManager ptm = (CallCountingTransactionManager) context
 				.getBean("transactionManager");
@@ -86,8 +82,7 @@ public class TxNamespaceHandlerTests
 	}
 
 	@Test
-	public void rollbackRules()
-	{
+	public void rollbackRules() {
 		TransactionInterceptor txInterceptor = (TransactionInterceptor) context
 				.getBean("txRollbackAdvice");
 		TransactionAttributeSource txAttrSource = txInterceptor.getTransactionAttributeSource();
@@ -100,8 +95,7 @@ public class TxNamespaceHandlerTests
 				.as("should not rollback on RuntimeException").isFalse();
 	}
 
-	private ITestBean getTestBean()
-	{
+	private ITestBean getTestBean() {
 		return (ITestBean) context.getBean("testBean");
 	}
 

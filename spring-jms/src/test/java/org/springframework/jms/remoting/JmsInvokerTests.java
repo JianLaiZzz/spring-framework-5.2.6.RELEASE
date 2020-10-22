@@ -16,16 +16,6 @@
 
 package org.springframework.jms.remoting;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Enumeration;
-
-import javax.jms.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.testfixture.beans.ITestBean;
@@ -34,12 +24,20 @@ import org.springframework.jms.support.converter.MessageConversionException;
 import org.springframework.jms.support.converter.SimpleMessageConverter;
 import org.springframework.remoting.RemoteTimeoutException;
 
+import javax.jms.*;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Enumeration;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 /**
  * @author Juergen Hoeller
  * @author Stephane Nicoll
  */
-public class JmsInvokerTests
-{
+public class JmsInvokerTests {
 
 	private QueueConnectionFactory mockConnectionFactory;
 
@@ -50,8 +48,7 @@ public class JmsInvokerTests
 	private Queue mockQueue;
 
 	@BeforeEach
-	public void setUpMocks() throws Exception
-	{
+	public void setUpMocks() throws Exception {
 		mockConnectionFactory = mock(QueueConnectionFactory.class);
 		mockConnection = mock(QueueConnection.class);
 		mockSession = mock(QueueSession.class);
@@ -62,27 +59,22 @@ public class JmsInvokerTests
 	}
 
 	@Test
-	public void testJmsInvokerProxyFactoryBeanAndServiceExporter() throws Throwable
-	{
+	public void testJmsInvokerProxyFactoryBeanAndServiceExporter() throws Throwable {
 		doTestJmsInvokerProxyFactoryBeanAndServiceExporter(false);
 	}
 
 	@Test
-	public void testJmsInvokerProxyFactoryBeanAndServiceExporterWithDynamicQueue() throws Throwable
-	{
+	public void testJmsInvokerProxyFactoryBeanAndServiceExporterWithDynamicQueue() throws Throwable {
 		given(mockSession.createQueue("myQueue")).willReturn(mockQueue);
 		doTestJmsInvokerProxyFactoryBeanAndServiceExporter(true);
 	}
 
 	@Test
-	public void receiveTimeoutExpired()
-	{
-		JmsInvokerProxyFactoryBean pfb = new JmsInvokerProxyFactoryBean()
-		{
+	public void receiveTimeoutExpired() {
+		JmsInvokerProxyFactoryBean pfb = new JmsInvokerProxyFactoryBean() {
 			@Override
 			protected Message doExecuteRequest(Session session, Queue queue, Message requestMessage)
-					throws JMSException
-			{
+					throws JMSException {
 				return null; // faking no message received
 			}
 		};
@@ -97,8 +89,7 @@ public class JmsInvokerTests
 				.withMessageContaining("1500 ms").withMessageContaining("getAge");
 	}
 
-	private void doTestJmsInvokerProxyFactoryBeanAndServiceExporter(boolean dynamicQueue) throws Throwable
-	{
+	private void doTestJmsInvokerProxyFactoryBeanAndServiceExporter(boolean dynamicQueue) throws Throwable {
 		TestBean target = new TestBean("myname", 99);
 
 		final JmsInvokerServiceExporter exporter = new JmsInvokerServiceExporter();
@@ -107,12 +98,10 @@ public class JmsInvokerTests
 		exporter.setMessageConverter(new MockSimpleMessageConverter());
 		exporter.afterPropertiesSet();
 
-		JmsInvokerProxyFactoryBean pfb = new JmsInvokerProxyFactoryBean()
-		{
+		JmsInvokerProxyFactoryBean pfb = new JmsInvokerProxyFactoryBean() {
 			@Override
 			protected Message doExecuteRequest(Session session, Queue queue, Message requestMessage)
-					throws JMSException
-			{
+					throws JMSException {
 				Session mockExporterSession = mock(Session.class);
 				ResponseStoringProducer mockProducer = new ResponseStoringProducer();
 				given(mockExporterSession.createProducer(requestMessage.getJMSReplyTo()))
@@ -124,12 +113,9 @@ public class JmsInvokerTests
 		};
 		pfb.setServiceInterface(ITestBean.class);
 		pfb.setConnectionFactory(this.mockConnectionFactory);
-		if (dynamicQueue)
-		{
+		if (dynamicQueue) {
 			pfb.setQueueName("myQueue");
-		}
-		else
-		{
+		} else {
 			pfb.setQueue(this.mockQueue);
 		}
 		pfb.setMessageConverter(new MockSimpleMessageConverter());
@@ -141,448 +127,370 @@ public class JmsInvokerTests
 		assertThat(proxy.getAge()).isEqualTo(99);
 		proxy.setAge(50);
 		assertThat(proxy.getAge()).isEqualTo(50);
-		proxy.setStringArray(new String[] { "str1", "str2" });
-		assertThat(Arrays.equals(new String[] { "str1", "str2" }, proxy.getStringArray())).isTrue();
+		proxy.setStringArray(new String[]{"str1", "str2"});
+		assertThat(Arrays.equals(new String[]{"str1", "str2"}, proxy.getStringArray())).isTrue();
 		assertThatIllegalStateException()
 				.isThrownBy(() -> proxy.exceptional(new IllegalStateException()));
 		assertThatExceptionOfType(IllegalAccessException.class)
 				.isThrownBy(() -> proxy.exceptional(new IllegalAccessException()));
 	}
 
-	private static class ResponseStoringProducer implements MessageProducer
-	{
+	private static class ResponseStoringProducer implements MessageProducer {
 
 		public Message response;
 
 		public boolean closed = false;
 
 		@Override
-		public void setDisableMessageID(boolean b) throws JMSException
-		{
+		public void setDisableMessageID(boolean b) throws JMSException {
 		}
 
 		@Override
-		public boolean getDisableMessageID() throws JMSException
-		{
+		public boolean getDisableMessageID() throws JMSException {
 			return false;
 		}
 
 		@Override
-		public void setDisableMessageTimestamp(boolean b) throws JMSException
-		{
+		public void setDisableMessageTimestamp(boolean b) throws JMSException {
 		}
 
 		@Override
-		public boolean getDisableMessageTimestamp() throws JMSException
-		{
+		public boolean getDisableMessageTimestamp() throws JMSException {
 			return false;
 		}
 
 		@Override
-		public void setDeliveryMode(int i) throws JMSException
-		{
+		public void setDeliveryMode(int i) throws JMSException {
 		}
 
 		@Override
-		public int getDeliveryMode() throws JMSException
-		{
+		public int getDeliveryMode() throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public void setPriority(int i) throws JMSException
-		{
+		public void setPriority(int i) throws JMSException {
 		}
 
 		@Override
-		public int getPriority() throws JMSException
-		{
+		public int getPriority() throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public void setTimeToLive(long l) throws JMSException
-		{
+		public void setTimeToLive(long l) throws JMSException {
 		}
 
 		@Override
-		public long getTimeToLive() throws JMSException
-		{
+		public long getTimeToLive() throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public void setDeliveryDelay(long deliveryDelay) throws JMSException
-		{
+		public void setDeliveryDelay(long deliveryDelay) throws JMSException {
 		}
 
 		@Override
-		public long getDeliveryDelay() throws JMSException
-		{
+		public long getDeliveryDelay() throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public Destination getDestination() throws JMSException
-		{
+		public Destination getDestination() throws JMSException {
 			return null;
 		}
 
 		@Override
-		public void close() throws JMSException
-		{
+		public void close() throws JMSException {
 			this.closed = true;
 		}
 
 		@Override
-		public void send(Message message) throws JMSException
-		{
+		public void send(Message message) throws JMSException {
 			this.response = message;
 		}
 
 		@Override
-		public void send(Message message, int i, int i1, long l) throws JMSException
-		{
+		public void send(Message message, int i, int i1, long l) throws JMSException {
 		}
 
 		@Override
-		public void send(Destination destination, Message message) throws JMSException
-		{
+		public void send(Destination destination, Message message) throws JMSException {
 		}
 
 		@Override
 		public void send(Destination destination, Message message, int i, int i1, long l)
-				throws JMSException
-		{
+				throws JMSException {
 		}
 
 		@Override
-		public void send(Message message, CompletionListener completionListener) throws JMSException
-		{
+		public void send(Message message, CompletionListener completionListener) throws JMSException {
 		}
 
 		@Override
 		public void send(Message message, int deliveryMode, int priority, long timeToLive,
-				CompletionListener completionListener) throws JMSException
-		{
+						 CompletionListener completionListener) throws JMSException {
 		}
 
 		@Override
 		public void send(Destination destination, Message message, CompletionListener completionListener)
-				throws JMSException
-		{
+				throws JMSException {
 		}
 
 		@Override
 		public void send(Destination destination, Message message, int deliveryMode, int priority,
-				long timeToLive, CompletionListener completionListener) throws JMSException
-		{
+						 long timeToLive, CompletionListener completionListener) throws JMSException {
 		}
 	}
 
-	private static class MockObjectMessage implements ObjectMessage
-	{
+	private static class MockObjectMessage implements ObjectMessage {
 
 		private Serializable serializable;
 
 		private Destination replyTo;
 
-		public MockObjectMessage(Serializable serializable)
-		{
+		public MockObjectMessage(Serializable serializable) {
 			this.serializable = serializable;
 		}
 
 		@Override
-		public void setObject(Serializable serializable) throws JMSException
-		{
+		public void setObject(Serializable serializable) throws JMSException {
 			this.serializable = serializable;
 		}
 
 		@Override
-		public Serializable getObject() throws JMSException
-		{
+		public Serializable getObject() throws JMSException {
 			return serializable;
 		}
 
 		@Override
-		public String getJMSMessageID() throws JMSException
-		{
+		public String getJMSMessageID() throws JMSException {
 			return null;
 		}
 
 		@Override
-		public void setJMSMessageID(String string) throws JMSException
-		{
+		public void setJMSMessageID(String string) throws JMSException {
 		}
 
 		@Override
-		public long getJMSTimestamp() throws JMSException
-		{
+		public long getJMSTimestamp() throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public void setJMSTimestamp(long l) throws JMSException
-		{
+		public void setJMSTimestamp(long l) throws JMSException {
 		}
 
 		@Override
-		public byte[] getJMSCorrelationIDAsBytes() throws JMSException
-		{
+		public byte[] getJMSCorrelationIDAsBytes() throws JMSException {
 			return new byte[0];
 		}
 
 		@Override
-		public void setJMSCorrelationIDAsBytes(byte[] bytes) throws JMSException
-		{
+		public void setJMSCorrelationIDAsBytes(byte[] bytes) throws JMSException {
 		}
 
 		@Override
-		public void setJMSCorrelationID(String string) throws JMSException
-		{
+		public void setJMSCorrelationID(String string) throws JMSException {
 		}
 
 		@Override
-		public String getJMSCorrelationID() throws JMSException
-		{
+		public String getJMSCorrelationID() throws JMSException {
 			return null;
 		}
 
 		@Override
-		public Destination getJMSReplyTo() throws JMSException
-		{
+		public Destination getJMSReplyTo() throws JMSException {
 			return replyTo;
 		}
 
 		@Override
-		public void setJMSReplyTo(Destination destination) throws JMSException
-		{
+		public void setJMSReplyTo(Destination destination) throws JMSException {
 			this.replyTo = destination;
 		}
 
 		@Override
-		public Destination getJMSDestination() throws JMSException
-		{
+		public Destination getJMSDestination() throws JMSException {
 			return null;
 		}
 
 		@Override
-		public void setJMSDestination(Destination destination) throws JMSException
-		{
+		public void setJMSDestination(Destination destination) throws JMSException {
 		}
 
 		@Override
-		public int getJMSDeliveryMode() throws JMSException
-		{
+		public int getJMSDeliveryMode() throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public void setJMSDeliveryMode(int i) throws JMSException
-		{
+		public void setJMSDeliveryMode(int i) throws JMSException {
 		}
 
 		@Override
-		public boolean getJMSRedelivered() throws JMSException
-		{
+		public boolean getJMSRedelivered() throws JMSException {
 			return false;
 		}
 
 		@Override
-		public void setJMSRedelivered(boolean b) throws JMSException
-		{
+		public void setJMSRedelivered(boolean b) throws JMSException {
 		}
 
 		@Override
-		public String getJMSType() throws JMSException
-		{
+		public String getJMSType() throws JMSException {
 			return null;
 		}
 
 		@Override
-		public void setJMSType(String string) throws JMSException
-		{
+		public void setJMSType(String string) throws JMSException {
 		}
 
 		@Override
-		public long getJMSExpiration() throws JMSException
-		{
+		public long getJMSExpiration() throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public void setJMSExpiration(long l) throws JMSException
-		{
+		public void setJMSExpiration(long l) throws JMSException {
 		}
 
 		@Override
-		public int getJMSPriority() throws JMSException
-		{
+		public int getJMSPriority() throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public void setJMSPriority(int i) throws JMSException
-		{
+		public void setJMSPriority(int i) throws JMSException {
 		}
 
 		@Override
-		public long getJMSDeliveryTime() throws JMSException
-		{
+		public long getJMSDeliveryTime() throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public void setJMSDeliveryTime(long deliveryTime) throws JMSException
-		{
+		public void setJMSDeliveryTime(long deliveryTime) throws JMSException {
 		}
 
 		@Override
-		public <T> T getBody(Class<T> c) throws JMSException
-		{
+		public <T> T getBody(Class<T> c) throws JMSException {
 			return null;
 		}
 
 		@Override
-		public boolean isBodyAssignableTo(Class c) throws JMSException
-		{
+		public boolean isBodyAssignableTo(Class c) throws JMSException {
 			return false;
 		}
 
 		@Override
-		public void clearProperties() throws JMSException
-		{
+		public void clearProperties() throws JMSException {
 		}
 
 		@Override
-		public boolean propertyExists(String string) throws JMSException
-		{
+		public boolean propertyExists(String string) throws JMSException {
 			return false;
 		}
 
 		@Override
-		public boolean getBooleanProperty(String string) throws JMSException
-		{
+		public boolean getBooleanProperty(String string) throws JMSException {
 			return false;
 		}
 
 		@Override
-		public byte getByteProperty(String string) throws JMSException
-		{
+		public byte getByteProperty(String string) throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public short getShortProperty(String string) throws JMSException
-		{
+		public short getShortProperty(String string) throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public int getIntProperty(String string) throws JMSException
-		{
+		public int getIntProperty(String string) throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public long getLongProperty(String string) throws JMSException
-		{
+		public long getLongProperty(String string) throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public float getFloatProperty(String string) throws JMSException
-		{
+		public float getFloatProperty(String string) throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public double getDoubleProperty(String string) throws JMSException
-		{
+		public double getDoubleProperty(String string) throws JMSException {
 			return 0;
 		}
 
 		@Override
-		public String getStringProperty(String string) throws JMSException
-		{
+		public String getStringProperty(String string) throws JMSException {
 			return null;
 		}
 
 		@Override
-		public Object getObjectProperty(String string) throws JMSException
-		{
+		public Object getObjectProperty(String string) throws JMSException {
 			return null;
 		}
 
 		@Override
-		public Enumeration getPropertyNames() throws JMSException
-		{
+		public Enumeration getPropertyNames() throws JMSException {
 			return null;
 		}
 
 		@Override
-		public void setBooleanProperty(String string, boolean b) throws JMSException
-		{
+		public void setBooleanProperty(String string, boolean b) throws JMSException {
 		}
 
 		@Override
-		public void setByteProperty(String string, byte b) throws JMSException
-		{
+		public void setByteProperty(String string, byte b) throws JMSException {
 		}
 
 		@Override
-		public void setShortProperty(String string, short i) throws JMSException
-		{
+		public void setShortProperty(String string, short i) throws JMSException {
 		}
 
 		@Override
-		public void setIntProperty(String string, int i) throws JMSException
-		{
+		public void setIntProperty(String string, int i) throws JMSException {
 		}
 
 		@Override
-		public void setLongProperty(String string, long l) throws JMSException
-		{
+		public void setLongProperty(String string, long l) throws JMSException {
 		}
 
 		@Override
-		public void setFloatProperty(String string, float v) throws JMSException
-		{
+		public void setFloatProperty(String string, float v) throws JMSException {
 		}
 
 		@Override
-		public void setDoubleProperty(String string, double v) throws JMSException
-		{
+		public void setDoubleProperty(String string, double v) throws JMSException {
 		}
 
 		@Override
-		public void setStringProperty(String string, String string1) throws JMSException
-		{
+		public void setStringProperty(String string, String string1) throws JMSException {
 		}
 
 		@Override
-		public void setObjectProperty(String string, Object object) throws JMSException
-		{
+		public void setObjectProperty(String string, Object object) throws JMSException {
 		}
 
 		@Override
-		public void acknowledge() throws JMSException
-		{
+		public void acknowledge() throws JMSException {
 		}
 
 		@Override
-		public void clearBody() throws JMSException
-		{
+		public void clearBody() throws JMSException {
 		}
 	}
 
-	private static class MockSimpleMessageConverter extends SimpleMessageConverter
-	{
+	private static class MockSimpleMessageConverter extends SimpleMessageConverter {
 
 		@Override
 		public Message toMessage(Object object, Session session)
-				throws JMSException, MessageConversionException
-		{
+				throws JMSException, MessageConversionException {
 			return new MockObjectMessage((Serializable) object);
 		}
 	}

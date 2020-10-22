@@ -16,30 +16,27 @@
 
 package org.springframework.aop.aspectj.annotation;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.aspectj.AspectJExpressionPointcutTests;
 import org.springframework.aop.framework.AopConfigException;
 import org.springframework.beans.testfixture.beans.TestBean;
-
 import test.aop.PerTargetAspect;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * @author Rod Johnson
  * @author Chris Beams
  */
-public class AspectJPointcutAdvisorTests
-{
+public class AspectJPointcutAdvisorTests {
 
 	private final AspectJAdvisorFactory af = new ReflectiveAspectJAdvisorFactory();
 
 	@Test
-	public void testSingleton() throws SecurityException, NoSuchMethodException
-	{
+	public void testSingleton() throws SecurityException, NoSuchMethodException {
 		AspectJExpressionPointcut ajexp = new AspectJExpressionPointcut();
 		ajexp.setExpression(AspectJExpressionPointcutTests.MATCH_ALL_METHODS);
 
@@ -54,8 +51,7 @@ public class AspectJPointcutAdvisorTests
 	}
 
 	@Test
-	public void testPerTarget() throws SecurityException, NoSuchMethodException
-	{
+	public void testPerTarget() throws SecurityException, NoSuchMethodException {
 		AspectJExpressionPointcut ajexp = new AspectJExpressionPointcut();
 		ajexp.setExpression(AspectJExpressionPointcutTests.MATCH_ALL_METHODS);
 
@@ -72,7 +68,7 @@ public class AspectJPointcutAdvisorTests
 
 		assertThat(
 				ajpa.getAspectMetadata().getPerClausePointcut().getClassFilter().matches(TestBean.class))
-						.isTrue();
+				.isTrue();
 		assertThat(ajpa.getAspectMetadata().getPerClausePointcut().getMethodMatcher()
 				.matches(TestBean.class.getMethod("getAge"), TestBean.class)).isFalse();
 
@@ -81,23 +77,20 @@ public class AspectJPointcutAdvisorTests
 	}
 
 	@Test
-	public void testPerCflowTarget()
-	{
+	public void testPerCflowTarget() {
 		assertThatExceptionOfType(AopConfigException.class)
 				.isThrownBy(() -> testIllegalInstantiationModel(
 						AbstractAspectJAdvisorFactoryTests.PerCflowAspect.class));
 	}
 
 	@Test
-	public void testPerCflowBelowTarget()
-	{
+	public void testPerCflowBelowTarget() {
 		assertThatExceptionOfType(AopConfigException.class)
 				.isThrownBy(() -> testIllegalInstantiationModel(
 						AbstractAspectJAdvisorFactoryTests.PerCflowBelowAspect.class));
 	}
 
-	private void testIllegalInstantiationModel(Class<?> c) throws AopConfigException
-	{
+	private void testIllegalInstantiationModel(Class<?> c) throws AopConfigException {
 		new AspectMetadata(c, "someBean");
 	}
 

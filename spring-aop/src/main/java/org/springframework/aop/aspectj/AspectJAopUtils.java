@@ -29,17 +29,14 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.0
  */
-public abstract class AspectJAopUtils
-{
+public abstract class AspectJAopUtils {
 
 	/**
 	 * Return {@code true} if the advisor is a form of before advice.
 	 */
-	public static boolean isBeforeAdvice(Advisor anAdvisor)
-	{
+	public static boolean isBeforeAdvice(Advisor anAdvisor) {
 		AspectJPrecedenceInformation precedenceInfo = getAspectJPrecedenceInformationFor(anAdvisor);
-		if (precedenceInfo != null)
-		{
+		if (precedenceInfo != null) {
 			return precedenceInfo.isBeforeAdvice();
 		}
 		return (anAdvisor.getAdvice() instanceof BeforeAdvice);
@@ -48,11 +45,9 @@ public abstract class AspectJAopUtils
 	/**
 	 * Return {@code true} if the advisor is a form of after advice.
 	 */
-	public static boolean isAfterAdvice(Advisor anAdvisor)
-	{
+	public static boolean isAfterAdvice(Advisor anAdvisor) {
 		AspectJPrecedenceInformation precedenceInfo = getAspectJPrecedenceInformationFor(anAdvisor);
-		if (precedenceInfo != null)
-		{
+		if (precedenceInfo != null) {
 			return precedenceInfo.isAfterAdvice();
 		}
 		return (anAdvisor.getAdvice() instanceof AfterAdvice);
@@ -64,15 +59,12 @@ public abstract class AspectJAopUtils
 	 * will return {@code null}.
 	 */
 	@Nullable
-	public static AspectJPrecedenceInformation getAspectJPrecedenceInformationFor(Advisor anAdvisor)
-	{
-		if (anAdvisor instanceof AspectJPrecedenceInformation)
-		{
+	public static AspectJPrecedenceInformation getAspectJPrecedenceInformationFor(Advisor anAdvisor) {
+		if (anAdvisor instanceof AspectJPrecedenceInformation) {
 			return (AspectJPrecedenceInformation) anAdvisor;
 		}
 		Advice advice = anAdvisor.getAdvice();
-		if (advice instanceof AspectJPrecedenceInformation)
-		{
+		if (advice instanceof AspectJPrecedenceInformation) {
 			return (AspectJPrecedenceInformation) advice;
 		}
 		return null;

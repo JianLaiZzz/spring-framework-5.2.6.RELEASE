@@ -16,14 +16,8 @@
 
 package org.springframework.web.reactive.result.method.annotation;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import reactor.core.publisher.Mono;
-
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -42,6 +36,11 @@ import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.HandlerResult;
 import org.springframework.web.reactive.result.method.InvocableHandlerMethod;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * Supports the invocation of
@@ -203,7 +202,7 @@ public class RequestMappingHandlerAdapter implements HandlerAdapter, Application
 	}
 
 	private Mono<HandlerResult> handleException(Throwable exception, HandlerMethod handlerMethod,
-			BindingContext bindingContext, ServerWebExchange exchange) {
+												BindingContext bindingContext, ServerWebExchange exchange) {
 
 		Assert.state(this.methodResolver != null, "Not initialized");
 
@@ -221,12 +220,10 @@ public class RequestMappingHandlerAdapter implements HandlerAdapter, Application
 				Throwable cause = exception.getCause();
 				if (cause != null) {
 					return invocable.invoke(exchange, bindingContext, exception, cause, handlerMethod);
-				}
-				else {
+				} else {
 					return invocable.invoke(exchange, bindingContext, exception, handlerMethod);
 				}
-			}
-			catch (Throwable invocationEx) {
+			} catch (Throwable invocationEx) {
 				if (logger.isWarnEnabled()) {
 					logger.warn(exchange.getLogPrefix() + "Failure in @ExceptionHandler " + invocable, invocationEx);
 				}

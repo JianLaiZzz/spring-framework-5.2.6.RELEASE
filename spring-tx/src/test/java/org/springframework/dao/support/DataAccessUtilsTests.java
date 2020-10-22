@@ -16,28 +16,26 @@
 
 package org.springframework.dao.support;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
-import java.util.*;
-import java.util.function.Consumer;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.dao.TypeMismatchDataAccessException;
 
+import java.util.*;
+import java.util.function.Consumer;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 /**
  * @author Juergen Hoeller
  * @since 20.10.2004
  */
-public class DataAccessUtilsTests
-{
+public class DataAccessUtilsTests {
 
 	@Test
-	public void withEmptyCollection()
-	{
+	public void withEmptyCollection() {
 		Collection<String> col = new HashSet<>();
 
 		assertThat(DataAccessUtils.uniqueResult(col)).isNull();
@@ -58,8 +56,7 @@ public class DataAccessUtilsTests
 	}
 
 	@Test
-	public void withTooLargeCollection()
-	{
+	public void withTooLargeCollection() {
 		Collection<String> col = new HashSet<>(2);
 		col.add("test1");
 		col.add("test2");
@@ -83,8 +80,7 @@ public class DataAccessUtilsTests
 	}
 
 	@Test
-	public void withInteger()
-	{
+	public void withInteger() {
 		Collection<Integer> col = new HashSet<>(1);
 		col.add(5);
 
@@ -97,8 +93,7 @@ public class DataAccessUtilsTests
 	}
 
 	@Test
-	public void withSameIntegerInstanceTwice()
-	{
+	public void withSameIntegerInstanceTwice() {
 		Integer i = 5;
 		Collection<Integer> col = new ArrayList<>(1);
 		col.add(i);
@@ -114,8 +109,7 @@ public class DataAccessUtilsTests
 
 	@Test
 	@SuppressWarnings("deprecation") // on JDK 9
-	public void withEquivalentIntegerInstanceTwice()
-	{
+	public void withEquivalentIntegerInstanceTwice() {
 		Collection<Integer> col = new ArrayList<>(2);
 		col.add(new Integer(5));
 		col.add(new Integer(5));
@@ -125,8 +119,7 @@ public class DataAccessUtilsTests
 	}
 
 	@Test
-	public void withLong()
-	{
+	public void withLong() {
 		Collection<Long> col = new HashSet<>(1);
 		col.add(5L);
 
@@ -139,8 +132,7 @@ public class DataAccessUtilsTests
 	}
 
 	@Test
-	public void withString()
-	{
+	public void withString() {
 		Collection<String> col = new HashSet<>(1);
 		col.add("test1");
 
@@ -156,8 +148,7 @@ public class DataAccessUtilsTests
 	}
 
 	@Test
-	public void withDate()
-	{
+	public void withDate() {
 		Date date = new Date();
 		Collection<Date> col = new HashSet<>(1);
 		col.add(date);
@@ -175,16 +166,14 @@ public class DataAccessUtilsTests
 	}
 
 	@Test
-	public void exceptionTranslationWithNoTranslation()
-	{
+	public void exceptionTranslationWithNoTranslation() {
 		MapPersistenceExceptionTranslator mpet = new MapPersistenceExceptionTranslator();
 		RuntimeException in = new RuntimeException();
 		assertThat(DataAccessUtils.translateIfNecessary(in, mpet)).isSameAs(in);
 	}
 
 	@Test
-	public void exceptionTranslationWithTranslation()
-	{
+	public void exceptionTranslationWithTranslation() {
 		MapPersistenceExceptionTranslator mpet = new MapPersistenceExceptionTranslator();
 		RuntimeException in = new RuntimeException("in");
 		InvalidDataAccessApiUsageException out = new InvalidDataAccessApiUsageException("out");
@@ -193,8 +182,7 @@ public class DataAccessUtilsTests
 	}
 
 	private <E extends IncorrectResultSizeDataAccessException> Consumer<E> sizeRequirements(
-			int expectedSize, int actualSize)
-	{
+			int expectedSize, int actualSize) {
 		return ex ->
 		{
 			assertThat(ex.getExpectedSize()).as("expected size").isEqualTo(expectedSize);
@@ -202,20 +190,17 @@ public class DataAccessUtilsTests
 		};
 	}
 
-	public static class MapPersistenceExceptionTranslator implements PersistenceExceptionTranslator
-	{
+	public static class MapPersistenceExceptionTranslator implements PersistenceExceptionTranslator {
 
 		// in to out
 		private final Map<RuntimeException, RuntimeException> translations = new HashMap<>();
 
-		public void addTranslation(RuntimeException in, RuntimeException out)
-		{
+		public void addTranslation(RuntimeException in, RuntimeException out) {
 			this.translations.put(in, out);
 		}
 
 		@Override
-		public DataAccessException translateExceptionIfPossible(RuntimeException ex)
-		{
+		public DataAccessException translateExceptionIfPossible(RuntimeException ex) {
 			return (DataAccessException) translations.get(ex);
 		}
 	}

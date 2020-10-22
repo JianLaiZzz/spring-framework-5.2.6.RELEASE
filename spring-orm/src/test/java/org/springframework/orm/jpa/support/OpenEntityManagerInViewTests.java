@@ -16,22 +16,6 @@
 
 package org.springframework.orm.jpa.support;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.servlet.AsyncEvent;
-import javax.servlet.AsyncListener;
-import javax.servlet.FilterChain;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,14 +30,28 @@ import org.springframework.web.context.request.async.WebAsyncUtils;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 import org.springframework.web.testfixture.servlet.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.servlet.AsyncEvent;
+import javax.servlet.AsyncListener;
+import javax.servlet.FilterChain;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+
 /**
  * @author Costin Leau
  * @author Juergen Hoeller
  * @author Chris Beams
  * @author Phillip Webb
  */
-public class OpenEntityManagerInViewTests
-{
+public class OpenEntityManagerInViewTests {
 
 	private EntityManager manager;
 
@@ -68,8 +66,7 @@ public class OpenEntityManagerInViewTests
 	private final TestTaskExecutor taskExecutor = new TestTaskExecutor();
 
 	@BeforeEach
-	public void setUp()
-	{
+	public void setUp() {
 		factory = mock(EntityManagerFactory.class);
 		manager = mock(EntityManager.class);
 
@@ -82,8 +79,7 @@ public class OpenEntityManagerInViewTests
 	}
 
 	@AfterEach
-	public void tearDown()
-	{
+	public void tearDown() {
 		assertThat(TransactionSynchronizationManager.getResourceMap().isEmpty()).isTrue();
 		assertThat(TransactionSynchronizationManager.isSynchronizationActive()).isFalse();
 		assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isFalse();
@@ -91,8 +87,7 @@ public class OpenEntityManagerInViewTests
 	}
 
 	@Test
-	public void testOpenEntityManagerInViewInterceptor()
-	{
+	public void testOpenEntityManagerInViewInterceptor() {
 		OpenEntityManagerInViewInterceptor interceptor = new OpenEntityManagerInViewInterceptor();
 		interceptor.setEntityManagerFactory(this.factory);
 
@@ -128,8 +123,7 @@ public class OpenEntityManagerInViewTests
 	}
 
 	@Test
-	public void testOpenEntityManagerInViewInterceptorAsyncScenario() throws Exception
-	{
+	public void testOpenEntityManagerInViewInterceptorAsyncScenario() throws Exception {
 
 		// Initial request thread
 
@@ -186,8 +180,7 @@ public class OpenEntityManagerInViewTests
 	}
 
 	@Test
-	public void testOpenEntityManagerInViewInterceptorAsyncTimeoutScenario() throws Exception
-	{
+	public void testOpenEntityManagerInViewInterceptorAsyncTimeoutScenario() throws Exception {
 
 		// Initial request thread
 
@@ -216,12 +209,10 @@ public class OpenEntityManagerInViewTests
 		given(this.manager.isOpen()).willReturn(true);
 
 		MockAsyncContext asyncContext = (MockAsyncContext) this.request.getAsyncContext();
-		for (AsyncListener listener : asyncContext.getListeners())
-		{
+		for (AsyncListener listener : asyncContext.getListeners()) {
 			listener.onTimeout(new AsyncEvent(asyncContext));
 		}
-		for (AsyncListener listener : asyncContext.getListeners())
-		{
+		for (AsyncListener listener : asyncContext.getListeners()) {
 			listener.onComplete(new AsyncEvent(asyncContext));
 		}
 
@@ -229,8 +220,7 @@ public class OpenEntityManagerInViewTests
 	}
 
 	@Test
-	public void testOpenEntityManagerInViewInterceptorAsyncErrorScenario() throws Exception
-	{
+	public void testOpenEntityManagerInViewInterceptorAsyncErrorScenario() throws Exception {
 
 		// Initial request thread
 
@@ -259,12 +249,10 @@ public class OpenEntityManagerInViewTests
 		given(this.manager.isOpen()).willReturn(true);
 
 		MockAsyncContext asyncContext = (MockAsyncContext) this.request.getAsyncContext();
-		for (AsyncListener listener : asyncContext.getListeners())
-		{
+		for (AsyncListener listener : asyncContext.getListeners()) {
 			listener.onError(new AsyncEvent(asyncContext, new Exception()));
 		}
-		for (AsyncListener listener : asyncContext.getListeners())
-		{
+		for (AsyncListener listener : asyncContext.getListeners()) {
 			listener.onComplete(new AsyncEvent(asyncContext));
 		}
 
@@ -272,8 +260,7 @@ public class OpenEntityManagerInViewTests
 	}
 
 	@Test
-	public void testOpenEntityManagerInViewFilter() throws Exception
-	{
+	public void testOpenEntityManagerInViewFilter() throws Exception {
 		given(manager.isOpen()).willReturn(true);
 
 		final EntityManagerFactory factory2 = mock(EntityManagerFactory.class);
@@ -329,8 +316,7 @@ public class OpenEntityManagerInViewTests
 	}
 
 	@Test
-	public void testOpenEntityManagerInViewFilterAsyncScenario() throws Exception
-	{
+	public void testOpenEntityManagerInViewFilterAsyncScenario() throws Exception {
 		given(manager.isOpen()).willReturn(true);
 
 		final EntityManagerFactory factory2 = mock(EntityManagerFactory.class);
@@ -420,30 +406,24 @@ public class OpenEntityManagerInViewTests
 	}
 
 	@SuppressWarnings("serial")
-	private static class TestTaskExecutor extends SimpleAsyncTaskExecutor
-	{
+	private static class TestTaskExecutor extends SimpleAsyncTaskExecutor {
 
 		private final CountDownLatch latch = new CountDownLatch(1);
 
 		@Override
-		public void execute(Runnable task, long startTimeout)
-		{
+		public void execute(Runnable task, long startTimeout) {
 			Runnable decoratedTask = () ->
 			{
-				try
-				{
+				try {
 					task.run();
-				}
-				finally
-				{
+				} finally {
 					latch.countDown();
 				}
 			};
 			super.execute(decoratedTask, startTimeout);
 		}
 
-		void await() throws InterruptedException
-		{
+		void await() throws InterruptedException {
 			this.latch.await(5, TimeUnit.SECONDS);
 		}
 	}

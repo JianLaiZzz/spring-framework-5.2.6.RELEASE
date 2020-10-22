@@ -16,18 +16,10 @@
 
 package org.springframework.test.web.servlet.samples.spr;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +43,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -315,8 +313,7 @@ public class RequestContextHolderTests {
 			assertThat(request.getAttribute(FROM_MVC_TEST_MOCK)).isEqualTo(FROM_MVC_TEST_MOCK);
 			assertThat(request.getAttribute(FROM_REQUEST_FILTER)).isEqualTo(FROM_REQUEST_FILTER);
 			assertThat(request.getAttribute(FROM_REQUEST_ATTRIBUTES_FILTER)).isEqualTo(FROM_REQUEST_ATTRIBUTES_FILTER);
-		}
-		else {
+		} else {
 			assertThat(request.getAttribute(FROM_TCF_MOCK)).isEqualTo(FROM_TCF_MOCK);
 			assertThat(request.getAttribute(FROM_MVC_TEST_DEFAULT)).isNull();
 			assertThat(request.getAttribute(FROM_MVC_TEST_MOCK)).isNull();

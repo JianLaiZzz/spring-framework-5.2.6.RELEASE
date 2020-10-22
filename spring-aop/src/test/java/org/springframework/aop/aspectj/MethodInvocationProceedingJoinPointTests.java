@@ -16,12 +16,6 @@
 
 package org.springframework.aop.aspectj;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.JoinPoint.StaticPart;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -37,30 +31,32 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.testfixture.beans.ITestBean;
 import org.springframework.beans.testfixture.beans.TestBean;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.assertj.core.api.Assertions.*;
+
 /**
  * @author Rod Johnson
  * @author Chris Beams
  * @author Ramnivas Laddad
  * @since 2.0
  */
-public class MethodInvocationProceedingJoinPointTests
-{
+public class MethodInvocationProceedingJoinPointTests {
 
 	@Test
-	public void testingBindingWithJoinPoint()
-	{
+	public void testingBindingWithJoinPoint() {
 		assertThatIllegalStateException().isThrownBy(AbstractAspectJAdvice::currentJoinPoint);
 	}
 
 	@Test
-	public void testingBindingWithProceedingJoinPoint()
-	{
+	public void testingBindingWithProceedingJoinPoint() {
 		assertThatIllegalStateException().isThrownBy(AbstractAspectJAdvice::currentJoinPoint);
 	}
 
 	@Test
-	public void testCanGetMethodSignatureFromJoinPoint()
-	{
+	public void testCanGetMethodSignatureFromJoinPoint() {
 		final Object raw = new TestBean();
 		// Will be set by advice during a method call
 		final int newAge = 23;
@@ -91,8 +87,7 @@ public class MethodInvocationProceedingJoinPointTests
 
 			// Try reentrant call--will go through this advice.
 			// Be sure to increment depth to avoid infinite recursion
-			if (depth.getAndIncrement() == 0)
-			{
+			if (depth.getAndIncrement() == 0) {
 				// Check that toString doesn't cause a problem
 				thisProxy.toString();
 				// Change age, so this will be returned by invocation
@@ -127,8 +122,7 @@ public class MethodInvocationProceedingJoinPointTests
 	}
 
 	@Test
-	public void testCanGetSourceLocationFromJoinPoint()
-	{
+	public void testCanGetSourceLocationFromJoinPoint() {
 		final Object raw = new TestBean();
 		ProxyFactory pf = new ProxyFactory(raw);
 		pf.addAdvisor(ExposeInvocationInterceptor.ADVISOR);
@@ -147,8 +141,7 @@ public class MethodInvocationProceedingJoinPointTests
 	}
 
 	@Test
-	public void testCanGetStaticPartFromJoinPoint()
-	{
+	public void testCanGetStaticPartFromJoinPoint() {
 		final Object raw = new TestBean();
 		ProxyFactory pf = new ProxyFactory(raw);
 		pf.addAdvisor(ExposeInvocationInterceptor.ADVISOR);
@@ -169,8 +162,7 @@ public class MethodInvocationProceedingJoinPointTests
 	}
 
 	@Test
-	public void toShortAndLongStringFormedCorrectly() throws Exception
-	{
+	public void toShortAndLongStringFormedCorrectly() throws Exception {
 		final Object raw = new TestBean();
 		ProxyFactory pf = new ProxyFactory(raw);
 		pf.addAdvisor(ExposeInvocationInterceptor.ADVISOR);
@@ -199,12 +191,9 @@ public class MethodInvocationProceedingJoinPointTests
 		itb.getStringArray();
 		itb.getSpouse();
 		itb.setSpouse(new TestBean());
-		try
-		{
+		try {
 			itb.unreliableFileOperation();
-		}
-		catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			// we don't really care...
 		}
 	}

@@ -16,16 +16,15 @@
 
 package org.springframework.web.servlet.tags.form;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.DynamicAttributes;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.DynamicAttributes;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Base class for databinding-aware JSP tags that render HTML element. Provides
@@ -361,6 +360,7 @@ public abstract class AbstractHtmlElementTag extends AbstractDataBoundFormElemen
 	public void setOnmouseout(String onmouseout) {
 		this.onmouseout = onmouseout;
 	}
+
 	/**
 	 * Get the value of the '{@code onmouseout}' attribute.
 	 * May be a runtime expression.
@@ -499,8 +499,7 @@ public abstract class AbstractHtmlElementTag extends AbstractDataBoundFormElemen
 	protected String resolveCssClass() throws JspException {
 		if (getBindStatus().isError() && StringUtils.hasText(getCssErrorClass())) {
 			return ObjectUtils.getDisplayString(evaluate("cssErrorClass", getCssErrorClass()));
-		}
-		else {
+		} else {
 			return ObjectUtils.getDisplayString(evaluate("cssClass", getCssClass()));
 		}
 	}

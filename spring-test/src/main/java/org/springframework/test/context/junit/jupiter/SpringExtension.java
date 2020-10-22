@@ -16,24 +16,9 @@
 
 package org.springframework.test.context.junit.jupiter;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolver;
-import org.junit.jupiter.api.extension.TestInstancePostProcessor;
-
 import org.springframework.beans.factory.annotation.ParameterResolutionDelegate;
 import org.springframework.context.ApplicationContext;
 import org.springframework.lang.Nullable;
@@ -41,6 +26,11 @@ import org.springframework.test.context.TestConstructor;
 import org.springframework.test.context.TestContextManager;
 import org.springframework.test.context.support.TestConstructorUtils;
 import org.springframework.util.Assert;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 /**
  * {@code SpringExtension} integrates the <em>Spring TestContext Framework</em>
@@ -51,12 +41,12 @@ import org.springframework.util.Assert;
  * {@code @SpringJUnitWebConfig}.
  *
  * @author Sam Brannen
- * @since 5.0
  * @see org.springframework.test.context.junit.jupiter.EnabledIf
  * @see org.springframework.test.context.junit.jupiter.DisabledIf
  * @see org.springframework.test.context.junit.jupiter.SpringJUnitConfig
  * @see org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig
  * @see org.springframework.test.context.TestContextManager
+ * @since 5.0
  */
 public class SpringExtension implements BeforeAllCallback, AfterAllCallback, TestInstancePostProcessor,
 		BeforeEachCallback, AfterEachCallback, BeforeTestExecutionCallback, AfterTestExecutionCallback,
@@ -84,8 +74,7 @@ public class SpringExtension implements BeforeAllCallback, AfterAllCallback, Tes
 	public void afterAll(ExtensionContext context) throws Exception {
 		try {
 			getTestContextManager(context).afterTestClass();
-		}
-		finally {
+		} finally {
 			getStore(context).remove(context.getRequiredTestClass());
 		}
 	}
@@ -158,6 +147,7 @@ public class SpringExtension implements BeforeAllCallback, AfterAllCallback, Tes
 	 * Spring will assume the responsibility for resolving all parameters in the
 	 * constructor. Consequently, no other registered {@link ParameterResolver}
 	 * will be able to resolve parameters.
+	 *
 	 * @see #resolveParameter
 	 * @see TestConstructorUtils#isAutowirableConstructor(Constructor, Class)
 	 * @see ParameterResolutionDelegate#isAutowirable
@@ -176,6 +166,7 @@ public class SpringExtension implements BeforeAllCallback, AfterAllCallback, Tes
 	 * Resolve a value for the {@link Parameter} in the supplied {@link ParameterContext} by
 	 * retrieving the corresponding dependency from the test's {@link ApplicationContext}.
 	 * <p>Delegates to {@link ParameterResolutionDelegate#resolveDependency}.
+	 *
 	 * @see #supportsParameter
 	 * @see ParameterResolutionDelegate#resolveDependency
 	 */
@@ -193,6 +184,7 @@ public class SpringExtension implements BeforeAllCallback, AfterAllCallback, Tes
 
 	/**
 	 * Get the {@link ApplicationContext} associated with the supplied {@code ExtensionContext}.
+	 *
 	 * @param context the current {@code ExtensionContext} (never {@code null})
 	 * @return the application context
 	 * @throws IllegalStateException if an error occurs while retrieving the application context
@@ -204,6 +196,7 @@ public class SpringExtension implements BeforeAllCallback, AfterAllCallback, Tes
 
 	/**
 	 * Get the {@link TestContextManager} associated with the supplied {@code ExtensionContext}.
+	 *
 	 * @return the {@code TestContextManager} (never {@code null})
 	 */
 	private static TestContextManager getTestContextManager(ExtensionContext context) {

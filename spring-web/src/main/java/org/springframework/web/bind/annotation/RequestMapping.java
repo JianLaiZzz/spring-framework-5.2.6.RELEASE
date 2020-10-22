@@ -16,9 +16,9 @@
 
 package org.springframework.web.bind.annotation;
 
-import java.lang.annotation.*;
-
 import org.springframework.core.annotation.AliasFor;
+
+import java.lang.annotation.*;
 
 /**
  * Annotation for mapping web requests onto methods in request-handling classes
@@ -69,7 +69,6 @@ import org.springframework.core.annotation.AliasFor;
  * @author Juergen Hoeller
  * @author Arjen Poutsma
  * @author Sam Brannen
- * @since 2.5
  * @see GetMapping
  * @see PostMapping
  * @see PutMapping
@@ -77,13 +76,13 @@ import org.springframework.core.annotation.AliasFor;
  * @see PatchMapping
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
  * @see org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerAdapter
+ * @since 2.5
  */
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Mapping
-public @interface RequestMapping
-{
+public @interface RequestMapping {
 
 	/**
 	 * Assign a name to this mapping.
@@ -91,7 +90,7 @@ public @interface RequestMapping
 	 * <b>Supported at the type level as well as at the method level!</b>
 	 * When used on both levels, a combined name is derived by concatenation
 	 * with "#" as separator.
-	 * 
+	 *
 	 * @see org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder
 	 * @see org.springframework.web.servlet.handler.HandlerMethodMappingNamingStrategy
 	 */
@@ -128,7 +127,7 @@ public @interface RequestMapping
 	 * <p>
 	 * <strong>NOTE</strong>: A handler method that is not mapped to any path
 	 * explicitly is effectively mapped to an empty path.
-	 * 
+	 *
 	 * @since 4.2
 	 */
 	@AliasFor("value")
@@ -181,18 +180,18 @@ public @interface RequestMapping
 	 * <p>
 	 * Also supports media type wildcards (*), for headers such as Accept
 	 * and Content-Type. For instance,
-	 * 
+	 *
 	 * <pre class="code">
 	 * &#064;RequestMapping(value = "/something", headers = "content-type=text/*")
 	 * </pre>
-	 * 
+	 * <p>
 	 * will match requests with a Content-Type of "text/html", "text/plain", etc.
 	 * <p>
 	 * <b>Supported at the type level as well as at the method level!</b>
 	 * When used at the type level, all method-level mappings inherit
 	 * this header restriction (i.e. the type-level restriction
 	 * gets checked before the handler method is even resolved).
-	 * 
+	 *
 	 * @see org.springframework.http.MediaType
 	 */
 	String[] headers() default {};
@@ -201,13 +200,13 @@ public @interface RequestMapping
 	 * Narrows the primary mapping by media types that can be consumed by the
 	 * mapped handler. Consists of one or more media types one of which must
 	 * match to the request {@code Content-Type} header. Examples:
-	 * 
+	 *
 	 * <pre class="code">
 	 * consumes = "text/plain"
 	 * consumes = {"text/plain", "application/*"}
 	 * consumes = MediaType.TEXT_PLAIN_VALUE
 	 * </pre>
-	 * 
+	 * <p>
 	 * Expressions can be negated by using the "!" operator, as in
 	 * "!text/plain", which matches all requests with a {@code Content-Type}
 	 * other than "text/plain".
@@ -215,7 +214,7 @@ public @interface RequestMapping
 	 * <b>Supported at the type level as well as at the method level!</b>
 	 * If specified at both levels, the method level consumes condition overrides
 	 * the type level condition.
-	 * 
+	 *
 	 * @see org.springframework.http.MediaType
 	 * @see javax.servlet.http.HttpServletRequest#getContentType()
 	 */
@@ -227,7 +226,7 @@ public @interface RequestMapping
 	 * be chosen via content negotiation against the "acceptable" media types
 	 * of the request. Typically those are extracted from the {@code "Accept"}
 	 * header but may be derived from query parameters, or other. Examples:
-	 * 
+	 *
 	 * <pre class="code">
 	 * produces = "text/plain"
 	 * produces = {"text/plain", "application/*"}
@@ -247,7 +246,7 @@ public @interface RequestMapping
 	 * <b>Supported at the type level as well as at the method level!</b>
 	 * If specified at both levels, the method level produces condition overrides
 	 * the type level condition.
-	 * 
+	 *
 	 * @see org.springframework.http.MediaType
 	 * @see org.springframework.http.MediaType
 	 */

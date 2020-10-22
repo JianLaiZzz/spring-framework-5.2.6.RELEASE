@@ -16,11 +16,6 @@
 
 package org.springframework.transaction.annotation;
 
-import java.io.Serializable;
-import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -30,6 +25,11 @@ import org.springframework.transaction.interceptor.RollbackRuleAttribute;
 import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionAttribute;
 
+import java.io.Serializable;
+import java.lang.reflect.AnnotatedElement;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Strategy implementation for parsing Spring's {@link Transactional} annotation.
  *
@@ -37,38 +37,30 @@ import org.springframework.transaction.interceptor.TransactionAttribute;
  * @since 2.5
  */
 @SuppressWarnings("serial")
-public class SpringTransactionAnnotationParser implements TransactionAnnotationParser, Serializable
-{
+public class SpringTransactionAnnotationParser implements TransactionAnnotationParser, Serializable {
 
 	@Override
-	public boolean isCandidateClass(Class<?> targetClass)
-	{
+	public boolean isCandidateClass(Class<?> targetClass) {
 		return AnnotationUtils.isCandidateClass(targetClass, Transactional.class);
 	}
 
 	@Override
 	@Nullable
-	public TransactionAttribute parseTransactionAnnotation(AnnotatedElement element)
-	{
+	public TransactionAttribute parseTransactionAnnotation(AnnotatedElement element) {
 		AnnotationAttributes attributes = AnnotatedElementUtils.findMergedAnnotationAttributes(element,
 				Transactional.class, false, false);
-		if (attributes != null)
-		{
+		if (attributes != null) {
 			return parseTransactionAnnotation(attributes);
-		}
-		else
-		{
+		} else {
 			return null;
 		}
 	}
 
-	public TransactionAttribute parseTransactionAnnotation(Transactional ann)
-	{
+	public TransactionAttribute parseTransactionAnnotation(Transactional ann) {
 		return parseTransactionAnnotation(AnnotationUtils.getAnnotationAttributes(ann, false, false));
 	}
 
-	protected TransactionAttribute parseTransactionAnnotation(AnnotationAttributes attributes)
-	{
+	protected TransactionAttribute parseTransactionAnnotation(AnnotationAttributes attributes) {
 		RuleBasedTransactionAttribute rbta = new RuleBasedTransactionAttribute();
 
 		Propagation propagation = attributes.getEnum("propagation");
@@ -80,20 +72,16 @@ public class SpringTransactionAnnotationParser implements TransactionAnnotationP
 		rbta.setQualifier(attributes.getString("value"));
 
 		List<RollbackRuleAttribute> rollbackRules = new ArrayList<>();
-		for (Class<?> rbRule : attributes.getClassArray("rollbackFor"))
-		{
+		for (Class<?> rbRule : attributes.getClassArray("rollbackFor")) {
 			rollbackRules.add(new RollbackRuleAttribute(rbRule));
 		}
-		for (String rbRule : attributes.getStringArray("rollbackForClassName"))
-		{
+		for (String rbRule : attributes.getStringArray("rollbackForClassName")) {
 			rollbackRules.add(new RollbackRuleAttribute(rbRule));
 		}
-		for (Class<?> rbRule : attributes.getClassArray("noRollbackFor"))
-		{
+		for (Class<?> rbRule : attributes.getClassArray("noRollbackFor")) {
 			rollbackRules.add(new NoRollbackRuleAttribute(rbRule));
 		}
-		for (String rbRule : attributes.getStringArray("noRollbackForClassName"))
-		{
+		for (String rbRule : attributes.getStringArray("noRollbackForClassName")) {
 			rollbackRules.add(new NoRollbackRuleAttribute(rbRule));
 		}
 		rbta.setRollbackRules(rollbackRules);
@@ -102,14 +90,12 @@ public class SpringTransactionAnnotationParser implements TransactionAnnotationP
 	}
 
 	@Override
-	public boolean equals(@Nullable Object other)
-	{
+	public boolean equals(@Nullable Object other) {
 		return (this == other || other instanceof SpringTransactionAnnotationParser);
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return SpringTransactionAnnotationParser.class.hashCode();
 	}
 
